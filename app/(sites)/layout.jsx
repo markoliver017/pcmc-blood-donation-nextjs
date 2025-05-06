@@ -9,7 +9,7 @@ import Footer from "@components/layout/Footer";
 import { ThemeProvider } from "next-themes";
 import { ToastContainer } from "react-toastify";
 import Preloader from "@components/layout/Preloader";
-import Providers from "./AuthProvider";
+import Providers from "../../components/layout/AuthProvider";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -22,8 +22,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-    title: "Inmerse Portal",
-    description: "Integrated National Medication Error Reporting System",
+    title: "PCMC PedBC MBD",
+    description: "PCMC - Pediatric Blood Center - Medical Blood Donation",
     icons: {
         icon: "/favicon.ico", // /public path
     },

@@ -2,8 +2,8 @@ module.exports = {
     development: {
         username: "root",
         password: "root",
-        database: "inmers",
-        host: "10.0.0.187",
+        database: "blood_donation",
+        host: "localhost",
         dialect: "mysql",
     },
     production: {
