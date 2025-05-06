@@ -1,0 +1,11 @@
+#seed all
+npx sequelize-cli db:seed:all
+
+#seed specific file
+npx sequelize-cli db:seed --seed 20250416183513-admin-user.js
+
+#create new seeder file
+npx sequelize-cli seed:generate --name 20250416183513-admin-user.js
+
+#revert or undo seed
+npx sequelize-cli db:seed:undo --seed <seeder_file_name.js>

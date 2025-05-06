@@ -1,0 +1,15 @@
+INMERS Data Request Acknowledgment
+
+Dear Researcher/Requestor,
+
+Thank you for submitting a request for access to medication error data through the Integrated National Medication Error Reporting System (INMERS).
+
+Your request has been received and is currently being reviewed by our team. Please allow up to 5–7 working days for our review and response.
+
+Data requests are reviewed based on the stated purpose (e.g., academic research, quality improvement, patient safety initiatives), and data access will be granted in accordance with national health data protection policies.
+
+You will receive a follow-up email once your request has been approved or if additional details are required.
+
+Go to INMERS Dashboard: https://inmers.gov.ph/dashboard
+
+This is an automated email. Please do not reply. For inquiries, contact support@inmers.gov.ph
