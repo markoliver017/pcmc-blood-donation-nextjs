@@ -1,4 +1,4 @@
-import { FileQuestion, Users } from "lucide-react";
+import { FileQuestion, UserPlus2, Users, Users2 } from "lucide-react";
 import { create } from "zustand";
 
 export const usePagesStore = create((set) => ({
@@ -28,6 +28,18 @@ export const usePagesStore = create((set) => ({
             has_child: false,
         },
         {
+            title: "Users List",
+            path: "/users",
+            icon: <Users2 />,
+            has_child: false,
+        },
+        {
+            title: "New User",
+            path: "/users/create",
+            icon: <UserPlus2 />,
+            has_child: false,
+        },
+        {
             title: "System Administation",
             path: "#",
             icon: "⚙️",
@@ -47,4 +59,6 @@ export const usePagesStore = create((set) => ({
         },
     ],
     setPages: (newPages) => set({ pages: newPages }), // Optional if you need to modify `pages`
+    breadcrumbs: [],
+    setBreadcrumbs: (newBreadcrumbs) => set({ breadcrumbs: newBreadcrumbs }), // Optional if you need to modify `pages`
 }));

@@ -93,10 +93,10 @@ export default function LoginForm() {
             onSubmit={handleSubmit(onSubmit)}
             className="fieldset w-full bg-base-200 border border-base-300 p-4 rounded-box"
         >
-            <legend className="fieldset-legend">INMERS Portal</legend>
+            <legend className="fieldset-legend">PedBC MBD Portal</legend>
             <div className="flex flex-col items-center justify-center mb-4">
                 <Image
-                    src="/inmers-logo.jpg"
+                    src="/pcmc_logo.png"
                     className="flex-none"
                     width={75}
                     height={75}
@@ -104,7 +104,8 @@ export default function LoginForm() {
                     alt="Logo"
                 />
                 <h2 className="text-center font-geist-sans font-semibold text-xl mt-2 leading-tight text-shadow-[_1px_1px_8px_#8b8eee]">
-                    Integrated National Medication Error Reporting System
+                    PCMC Pediatric Blood Center - Medical Blood Donation <br />
+                    Login
                 </h2>
             </div>
             <div>

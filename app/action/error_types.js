@@ -6,5 +6,5 @@ export const fetchErrorTypes = async () => {
         method: "GET",
         cache: "no-store",
     });
-    return response.json();
-}
+    return await response.json();
+};

@@ -3,7 +3,7 @@ import "@/globals.css";
 
 // import { Button } from "@components/ui/button";
 import Sidebar from "@components/layout/Sidebar";
-import Header from "@components/layout/Header";
+import Header from "@components/layout/HeaderNav";
 import WrapperHead from "@components/layout/WrapperHead";
 import Footer from "@components/layout/Footer";
 import { ThemeProvider } from "next-themes";

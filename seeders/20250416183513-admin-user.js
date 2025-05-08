@@ -1,24 +1,29 @@
+//npx sequelize-cli db:seed --seed 20250416183513-admin-user.js
+
 import { faker } from "@faker-js/faker";
 import bcrypt from "bcryptjs";
 
 /** @type {import('sequelize-cli').Seeder} */
 export async function up(queryInterface) {
-    const admins = [];
+    const users = [];
     const saltRounds = 10;
 
     for (let i = 0; i < 1; i++) {
         // Generate 50 admin records
         const firstName = faker.person.firstName();
-        const lastName = faker.person.lastName();
-        const email = faker.internet.email(firstName, lastName);
+        // const lastName = faker.person.lastName();
+        const email = faker.internet.email(firstName);
         // const password = faker.internet.password(12); // At least 12 characters
         const password = "password"; // At least 12 characters
         const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
-        admins.push({
+        users.push({
+            role_id: 2,
             first_name: firstName,
-            last_name: lastName,
-            gender: ["male", "female"][Math.floor(Math.random() * 2)],
+            // last_name: lastName,
+            // gender: ["male", "female", "unknown"][
+            //     Math.floor(Math.random() * 3)
+            // ],
             email,
             password: hashedPassword,
             createdAt: new Date(),
@@ -26,9 +31,9 @@ export async function up(queryInterface) {
         });
     }
 
-    await queryInterface.bulkInsert("admins", admins, {});
+    await queryInterface.bulkInsert("users", users, {});
 }
 
 export async function down(queryInterface) {
-    await queryInterface.bulkDelete("admins", null, {});
+    await queryInterface.bulkDelete("users", null, {});
 }
