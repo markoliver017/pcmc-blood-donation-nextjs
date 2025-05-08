@@ -16,7 +16,7 @@ const Breadcrumbs = () => {
         const pathSegments = pathname.split("/").filter(Boolean);
         const generatedBreadcrumbs = pathSegments.map((segment, index) => {
             const path = "/" + pathSegments.slice(0, index + 1).join("/");
-            const icon = pages.find((page) => path == page.path).icon || (
+            const icon = pages.find((page) => path == page.path)?.icon || (
                 <DashboardIcon />
             );
 

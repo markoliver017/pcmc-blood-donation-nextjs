@@ -1,4 +1,5 @@
 import { FileQuestion, UserPlus2, Users, Users2 } from "lucide-react";
+import { BiError } from "react-icons/bi";
 import { create } from "zustand";
 
 export const usePagesStore = create((set) => ({
@@ -37,6 +38,12 @@ export const usePagesStore = create((set) => ({
             title: "New User",
             path: "/users/create",
             icon: <UserPlus2 />,
+            has_child: false,
+        },
+        {
+            title: "Error page",
+            path: "/auth/error",
+            icon: <BiError />,
             has_child: false,
         },
         {

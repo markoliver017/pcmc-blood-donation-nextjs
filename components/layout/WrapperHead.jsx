@@ -9,6 +9,7 @@ export default function WrapperHead() {
     const pages = usePagesStore((state) => state.pages);
     const pathname = usePathname();
     const currentPage = pages.find((page) => pathname == page.path);
+
     const pageTitle = currentPage ? currentPage.title : "";
 
     return (
