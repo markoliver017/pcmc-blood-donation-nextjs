@@ -28,7 +28,7 @@ const Breadcrumbs = () => {
         });
 
         setBreadcrumbs(generatedBreadcrumbs); // Update breadcrumbs in the store
-    }, [pathname, setBreadcrumbs]);
+    }, [pathname, pages, setBreadcrumbs]);
 
     return (
         <nav className="breadcrumbs text-sm">

@@ -8,6 +8,34 @@ const nextConfig = {
                 hostname: "avatar.iran.liara.run",
                 pathname: "/**",
             },
+            {
+                protocol: "http",
+                hostname: "localhost",
+                port: "3000",
+                pathname: "/uploads/**",
+            },
+            {
+                protocol: "http",
+                hostname: "localhost",
+                port: "5000",
+                pathname: "/uploads/**",
+            },
+            {
+                protocol: "http",
+                hostname: "10.0.0.185",
+                port: "3000",
+                pathname: "/uploads/**",
+            },
+            {
+                protocol: "https",
+                hostname: "avatars.githubusercontent.com",
+                pathname: "/**",
+            },
+            {
+                protocol: "https",
+                hostname: "lh3.googleusercontent.com",
+                pathname: "/**",
+            },
         ],
     },
     experimental: {

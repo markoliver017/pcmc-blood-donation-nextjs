@@ -11,6 +11,9 @@ import { ToastContainer } from "react-toastify";
 import Preloader from "@components/layout/Preloader";
 import Providers from "../../components/layout/AuthProvider";
 import Header from "@components/layout/Header";
+import { auth } from "@lib/auth";
+import { User } from "@lib/models";
+import { getUser } from "@/action/userAction";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -31,6 +34,17 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
+    const session = await auth();
+    let currentUser = null;
+    console.log("layout sesssion", session);
+    if (session) {
+        const { user } = session;
+        const checkUser = await getUser(user.id);
+        if (checkUser.success) {
+            currentUser = checkUser.data;
+        }
+        console.log("layout checkUser", checkUser);
+    }
     return (
         <html lang="en" suppressHydrationWarning={true}>
             <head>
@@ -44,13 +58,13 @@ export default async function RootLayout({ children }) {
                     <Preloader />
                     <ThemeProvider>
                         <div className="flex dark:bg-black dark:text-slate-100">
-                            <Sidebar />
+                            <Sidebar currentUser={currentUser} />
                             <div
                                 id="main-container"
                                 className="flex flex-col flex-1 h-screen overflow-y-scroll"
                             >
                                 <Header />
-                                <HeaderNav />
+                                <HeaderNav currentUser={currentUser} />
                                 <WrapperHead />
                                 <main className="flex-1 p-4">{children}</main>
                                 <Footer />

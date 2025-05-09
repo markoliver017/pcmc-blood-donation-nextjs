@@ -4,7 +4,10 @@ import { NextResponse } from "next/server";
 export async function GET() {
     try {
         const roles = await Role.findAll();
-        return NextResponse.json(roles, { status: 200 });
+        return NextResponse.json(
+            { success: true, data: roles },
+            { status: 200 }
+        );
     } catch (error) {
         return NextResponse.json(
             {

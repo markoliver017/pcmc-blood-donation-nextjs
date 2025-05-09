@@ -10,13 +10,14 @@ import { usePagesStore } from "@/store/pagesStore";
 import { redirect, usePathname } from "next/navigation";
 
 const Sidebar = ({
-    admin = {
+    currentUser = {
         name: "Bonnie Green",
         email: "admin@email.com",
-        avatar: "https://avatar.iran.liara.run/public/boy",
+        image: "https://avatar.iran.liara.run/public/boy",
+        gender: "unknown",
     },
 }) => {
-    const { data: session, status } = useSession();
+    const { status } = useSession();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const menus = usePagesStore((state) => state.pages);
     const currentRoute = usePathname();
@@ -47,14 +48,12 @@ const Sidebar = ({
     if (status != "authenticated") {
         return;
     }
-
-    const { user } = session;
-    admin.name = user?.name;
-    admin.email = user?.email;
-    admin.avatar =
-        user?.avatar || user?.gender == "female"
+    console.log("currentUser?.image", currentUser?.image);
+    const currentUserAvatar =
+        currentUser?.image ||
+        (currentUser?.gender == "female"
             ? "https://avatar.iran.liara.run/public/girl"
-            : "https://avatar.iran.liara.run/public/boy";
+            : "https://avatar.iran.liara.run/public/boy");
 
     const handleToggleSidebar = () => {
         setIsCollapsed(!isCollapsed);
@@ -85,7 +84,7 @@ const Sidebar = ({
                 )}
             >
                 <Image
-                    src={admin.avatar}
+                    src={currentUserAvatar}
                     className="flex-none rounded-4xl"
                     width={50}
                     height={50}
@@ -94,9 +93,11 @@ const Sidebar = ({
                 />
                 {!isCollapsed && (
                     <div className="ml-2">
-                        <h5 className="text-lg font-bold ">{admin.name}</h5>
+                        <h5 className="text-lg font-bold ">
+                            {currentUser.name || "Juan Dela Cruz"}
+                        </h5>
                         <p className="text-blue-300 truncate w-full overflow-hidden whitespace-nowrap dark:text-slate-200">
-                            {admin.email}
+                            {currentUser.email}
                         </p>
                     </div>
                 )}

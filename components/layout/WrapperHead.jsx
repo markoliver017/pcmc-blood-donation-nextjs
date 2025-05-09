@@ -4,6 +4,7 @@ import { usePagesStore } from "@/store/pagesStore";
 import { usePathname } from "next/navigation";
 import Breadcrumbs from "./Breadcrumbs";
 import { DashboardIcon } from "@radix-ui/react-icons";
+import { HomeIcon } from "lucide-react";
 
 export default function WrapperHead() {
     const pages = usePagesStore((state) => state.pages);
@@ -18,8 +19,8 @@ export default function WrapperHead() {
                 className="text-3xl font-bold flex-items-center"
                 style={{ fontFamily: "var(--font-geist-sans)" }}
             >
-                {currentPage?.icon || <DashboardIcon />}
-                {pageTitle}
+                {currentPage?.icon || <HomeIcon />}
+                {pageTitle || "Home"}
             </h1>
             <Breadcrumbs />
         </div>

@@ -21,9 +21,8 @@ import {
 } from "@components/ui/card";
 import { Mail, Send, Text } from "lucide-react";
 
-import { toast } from "react-toastify";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BiError, BiMaleFemale } from "react-icons/bi";
+import { BiMaleFemale } from "react-icons/bi";
 import SweetAlert from "@components/ui/SweetAlert";
 import notify from "@components/ui/notify";
 import InlineLabel from "@components/form/InlineLabel";
@@ -42,6 +41,8 @@ import {
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
 import Image from "next/image";
+import { uploadPicture } from "@/action/uploads";
+import { redirect } from "next/navigation";
 
 export default function UserCreateForm({ fetchRoles }) {
     const { theme, resolvedTheme } = useTheme();
@@ -50,26 +51,26 @@ export default function UserCreateForm({ fetchRoles }) {
         success: false,
         message: "",
     });
-    const [roleOptions, setRoleOptions] = useState([]);
+    if (!roles.success) redirect("/users?error=userRoleNotFound");
 
-    useEffect(() => {
-        if (roles && !roles.error) {
-            setRoleOptions(
-                roles.map((type) => ({
-                    value: type.role_name,
-                    label: type.role_name,
-                    id: type.id,
-                }))
-            );
-            return;
-        }
-        notify({ error: true, message: roles.message }, "error");
-    }, [roles]);
+    const roleOptions = roles.data.map((type) => ({
+        value: type.role_name,
+        label: type.role_name,
+        id: type.id,
+    }));
 
     const form = useForm({
         mode: "onChange",
-        // resolver: zodResolver(userSchema),
-        defaultValues: {},
+        resolver: zodResolver(userSchema),
+        defaultValues: {
+            profile_picture: null, // or some default value
+            role_id: null,
+            email: "",
+            first_name: "",
+            middle_name: "",
+            last_name: "",
+            gender: "",
+        },
     });
 
     const {
@@ -80,6 +81,7 @@ export default function UserCreateForm({ fetchRoles }) {
         setError,
         setValue,
         reset,
+        resetField,
         formState: { errors, isDirty },
     } = form;
 
@@ -140,12 +142,21 @@ export default function UserCreateForm({ fetchRoles }) {
     const onSubmit = async (data) => {
         SweetAlert({
             title: "Confirmation",
-            text: "Create New User?.",
+            text: "Create New User?",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Confirm",
             cancelButtonText: "Cancel",
-            onConfirm: () => {
+
+            onConfirm: async () => {
+                if (data.profile_picture) {
+                    const result = await uploadPicture(data.profile_picture);
+                    if (result?.success) {
+                        data.image = result.file_data?.url || null;
+                    }
+                    console.log("Upload result:", result);
+                }
+                console.log(">>>>>>>>>>>>>>>>>>>", data);
                 startTransition(async () => {
                     formAction(data);
                 });
@@ -153,13 +164,15 @@ export default function UserCreateForm({ fetchRoles }) {
         });
     };
 
+    const uploaded_avatar = watch("profile_picture");
     const avatar =
-        !errors?.profile_picture && watch("profile_picture")
-            ? URL.createObjectURL(watch("profile_picture"))
+        !errors?.profile_picture && uploaded_avatar
+            ? URL.createObjectURL(uploaded_avatar)
             : "/default_avatar.png";
-    useEffect(() => {
-        console.log("watchall", avatar);
-    }, [avatar]);
+
+    // useEffect(() => {
+    //     console.log("watchall", avatar);
+    // }, [avatar]);
 
     return (
         <Card className="p-5 bg-gray-100">
@@ -213,6 +226,18 @@ export default function UserCreateForm({ fetchRoles }) {
                                             alt="Avatar"
                                             onClick={handleImageClick}
                                         />
+                                        {uploaded_avatar && (
+                                            <button
+                                                onClick={() =>
+                                                    resetField(
+                                                        "profile_picture"
+                                                    )
+                                                }
+                                                className="btn btn-ghost"
+                                            >
+                                                Clear
+                                            </button>
+                                        )}
                                         <FormMessage />
                                     </FormItem>
                                 );
@@ -312,6 +337,32 @@ export default function UserCreateForm({ fetchRoles }) {
                                         />
                                     </label>
                                     <FieldError field={errors?.first_name} />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="middle_name"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <InlineLabel>Middle Name: </InlineLabel>
+
+                                    <label
+                                        className={clsx(
+                                            "input w-full mt-1",
+                                            errors?.middle_name
+                                                ? "input-error"
+                                                : "input-info"
+                                        )}
+                                    >
+                                        <Text className="h-3" />
+                                        <input
+                                            type="text"
+                                            placeholder="Enter user middle name (optional)"
+                                            {...field}
+                                        />
+                                    </label>
+                                    <FieldError field={errors?.middle_name} />
                                 </FormItem>
                             )}
                         />
