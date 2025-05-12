@@ -1,7 +1,7 @@
+
+import { dehydrate, HydrationBoundary, QueryClient, useQuery } from "@tanstack/react-query";
 import { getUser } from "@/action/userAction";
-import { Suspense } from "react";
 import UserUpdateForm from "./UserUpdateForm";
-import UserLoading from "../UserLoading";
 
 const fetchRoles = async () => {
     const url = new URL(`/api/roles`, process.env.NEXT_PUBLIC_DOMAIN);
@@ -12,17 +12,20 @@ const fetchRoles = async () => {
     return await response.json();
 };
 
-export default async function Page({ params }) {
-    const { id } = await params;
+export default async function Page() {
+    const queryClient = new QueryClient();
+
+    await queryClient.prefetchQuery({
+        queryKey: ["roles"],
+        queryFn: fetchRoles,
+    });
+
 
     return (
-        <Suspense fallback={<UserLoading />}>
+        <HydrationBoundary state={dehydrate(queryClient)}>
             <div className="w-full h-full md:w-1/2 lg:w-3/4 mx-auto shadow-lg">
-                <UserUpdateForm
-                    fetchRoles={fetchRoles()}
-                    fetchUser={getUser(id)}
-                />
+                <UserUpdateForm />
             </div>
-        </Suspense>
+        </HydrationBoundary>
     );
 }

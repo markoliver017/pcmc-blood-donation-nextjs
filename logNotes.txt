@@ -1,0 +1,5 @@
+logSuccessToFile(
+            `Email sent to ${to} with subject "${subject}". Message ID: ${info.messageId}`,
+            "send-email"
+        );
+        logErrorToFile(error, "send-email");

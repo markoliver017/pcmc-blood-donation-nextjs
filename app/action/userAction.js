@@ -5,10 +5,32 @@ import { Role, sequelize, User } from "@lib/models";
 import { redirect } from "next/navigation";
 // import { formatPersonName } from "@lib/utils/string.utils";
 
-export async function createUser(state, formData) {
+export async function getUsers() {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+        const users = await User.findAll({
+            attributes: ["id", "name", "email"],
+            include: [
+                {
+                    model: Role,
+                    as: "role",
+                    attributes: ["role_name"]
+                }
+            ]
+        });
+        // if (users.length === 0) throw "No Users Found";
+
+        return JSON.parse(JSON.stringify(users));
+
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function createUser(formData) {
     await new Promise((resolve) => setTimeout(resolve, 500));
-    console.log("prev", state);
-    console.log("formData", formData);
+    console.log("formData received on server", formData);
     const parsed = userSchema.safeParse(formData);
 
     if (!parsed.success) {
@@ -33,7 +55,7 @@ export async function createUser(state, formData) {
         });
 
         if (existing) {
-            throw new Error("User already exists");
+            throw new Error("Email already exists");
         }
 
         const newUser = await User.create(data, { transaction });
@@ -45,11 +67,8 @@ export async function createUser(state, formData) {
         console.error("error?????", err);
         await transaction.rollback();
 
-        return {
-            success: false,
-            type: "server",
-            message: err.message || "Unknown error",
-        };
+        throw err.message || "Unknown error";
+
     }
 }
 
@@ -132,7 +151,7 @@ export async function getUser(id) {
 
         return { success: true, data: user.get({ plain: true }) };
     } catch (err) {
-        return {
+        throw {
             success: false,
             type: "server",
             message: err.message || "Unknown error",

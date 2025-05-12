@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { usePagesStore } from "@/store/pagesStore";
 import { DashboardIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
 
 const Breadcrumbs = () => {
     const pathname = usePathname(); // Get the current route
@@ -35,10 +36,10 @@ const Breadcrumbs = () => {
             <ul>
                 {breadcrumbs.map((breadcrumb, index) => (
                     <li key={index}>
-                        <a href={breadcrumb.path}>
+                        <Link href={breadcrumb.path}>
                             {breadcrumb.icon}
                             {breadcrumb.title}
-                        </a>
+                        </Link>
                     </li>
                 ))}
             </ul>

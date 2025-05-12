@@ -1,12 +1,10 @@
 "use client";
 import React, {
-    startTransition,
     use,
-    useActionState,
     useEffect,
     useRef,
-    useState,
 } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import dynamic from "next/dynamic";
 const CreatableSelectNoSSR = dynamic(() => import("react-select/creatable"), {
@@ -44,51 +42,23 @@ import Image from "next/image";
 import { uploadPicture } from "@/action/uploads";
 import { redirect } from "next/navigation";
 
+
 export default function UserCreateForm({ fetchRoles }) {
-    const { theme, resolvedTheme } = useTheme();
-    const roles = use(fetchRoles);
-    const [state, formAction, isLoading] = useActionState(createUser, {
-        success: false,
-        message: "",
-    });
-    if (!roles.success) redirect("/users?error=userRoleNotFound");
 
-    const roleOptions = roles.data.map((type) => ({
-        value: type.role_name,
-        label: type.role_name,
-        id: type.id,
-    }));
-
-    const form = useForm({
-        mode: "onChange",
-        resolver: zodResolver(userSchema),
-        defaultValues: {
-            profile_picture: null, // or some default value
-            role_id: null,
-            email: "",
-            first_name: "",
-            middle_name: "",
-            last_name: "",
-            gender: "",
+    const queryClient = useQueryClient();
+    const { data, mutate, error, isError, isPending } = useMutation({
+        mutationFn: async (formData) => {
+            const res = await createUser(formData);
+            if (!res.success) {
+                throw res; // Throw the error response to trigger onError
+            }
+            return res.data;
         },
-    });
-
-    const {
-        register,
-        watch,
-        control,
-        handleSubmit,
-        setError,
-        setValue,
-        reset,
-        resetField,
-        formState: { errors, isDirty },
-    } = form;
-
-    useEffect(() => {
-        console.log("Submitted: state", state);
-
-        if (state.success) {
+        onSuccess: () => {
+            /** note: the return data will be accessible in the debugger
+            *so no need to console the onSuccess(data) here **/
+            // Invalidate the posts query to refetch the updated list
+            queryClient.invalidateQueries({ queryKey: ["users"] });
             SweetAlert({
                 title: "Submission Successful",
                 text: "New user has been successfully created.",
@@ -96,13 +66,14 @@ export default function UserCreateForm({ fetchRoles }) {
                 confirmButtonText: "Done",
                 onConfirm: reset,
             });
-        }
+        },
+        onError: (error) => {
+            // Handle validation errors
+            if (error?.type === "validation" && error?.errorArr.length) {
 
-        if (!state.success) {
-            if (state?.type == "validation" && state?.errorArr) {
                 let detailContent = "";
-                const { errorArr: details, message } = state;
-                // If it's an array, show a list
+                const { errorArr: details, message } = error;
+
                 detailContent = (
                     <ul className="list-disc list-inside">
                         {details.map((err, index) => (
@@ -128,16 +99,60 @@ export default function UserCreateForm({ fetchRoles }) {
                         </div>
                     ),
                 });
-            }
 
-            if (state?.type == "server") {
+            } else {
+                // Handle server errors
                 notify({
                     error: true,
-                    message: state?.message,
+                    message: error?.message,
                 });
+
             }
-        }
-    }, [state]);
+        },
+    });
+
+    useEffect(() => {
+        console.log("useeffect error", error);
+        console.log("useeffect data", data);
+    }, [data, error])
+
+    const { theme, resolvedTheme } = useTheme();
+    const roles = use(fetchRoles);
+
+    if (!roles.success) redirect("/users?error=userRoleNotFound");
+
+    const roleOptions = roles.data.map((type) => ({
+        value: type.role_name,
+        label: type.role_name,
+        id: type.id,
+    }));
+
+    const form = useForm({
+        mode: "onChange",
+        // resolver: zodResolver(userSchema),
+        defaultValues: {
+            profile_picture: null, // or some default value
+            role_id: null,
+            email: "",
+            first_name: "",
+            middle_name: "",
+            last_name: "",
+            gender: "",
+        },
+    });
+
+    const {
+        register,
+        watch,
+        control,
+        handleSubmit,
+        setError,
+        setValue,
+        reset,
+        resetField,
+        formState: { errors, isDirty },
+    } = form;
+
 
     const onSubmit = async (data) => {
         SweetAlert({
@@ -156,10 +171,10 @@ export default function UserCreateForm({ fetchRoles }) {
                     }
                     console.log("Upload result:", result);
                 }
-                console.log(">>>>>>>>>>>>>>>>>>>", data);
-                startTransition(async () => {
-                    formAction(data);
-                });
+                // startTransition(async () => {
+                //     formAction(data);
+                // });
+                mutate(data);
             },
         });
     };
@@ -188,6 +203,7 @@ export default function UserCreateForm({ fetchRoles }) {
                         onSubmit={handleSubmit(onSubmit)}
                         className="space-y-2"
                     >
+                        {isError && <div className="alert alert-error text-gray-700">Error: {error.message}</div>}
                         <FormField
                             control={control}
                             name="profile_picture"
@@ -260,7 +276,7 @@ export default function UserCreateForm({ fetchRoles }) {
                                             <CreatableSelectNoSSR
                                                 name={name}
                                                 ref={ref}
-                                                placeholder="Type of medication error * (required)"
+                                                placeholder="Role * (required)"
                                                 value={selectedOption}
                                                 onChange={(selectedOption) => {
                                                     setValue(
@@ -428,10 +444,10 @@ export default function UserCreateForm({ fetchRoles }) {
 
                         <div className="flex justify-end">
                             <button
-                                disabled={!isDirty}
+                                disabled={!isDirty || isPending}
                                 className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300"
                             >
-                                {isLoading ? (
+                                {isPending ? (
                                     <>
                                         <span className="loading loading-bars loading-xs"></span>
                                         Submitting ...

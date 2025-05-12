@@ -11,23 +11,25 @@ export async function up(queryInterface) {
     for (let i = 0; i < 1; i++) {
         // Generate 50 admin records
         const firstName = faker.person.firstName();
-        // const lastName = faker.person.lastName();
+        const lastName = faker.person.lastName();
         const email = faker.internet.email(firstName);
         // const password = faker.internet.password(12); // At least 12 characters
         const password = "password"; // At least 12 characters
         const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
         users.push({
+            id: faker.string.uuid(),
             role_id: 2,
+            name: firstName + " " + lastName,
             first_name: firstName,
-            // last_name: lastName,
-            // gender: ["male", "female", "unknown"][
-            //     Math.floor(Math.random() * 3)
-            // ],
+            last_name: lastName,
+            gender: ["male", "female", "unknown"][
+                Math.floor(Math.random() * 3)
+            ],
             email,
             password: hashedPassword,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            // createdAt: new Date(),
+            // updatedAt: new Date(),
         });
     }
 

@@ -7,6 +7,7 @@ import React, {
     useRef,
     useState,
 } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import dynamic from "next/dynamic";
 const CreatableSelectNoSSR = dynamic(() => import("react-select/creatable"), {
@@ -30,7 +31,7 @@ import InlineLabel from "@components/form/InlineLabel";
 import { useTheme } from "next-themes";
 import { getSingleStyle } from "@/styles/select-styles";
 import { userSchema } from "@lib/zod/userSchema";
-import { updateUser } from "@/action/userAction";
+import { getUser, updateUser } from "@/action/userAction";
 import FieldError from "@components/form/FieldError";
 import clsx from "clsx";
 import {
@@ -45,23 +46,114 @@ import Image from "next/image";
 import { uploadPicture } from "@/action/uploads";
 import { GrUpdate } from "react-icons/gr";
 import Toggle from "@components/reusable_components/Toggle";
+import UserLoading from "../UserLoading";
+import { redirect, useParams } from "next/navigation";
 
-export default function UserUpdateForm({ fetchRoles, fetchUser }) {
+const fetchRoles = async () => {
+    const url = new URL(`/api/roles`, process.env.NEXT_PUBLIC_DOMAIN);
+    const response = await fetch(url, {
+        method: "GET",
+        cache: "no-store",
+    });
+    return await response.json();
+};
+
+export default function UserUpdateForm() {
+    const params = useParams();
+    const id = params.id;
+    const queryClient = useQueryClient();
+    const rolesQuery = useQuery({
+        queryKey: ["roles"],
+        queryFn: fetchRoles
+    });
+
+    const userQuery = useQuery({
+        queryKey: ["user"],
+        queryFn: async () => {
+            const res = await getUser();
+            if (!res.success) {
+                throw res; // Throw the error response to trigger onError
+            }
+            return res.data;
+        }
+    });
+    const { data: user } = userQuery;
+    const { data: roles } = rolesQuery;
+
+    const { mutate, error, isError, isPending } = useMutation({
+        mutationFn: async (formData) => {
+            const res = await createUser(formData);
+            if (!res.success) {
+                throw res; // Throw the error response to trigger onError
+            }
+            return res.data;
+        },
+        onSuccess: (data) => {
+            console.log("Success: New Data:", data)
+            // Invalidate the posts query to refetch the updated list
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+            SweetAlert({
+                title: "Submission Successful",
+                text: "New user has been successfully created.",
+                icon: "success",
+                confirmButtonText: "Done",
+                onConfirm: reset,
+            });
+        },
+        onError: (error) => {
+            // Handle validation errors
+            if (error?.type === "validation" && error?.errorArr.length) {
+                let detailContent = "";
+                const { errorArr: details, message } = error;
+
+                detailContent = (
+                    <ul className="list-disc list-inside">
+                        {details.map((err, index) => (
+                            <li key={index}>{err}</li>
+                        ))}
+                    </ul>
+                );
+                notify({
+                    error: true,
+                    message: (
+                        <div tabIndex={0} className="collapse">
+                            <input type="checkbox" />
+                            <div className="collapse-title font-semibold">
+                                {message}
+                                <br />
+                                <small className="link link-warning">
+                                    See details
+                                </small>
+                            </div>
+                            <div className="collapse-content text-sm">
+                                {detailContent}
+                            </div>
+                        </div>
+                    ),
+                });
+            } else {
+                // Handle server errors
+                notify({
+                    error: true,
+                    message: error?.message,
+                });
+
+            }
+        },
+    });
     const { theme, resolvedTheme } = useTheme();
-    const roles = use(fetchRoles);
-    const user = use(fetchUser);
 
     const [state, formAction, isLoading] = useActionState(updateUser, {
         success: false,
         message: "",
     });
+    console.log("userQuery", userQuery)
+    if (rolesQuery.isLoading || userQuery.isLoading) return <UserLoading />;
+    if (userQuery.isError) return <div className="alert alert-error text-gray-700">Error: {userQuery.error.message}</div>
+    if (rolesQuery.isError) return <div className="alert alert-error text-gray-700">Error: {rolesQuery.error.message}</div>
 
-    if (!roles.success) redirect("/users?error=userRoleNotFound");
-    if (!user.success) redirect("/users?error=userNotFound");
     const userData = user.data;
-    useEffect(() => {
-        console.log("currentUser:", userData);
-    }, []);
+    return <div>Update Form</div>;
 
     const roleOptions = roles.data.map((type) => ({
         value: type.role_name,
