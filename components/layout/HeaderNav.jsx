@@ -12,6 +12,7 @@ import {
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
 import {
+    Building,
     Command,
     Database,
     Eye,
@@ -81,6 +82,15 @@ const HeaderNav = ({
                                 >
                                     <Users2 className="h-4" />
                                     Users
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/agencies"
+                                    className="p-3 hover:ring rounded-xl flex-items-center shadow-[-11px_4px_6px_0px_rgba(0,_0,_0,_0.1)]"
+                                >
+                                    <Building className="h-4" />
+                                    Agencies
                                 </Link>
                             </li>
                         </ul>

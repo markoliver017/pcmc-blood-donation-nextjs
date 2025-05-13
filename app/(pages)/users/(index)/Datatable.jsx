@@ -183,17 +183,17 @@ export function DataTable({ columns, data, isLoading }) {
                                             "selectedOptions",
                                             selectedOptions
                                         );
-                                        // console.log(
-                                        //     `table.getColumn("role_name")`,
-                                        //     table.getColumn("role_name")
-                                        // );
+                                        console.log(
+                                            `table.getColumn("role")`,
+                                            table.getColumn("role_role_name")
+                                        );
                                         table
-                                            .getColumn("role")
+                                            .getColumn("role_role_name")
                                             ?.setFilterValue(selectedOptions);
                                     }}
                                     value={
                                         table
-                                            .getColumn("role")
+                                            .getColumn("role_role_name")
                                             ?.getFilterValue() ?? []
                                     }
                                     placeholder={
@@ -224,6 +224,14 @@ export function DataTable({ columns, data, isLoading }) {
                                         },
                                     ]}
                                     onValueChange={(selectedOptions) => {
+                                        console.log(
+                                            "selectedOptions",
+                                            selectedOptions
+                                        );
+                                        console.log(
+                                            `table.getColumn("gender")`,
+                                            table.getColumn("gender")
+                                        );
                                         table
                                             .getColumn("gender")
                                             ?.setFilterValue(selectedOptions);
@@ -262,10 +270,10 @@ export function DataTable({ columns, data, isLoading }) {
                                                 {header.isPlaceholder
                                                     ? null
                                                     : flexRender(
-                                                          header.column
-                                                              .columnDef.header,
-                                                          header.getContext()
-                                                      )}
+                                                        header.column
+                                                            .columnDef.header,
+                                                        header.getContext()
+                                                    )}
                                             </TableHead>
                                         ))}
                                     </TableRow>

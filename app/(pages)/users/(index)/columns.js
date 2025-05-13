@@ -62,8 +62,7 @@ export const columns = [
         filterFn: "columnFilter",
     },
     {
-        id: "role",
-        accessorKey: "role.name",
+        accessorKey: "role.role_name",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Role" />
         ),
