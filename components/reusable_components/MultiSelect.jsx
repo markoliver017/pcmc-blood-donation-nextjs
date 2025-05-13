@@ -197,11 +197,12 @@ const MultiSelect = forwardRef(
                                         </Badge>
                                     )}
                                 </div>
-                                <div className="flex items-center justify-between">
+                                <div className="flex items-center justify-between z-50">
                                     <XIcon
                                         className="h-4 mx-2 cursor-pointer text-muted-foreground"
                                         onClick={(event) => {
                                             event.stopPropagation();
+                                            console.log("XIcon clicked");
                                             handleClear();
                                         }}
                                     />

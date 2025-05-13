@@ -6,22 +6,21 @@ import { redirect } from "next/navigation";
 // import { formatPersonName } from "@lib/utils/string.utils";
 
 export async function getUsers() {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
     try {
         const users = await User.findAll({
-            attributes: ["id", "name", "email"],
+            attributes: { exclude: ["password", "email_verified"] },
             include: [
                 {
                     model: Role,
                     as: "role",
-                    attributes: ["role_name"]
-                }
-            ]
+                    attributes: ["role_name"],
+                },
+            ],
         });
         // if (users.length === 0) throw "No Users Found";
 
         return JSON.parse(JSON.stringify(users));
-
     } catch (error) {
         console.error(error);
         throw error;
@@ -68,13 +67,11 @@ export async function createUser(formData) {
         await transaction.rollback();
 
         throw err.message || "Unknown error";
-
     }
 }
 
-export async function updateUser(state, formData) {
+export async function updateUser(formData) {
     await new Promise((resolve) => setTimeout(resolve, 500));
-    console.log("prev", state);
     console.log("formData", formData);
     const parsed = userSchema.safeParse(formData);
 

@@ -1,9 +1,5 @@
 "use client";
-import React, {
-    use,
-    useEffect,
-    useRef,
-} from "react";
+import React, { use, useEffect, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import dynamic from "next/dynamic";
@@ -41,10 +37,9 @@ import { Input } from "@components/ui/input";
 import Image from "next/image";
 import { uploadPicture } from "@/action/uploads";
 import { redirect } from "next/navigation";
-
+import Link from "next/link";
 
 export default function UserCreateForm({ fetchRoles }) {
-
     const queryClient = useQueryClient();
     const { data, mutate, error, isError, isPending } = useMutation({
         mutationFn: async (formData) => {
@@ -56,7 +51,7 @@ export default function UserCreateForm({ fetchRoles }) {
         },
         onSuccess: () => {
             /** note: the return data will be accessible in the debugger
-            *so no need to console the onSuccess(data) here **/
+             *so no need to console the onSuccess(data) here **/
             // Invalidate the posts query to refetch the updated list
             queryClient.invalidateQueries({ queryKey: ["users"] });
             SweetAlert({
@@ -70,7 +65,6 @@ export default function UserCreateForm({ fetchRoles }) {
         onError: (error) => {
             // Handle validation errors
             if (error?.type === "validation" && error?.errorArr.length) {
-
                 let detailContent = "";
                 const { errorArr: details, message } = error;
 
@@ -99,14 +93,12 @@ export default function UserCreateForm({ fetchRoles }) {
                         </div>
                     ),
                 });
-
             } else {
                 // Handle server errors
                 notify({
                     error: true,
                     message: error?.message,
                 });
-
             }
         },
     });
@@ -114,7 +106,7 @@ export default function UserCreateForm({ fetchRoles }) {
     useEffect(() => {
         console.log("useeffect error", error);
         console.log("useeffect data", data);
-    }, [data, error])
+    }, [data, error]);
 
     const { theme, resolvedTheme } = useTheme();
     const roles = use(fetchRoles);
@@ -152,7 +144,6 @@ export default function UserCreateForm({ fetchRoles }) {
         resetField,
         formState: { errors, isDirty },
     } = form;
-
 
     const onSubmit = async (data) => {
         SweetAlert({
@@ -193,8 +184,11 @@ export default function UserCreateForm({ fetchRoles }) {
         <Card className="p-5 bg-gray-100">
             <CardHeader className="text-2xl font-bold">
                 <CardTitle>Create New User</CardTitle>
-                <CardDescription className="text-justify pt-1">
-                    Create User details.
+                <CardDescription className="flex justify-between">
+                    <div>Create User details.</div>
+                    <Link href="/users" className="btn btn-link">
+                        Back
+                    </Link>
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -203,7 +197,11 @@ export default function UserCreateForm({ fetchRoles }) {
                         onSubmit={handleSubmit(onSubmit)}
                         className="space-y-2"
                     >
-                        {isError && <div className="alert alert-error text-gray-700">Error: {error.message}</div>}
+                        {isError && (
+                            <div className="alert alert-error text-gray-700">
+                                Error: {error.message}
+                            </div>
+                        )}
                         <FormField
                             control={control}
                             name="profile_picture"
@@ -431,9 +429,6 @@ export default function UserCreateForm({ fetchRoles }) {
                                             <option value="male">Male</option>
                                             <option value="female">
                                                 Female
-                                            </option>
-                                            <option value="unknown">
-                                                Unknown
                                             </option>
                                         </select>
                                     </label>

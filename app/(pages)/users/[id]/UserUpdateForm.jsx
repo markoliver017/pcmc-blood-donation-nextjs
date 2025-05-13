@@ -48,6 +48,7 @@ import { GrUpdate } from "react-icons/gr";
 import Toggle from "@components/reusable_components/Toggle";
 import UserLoading from "../UserLoading";
 import { redirect, useParams } from "next/navigation";
+import Link from "next/link";
 
 const fetchRoles = async () => {
     const url = new URL(`/api/roles`, process.env.NEXT_PUBLIC_DOMAIN);
@@ -61,43 +62,46 @@ const fetchRoles = async () => {
 export default function UserUpdateForm() {
     const params = useParams();
     const id = params.id;
+
+    const fileInputRef = useRef(null);
+
     const queryClient = useQueryClient();
     const rolesQuery = useQuery({
         queryKey: ["roles"],
-        queryFn: fetchRoles
+        queryFn: fetchRoles,
     });
 
     const userQuery = useQuery({
-        queryKey: ["user"],
+        queryKey: ["user", id],
         queryFn: async () => {
-            const res = await getUser();
+            const res = await getUser(id);
             if (!res.success) {
                 throw res; // Throw the error response to trigger onError
             }
             return res.data;
-        }
+        },
     });
-    const { data: user } = userQuery;
+
+    const { data: userData } = userQuery;
     const { data: roles } = rolesQuery;
 
-    const { mutate, error, isError, isPending } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: async (formData) => {
-            const res = await createUser(formData);
+            const res = await updateUser(formData);
             if (!res.success) {
                 throw res; // Throw the error response to trigger onError
             }
             return res.data;
         },
         onSuccess: (data) => {
-            console.log("Success: New Data:", data)
+            console.log("Success: Updated Data:", data);
             // Invalidate the posts query to refetch the updated list
             queryClient.invalidateQueries({ queryKey: ["users"] });
             SweetAlert({
-                title: "Submission Successful",
-                text: "New user has been successfully created.",
+                title: "User Updated",
+                text: "The user information has been updated successfully .",
                 icon: "success",
                 confirmButtonText: "Done",
-                onConfirm: reset,
             });
         },
         onError: (error) => {
@@ -137,41 +141,23 @@ export default function UserUpdateForm() {
                     error: true,
                     message: error?.message,
                 });
-
             }
         },
     });
     const { theme, resolvedTheme } = useTheme();
 
-    const [state, formAction, isLoading] = useActionState(updateUser, {
-        success: false,
-        message: "",
-    });
-    console.log("userQuery", userQuery)
-    if (rolesQuery.isLoading || userQuery.isLoading) return <UserLoading />;
-    if (userQuery.isError) return <div className="alert alert-error text-gray-700">Error: {userQuery.error.message}</div>
-    if (rolesQuery.isError) return <div className="alert alert-error text-gray-700">Error: {rolesQuery.error.message}</div>
-
-    const userData = user.data;
-    return <div>Update Form</div>;
-
-    const roleOptions = roles.data.map((type) => ({
-        value: type.role_name,
-        label: type.role_name,
-        id: type.id,
-    }));
-
     const form = useForm({
         mode: "onChange",
         // resolver: zodResolver(userSchema),
         defaultValues: {
-            profile_picture: null, // or some default value
-            role_id: userData.role.id || null,
-            email: userData.email || "",
-            first_name: userData.first_name || "",
-            middle_name: userData.middle_name || "",
-            last_name: userData.last_name || "",
-            gender: userData.gender || null,
+            profile_picture: null,
+            role_id: null,
+            email: "",
+            first_name: "",
+            middle_name: "",
+            last_name: "",
+            gender: "",
+            is_active: false,
         },
     });
 
@@ -188,57 +174,39 @@ export default function UserUpdateForm() {
     } = form;
 
     useEffect(() => {
-        console.log("current", state);
-
-        if (state.success) {
-            SweetAlert({
-                title: "User Updated",
-                text: "The user information has been updated successfully .",
-                icon: "success",
-                confirmButtonText: "Done",
+        if (userData && roles) {
+            reset({
+                profile_picture: null,
+                role_id: userData?.role.id || null,
+                email: userData?.email || "",
+                first_name: userData?.first_name || "",
+                middle_name: userData?.middle_name || "",
+                last_name: userData?.last_name || "",
+                gender: userData?.gender || "",
+                is_active: userData?.is_active || false,
             });
         }
+    }, [userData, roles, reset]);
 
-        if (!state.success) {
-            if (state?.type == "validation" && state?.errorArr) {
-                let detailContent = "";
-                const { errorArr: details, message } = state;
-                // If it's an array, show a list
-                detailContent = (
-                    <ul className="list-disc list-inside">
-                        {details.map((err, index) => (
-                            <li key={index}>{err}</li>
-                        ))}
-                    </ul>
-                );
-                notify({
-                    error: true,
-                    message: (
-                        <div tabIndex={0} className="collapse">
-                            <input type="checkbox" />
-                            <div className="collapse-title font-semibold">
-                                {message}
-                                <br />
-                                <small className="link link-warning">
-                                    See details
-                                </small>
-                            </div>
-                            <div className="collapse-content text-sm">
-                                {detailContent}
-                            </div>
-                        </div>
-                    ),
-                });
-            }
+    if (rolesQuery.isLoading || userQuery.isLoading) return <UserLoading />;
+    if (userQuery.isError)
+        return (
+            <div className="alert alert-error text-gray-700">
+                Error: {userQuery.error.message}
+            </div>
+        );
+    if (rolesQuery.isError)
+        return (
+            <div className="alert alert-error text-gray-700">
+                Error: {rolesQuery.error.message}
+            </div>
+        );
 
-            if (state?.type == "server") {
-                notify({
-                    error: true,
-                    message: state?.message,
-                });
-            }
-        }
-    }, [state]);
+    const roleOptions = roles.data.map((type) => ({
+        value: type.role_name,
+        label: type.role_name,
+        id: type.id,
+    }));
 
     const onSubmit = async (formData) => {
         SweetAlert({
@@ -262,9 +230,7 @@ export default function UserUpdateForm() {
 
                 formData.id = userData.id;
                 console.log("submitted formData>>>>>>>", formData);
-                startTransition(async () => {
-                    formAction(formData);
-                });
+                mutate(formData);
             },
         });
     };
@@ -277,16 +243,15 @@ export default function UserUpdateForm() {
     }
     /* end */
 
-    useEffect(() => {
-        console.log("watchall", watch());
-    }, [watch("is_active")]);
-
     return (
         <Card className="p-5 bg-gray-100">
             <CardHeader className="text-2xl font-bold">
                 <CardTitle>Update User</CardTitle>
-                <CardDescription className="text-justify pt-1">
-                    Update User details.
+                <CardDescription className="flex justify-between">
+                    <div>Update User details.</div>
+                    <Link href="/users" className="btn btn-link">
+                        Back
+                    </Link>
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -301,12 +266,12 @@ export default function UserUpdateForm() {
                             render={({
                                 field: { onChange, value, ...field },
                             }) => {
-                                const fileInputRef = useRef(null);
                                 const handleImageClick = () => {
                                     if (fileInputRef.current) {
                                         fileInputRef.current.click(); // Trigger the file input click
                                     }
                                 };
+
                                 return (
                                     <FormItem className="text-center">
                                         <div className="hidden">
@@ -532,9 +497,6 @@ export default function UserUpdateForm() {
                                             <option value="female">
                                                 Female
                                             </option>
-                                            <option value="unknown">
-                                                Unknown
-                                            </option>
                                         </select>
                                     </label>
                                     <FieldError field={errors?.gender} />
@@ -547,7 +509,7 @@ export default function UserUpdateForm() {
                                 disabled={!isDirty}
                                 className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300"
                             >
-                                {isLoading ? (
+                                {isPending ? (
                                     <>
                                         <span className="loading loading-bars loading-xs"></span>
                                         Submitting ...
