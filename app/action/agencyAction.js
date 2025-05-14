@@ -74,12 +74,54 @@ export async function createAgency(formData) {
         if (existing) {
             throw new Error("Agency Email already exists");
         }
-        data.head_id = "e768c245-4ae2-4089-ad67-d50a1b1d88e4";
+        data.head_id = "1f88e54b-74b5-4ba4-8235-c4cccaa4f7c4";
         const newAgency = await Agency.create(data, { transaction });
 
         await transaction.commit();
 
         return { success: true, data: newAgency.get({ plain: true }) };
+    } catch (err) {
+        console.error("error?????", err);
+        await transaction.rollback();
+
+        throw err.message || "Unknown error";
+    }
+}
+
+export async function updateAgency(formData) {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    console.log("formData received on server", formData);
+    const parsed = agencySchema.safeParse(formData);
+
+    if (!parsed.success) {
+        const fieldErrors = parsed.error.flatten().fieldErrors;
+        return {
+            success: false,
+            type: "validation",
+            message: "Please check your input and try again.",
+            errorObj: parsed.error.flatten().fieldErrors,
+            errorArr: Object.values(fieldErrors).flat(),
+        };
+    }
+
+    const { data } = parsed;
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        const agency = await Agency.findByPk(data.id, {
+            transaction,
+        });
+
+        if (!agency) {
+            throw new Error("Database Error: Agency ID Not found");
+        }
+
+        const updatedAgency = await agency.update(data, { transaction });
+
+        await transaction.commit();
+
+        return { success: true, data: updatedAgency.get({ plain: true }) };
     } catch (err) {
         console.error("error?????", err);
         await transaction.rollback();

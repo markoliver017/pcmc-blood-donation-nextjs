@@ -1,5 +1,5 @@
 "use client";
-import { createAgency, fetchAgency } from "@/action/agencyAction";
+import { createAgency, fetchAgency, updateAgency } from "@/action/agencyAction";
 import {
     fetchBarangays,
     fetchCitiesMunicipalities,
@@ -7,7 +7,7 @@ import {
 } from "@/action/locationAction";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import dynamic from "next/dynamic";
 const CreatableSelectNoSSR = dynamic(() => import("react-select/creatable"), {
@@ -44,9 +44,12 @@ import FieldError from "@components/form/FieldError";
 import Link from "next/link";
 import { formatFormalName } from "@lib/utils/string.utils";
 import { agencySchema } from "@lib/zod/agencySchema";
+import { useRouter } from "next/navigation";
+
 
 export default function AgencyUpdateForm({ agency_id }) {
     const { resolvedTheme } = useTheme();
+    const router = useRouter()
     const queryClient = useQueryClient();
 
     const { data: agency, isFetching } = useQuery({
@@ -68,8 +71,42 @@ export default function AgencyUpdateForm({ agency_id }) {
         cacheTime: 10 * 60 * 1000,
     });
 
-    console.log("initial data", agency?.province);
-    console.log(city_provinces.find((loc) => loc.name == agency?.province));
+    const existingSelectedProvince = city_provinces.find((loc) => loc.name == agency?.province);
+    const [selectedProvince, setSelectedProvince] = useState(existingSelectedProvince);
+
+    const {
+        data: cities_municipalities,
+        status: cities_status,
+        isFetching: cities_isFetching,
+    } = useQuery({
+        queryKey: ["cities_municipalities", selectedProvince],
+        queryFn: async () =>
+            fetchCitiesMunicipalities(selectedProvince),
+        staleTime: 5 * 60 * 1000,
+        cacheTime: 10 * 60 * 1000,
+        enabled: !!selectedProvince
+    });
+
+    const [selectedCityMunicipality, setSelectedCityMunicipality] = useState(null);
+
+    useEffect(() => {
+        if (cities_municipalities) {
+            const existingSelectedCityMunicipality = cities_municipalities.find((loc) => loc.name == agency?.city_municipality);
+            setSelectedCityMunicipality(existingSelectedCityMunicipality);
+        }
+    }, [cities_municipalities, agency?.city_municipality]);
+
+    const {
+        data: barangays,
+        status: brgy_status,
+        isFetching: brgy_isFetching,
+    } = useQuery({
+        queryKey: ["barangays", selectedCityMunicipality],
+        queryFn: async () => fetchBarangays(selectedCityMunicipality),
+        staleTime: 5 * 60 * 1000,
+        cacheTime: 10 * 60 * 1000,
+        enabled: !!selectedCityMunicipality
+    });
 
     const {
         // data: newAgencyData,
@@ -77,17 +114,15 @@ export default function AgencyUpdateForm({ agency_id }) {
         isPending,
     } = useMutation({
         mutationFn: async (formData) => {
-            const res = await createAgency(formData);
+            const res = await updateAgency(formData);
             if (!res.success) {
                 throw res; // Throw the error response to trigger onError
             }
             return res.data;
         },
         onSuccess: () => {
-            /** note: the return data will be accessible in the debugger
-             *so no need to console the onSuccess(data) here **/
-            // Invalidate the posts query to refetch the updated list
-            queryClient.invalidateQueries({ queryKey: ["users"] });
+            queryClient.invalidateQueries({ queryKey: ["agency"] });
+            router.push("/agencies")
             SweetAlert({
                 title: "Submission Successful",
                 text: "New agency has been successfully created.",
@@ -98,12 +133,6 @@ export default function AgencyUpdateForm({ agency_id }) {
         },
         onError: (error) => {
             // Handle validation errors
-
-            // SweetAlert({
-            //     title: "New Agency Creation",
-            //     text: error.message,
-            //     icon: "warning",
-            // });
 
             if (error?.type === "validation" && error?.errorArr.length) {
                 let detailContent = "";
@@ -143,11 +172,11 @@ export default function AgencyUpdateForm({ agency_id }) {
             }
         },
     });
-
+    console.log("agencyisFetching", isFetching)
     if (status != "success") {
         redirect("/agencies?error=locationApiError");
     }
-    console.log("agency isFetching", isFetching);
+
     const form = useForm({
         mode: "onChange",
         resolver: zodResolver(agencySchema),
@@ -163,12 +192,6 @@ export default function AgencyUpdateForm({ agency_id }) {
             province: agency?.province || "",
             comments: agency?.comments || "",
             organization_type: agency?.organization_type || "",
-            selected_province_option: {
-                code: "130000000",
-                name: "Metro Manila",
-                is_ncr: true,
-            },
-            selected_city_municipality_option: null,
             file: null,
             file_url: agency?.file_url,
         },
@@ -186,7 +209,9 @@ export default function AgencyUpdateForm({ agency_id }) {
         formState: { errors, isDirty },
     } = form;
 
+
     const onSubmit = async (data) => {
+
         SweetAlert({
             title: "Confirmation",
             text: "Update Agency?",
@@ -212,6 +237,8 @@ export default function AgencyUpdateForm({ agency_id }) {
         });
     };
 
+    console.log("RHF errors", errors)
+
     const uploaded_avatar = watch("file");
     const avatar =
         !errors?.file && uploaded_avatar
@@ -221,61 +248,26 @@ export default function AgencyUpdateForm({ agency_id }) {
         setValue("file_url", agency?.file_url || null);
     }, [uploaded_avatar]);
 
-    const selected_province_option = watch("selected_province_option");
-    const {
-        data: cities_municipalities,
-        status: cities_status,
-        isFetching: cities_isFetching,
-    } = useQuery({
-        queryKey: ["cities_municipalities", selected_province_option],
-        queryFn: async () =>
-            fetchCitiesMunicipalities(selected_province_option),
-        enabled: !!selected_province_option,
-        staleTime: 5 * 60 * 1000,
-        cacheTime: 10 * 60 * 1000,
-    });
+    // useEffect(() => {
+    //     console.log("watchall", watch());
+    //     console.log("selectedCityMunicipality", selectedCityMunicipality);
+    // }, [watch()]);
 
-    const selected_city_municipality_option = watch(
-        "selected_city_municipality_option"
-    );
-    const {
-        data: barangays,
-        status: brgy_status,
-        isFetching: brgy_isFetching,
-    } = useQuery({
-        queryKey: ["barangays", selected_city_municipality_option],
-        queryFn: async () => fetchBarangays(selected_city_municipality_option),
-        enabled: !!selected_city_municipality_option,
-        staleTime: 5 * 60 * 1000,
-        cacheTime: 10 * 60 * 1000,
-    });
-
+    const province = watch('province');
+    const city_municipality = watch('city_municipality')
+    const barangay = watch('barangay')
     useEffect(() => {
-        console.log("watchall", watch());
-    }, [watch()]);
-
+        if (!cities_municipalities || !province) return;
+        if (!cities_municipalities.find((data) => data.name == city_municipality)) {
+            setValue("city_municipality", "");
+        }
+    }, [cities_municipalities, province]);
     useEffect(() => {
-        if (!cities_municipalities) return;
-        const selectedArea = watch("city_municipality");
-        const cityMunicipalityOptions = cities_municipalities.map((cm) => ({
-            label: cm.name,
-            value: cm.name,
-            code: cm.code,
-        }));
-
-        setValue(
-            "selected_city_municipality_option",
-            cityMunicipalityOptions.find(
-                (option) => option.value == selectedArea
-            ) || null
-        );
-    }, [cities_municipalities]);
-
-    useEffect(() => {
-        if (!selected_province_option) return;
-        resetField("city_municipality");
-        setValue("selected_city_municipality_option", null);
-    }, [selected_province_option]);
+        if (!barangays || !city_municipality) return;
+        if (!barangays.find((data) => data.name == barangay)) {
+            setValue("barangay", "");
+        }
+    }, [barangays, city_municipality]);
 
     return (
         <Card className="p-5 bg-gray-100">
@@ -324,14 +316,18 @@ export default function AgencyUpdateForm({ agency_id }) {
                                                 />
                                             </FormControl>
                                         </div>
-                                        <Image
-                                            src={avatar}
-                                            className="rounded-4xl mx-auto shadow-2xl"
-                                            width={250}
-                                            height={250}
-                                            alt="Avatar"
+                                        <div
+                                            style={{ width: '250px', height: '250px', position: 'relative' }}
+                                            className="rounded-4xl mx-auto shadow-2xl overflow-hidden"
                                             onClick={handleImageClick}
-                                        />
+                                        >
+                                            <Image
+                                                src={avatar}
+                                                alt="Avatar"
+                                                fill
+                                                style={{ objectFit: 'cover' }}
+                                            />
+                                        </div>
                                         {uploaded_avatar && (
                                             <button
                                                 onClick={() =>
@@ -510,10 +506,8 @@ export default function AgencyUpdateForm({ agency_id }) {
                                                 placeholder="Area "
                                                 value={selectedOption}
                                                 onChange={(selectedOption) => {
-                                                    setValue(
-                                                        "selected_province_option",
-                                                        selectedOption
-                                                    );
+
+                                                    setSelectedProvince(selectedOption)
 
                                                     onChange(
                                                         selectedOption
@@ -579,10 +573,7 @@ export default function AgencyUpdateForm({ agency_id }) {
                                                     onChange={(
                                                         selectedOption
                                                     ) => {
-                                                        setValue(
-                                                            "selected_city_municipality_option",
-                                                            selectedOption
-                                                        );
+                                                        setSelectedCityMunicipality(selectedOption);
 
                                                         onChange(
                                                             selectedOption
@@ -791,6 +782,7 @@ export default function AgencyUpdateForm({ agency_id }) {
 
                         <div className="flex justify-end">
                             <button
+                                type="submit"
                                 disabled={!isDirty || isPending}
                                 className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300"
                             >
