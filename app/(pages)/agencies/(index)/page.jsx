@@ -1,14 +1,17 @@
-
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import {
+    dehydrate,
+    HydrationBoundary,
+    QueryClient,
+} from "@tanstack/react-query";
 import AgencyList from "./AgencyList";
-import { fetchluzonDemographics } from "@/action/agencyAction";
+import { fetchAgencies } from "@/action/agencyAction";
 
 export default async function AgenciesPage() {
     const queryClient = new QueryClient();
 
     await queryClient.prefetchQuery({
-        queryKey: ["luzonDemographics"],
-        queryFn: fetchluzonDemographics,
+        queryKey: ["agencies"],
+        queryFn: fetchAgencies,
     });
 
     return (
@@ -17,6 +20,5 @@ export default async function AgenciesPage() {
                 <AgencyList />
             </div>
         </HydrationBoundary>
-    )
+    );
 }
-

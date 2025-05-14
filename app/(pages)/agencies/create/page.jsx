@@ -1,7 +1,10 @@
+import {
+    dehydrate,
+    HydrationBoundary,
+    QueryClient,
+} from "@tanstack/react-query";
 
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
-
-import { fetchluzonDemographics } from "@/action/agencyAction";
+import { fetchluzonDemographics } from "@/action/locationAction";
 import CreateForm from "./CreateForm";
 
 export default async function AgenciesPage() {
@@ -18,6 +21,5 @@ export default async function AgenciesPage() {
                 <CreateForm />
             </div>
         </HydrationBoundary>
-    )
+    );
 }
-

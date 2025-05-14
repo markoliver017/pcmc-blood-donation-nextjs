@@ -155,10 +155,12 @@ export default function UserCreateForm({ fetchRoles }) {
             cancelButtonText: "Cancel",
 
             onConfirm: async () => {
-                if (data.profile_picture) {
+                const fileUrl = watch("image");
+                if (data?.profile_picture && !fileUrl) {
                     const result = await uploadPicture(data.profile_picture);
                     if (result?.success) {
                         data.image = result.file_data?.url || null;
+                        setValue("image", result.file_data?.url);
                     }
                     console.log("Upload result:", result);
                 }
@@ -175,10 +177,13 @@ export default function UserCreateForm({ fetchRoles }) {
         !errors?.profile_picture && uploaded_avatar
             ? URL.createObjectURL(uploaded_avatar)
             : "/default_avatar.png";
+    useEffect(() => {
+        setValue("image", null);
+    }, [uploaded_avatar]);
 
-    // useEffect(() => {
-    //     console.log("watchall", avatar);
-    // }, [avatar]);
+    useEffect(() => {
+        console.log("watchall", avatar);
+    }, [avatar]);
 
     return (
         <Card className="p-5 bg-gray-100">

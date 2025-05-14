@@ -183,10 +183,25 @@ export default function UserUpdateForm() {
                 middle_name: userData?.middle_name || "",
                 last_name: userData?.last_name || "",
                 gender: userData?.gender || "",
+                image: userData?.image || null,
                 is_active: userData?.is_active || false,
             });
         }
     }, [userData, roles, reset]);
+
+    /* For profile picture data logic */
+    const uploaded_avatar = watch("profile_picture");
+    let avatar = userData?.image || "/default_avatar.png";
+    if (!errors?.profile_picture && uploaded_avatar) {
+        avatar = URL.createObjectURL(uploaded_avatar);
+    }
+    useEffect(() => {
+        setValue("image", userData?.image || null);
+    }, [uploaded_avatar]);
+    useEffect(() => {
+        console.log("watch()>>>", watch());
+    }, [watch()]);
+    /* end */
 
     if (rolesQuery.isLoading || userQuery.isLoading) return <UserLoading />;
     if (userQuery.isError)
@@ -218,12 +233,18 @@ export default function UserUpdateForm() {
             cancelButtonText: "Cancel",
 
             onConfirm: async () => {
-                if (formData.profile_picture) {
+                const fileUrl = watch("image");
+
+                if (
+                    formData.profile_picture &&
+                    (fileUrl == userData?.image || !fileUrl)
+                ) {
                     const result = await uploadPicture(
                         formData.profile_picture
                     );
                     if (result?.success) {
                         formData.image = result.file_data?.url || null;
+                        setValue("image", result.file_data?.url);
                     }
                     console.log("Upload result:", result);
                 }
@@ -234,14 +255,6 @@ export default function UserUpdateForm() {
             },
         });
     };
-
-    /* For profile picture data logic */
-    const uploaded_avatar = watch("profile_picture");
-    let avatar = userData?.image || "/default_avatar.png";
-    if (!errors?.profile_picture && uploaded_avatar) {
-        avatar = URL.createObjectURL(uploaded_avatar);
-    }
-    /* end */
 
     return (
         <Card className="p-5 bg-gray-100">
