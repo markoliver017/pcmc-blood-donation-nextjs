@@ -44,6 +44,7 @@ import FieldError from "@components/form/FieldError";
 import Link from "next/link";
 import { formatFormalName } from "@lib/utils/string.utils";
 import { agencySchema } from "@lib/zod/agencySchema";
+import CustomAvatar from "@components/reusable_components/CustomAvatar";
 
 export default function CreateForm() {
     const { resolvedTheme } = useTheme();
@@ -286,13 +287,10 @@ export default function CreateForm() {
                                                 />
                                             </FormControl>
                                         </div>
-                                        <Image
-                                            src={avatar}
-                                            className="rounded-4xl mx-auto shadow-2xl"
-                                            width={250}
-                                            height={250}
-                                            alt="Avatar"
-                                            onClick={handleImageClick}
+                                        <CustomAvatar
+                                            avatar={avatar}
+                                            whenClick={handleImageClick}
+                                            className="w-[250px] h-[250px]"
                                         />
                                         {uploaded_avatar && (
                                             <button

@@ -49,6 +49,7 @@ import Toggle from "@components/reusable_components/Toggle";
 import UserLoading from "../UserLoading";
 import { redirect, useParams } from "next/navigation";
 import Link from "next/link";
+import CustomAvatar from "@components/reusable_components/CustomAvatar";
 
 const fetchRoles = async () => {
     const url = new URL(`/api/roles`, process.env.NEXT_PUBLIC_DOMAIN);
@@ -303,13 +304,10 @@ export default function UserUpdateForm() {
                                                 />
                                             </FormControl>
                                         </div>
-                                        <Image
-                                            src={avatar}
-                                            className="rounded-4xl mx-auto shadow-2xl"
-                                            width={250}
-                                            height={250}
-                                            alt="Avatar"
-                                            onClick={handleImageClick}
+                                        <CustomAvatar
+                                            avatar={avatar}
+                                            whenClick={handleImageClick}
+                                            className="w-[250px] h-[250px]"
                                         />
                                         {uploaded_avatar && (
                                             <button
@@ -332,7 +330,7 @@ export default function UserUpdateForm() {
                             control={form.control}
                             name="is_active"
                             render={({ field: { value, onChange } }) => (
-                                <FormItem className="mt-5">
+                                <FormItem className="mt-5 flex flex-col items-center font-semibold md:justify-end">
                                     <Toggle value={value} onChange={onChange} />
                                 </FormItem>
                             )}

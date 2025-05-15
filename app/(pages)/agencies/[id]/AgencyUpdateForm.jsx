@@ -60,6 +60,7 @@ import { useRouter } from "next/navigation";
 import RejectDialog from "./RejectDialog";
 import { toastError } from "@lib/utils/toastError.utils";
 import VerifyAgency from "./VerifyAgency";
+import CustomAvatar from "@components/reusable_components/CustomAvatar";
 
 export default function AgencyUpdateForm({ agency_id }) {
     const { resolvedTheme } = useTheme();
@@ -311,22 +312,13 @@ export default function AgencyUpdateForm({ agency_id }) {
                                                 />
                                             </FormControl>
                                         </div>
-                                        <div
-                                            style={{
-                                                width: "250px",
-                                                height: "250px",
-                                                position: "relative",
-                                            }}
-                                            className="rounded-4xl mx-auto shadow-2xl overflow-hidden"
-                                            onClick={handleImageClick}
-                                        >
-                                            <Image
-                                                src={avatar}
-                                                alt="Avatar"
-                                                fill
-                                                style={{ objectFit: "cover" }}
-                                            />
-                                        </div>
+
+                                        <CustomAvatar
+                                            avatar={avatar}
+                                            whenClick={handleImageClick}
+                                            className="w-[250px] h-[250px]"
+                                        />
+
                                         {uploaded_avatar && (
                                             <button
                                                 onClick={() =>
@@ -767,13 +759,13 @@ export default function AgencyUpdateForm({ agency_id }) {
                     <VerifyAgency
                         agencyData={{ id: agency.id, status: "deactivated" }}
                         label="Deactivate"
-                        className="btn-warning"
+                        className="btn btn-warning"
                         icon={<CheckIcon />}
                     />
                     <VerifyAgency
                         agencyData={{ id: agency.id, status: "activated" }}
                         label="Activate"
-                        className="btn-success"
+                        className="btn btn-success"
                         icon={<CheckIcon />}
                     />
                 </div>

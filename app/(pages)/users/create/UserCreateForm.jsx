@@ -38,6 +38,7 @@ import Image from "next/image";
 import { uploadPicture } from "@/action/uploads";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import CustomAvatar from "@components/reusable_components/CustomAvatar";
 
 export default function UserCreateForm({ fetchRoles }) {
     const queryClient = useQueryClient();
@@ -237,13 +238,10 @@ export default function UserCreateForm({ fetchRoles }) {
                                                 />
                                             </FormControl>
                                         </div>
-                                        <Image
-                                            src={avatar}
-                                            className="rounded-4xl mx-auto shadow-2xl"
-                                            width={250}
-                                            height={250}
-                                            alt="Avatar"
-                                            onClick={handleImageClick}
+                                        <CustomAvatar
+                                            avatar={avatar}
+                                            whenClick={handleImageClick}
+                                            className="w-[250px] h-[250px]"
                                         />
                                         {uploaded_avatar && (
                                             <button

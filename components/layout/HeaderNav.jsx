@@ -27,6 +27,7 @@ import SweetAlert from "@components/ui/SweetAlert";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import { GiHamburgerMenu } from "react-icons/gi";
+import CustomAvatar from "@components/reusable_components/CustomAvatar";
 
 const HeaderNav = ({ currentUser }) => {
     let isLoggedIn = false;
@@ -128,15 +129,14 @@ const HeaderNav = ({ currentUser }) => {
                     ) : (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                <Button variant="ghost" className="h-12 w-12 p-0">
                                     <span className="sr-only">Open menu</span>
-                                    <Image
-                                        src={currentUser?.image}
-                                        className="flex-none rounded-4xl"
-                                        width={50}
-                                        height={50}
-                                        alt="Logo"
+
+                                    <CustomAvatar
+                                        avatar={currentUser?.image || '/default_avatar.png'}
+                                        className="w-8 h-8"
                                     />
+
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">

@@ -11,8 +11,11 @@ import {
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
-import { Command, Eye, MoreHorizontal } from "lucide-react";
+import { CheckIcon, Command, Eye, FileWarning, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
+import CustomAvatar from "@components/reusable_components/CustomAvatar";
+import VerifyAgency from "../[id]/VerifyAgency";
+import RejectDialog from "../[id]/RejectDialog";
 export const columns = [
     {
         id: "actions",
@@ -37,12 +40,35 @@ export const columns = [
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
 
-                        <Link href={`/agencies/${data.id}`}>
-                            <DropdownMenuItem className="flex items-center space-x-2">
+                        <DropdownMenuItem className="flex items-center justify-center space-x-2">
+                            <Link className="btn btn-block" href={`/agencies/${data.id}`}>
                                 <Eye className="w-4 h-4" />
                                 <span>Show</span>
-                            </DropdownMenuItem>
-                        </Link>
+                            </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="space-x-2 flex justify-between">
+                            <VerifyAgency
+                                agencyData={{ id: data.id, status: "activated" }}
+                                label="Activate"
+                                className="btn btn-block"
+                                formClassName="w-full"
+                                icon={<CheckIcon />}
+                            />
+                        </DropdownMenuItem>
+                        {/* <DropdownMenuItem className="space-x-2 flex justify-between"> */}
+                        <div className="px-2 flex justify-between">
+                            <RejectDialog agencyId={data.id} className="w-full" />
+                        </div>
+                        {/* </DropdownMenuItem> */}
+                        <DropdownMenuItem className="space-x-2">
+                            <VerifyAgency
+                                agencyData={{ id: data.id, status: "deactivated" }}
+                                label="Deactivate"
+                                className="btn btn-block"
+                                formClassName="w-full"
+                                icon={<FileWarning />}
+                            />
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             );
@@ -73,12 +99,9 @@ export const columns = [
         cell: ({ row }) => {
             const data = row.original;
             return (
-                <Image
-                    src={data.file_url || "/default_company_avatar.png"}
-                    className="flex-none rounded-4xl"
-                    width={50}
-                    height={50}
-                    alt="Logo"
+                <CustomAvatar
+                    avatar={data.file_url || "/default_company_avatar.png"}
+                    className="w-16 h-16"
                 />
             );
         },

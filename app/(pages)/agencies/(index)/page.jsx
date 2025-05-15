@@ -16,7 +16,7 @@ export default async function AgenciesPage() {
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <div className="w-full h-full md:w-3/4 mx-auto shadow-lg space-y-3">
+            <div className="w-full h-full md:px-10 mx-auto shadow-lg space-y-3">
                 <AgencyList />
             </div>
         </HydrationBoundary>

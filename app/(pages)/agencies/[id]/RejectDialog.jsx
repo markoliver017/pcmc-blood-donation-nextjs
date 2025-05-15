@@ -25,7 +25,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ToastContainer } from "react-toastify";
 
-export default function RejectDialog({ agencyId }) {
+export default function RejectDialog({ agencyId, className = "btn-error" }) {
     const [open, setOpen] = useState(false);
     const queryClient = useQueryClient();
 
@@ -92,7 +92,7 @@ export default function RejectDialog({ agencyId }) {
             }}
             modal={true} // enables modal behavior (trap focus, prevent close on escape by default)
         >
-            <DialogTrigger className="btn btn-error">
+            <DialogTrigger className={`btn ${className}`}>
                 <XIcon /> Reject
             </DialogTrigger>
             <DialogContentNoX>

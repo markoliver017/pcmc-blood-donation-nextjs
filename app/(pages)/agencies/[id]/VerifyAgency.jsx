@@ -15,6 +15,7 @@ export default function VerifyAgency({
     icon = <Save />,
     label = "Save",
     className = "btn-neutral",
+    formClassName = ""
 }) {
     const queryClient = useQueryClient();
 
@@ -55,17 +56,26 @@ export default function VerifyAgency({
     const { handleSubmit, reset } = form;
 
     const onSubmit = async (data) => {
-        mutate(data);
+        SweetAlert({
+            title: "Confirm your action?",
+            text: "Are you sure you want to proceed?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonText: "Proceed",
+            onConfirm: () => {
+                mutate(data);
+            },
+        });
     };
 
     return (
         <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form className={`${formClassName}`} onSubmit={handleSubmit(onSubmit)}>
                 <button
                     type="submit"
                     disabled={isPending}
                     className={clsx(
-                        "btn hover:bg-neutral-800 hover:text-green-300",
+                        "hover:bg-neutral-800 hover:text-green-300",
                         className
                     )}
                 >
