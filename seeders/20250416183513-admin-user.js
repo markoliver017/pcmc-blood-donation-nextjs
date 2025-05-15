@@ -23,9 +23,7 @@ export async function up(queryInterface) {
             name: firstName + " " + lastName,
             first_name: firstName,
             last_name: lastName,
-            gender: ["male", "female", "unknown"][
-                Math.floor(Math.random() * 3)
-            ],
+            gender: ["male", "female"][Math.floor(Math.random() * 3)],
             email,
             password: hashedPassword,
             // createdAt: new Date(),

@@ -229,9 +229,9 @@ export default function CreateForm() {
         cacheTime: 10 * 60 * 1000,
     });
 
-    useEffect(() => {
-        console.log("watchall", watch());
-    }, [watch()]);
+    // useEffect(() => {
+    //     console.log("watchall", watch());
+    // }, [watch()]);
 
     useEffect(() => {
         if (!selected_province_option) return;

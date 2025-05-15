@@ -3,7 +3,7 @@
 export async function uploadPicture(file) {
     const formData = new FormData();
     formData.append("file", file);
-    const res = await fetch("http://localhost:5000/api/uploads", {
+    const res = await fetch("http://10.0.0.185:5000/api/uploads", {
         method: "POST",
         body: formData,
     });

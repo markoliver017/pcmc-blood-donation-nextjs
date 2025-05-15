@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-
+// #7F181C
 const Header = () => {
     return (
         <>
@@ -18,7 +18,7 @@ const Header = () => {
                         alt="Integrated National Medication Reporting System"
                         title="Integrated National Medication Reporting System"
                     />
-                    <h1 className="text-2xl font-bold text-shadow-lg/30 italic">
+                    <h1 className="text-2xl  font-bold text-shadow-lg/30 italic">
                         PCMC Pediatric Blood Center - Medical Blood Donation
                         Portal
                     </h1>

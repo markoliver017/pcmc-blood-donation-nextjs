@@ -9,23 +9,16 @@ import clsx from "clsx";
 import { usePagesStore } from "@/store/pagesStore";
 import { redirect, usePathname } from "next/navigation";
 
-const Sidebar = ({
-    currentUser = {
-        name: "Bonnie Green",
-        email: "admin@email.com",
-        image: "https://avatar.iran.liara.run/public/boy",
-        gender: "unknown",
-    },
-}) => {
-    const { status } = useSession();
+const Sidebar = ({ currentUser }) => {
+    const { status, data } = useSession();
+
+    if (status == "authenticated") {
+        currentUser = data.user;
+    }
     const [isCollapsed, setIsCollapsed] = useState(false);
     const menus = usePagesStore((state) => state.pages);
     const currentRoute = usePathname();
     const isAdminRoute = currentRoute.startsWith("/admin");
-
-    // console.log("sidebar currentRoute", currentRoute)
-    // console.log("sidebar session", session)
-    // console.log("sidebar status", status)
 
     useEffect(() => {
         const handleResize = () => {
@@ -44,11 +37,10 @@ const Sidebar = ({
     if (isAdminRoute && status == "unauthenticated") {
         redirect("/");
     }
-
     if (status != "authenticated") {
         return;
     }
-    console.log("currentUser?.image", currentUser?.image);
+
     const currentUserAvatar =
         currentUser?.image ||
         (currentUser?.gender == "female"
@@ -63,7 +55,7 @@ const Sidebar = ({
         <motion.aside
             initial={{ width: "290px" }}
             animate={{ width: isCollapsed ? "70px" : "290px" }}
-            className="w-64 flex-none h-screen bg-gray-800 text-white px-4 pt-5 shadow-xl"
+            className="w-64 flex-none h-screen bg-gradient-to-r from-gray-700 to-gray-800 text-white px-4 pt-5 shadow-xl"
         >
             <div className="flex justify-end">
                 <button

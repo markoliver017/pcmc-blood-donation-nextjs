@@ -38,13 +38,13 @@ export default function LoginForm() {
     // console.log("form errors", errors);
 
     const onSubmit = async (data) => {
-        setIsLoading(true);
+        setIsLoading((prev) => ({ ...prev, credentials: true }));
         const { email, password } = data;
         const res = await signIn("credentials", {
             email,
             password,
             redirect: false,
-            callbackUrl: "/admin", // redirect after login
+            // callbackUrl: "/users", // redirect after login
         });
 
         setIsLoading(false);
@@ -107,7 +107,8 @@ export default function LoginForm() {
                         alt="Logo"
                     />
                     <h2 className="text-center font-geist-sans font-semibold text-xl mt-2 leading-tight text-shadow-[_1px_1px_8px_#8b8eee]">
-                        PCMC Pediatric Blood Center - Medical Blood Donation <br />
+                        PCMC Pediatric Blood Center - Medical Blood Donation{" "}
+                        <br />
                         Login
                     </h2>
                 </div>
@@ -130,7 +131,7 @@ export default function LoginForm() {
                                 },
                             })}
                             placeholder="mail@site.com"
-                        // required
+                            // required
                         />
                     </label>
                     <p className="text-red-500 text-sm">
@@ -160,7 +161,9 @@ export default function LoginForm() {
                         />
                     </label>
                     <p className="text-red-500 text-sm">
-                        {errors.password && <span>{errors.password?.message}</span>}
+                        {errors.password && (
+                            <span>{errors.password?.message}</span>
+                        )}
                     </p>
                 </div>
 
@@ -200,7 +203,7 @@ export default function LoginForm() {
             <button
                 onClick={() => {
                     signIn("google", {
-                        callbackUrl: "/"
+                        callbackUrl: "/",
                     });
                     setIsLoading((prev) => ({ ...prev, google: true }));
                 }}

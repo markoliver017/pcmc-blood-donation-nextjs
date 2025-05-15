@@ -36,16 +36,13 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
     const session = await auth();
-    let currentUser = null;
-    console.log("layout sesssion", session);
-    if (session) {
-        const { user } = session;
-        const checkUser = await getUser(user.id);
-        if (checkUser.success) {
-            currentUser = checkUser.data;
-        }
-        console.log("layout checkUser", checkUser);
-    }
+    let currentUser = {
+        name: "Bonnie Green",
+        email: "admin@email.com",
+        image: "https://avatar.iran.liara.run/public/boy",
+        gender: "unknown",
+    };
+    console.log(session);
     return (
         <html lang="en" suppressHydrationWarning={true}>
             <head>
@@ -68,7 +65,9 @@ export default async function RootLayout({ children }) {
                                 <HeaderNav currentUser={currentUser} />
                                 <WrapperHead />
                                 <TansactProviders>
-                                    <main className="flex-1 p-4">{children}</main>
+                                    <main className="flex-1 p-4">
+                                        {children}
+                                    </main>
                                 </TansactProviders>
                                 <Footer />
                             </div>

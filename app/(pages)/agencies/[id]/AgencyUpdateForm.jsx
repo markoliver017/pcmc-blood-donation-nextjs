@@ -1,5 +1,9 @@
 "use client";
-import { createAgency, fetchAgency, updateAgency } from "@/action/agencyAction";
+import {
+    fetchAgency,
+    updateAgency,
+    updateAgencyStatus,
+} from "@/action/agencyAction";
 import {
     fetchBarangays,
     fetchCitiesMunicipalities,
@@ -23,7 +27,15 @@ import {
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
-import { Building, Building2Icon, Mail, Phone, Send, Text } from "lucide-react";
+import {
+    Building,
+    Building2Icon,
+    CheckIcon,
+    Mail,
+    Phone,
+    Send,
+    Text,
+} from "lucide-react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -45,11 +57,13 @@ import Link from "next/link";
 import { formatFormalName } from "@lib/utils/string.utils";
 import { agencySchema } from "@lib/zod/agencySchema";
 import { useRouter } from "next/navigation";
-
+import RejectDialog from "./RejectDialog";
+import { toastError } from "@lib/utils/toastError.utils";
+import VerifyAgency from "./VerifyAgency";
 
 export default function AgencyUpdateForm({ agency_id }) {
     const { resolvedTheme } = useTheme();
-    const router = useRouter()
+    const router = useRouter();
     const queryClient = useQueryClient();
 
     const { data: agency, isFetching } = useQuery({
@@ -71,8 +85,12 @@ export default function AgencyUpdateForm({ agency_id }) {
         cacheTime: 10 * 60 * 1000,
     });
 
-    const existingSelectedProvince = city_provinces.find((loc) => loc.name == agency?.province);
-    const [selectedProvince, setSelectedProvince] = useState(existingSelectedProvince);
+    const existingSelectedProvince = city_provinces.find(
+        (loc) => loc.name == agency?.province
+    );
+    const [selectedProvince, setSelectedProvince] = useState(
+        existingSelectedProvince
+    );
 
     const {
         data: cities_municipalities,
@@ -80,18 +98,20 @@ export default function AgencyUpdateForm({ agency_id }) {
         isFetching: cities_isFetching,
     } = useQuery({
         queryKey: ["cities_municipalities", selectedProvince],
-        queryFn: async () =>
-            fetchCitiesMunicipalities(selectedProvince),
+        queryFn: async () => fetchCitiesMunicipalities(selectedProvince),
         staleTime: 5 * 60 * 1000,
         cacheTime: 10 * 60 * 1000,
-        enabled: !!selectedProvince
+        enabled: !!selectedProvince,
     });
 
-    const [selectedCityMunicipality, setSelectedCityMunicipality] = useState(null);
+    const [selectedCityMunicipality, setSelectedCityMunicipality] =
+        useState(null);
 
     useEffect(() => {
         if (cities_municipalities) {
-            const existingSelectedCityMunicipality = cities_municipalities.find((loc) => loc.name == agency?.city_municipality);
+            const existingSelectedCityMunicipality = cities_municipalities.find(
+                (loc) => loc.name == agency?.city_municipality
+            );
             setSelectedCityMunicipality(existingSelectedCityMunicipality);
         }
     }, [cities_municipalities, agency?.city_municipality]);
@@ -105,7 +125,7 @@ export default function AgencyUpdateForm({ agency_id }) {
         queryFn: async () => fetchBarangays(selectedCityMunicipality),
         staleTime: 5 * 60 * 1000,
         cacheTime: 10 * 60 * 1000,
-        enabled: !!selectedCityMunicipality
+        enabled: !!selectedCityMunicipality,
     });
 
     const {
@@ -122,7 +142,7 @@ export default function AgencyUpdateForm({ agency_id }) {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["agency"] });
-            router.push("/agencies")
+            router.push("/agencies");
             SweetAlert({
                 title: "Submission Successful",
                 text: "New agency has been successfully created.",
@@ -135,34 +155,7 @@ export default function AgencyUpdateForm({ agency_id }) {
             // Handle validation errors
 
             if (error?.type === "validation" && error?.errorArr.length) {
-                let detailContent = "";
-                const { errorArr: details, message } = error;
-
-                detailContent = (
-                    <ul className="list-disc list-inside">
-                        {details.map((err, index) => (
-                            <li key={index}>{err}</li>
-                        ))}
-                    </ul>
-                );
-                notify({
-                    error: true,
-                    message: (
-                        <div tabIndex={0} className="collapse">
-                            <input type="checkbox" />
-                            <div className="collapse-title font-semibold">
-                                {message}
-                                <br />
-                                <small className="link link-warning">
-                                    See details
-                                </small>
-                            </div>
-                            <div className="collapse-content text-sm">
-                                {detailContent}
-                            </div>
-                        </div>
-                    ),
-                });
+                toastError(error);
             } else {
                 // Handle server errors
                 notify({
@@ -172,14 +165,14 @@ export default function AgencyUpdateForm({ agency_id }) {
             }
         },
     });
-    console.log("agencyisFetching", isFetching)
+
     if (status != "success") {
         redirect("/agencies?error=locationApiError");
     }
 
     const form = useForm({
         mode: "onChange",
-        resolver: zodResolver(agencySchema),
+        // resolver: zodResolver(agencySchema),
         defaultValues: {
             id: agency?.id || null,
             head_id: agency?.head_id || null,
@@ -209,9 +202,7 @@ export default function AgencyUpdateForm({ agency_id }) {
         formState: { errors, isDirty },
     } = form;
 
-
     const onSubmit = async (data) => {
-
         SweetAlert({
             title: "Confirmation",
             text: "Update Agency?",
@@ -222,13 +213,13 @@ export default function AgencyUpdateForm({ agency_id }) {
 
             onConfirm: async () => {
                 const fileUrl = watch("file_url");
-                if (
-                    data.profile_picture &&
-                    (fileUrl == agency?.file_url || !fileUrl)
-                ) {
+                console.log("fileUrl", fileUrl);
+                console.log("data.profile_picture", data.file);
+                if (data.file && (fileUrl == agency?.file_url || !fileUrl)) {
                     const result = await uploadPicture(data.file);
                     if (result?.success) {
                         data.file_url = result.file_data?.url || null;
+                        setValue("file_url", data.file_url);
                     }
                     console.log("Upload resulttt:", result);
                 }
@@ -237,7 +228,7 @@ export default function AgencyUpdateForm({ agency_id }) {
         });
     };
 
-    console.log("RHF errors", errors)
+    // console.log("RHF errors", errors);
 
     const uploaded_avatar = watch("file");
     const avatar =
@@ -250,15 +241,19 @@ export default function AgencyUpdateForm({ agency_id }) {
 
     // useEffect(() => {
     //     console.log("watchall", watch());
-    //     console.log("selectedCityMunicipality", selectedCityMunicipality);
+    //     // console.log("selectedCityMunicipality", selectedCityMunicipality);
     // }, [watch()]);
 
-    const province = watch('province');
-    const city_municipality = watch('city_municipality')
-    const barangay = watch('barangay')
+    const province = watch("province");
+    const city_municipality = watch("city_municipality");
+    const barangay = watch("barangay");
     useEffect(() => {
         if (!cities_municipalities || !province) return;
-        if (!cities_municipalities.find((data) => data.name == city_municipality)) {
+        if (
+            !cities_municipalities.find(
+                (data) => data.name == city_municipality
+            )
+        ) {
             setValue("city_municipality", "");
         }
     }, [cities_municipalities, province]);
@@ -317,7 +312,11 @@ export default function AgencyUpdateForm({ agency_id }) {
                                             </FormControl>
                                         </div>
                                         <div
-                                            style={{ width: '250px', height: '250px', position: 'relative' }}
+                                            style={{
+                                                width: "250px",
+                                                height: "250px",
+                                                position: "relative",
+                                            }}
                                             className="rounded-4xl mx-auto shadow-2xl overflow-hidden"
                                             onClick={handleImageClick}
                                         >
@@ -325,7 +324,7 @@ export default function AgencyUpdateForm({ agency_id }) {
                                                 src={avatar}
                                                 alt="Avatar"
                                                 fill
-                                                style={{ objectFit: 'cover' }}
+                                                style={{ objectFit: "cover" }}
                                             />
                                         </div>
                                         {uploaded_avatar && (
@@ -343,6 +342,20 @@ export default function AgencyUpdateForm({ agency_id }) {
                                 );
                             }}
                         />
+                        <button
+                            type="button"
+                            onClick={async () => {
+                                const res = await updateAgencyStatus({
+                                    id: agency.id,
+                                    verified_by: agency.head_id,
+                                    status: "rejected",
+                                });
+                                console.log("Response", res);
+                            }}
+                            className="btn btn-ghost"
+                        >
+                            Verify
+                        </button>
                         <FormField
                             control={form.control}
                             name="name"
@@ -506,8 +519,9 @@ export default function AgencyUpdateForm({ agency_id }) {
                                                 placeholder="Area "
                                                 value={selectedOption}
                                                 onChange={(selectedOption) => {
-
-                                                    setSelectedProvince(selectedOption)
+                                                    setSelectedProvince(
+                                                        selectedOption
+                                                    );
 
                                                     onChange(
                                                         selectedOption
@@ -573,7 +587,9 @@ export default function AgencyUpdateForm({ agency_id }) {
                                                     onChange={(
                                                         selectedOption
                                                     ) => {
-                                                        setSelectedCityMunicipality(selectedOption);
+                                                        setSelectedCityMunicipality(
+                                                            selectedOption
+                                                        );
 
                                                         onChange(
                                                             selectedOption
@@ -724,61 +740,6 @@ export default function AgencyUpdateForm({ agency_id }) {
                                 </FormItem>
                             )}
                         />
-                        {/*
-                        <FormField
-                            control={form.control}
-                            name="middle_name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <InlineLabel>Middle Name: </InlineLabel>
-
-                                    <label
-                                        className={clsx(
-                                            "input w-full mt-1",
-                                            errors?.middle_name
-                                                ? "input-error"
-                                                : "input-info"
-                                        )}
-                                    >
-                                        <Text className="h-3" />
-                                        <input
-                                            type="text"
-                                            placeholder="Enter user middle name (optional)"
-                                            {...field}
-                                        />
-                                    </label>
-                                    <FieldError field={errors?.middle_name} />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="last_name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <InlineLabel>Last Name: *</InlineLabel>
-
-                                    <label
-                                        className={clsx(
-                                            "input w-full mt-1",
-                                            errors?.last_name
-                                                ? "input-error"
-                                                : "input-info"
-                                        )}
-                                    >
-                                        <Text className="h-3" />
-                                        <input
-                                            type="text"
-                                            placeholder="Enter user last name"
-                                            {...field}
-                                        />
-                                    </label>
-                                    <FieldError field={errors?.last_name} />
-                                </FormItem>
-                            )}
-                        />
-
-                        */}
 
                         <div className="flex justify-end">
                             <button
@@ -801,6 +762,21 @@ export default function AgencyUpdateForm({ agency_id }) {
                         </div>
                     </form>
                 </Form>
+                <div className="mt-5 flex justify-end gap-3">
+                    <RejectDialog agencyId={agency.id} />
+                    <VerifyAgency
+                        agencyData={{ id: agency.id, status: "deactivated" }}
+                        label="Deactivate"
+                        className="btn-warning"
+                        icon={<CheckIcon />}
+                    />
+                    <VerifyAgency
+                        agencyData={{ id: agency.id, status: "activated" }}
+                        label="Activate"
+                        className="btn-success"
+                        icon={<CheckIcon />}
+                    />
+                </div>
             </CardContent>
         </Card>
     );
