@@ -4,9 +4,7 @@ import {
     QueryClient,
     useQuery,
 } from "@tanstack/react-query";
-import UserUpdateForm from "./edit/UserUpdateForm";
-import { getUser } from "@/action/userAction";
-import ShowUser from "./ShowUser";
+import UserUpdateForm from "./UserUpdateForm";
 
 const fetchRoles = async () => {
     const url = new URL(`/api/roles`, process.env.NEXT_PUBLIC_DOMAIN);
@@ -17,16 +15,15 @@ const fetchRoles = async () => {
     return await response.json();
 };
 
-export default async function Page({ params }) {
-    const { id } = await params;
+export default async function Page() {
     const queryClient = new QueryClient();
 
     await queryClient.prefetchQuery({
-        queryKey: ["user", id],
+        queryKey: ["roles"],
         queryFn: async () => {
-            const res = await getUser(id);
+            const res = await fetchRoles();
             if (!res.success) {
-                throw res; // Throw the error response to trigger onError
+                throw res;
             }
             return res.data;
         },
@@ -34,8 +31,8 @@ export default async function Page({ params }) {
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <div className="w-full h-full md:w-8/10 lg:w-3/4 mx-auto">
-                <ShowUser userId={id} />
+            <div className="w-full h-full mx-auto 2xl:w-8/10 shadow-lg">
+                <UserUpdateForm />
             </div>
         </HydrationBoundary>
     );

@@ -43,6 +43,7 @@ export default function RejectDialog({ agencyId, className = "btn-error" }) {
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["agencies"] });
+            queryClient.invalidateQueries({ queryKey: ["agency"] });
             setOpen(false);
             SweetAlert({
                 title: "Rejection Successful",
@@ -92,7 +93,9 @@ export default function RejectDialog({ agencyId, className = "btn-error" }) {
             }}
             modal={true} // enables modal behavior (trap focus, prevent close on escape by default)
         >
-            <DialogTrigger className={`btn ${className}`}>
+            <DialogTrigger
+                className={`btn ${className} hover:btn-neutral hover:text-red-400`}
+            >
                 <XIcon /> Reject
             </DialogTrigger>
             <DialogContentNoX>

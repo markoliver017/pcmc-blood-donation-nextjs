@@ -9,7 +9,7 @@ const Toggle = ({ value, onChange }) => {
                 className={`w-14 h-8 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
                     value ? "bg-green-500" : "bg-gray-300"
                 }`}
-                onClick={() => onChange(!value)} // Update the value on click
+                onClick={() => onChange()} // Update the value on click
             >
                 <div
                     className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform ${

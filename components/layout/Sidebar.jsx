@@ -83,14 +83,7 @@ const Sidebar = ({ currentUser }) => {
                     layout="intrinsic"
                     alt="Logo"
                 />
-                <Image
-                    src={currentUserAvatar}
-                    alt="Avatar"
-                    width={50}
-                    height={50}
 
-
-                />
                 {!isCollapsed && (
                     <div className="ml-2">
                         <h5 className="text-lg font-bold ">

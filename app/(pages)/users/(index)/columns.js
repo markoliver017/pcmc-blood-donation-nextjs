@@ -10,7 +10,7 @@ import {
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
-import { Command, Eye, MoreHorizontal } from "lucide-react";
+import { Command, Eye, MoreHorizontal, Pencil } from "lucide-react";
 import Link from "next/link";
 export const columns = [
     {
@@ -46,17 +46,12 @@ export const columns = [
             );
         },
     },
+
     {
-        accessorKey: "role.role_name",
+        accessorKey: "name",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Role" />
+            <DataTableColumnHeader column={column} title="Display Name" />
         ),
-        cell: ({ row }) => {
-            const data = row.original;
-            return (
-                <div className="flex items-center">{data.role.role_name}</div>
-            );
-        },
         filterFn: "columnFilter",
     },
     {
@@ -81,13 +76,49 @@ export const columns = [
         filterFn: "columnFilter",
     },
     {
+        accessorKey: "role.role_name",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Role" />
+        ),
+        cell: ({ row }) => {
+            const data = row.original;
+            return (
+                <div className="flex items-center">{data.role.role_name}</div>
+            );
+        },
+        filterFn: "columnFilter",
+    },
+    {
         accessorKey: "gender",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Sex" />
         ),
         filterFn: "columnFilter",
     },
-
+    {
+        accessorKey: "is_active",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Status" />
+        ),
+        filterFn: "columnFilter",
+        cell: ({ row }) => {
+            const data = row.original;
+            const status = data.is_active;
+            if (status) {
+                return (
+                    <div className="badge p-2 font-semibold text-xs badge-success">
+                        Activated
+                    </div>
+                );
+            } else {
+                return (
+                    <div className="badge p-2 font-semibold text-xs badge-error">
+                        Deactivated
+                    </div>
+                );
+            }
+        },
+    },
     {
         id: "actions",
         header: ({ column }) => (
@@ -115,6 +146,12 @@ export const columns = [
                             <DropdownMenuItem className="flex items-center space-x-2">
                                 <Eye className="w-4 h-4" />
                                 <span>Show</span>
+                            </DropdownMenuItem>
+                        </Link>
+                        <Link href={`/users/${data.id}/edit`}>
+                            <DropdownMenuItem className="flex items-center space-x-2">
+                                <Pencil className="w-4 h-4" />
+                                <span>Edit</span>
                             </DropdownMenuItem>
                         </Link>
                     </DropdownMenuContent>

@@ -276,7 +276,7 @@ export const getSingleStyle = (mode) => {
                 maxWidth: "100%",
                 padding: "3px 8px",
                 borderRadius: "10px",
-                border: "1px solid gray",
+                // border: "1px solid gray",
             };
         },
         option: (provided, { data, isFocused, isSelected }) => {

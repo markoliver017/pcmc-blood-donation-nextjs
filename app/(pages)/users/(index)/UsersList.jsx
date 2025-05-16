@@ -27,48 +27,20 @@ export default function UsersList() {
 
     return (
         <div>
-            <div className="space-x-5">
+            <div className="flex justify-between">
                 <Link href="/users/create" className="btn btn-neutral">
                     <Plus /> Create
                 </Link>
                 <button
-                    className="btn btn-circle btn-secondary"
+                    className="btn btn-circle btn-warning"
                     onClick={() =>
                         queryClient.invalidateQueries({ queryKey: ["users"] })
                     }
                 >
-                    <RefreshCcw />
+                    <RefreshCcw className="h-4" />
                 </button>
             </div>
             <DataTable columns={columns} data={users} isLoading={isLoading} />
-            {/* <table className="table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {users.map((user, i) => (
-                        <tr key={user.id}>
-                            <td>{i + 1}</td>
-                            <td>{user.id}</td>
-                            <td>{user.name}</td>
-                            <td>{user.email}</td>
-                            <td>
-                                <Link
-                                    className="btn btn-link"
-                                    href={`/users/${user.id}`}
-                                >
-                                    Show
-                                </Link>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table> */}
         </div>
     );
 }

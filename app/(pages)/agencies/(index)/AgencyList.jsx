@@ -27,19 +27,19 @@ export default function AgencyList() {
 
     return (
         <div>
-            <div className="space-x-5">
+            <div className="flex justify-between">
                 <Link href="/agencies/create" className="btn btn-neutral">
                     <Plus /> Create
                 </Link>
                 <button
-                    className="btn btn-circle btn-secondary"
+                    className="btn btn-circle btn-warning"
                     onClick={() =>
                         queryClient.invalidateQueries({
                             queryKey: ["agencies"],
                         })
                     }
                 >
-                    <RefreshCcw />
+                    <RefreshCcw className="h-4" />
                 </button>
             </div>
             <DataTable

@@ -1,0 +1,161 @@
+"use client";
+import { fetchAgency } from "@/action/agencyAction";
+import { getUser } from "@/action/userAction";
+import CustomAvatar from "@components/reusable_components/CustomAvatar";
+import { Button } from "@components/ui/button";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@components/ui/card";
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@components/ui/table";
+import { formatFormalName } from "@lib/utils/string.utils";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowLeft, Eye, Pencil } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React from "react";
+
+export default function ShowAgency({ agencyId }) {
+    const router = useRouter();
+    const { data: agency } = useQuery({
+        queryKey: ["agency", agencyId],
+        queryFn: async () => {
+            const res = await fetchAgency(agencyId);
+            if (!res.success) {
+                throw res; // Throw the error response to trigger onError
+            }
+            return res.data;
+        },
+        enabled: !!agencyId,
+    });
+    const { status } = agency;
+    let statusClass = "badge-primary";
+    if (status == "activated") {
+        statusClass = "badge-success";
+    } else if (status == "deactivated") {
+        statusClass = "badge-warning";
+    } else if (status == "rejected") {
+        statusClass = "badge-error";
+    }
+
+    return (
+        <Card className="p-5 h-full">
+            <div className="flex justify-between">
+                <Button onClick={() => router.push(`/agencies`)}>
+                    <ArrowLeft />
+                </Button>
+                <div className="space-x-2">
+                    <Button
+                        onClick={() =>
+                            router.push(`/agencies/${agency.id}/edit`)
+                        }
+                        variant="secondary"
+                        className=" hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200"
+                    >
+                        <Pencil />
+                    </Button>
+                </div>
+            </div>
+            <CardHeader>
+                <CardTitle className="text-4xl">{agency.name}</CardTitle>
+                <CardDescription>Agency Information</CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-wrap xl:flex-nowrap gap-2">
+                <CustomAvatar
+                    avatar={agency.file_url || "/default_company_avatar.png"}
+                    className="w-[150px] h-[150px] sm:w-[200px] sm:h-[200px] md:w-[250px] md:h-[250px] xl:w-[350px] xl:h-[350px] flex-none"
+                />
+                <Table className="min-w-sm">
+                    <TableBody>
+                        <TableRow>
+                            <TableCell className="font-semibold">ID</TableCell>
+                            <TableCell>{agency.id}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className="font-semibold">
+                                Status
+                            </TableCell>
+                            <TableCell>
+                                <div
+                                    className={`badge p-2 font-semibold text-xs ${statusClass}`}
+                                >
+                                    {agency.status.toUpperCase()}
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className="font-semibold">
+                                Head
+                            </TableCell>
+                            <TableCell>
+                                {formatFormalName(
+                                    agency.head.name || agency.head.full_name
+                                )}
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className="font-semibold">
+                                Agency Email
+                            </TableCell>
+                            <TableCell>
+                                <a
+                                    className="link link-primary italic"
+                                    href={`mailto:${agency.agency_email}`}
+                                >
+                                    {formatFormalName(agency.agency_email)}
+                                </a>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className="font-semibold">
+                                Address
+                            </TableCell>
+                            <TableCell>{agency.address}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className="font-semibold">
+                                Barangay
+                            </TableCell>
+                            <TableCell>{agency.barangay}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className="font-semibold">
+                                City
+                            </TableCell>
+                            <TableCell>{agency.city_municipality}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className="font-semibold">
+                                Area
+                            </TableCell>
+                            <TableCell>{agency.province}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className="font-semibold">
+                                Comments / Message
+                            </TableCell>
+                            <TableCell>{agency.comments}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className="font-semibold">
+                                Remarks
+                            </TableCell>
+                            <TableCell>{agency.remarks}</TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </CardContent>
+        </Card>
+    );
+}

@@ -3,26 +3,19 @@ import {
     HydrationBoundary,
     QueryClient,
 } from "@tanstack/react-query";
-
-import { fetchluzonDemographics } from "@/action/locationAction";
-import AgencyUpdateForm from "./AgencyUpdateForm";
 import { fetchAgency } from "@/action/agencyAction";
+import ShowAgency from "./ShowAgency";
 
-export default async function AgenciesPage({ params }) {
-    const { id: agency_id } = await params;
+export default async function Page({ params }) {
+    const { id } = await params;
     const queryClient = new QueryClient();
 
     await queryClient.prefetchQuery({
-        queryKey: ["luzonDemographics"],
-        queryFn: fetchluzonDemographics,
-    });
-
-    await queryClient.prefetchQuery({
-        queryKey: ["agency", agency_id],
+        queryKey: ["agency", id],
         queryFn: async () => {
-            const res = await fetchAgency(agency_id);
+            const res = await fetchAgency(id);
             if (!res.success) {
-                throw res;
+                throw res; // Throw the error response to trigger onError
             }
             return res.data;
         },
@@ -30,8 +23,8 @@ export default async function AgenciesPage({ params }) {
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <div className="w-full h-full md:w-3/4 mx-auto shadow-lg space-y-3">
-                <AgencyUpdateForm agency_id={agency_id} />
+            <div className="w-full h-full md:w-8/10 lg:w-3/4 mx-auto">
+                <ShowAgency agencyId={id} />
             </div>
         </HydrationBoundary>
     );

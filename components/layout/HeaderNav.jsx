@@ -13,6 +13,7 @@ import {
 import { Button } from "@components/ui/button";
 import {
     Building,
+    CircleEllipsis,
     Command,
     Database,
     Eye,
@@ -21,6 +22,7 @@ import {
     Home,
     LogOut,
     MoreHorizontal,
+    SquareMenu,
     Users2,
 } from "lucide-react";
 import SweetAlert from "@components/ui/SweetAlert";
@@ -51,7 +53,7 @@ const HeaderNav = ({ currentUser }) => {
     return (
         <>
             <header className="flex-none flex gap-10 justify-between items-center border-b border-gray-200 p-2 bg-gradient-to-b from-gray-500 to-gray-600 text-white">
-                <div className="flex-none md:flex-1 flex justify-between gap-2 items-center">
+                <div className="flex-1 flex justify-between gap-2 items-center">
                     <nav className="hidden md:block">
                         <ul className="flex space-x-4">
                             <li>
@@ -86,15 +88,15 @@ const HeaderNav = ({ currentUser }) => {
                     <div className="block md:hidden">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                <Button
+                                    variant="ghost"
+                                    className="h-8 w-min p-0"
+                                >
                                     <span className="sr-only">Open menu</span>
-                                    <GiHamburgerMenu
-                                        className="inline-block"
-                                        title="Collapse the left navigation pane"
-                                    />
+                                    <SquareMenu /> Menu
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
+                            <DropdownMenuContent side="bottom" align="start">
                                 <DropdownMenuLabel className="flex items-center gap-2 space-x-2">
                                     <Command className="w-3 h-3" />
                                     Menus
@@ -129,14 +131,19 @@ const HeaderNav = ({ currentUser }) => {
                     ) : (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="h-12 w-12 p-0">
+                                <Button
+                                    variant="ghost"
+                                    className="h-12 w-12 p-0"
+                                >
                                     <span className="sr-only">Open menu</span>
 
                                     <CustomAvatar
-                                        avatar={currentUser?.image || '/default_avatar.png'}
+                                        avatar={
+                                            currentUser?.image ||
+                                            "/default_avatar.png"
+                                        }
                                         className="w-8 h-8"
                                     />
-
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">

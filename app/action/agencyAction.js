@@ -179,9 +179,13 @@ export async function updateAgencyStatus(formData) {
 
         const title = {
             rejected: "Rejection Successful",
+            activated: "Status Update",
+            deactivated: "Status Update",
         };
         const text = {
             rejected: "Agency application rejected successfully.",
+            activated: "The agency activated successfully.",
+            deactivated: "The agency deactivated successfully.",
         };
 
         return {

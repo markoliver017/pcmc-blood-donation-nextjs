@@ -15,7 +15,7 @@ export default function VerifyAgency({
     icon = <Save />,
     label = "Save",
     className = "btn-neutral",
-    formClassName = ""
+    formClassName = "",
 }) {
     const queryClient = useQueryClient();
 
@@ -29,11 +29,14 @@ export default function VerifyAgency({
             if (!res.success) {
                 throw res; // Throw the error response to trigger onError
             }
-            return res.data;
+            return res;
         },
         onSuccess: (data) => {
             console.log("onSuccess", data);
             queryClient.invalidateQueries({ queryKey: ["agencies"] });
+            queryClient.invalidateQueries({
+                queryKey: ["agency"],
+            });
 
             SweetAlert({
                 title: data?.title,
@@ -70,7 +73,10 @@ export default function VerifyAgency({
 
     return (
         <Form {...form}>
-            <form className={`${formClassName}`} onSubmit={handleSubmit(onSubmit)}>
+            <form
+                className={`${formClassName}`}
+                onSubmit={handleSubmit(onSubmit)}
+            >
                 <button
                     type="submit"
                     disabled={isPending}
