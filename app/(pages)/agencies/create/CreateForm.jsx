@@ -135,7 +135,7 @@ export default function CreateForm() {
 
     const form = useForm({
         mode: "onChange",
-        // resolver: zodResolver(agencySchema),
+        resolver: zodResolver(agencySchema),
         defaultValues: {
             name: "",
             contact_number: "",

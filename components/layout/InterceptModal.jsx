@@ -1,0 +1,44 @@
+"use client"
+
+import {
+    Dialog,
+    DialogOverlay,
+    DialogContent,
+    DialogHeader,
+    DialogTitle
+} from "@components/ui/dialog"
+import { useRouter } from "next/navigation"
+
+
+export default function InterceptModal({
+    children
+}) {
+    const router = useRouter();
+
+    const handleOpenChange = () => {
+        router.back();
+
+    }
+
+    return (
+        <Dialog defaultOpen={true} open={true} onOpenChange={handleOpenChange}>
+            {/* <DialogOverlay> */}
+            <DialogContent className="min-w-full md:min-w-8/10 2xl:min-w-6/10 max-h-97/100 overflow-y-scroll">
+                <DialogHeader className="hidden">
+                    <DialogTitle>Title</DialogTitle>
+                </DialogHeader>
+                {children}
+            </DialogContent>
+            {/* </DialogOverlay> */}
+        </Dialog>
+        //   <DialogContent>
+        //   <DialogHeader>
+        //     <DialogTitle>Are you absolutely sure?</DialogTitle>
+        //     <DialogDescription>
+        //       This action cannot be undone. This will permanently delete your account
+        //       and remove your data from our servers.
+        //     </DialogDescription>
+        //   </DialogHeader>
+        // </DialogContent>
+    )
+}

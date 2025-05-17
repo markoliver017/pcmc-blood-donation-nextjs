@@ -7,19 +7,19 @@ export async function up(queryInterface) {
         "Roles",
         [
             {
-                role_name: "admin",
+                role_name: "Role 1",
                 icon: "FaUserLock",
                 createdAt: new Date(),
                 updatedAt: new Date(),
             },
             {
-                role_name: "donor",
+                role_name: "Role 2",
                 icon: "User",
                 createdAt: new Date(),
                 updatedAt: new Date(),
             },
             {
-                role_name: "developer",
+                role_name: "Role 3",
                 icon: "MdDeveloperMode",
                 createdAt: new Date(),
                 updatedAt: new Date(),

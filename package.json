@@ -7,7 +7,8 @@
         "dev": "next dev --turbo",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "sequelize": "dotenv sequelize"
     },
     "dependencies": {
         "@auth/sequelize-adapter": "^2.9.0",

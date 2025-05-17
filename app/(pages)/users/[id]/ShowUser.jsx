@@ -41,22 +41,21 @@ export default function ShowUser({ userId }) {
 
     return (
         <Card className="p-5 h-full">
-            <div className="flex justify-between">
-                <Button onClick={() => router.push(`/users`)}>
-                    <ArrowLeft />
-                    Back
-                </Button>
-                <Button
-                    onClick={() => router.push(`/users/${user.id}/edit`)}
-                    variant="secondary"
-                    className=" hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200"
-                >
-                    <Pencil />
-                </Button>
-            </div>
+
             <CardHeader>
-                <CardTitle className="text-4xl">
-                    {user.name || user.full_name}
+                <CardTitle className="flex justify-between">
+                    <span className="text-4xl">
+                        {user.name || user.full_name}
+                    </span>
+                    <div>
+                        <Button
+                            onClick={() => router.push(`/users/${user.id}/edit`)}
+                            variant="secondary"
+                            className=" hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200"
+                        >
+                            <Pencil />
+                        </Button>
+                    </div>
                 </CardTitle>
                 <CardDescription>User Information</CardDescription>
             </CardHeader>

@@ -5,10 +5,8 @@ import {
 
 } from "@tanstack/react-query";
 import { getUser } from "@/action/userAction";
-import ShowUser from "./ShowUser";
-import { Button } from "@components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import ShowUser from "@/(pages)/users/[id]/ShowUser";
+import InterceptModal from "@components/layout/InterceptModal";
 
 const fetchRoles = async () => {
     const url = new URL(`/api/roles`, process.env.NEXT_PUBLIC_DOMAIN);
@@ -35,18 +33,13 @@ export default async function Page({ params }) {
     });
 
     return (
-        <HydrationBoundary state={dehydrate(queryClient)}>
-            <div className="w-full h-full md:w-8/10 lg:w-3/4 mx-auto">
-                <div className="mb-2">
-                    <Link href="/users">
-                        <Button>
-                            <ArrowLeft />
-                            Back
-                        </Button>
-                    </Link>
+        <InterceptModal>
+            <HydrationBoundary state={dehydrate(queryClient)}>
+                <div className="px-5">
+                    <ShowUser userId={id} />
                 </div>
-                <ShowUser userId={id} />
-            </div>
-        </HydrationBoundary>
+
+            </HydrationBoundary>
+        </InterceptModal>
     );
 }
