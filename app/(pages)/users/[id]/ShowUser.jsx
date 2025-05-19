@@ -41,7 +41,6 @@ export default function ShowUser({ userId }) {
 
     return (
         <Card className="p-5 h-full">
-
             <CardHeader>
                 <CardTitle className="flex justify-between">
                     <span className="text-4xl">
@@ -49,7 +48,9 @@ export default function ShowUser({ userId }) {
                     </span>
                     <div>
                         <Button
-                            onClick={() => router.push(`/users/${user.id}/edit`)}
+                            onClick={() =>
+                                router.push(`/users/${user.id}/edit`)
+                            }
                             variant="secondary"
                             className=" hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200"
                         >

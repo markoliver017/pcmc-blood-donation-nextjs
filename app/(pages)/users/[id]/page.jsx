@@ -2,7 +2,6 @@ import {
     dehydrate,
     HydrationBoundary,
     QueryClient,
-
 } from "@tanstack/react-query";
 import { getUser } from "@/action/userAction";
 import ShowUser from "./ShowUser";
