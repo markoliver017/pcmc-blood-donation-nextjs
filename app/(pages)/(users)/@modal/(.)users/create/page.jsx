@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import UserCreateForm from "@/(pages)/users/create/UserCreateForm";
-import UserLoading from "@/(pages)/users/UserLoading";
+import UserCreateForm from "@/(pages)/(users)/users/create/UserCreateForm";
+import UserLoading from "@/(pages)/(users)/users/UserLoading";
 import InterceptModal from "@components/layout/InterceptModal";
 
 const fetchRoles = async () => {

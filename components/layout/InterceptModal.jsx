@@ -17,13 +17,12 @@ export default function InterceptModal({
 
     const handleOpenChange = () => {
         router.back();
-
     }
 
     return (
-        <Dialog defaultOpen={true} open={true} onOpenChange={handleOpenChange}>
+        <Dialog defaultOpen={true} open={true} onOpenChange={handleOpenChange} modal={true}>
             {/* <DialogOverlay> */}
-            <DialogContent className="min-w-full md:min-w-8/10 2xl:min-w-6/10 max-h-97/100 overflow-y-scroll">
+            <DialogContent onInteractOutside={(event) => event.preventDefault()} className="min-w-full md:min-w-8/10 2xl:min-w-6/10 max-h-97/100 overflow-y-scroll">
                 <DialogHeader className="hidden">
                     <DialogTitle>Title</DialogTitle>
                 </DialogHeader>

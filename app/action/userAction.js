@@ -7,7 +7,7 @@ import { auth } from "@lib/auth";
 // import { formatPersonName } from "@lib/utils/string.utils";
 
 export async function getUsers() {
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     try {
         const users = await User.findAll({
             attributes: { exclude: ["password", "email_verified"] },
@@ -175,6 +175,7 @@ export async function updateUserStatus(formData) {
 }
 
 export async function getUser(id) {
+    await new Promise((resolve) => setTimeout(resolve, 500));
     if (!id) redirect("/users");
 
     try {

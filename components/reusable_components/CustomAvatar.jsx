@@ -10,7 +10,7 @@ export default function CustomAvatar({
     return (
         <div
             className={clsx(
-                "relative rounded-4xl mx-auto shadow-2xl overflow-hidden",
+                "relative rounded-4xl mx-auto shadow-xl overflow-hidden",
                 className
             )}
             onClick={whenClick}

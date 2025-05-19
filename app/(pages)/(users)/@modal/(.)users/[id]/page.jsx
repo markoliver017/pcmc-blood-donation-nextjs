@@ -5,7 +5,7 @@ import {
 
 } from "@tanstack/react-query";
 import { getUser } from "@/action/userAction";
-import ShowUser from "@/(pages)/users/[id]/ShowUser";
+import ShowUser from "@/(pages)/(users)/users/[id]/ShowUser";
 import InterceptModal from "@components/layout/InterceptModal";
 
 const fetchRoles = async () => {

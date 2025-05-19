@@ -34,7 +34,7 @@ export const metadata = {
     },
 };
 
-export default async function RootLayout({ children, modal }) {
+export default async function RootLayout({ children }) {
     const session = await auth();
     let currentUser = {
         name: "Bonnie Green",
@@ -66,7 +66,6 @@ export default async function RootLayout({ children, modal }) {
                                 <WrapperHead />
                                 <TansactProviders>
                                     <main className="flex-1 p-4">
-                                        {modal}
                                         {children}
                                     </main>
                                 </TansactProviders>

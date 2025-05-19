@@ -24,10 +24,15 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
+import UserLoading from "../UserLoading";
 
 export default function ShowUser({ userId }) {
     const router = useRouter();
-    const { data: user } = useQuery({
+    const {
+        data: user,
+        isFetching,
+        isLoading,
+    } = useQuery({
         queryKey: ["user", userId],
         queryFn: async () => {
             const res = await getUser(userId);
@@ -38,6 +43,8 @@ export default function ShowUser({ userId }) {
         },
         enabled: !!userId,
     });
+
+    if (isLoading || isFetching) return <UserLoading />;
 
     return (
         <Card className="p-5 h-full">

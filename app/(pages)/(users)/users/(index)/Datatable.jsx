@@ -50,7 +50,7 @@ export function DataTable({ columns, data, isLoading }) {
         staleTime: 5 * 60 * 1000, // Data is fresh for 5 minute
         cacheTime: 10 * 60 * 1000, // Cache persists for 10 minute
     });
-    console.log("rolesss", roles);
+    // console.log("rolesss", roles);
     // console.log("datassss", data);
 
     const [sorting, setSorting] = useState([]);
@@ -63,7 +63,7 @@ export function DataTable({ columns, data, isLoading }) {
     const [rowSelection, setRowSelection] = useState({});
     const [roleOptions, setRoleOptions] = useState([]);
 
-    console.log("rolesssOptions", roleOptions);
+    // console.log("rolesssOptions", roleOptions);
     const table = useReactTable({
         data,
         columns,
@@ -271,10 +271,10 @@ export function DataTable({ columns, data, isLoading }) {
                                                 {header.isPlaceholder
                                                     ? null
                                                     : flexRender(
-                                                          header.column
-                                                              .columnDef.header,
-                                                          header.getContext()
-                                                      )}
+                                                        header.column
+                                                            .columnDef.header,
+                                                        header.getContext()
+                                                    )}
                                             </TableHead>
                                         ))}
                                     </TableRow>

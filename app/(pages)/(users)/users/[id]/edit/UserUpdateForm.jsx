@@ -1,6 +1,13 @@
 "use client";
-import React, { use, useEffect, useRef } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import React, {
+    startTransition,
+    use,
+    useActionState,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import dynamic from "next/dynamic";
 const CreatableSelectNoSSR = dynamic(() => import("react-select/creatable"), {
@@ -13,17 +20,18 @@ import {
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
-import { ArrowLeftIcon, Mail, Send, Text } from "lucide-react";
+import { Mail, Send, Text } from "lucide-react";
 
+import { toast } from "react-toastify";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BiLeftArrow, BiMaleFemale } from "react-icons/bi";
+import { BiError, BiMaleFemale } from "react-icons/bi";
 import SweetAlert from "@components/ui/SweetAlert";
 import notify from "@components/ui/notify";
 import InlineLabel from "@components/form/InlineLabel";
 import { useTheme } from "next-themes";
 import { getSingleStyle } from "@/styles/select-styles";
 import { userSchema } from "@lib/zod/userSchema";
-import { createUser } from "@/action/userAction";
+import { getUser, updateUser } from "@/action/userAction";
 import FieldError from "@components/form/FieldError";
 import clsx from "clsx";
 import {
@@ -34,33 +42,74 @@ import {
     FormMessage,
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
-
+import Image from "next/image";
 import { uploadPicture } from "@/action/uploads";
-import { redirect } from "next/navigation";
+import { GrUpdate } from "react-icons/gr";
+import Toggle from "@components/reusable_components/Toggle";
+import UserLoading from "../../UserLoading";
+import { redirect, useParams } from "next/navigation";
 import Link from "next/link";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
+import UserStatusUpdater from "./UserStatusUpdater";
 
-export default function UserCreateForm({ fetchRoles }) {
+const fetchRoles = async () => {
+    const url = new URL(`/api/roles`, process.env.NEXT_PUBLIC_DOMAIN);
+    const response = await fetch(url, {
+        method: "GET",
+        cache: "no-store",
+    });
+    return await response.json();
+};
+
+export default function UserUpdateForm() {
+    const params = useParams();
+    const id = params.id;
+
+    const fileInputRef = useRef(null);
+
     const queryClient = useQueryClient();
-    const { data, mutate, error, isError, isPending } = useMutation({
-        mutationFn: async (formData) => {
-            const res = await createUser(formData);
+    const rolesQuery = useQuery({
+        queryKey: ["roles"],
+        queryFn: async () => {
+            const res = await fetchRoles();
+            if (!res.success) {
+                throw res;
+            }
+            return res.data;
+        },
+    });
+
+    const userQuery = useQuery({
+        queryKey: ["user", id],
+        queryFn: async () => {
+            const res = await getUser(id);
             if (!res.success) {
                 throw res; // Throw the error response to trigger onError
             }
             return res.data;
         },
-        onSuccess: () => {
-            /** note: the return data will be accessible in the debugger
-             *so no need to console the onSuccess(data) here **/
+    });
+
+    const { data: userData } = userQuery;
+    const { data: roles } = rolesQuery;
+
+    const { mutate, isPending } = useMutation({
+        mutationFn: async (formData) => {
+            const res = await updateUser(formData);
+            if (!res.success) {
+                throw res; // Throw the error response to trigger onError
+            }
+            return res.data;
+        },
+        onSuccess: (data) => {
+            console.log("Success: Updated Data:", data);
             // Invalidate the posts query to refetch the updated list
             queryClient.invalidateQueries({ queryKey: ["users"] });
             SweetAlert({
-                title: "Submission Successful",
-                text: "New user has been successfully created.",
+                title: "User Updated",
+                text: "The user information has been updated successfully .",
                 icon: "success",
                 confirmButtonText: "Done",
-                onConfirm: reset,
             });
         },
         onError: (error) => {
@@ -103,28 +152,13 @@ export default function UserCreateForm({ fetchRoles }) {
             }
         },
     });
-
-    useEffect(() => {
-        console.log("useeffect error", error);
-        console.log("useeffect data", data);
-    }, [data, error]);
-
     const { theme, resolvedTheme } = useTheme();
-    const roles = use(fetchRoles);
-
-    if (!roles.success) redirect("/users?error=userRoleNotFound");
-
-    const roleOptions = roles.data.map((type) => ({
-        value: type.role_name,
-        label: type.role_name,
-        id: type.id,
-    }));
 
     const form = useForm({
         mode: "onChange",
         // resolver: zodResolver(userSchema),
         defaultValues: {
-            profile_picture: null, // or some default value
+            profile_picture: null,
             role_id: null,
             email: "",
             first_name: "",
@@ -146,10 +180,59 @@ export default function UserCreateForm({ fetchRoles }) {
         formState: { errors, isDirty },
     } = form;
 
-    const onSubmit = async (data) => {
+    useEffect(() => {
+        if (userData && roles) {
+            reset({
+                profile_picture: null,
+                role_id: userData?.role.id || null,
+                email: userData?.email || "",
+                first_name: userData?.first_name || "",
+                middle_name: userData?.middle_name || "",
+                last_name: userData?.last_name || "",
+                gender: userData?.gender || "",
+                image: userData?.image || null,
+            });
+        }
+    }, [userData, roles, reset]);
+
+    /* For profile picture data logic */
+    const uploaded_avatar = watch("profile_picture");
+    let avatar = userData?.image || "/default_avatar.png";
+    if (!errors?.profile_picture && uploaded_avatar) {
+        avatar = URL.createObjectURL(uploaded_avatar);
+    }
+    useEffect(() => {
+        setValue("image", userData?.image || null);
+    }, [uploaded_avatar]);
+    useEffect(() => {
+        console.log("watch()>>>", watch());
+    }, [watch()]);
+    /* end */
+
+    if (rolesQuery.isLoading || userQuery.isLoading) return <UserLoading />;
+    if (userQuery.isError)
+        return (
+            <div className="alert alert-error text-gray-700">
+                Error: {userQuery.error.message}
+            </div>
+        );
+    if (rolesQuery.isError)
+        return (
+            <div className="alert alert-error text-gray-700">
+                Error: {rolesQuery.error.message}
+            </div>
+        );
+
+    const roleOptions = roles.map((type) => ({
+        value: type.role_name,
+        label: type.role_name,
+        id: type.id,
+    }));
+
+    const onSubmit = async (formData) => {
         SweetAlert({
             title: "Confirmation",
-            text: "Create New User?",
+            text: "Update User?",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Confirm",
@@ -157,108 +240,115 @@ export default function UserCreateForm({ fetchRoles }) {
 
             onConfirm: async () => {
                 const fileUrl = watch("image");
-                if (data?.profile_picture && !fileUrl) {
-                    const result = await uploadPicture(data.profile_picture);
+
+                if (
+                    formData.profile_picture &&
+                    (fileUrl == userData?.image || !fileUrl)
+                ) {
+                    const result = await uploadPicture(
+                        formData.profile_picture
+                    );
                     if (result?.success) {
-                        data.image = result.file_data?.url || null;
+                        formData.image = result.file_data?.url || null;
                         setValue("image", result.file_data?.url);
                     }
                     console.log("Upload result:", result);
                 }
-                // startTransition(async () => {
-                //     formAction(data);
-                // });
-                mutate(data);
+
+                formData.id = userData.id;
+                console.log("submitted formData>>>>>>>", formData);
+                mutate(formData);
             },
         });
     };
 
-    const uploaded_avatar = watch("profile_picture");
-    const avatar =
-        !errors?.profile_picture && uploaded_avatar
-            ? URL.createObjectURL(uploaded_avatar)
-            : "/default_avatar.png";
-    useEffect(() => {
-        setValue("image", null);
-    }, [uploaded_avatar]);
-
-    useEffect(() => {
-        console.log("watchall", avatar);
-    }, [avatar]);
-
     return (
-        <Card className="p-5 bg-slate-100">
+        <Card className="md:p-5 bg-gray-100">
             <CardHeader className="text-2xl font-bold">
-                <CardTitle>Create New User</CardTitle>
+                <CardTitle>Update User</CardTitle>
                 <CardDescription>
-                    <div>Create User details.</div>
+                    <div>Update User details.</div>
                 </CardDescription>
             </CardHeader>
             <CardContent>
                 <Form {...form}>
-                    {isError && (
-                        <div className="alert alert-error text-gray-700">
-                            Error: {error.message}
-                        </div>
-                    )}
                     <form
                         onSubmit={handleSubmit(onSubmit)}
-                        className="flex flex-wrap xl:flex-nowrap justify-center gap-2"
+                        className="space-y-2 flex flex-wrap gap-2 justify-center"
                     >
-                        <FormField
-                            control={control}
-                            name="profile_picture"
-                            render={({
-                                field: { onChange, value, ...field },
-                            }) => {
-                                const fileInputRef = useRef(null);
-                                const handleImageClick = () => {
-                                    if (fileInputRef.current) {
-                                        fileInputRef.current.click(); // Trigger the file input click
-                                    }
-                                };
-                                return (
-                                    <FormItem className="text-center">
-                                        <div className="hidden">
-                                            <InlineLabel>
-                                                New Profile Picture
-                                            </InlineLabel>
-                                            <FormControl ref={fileInputRef}>
-                                                <Input
-                                                    type="file"
-                                                    onChange={(e) =>
-                                                        onChange(
-                                                            e.target.files[0]
+                        <div className="w-full md:w-min">
+                            <FormField
+                                control={control}
+                                name="profile_picture"
+                                render={({
+                                    field: { onChange, value, ...field },
+                                }) => {
+                                    const handleImageClick = () => {
+                                        if (fileInputRef.current) {
+                                            fileInputRef.current.click(); // Trigger the file input click
+                                        }
+                                    };
+
+                                    return (
+                                        <FormItem className="text-center">
+                                            <div className="hidden">
+                                                <InlineLabel>
+                                                    New Profile Picture
+                                                </InlineLabel>
+                                                <FormControl ref={fileInputRef}>
+                                                    <Input
+                                                        type="file"
+                                                        onChange={(e) =>
+                                                            onChange(
+                                                                e.target
+                                                                    .files[0]
+                                                            )
+                                                        }
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                            </div>
+                                            <CustomAvatar
+                                                avatar={avatar}
+                                                whenClick={handleImageClick}
+                                                className="w-[250px] h-[250px]"
+                                            />
+                                            {uploaded_avatar && (
+                                                <button
+                                                    onClick={() =>
+                                                        resetField(
+                                                            "profile_picture"
                                                         )
                                                     }
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                        </div>
-                                        <CustomAvatar
-                                            avatar={avatar}
-                                            whenClick={handleImageClick}
-                                            className="w-[250px] h-[250px]"
-                                        />
-                                        {uploaded_avatar && (
-                                            <button
-                                                onClick={() =>
-                                                    resetField(
-                                                        "profile_picture"
-                                                    )
-                                                }
-                                                className="btn btn-ghost"
-                                            >
-                                                Clear
-                                            </button>
-                                        )}
-                                        <FormMessage />
+                                                    className="btn btn-ghost"
+                                                >
+                                                    Clear
+                                                </button>
+                                            )}
+                                            <FormMessage />
+                                        </FormItem>
+                                    );
+                                }}
+                            />
+                            {/* <FormField
+                                control={form.control}
+                                name="is_active"
+                                render={({ field: { value, onChange } }) => (
+                                    <FormItem className="mt-5 flex flex-col items-center font-semibold md:justify-end">
+                                        <Toggle value={value} onChange={onChange} />
                                     </FormItem>
-                                );
-                            }}
-                        />
-                        <div className="flex-1 min-w-max">
-                            <div className="mt-5">
+                                )}
+                            /> */}
+                            <UserStatusUpdater
+                                userData={{
+                                    id: userData.id,
+                                    is_active: userData.is_active,
+                                }}
+                            />
+                        </div>
+
+                        <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[500px]">
+                            <div>
                                 <InlineLabel>Role: *</InlineLabel>
                                 <fieldset className="fieldset w-full">
                                     <Controller
@@ -281,7 +371,7 @@ export default function UserCreateForm({ fetchRoles }) {
                                                 <CreatableSelectNoSSR
                                                     name={name}
                                                     ref={ref}
-                                                    placeholder="Role * (required)"
+                                                    placeholder="Type of medication error * (required)"
                                                     value={selectedOption}
                                                     onChange={(
                                                         selectedOption
@@ -323,7 +413,7 @@ export default function UserCreateForm({ fetchRoles }) {
                                         </InlineLabel>
                                         <label
                                             className={clsx(
-                                                "input w-full mt-1",
+                                                "input w-full",
                                                 errors?.email
                                                     ? "input-error"
                                                     : "input-info"
@@ -350,7 +440,7 @@ export default function UserCreateForm({ fetchRoles }) {
 
                                         <label
                                             className={clsx(
-                                                "input w-full mt-1",
+                                                "input w-full",
                                                 errors?.first_name
                                                     ? "input-error"
                                                     : "input-info"
@@ -378,7 +468,7 @@ export default function UserCreateForm({ fetchRoles }) {
 
                                         <label
                                             className={clsx(
-                                                "input w-full mt-1",
+                                                "input w-full",
                                                 errors?.middle_name
                                                     ? "input-error"
                                                     : "input-info"
@@ -406,7 +496,7 @@ export default function UserCreateForm({ fetchRoles }) {
 
                                         <label
                                             className={clsx(
-                                                "input w-full mt-1",
+                                                "input w-full",
                                                 errors?.last_name
                                                     ? "input-error"
                                                     : "input-info"
@@ -432,7 +522,7 @@ export default function UserCreateForm({ fetchRoles }) {
 
                                         <label
                                             className={clsx(
-                                                "input w-full mt-1",
+                                                "input w-full",
                                                 errors?.gender
                                                     ? "input-error"
                                                     : "input-info"
@@ -461,7 +551,7 @@ export default function UserCreateForm({ fetchRoles }) {
 
                             <div className="flex justify-end">
                                 <button
-                                    disabled={!isDirty || isPending}
+                                    disabled={!isDirty}
                                     className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300"
                                 >
                                     {isPending ? (
@@ -471,13 +561,13 @@ export default function UserCreateForm({ fetchRoles }) {
                                         </>
                                     ) : (
                                         <>
-                                            <Send />
-                                            Submit
+                                            <GrUpdate />
+                                            Update
                                         </>
                                     )}
                                 </button>
                             </div>
-                        </div>
+                        </Card>
                     </form>
                 </Form>
             </CardContent>

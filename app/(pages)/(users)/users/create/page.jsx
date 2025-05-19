@@ -18,10 +18,10 @@ const fetchRoles = async () => {
 export default function Page() {
     return (
         <Suspense fallback={<UserLoading />}>
-            <div className="w-full h-full md:w-1/2 lg:w-3/4 mx-auto">
-                <Link href="/users" className="mb-3 fixed right-10">
+            <div className="w-full h-full md:w-8/10 2xl:w-3/4 mx-auto relative">
+                <Link href="/users" className="mb-3 absolute top-5 right-4">
                     <button className="btn btn-circle btn-warning w-max p-3">
-                        Cancel <X />
+                        <span className="hidden sm:inline-block">Cancel</span> <X />
                     </button>
                 </Link>
                 <UserCreateForm fetchRoles={fetchRoles()} />
