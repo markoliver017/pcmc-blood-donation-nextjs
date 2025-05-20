@@ -28,7 +28,7 @@ export default function AgencyList() {
     return (
         <div>
             <div className="flex justify-between">
-                <Link href="/agencies/create" className="btn btn-neutral">
+                <Link href="/agencies/create" className="btn btn-lg btn-accent">
                     <Plus /> Create
                 </Link>
                 <button

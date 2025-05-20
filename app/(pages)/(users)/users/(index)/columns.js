@@ -96,6 +96,13 @@ export const columns = [
         filterFn: "columnFilter",
     },
     {
+        accessorKey: "creator.name",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Created by" />
+        ),
+        filterFn: "columnFilter",
+    },
+    {
         accessorKey: "is_active",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Status" />

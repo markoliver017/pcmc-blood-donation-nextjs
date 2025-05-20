@@ -63,7 +63,7 @@ export default async function RootLayout({ children }) {
                             >
                                 <Header />
                                 <HeaderNav currentUser={currentUser} />
-                                <WrapperHead />
+                                {/* <WrapperHead /> */}
                                 <TansactProviders>
                                     <main className="flex-1 p-4">
                                         {children}

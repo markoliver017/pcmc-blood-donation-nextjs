@@ -1,28 +1,36 @@
-"use client"
+"use client";
 
 import {
     Dialog,
     DialogOverlay,
     DialogContent,
     DialogHeader,
-    DialogTitle
-} from "@components/ui/dialog"
-import { useRouter } from "next/navigation"
+    DialogTitle,
+} from "@components/ui/dialog";
+import { useRouter } from "next/navigation";
+import { ToastContainer } from "react-toastify";
 
-
-export default function InterceptModal({
-    children
-}) {
+export default function InterceptModal({ children }) {
     const router = useRouter();
 
     const handleOpenChange = () => {
         router.back();
-    }
+    };
 
     return (
-        <Dialog defaultOpen={true} open={true} onOpenChange={handleOpenChange} modal={true}>
+        <Dialog
+            defaultOpen={true}
+            open={true}
+            onOpenChange={handleOpenChange}
+            modal={true}
+        >
             {/* <DialogOverlay> */}
-            <DialogContent onInteractOutside={(event) => event.preventDefault()} className="min-w-full md:min-w-8/10 2xl:min-w-6/10 max-h-97/100 overflow-y-scroll">
+            <DialogContent
+                onInteractOutside={(event) => event.preventDefault()}
+                className="min-w-full md:min-w-8/10 2xl:min-w-7/10 max-h-97/100 overflow-y-scroll"
+                tabIndex={-1}
+            >
+                <ToastContainer />
                 <DialogHeader className="hidden">
                     <DialogTitle>Title</DialogTitle>
                 </DialogHeader>
@@ -39,5 +47,5 @@ export default function InterceptModal({
         //     </DialogDescription>
         //   </DialogHeader>
         // </DialogContent>
-    )
+    );
 }

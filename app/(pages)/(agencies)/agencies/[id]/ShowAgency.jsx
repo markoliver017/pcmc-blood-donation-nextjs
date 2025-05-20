@@ -50,12 +50,10 @@ export default function ShowAgency({ agencyId }) {
     }
 
     return (
-        <Card className="p-5 h-full">
-            <div className="flex justify-between">
-                <Button onClick={() => router.push(`/agencies`)}>
-                    <ArrowLeft />
-                </Button>
-                <div className="space-x-2">
+        <Card className="mt-2 p-5 h-full">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-5">
+                    <div className="text-4xl">{agency.name}</div>
                     <Button
                         onClick={() =>
                             router.push(`/agencies/${agency.id}/edit`)
@@ -65,10 +63,7 @@ export default function ShowAgency({ agencyId }) {
                     >
                         <Pencil />
                     </Button>
-                </div>
-            </div>
-            <CardHeader>
-                <CardTitle className="text-4xl">{agency.name}</CardTitle>
+                </CardTitle>
                 <CardDescription>Agency Information</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap xl:flex-nowrap gap-2">
@@ -76,7 +71,7 @@ export default function ShowAgency({ agencyId }) {
                     avatar={agency.file_url || "/default_company_avatar.png"}
                     className="w-[150px] h-[150px] sm:w-[200px] sm:h-[200px] md:w-[250px] md:h-[250px] xl:w-[350px] xl:h-[350px] flex-none"
                 />
-                <Table className="min-w-sm">
+                <Table className="w-full sm:min-w-sm">
                     <TableBody>
                         <TableRow>
                             <TableCell className="font-semibold">ID</TableCell>

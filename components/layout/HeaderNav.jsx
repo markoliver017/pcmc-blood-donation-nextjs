@@ -52,14 +52,26 @@ const HeaderNav = ({ currentUser }) => {
     };
     return (
         <>
-            <header className="flex-none flex gap-10 justify-between items-center border-b border-gray-200 p-2 bg-gradient-to-b from-gray-500 to-gray-600 text-white">
-                <div className="flex-1 flex justify-between gap-2 items-center">
+            <header className="flex-none flex gap-10 justify-between items-center border-b border-gray-200 p-2 bg-gradient-to-b from-cyan-500 to-blue-900 text-white">
+                <div className="flex-1 flex justify-evenly gap-2 items-center">
                     <nav className="hidden md:block">
-                        <ul className="flex space-x-4">
+                        <ul className="flex space-x-4 font-bold text-xl italic tex-white text-shadow">
+                            <li>
+                                <Link href="/">
+                                    <Image
+                                        src="/blood-logo.png"
+                                        className="flex-none rounded-xl bg-transparent"
+                                        width={50}
+                                        height={50}
+                                        alt="logo"
+                                        title="logo"
+                                    />
+                                </Link>
+                            </li>
                             <li>
                                 <Link
                                     href="/"
-                                    className="p-3 hover:ring rounded-xl flex-items-center shadow-[-11px_4px_6px_0px_rgba(0,_0,_0,_0.1)]"
+                                    className="p-3 hover:ring rounded-xl flex-items-center"
                                 >
                                     <Home className="h-4" />
                                     Home
@@ -68,7 +80,7 @@ const HeaderNav = ({ currentUser }) => {
                             <li>
                                 <Link
                                     href="/users"
-                                    className="p-3 hover:ring rounded-xl flex-items-center shadow-[-11px_4px_6px_0px_rgba(0,_0,_0,_0.1)]"
+                                    className="p-3 hover:ring rounded-xl flex-items-center"
                                 >
                                     <Users2 className="h-4" />
                                     Users
@@ -77,7 +89,7 @@ const HeaderNav = ({ currentUser }) => {
                             <li>
                                 <Link
                                     href="/agencies"
-                                    className="p-3 hover:ring rounded-xl flex-items-center shadow-[-11px_4px_6px_0px_rgba(0,_0,_0,_0.1)]"
+                                    className="p-3 hover:ring rounded-xl flex-items-center"
                                 >
                                     <Building className="h-4" />
                                     Agencies

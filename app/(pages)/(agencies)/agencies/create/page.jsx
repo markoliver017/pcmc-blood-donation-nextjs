@@ -6,6 +6,8 @@ import {
 
 import { fetchluzonDemographics } from "@/action/locationAction";
 import CreateForm from "./CreateForm";
+import Link from "next/link";
+import { X } from "lucide-react";
 
 export default async function AgenciesPage() {
     const queryClient = new QueryClient();
@@ -17,7 +19,17 @@ export default async function AgenciesPage() {
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <div className="w-full h-full md:w-3/4 mx-auto shadow-lg space-y-3">
+            <div className="w-full h-full md:w-8/10 2xl:w-3/4 mx-auto relative">
+                <Link href="/agencies" className="mb-3 absolute top-5 right-4">
+                    <button
+                        className="btn btn-circle btn-warning w-max p-3"
+                        tabIndex={-1}
+                    >
+                        <span className="hidden sm:inline-block">Cancel</span>{" "}
+                        <X />
+                    </button>
+                </Link>
+
                 <CreateForm />
             </div>
         </HydrationBoundary>

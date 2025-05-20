@@ -26,7 +26,7 @@ export default function Preloader() {
                 >
                     {/* Linear Gradient Background */}
                     <div
-                        className="bg-white"
+                        className="bg-white opacity-95"
                         style={{
                             position: "absolute",
                             width: "100%",
@@ -44,7 +44,7 @@ export default function Preloader() {
                     >
                         {/* Loading... */}
                         <Image
-                            src="/loader_2.gif"
+                            src="/loader_1.gif"
                             width={500}
                             height={500}
                             alt="Logo"

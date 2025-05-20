@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function UsersLayout({ children, modal }) {
+export default function AgenciesLayout({ children, modal }) {
     return (
         <>
             {modal}

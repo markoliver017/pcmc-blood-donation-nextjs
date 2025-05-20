@@ -4,6 +4,8 @@ import { userSchema, userStatusSchema } from "@lib/zod/userSchema";
 import { Role, sequelize, User } from "@lib/models";
 import { redirect } from "next/navigation";
 import { auth } from "@lib/auth";
+import { logAuditTrail } from "@lib/audit_trails.utils";
+import { logErrorToFile } from "@lib/logger.server";
 // import { formatPersonName } from "@lib/utils/string.utils";
 
 export async function getUsers() {
@@ -16,6 +18,11 @@ export async function getUsers() {
                     model: Role,
                     as: "role",
                     attributes: ["role_name"],
+                },
+                {
+                    model: User,
+                    as: "creator",
+                    attributes: { exclude: ["password", "email_verified"] },
                 },
             ],
         });
@@ -30,6 +37,12 @@ export async function getUsers() {
 
 export async function createUser(formData) {
     await new Promise((resolve) => setTimeout(resolve, 500));
+    const session = await auth();
+    if (session) {
+        const { user } = session;
+        formData.updated_by = user.id;
+    }
+
     console.log("formData received on server", formData);
     const parsed = userSchema.safeParse(formData);
 
@@ -62,9 +75,17 @@ export async function createUser(formData) {
 
         await transaction.commit();
 
+        const userId = session ? session?.user?.id : newUser?.id;
+        await logAuditTrail({
+            userId: userId,
+            controller: "users",
+            action: "CREATE",
+            details: `A new user has been successfully created. ID#: ${newUser.id}`,
+        });
+
         return { success: true, data: newUser.get({ plain: true }) };
     } catch (err) {
-        console.error("error?????", err);
+        logErrorToFile(err, "CREATE USER");
         await transaction.rollback();
 
         throw err.message || "Unknown error";
@@ -109,9 +130,16 @@ export async function updateUser(formData) {
 
         await transaction.commit();
 
+        await logAuditTrail({
+            userId: user.id,
+            controller: "users",
+            action: "UPDATE",
+            details: `User has been successfully updated. ID#: ${updatedUser.id}`,
+        });
+
         return { success: true, data: updatedUser.get({ plain: true }) };
     } catch (err) {
-        console.error("error?????", err);
+        logErrorToFile(err, "UPDATE USER");
         await transaction.rollback();
 
         return {
@@ -161,9 +189,14 @@ export async function updateUserStatus(formData) {
 
         await transaction.commit();
 
+        await logAuditTrail({
+            userId: user.id,
+            controller: "users",
+            action: "UPDATE USER STATUS",
+            details: "User status has been successfully updated.",
+        });
         return { success: true, data: updatedUser.get({ plain: true }) };
     } catch (err) {
-        console.error("error?????", err);
         await transaction.rollback();
 
         return {
@@ -208,6 +241,7 @@ export async function getUser(id) {
 
         return { success: true, data: user.get({ plain: true }) };
     } catch (err) {
+        logErrorToFile(err, "GET USER ERROR");
         throw {
             success: false,
             type: "server",

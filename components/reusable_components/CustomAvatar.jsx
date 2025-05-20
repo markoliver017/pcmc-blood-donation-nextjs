@@ -1,11 +1,11 @@
-import clsx from 'clsx'
-import Image from 'next/image'
-import React from 'react'
+import clsx from "clsx";
+import Image from "next/image";
+import React from "react";
 
 export default function CustomAvatar({
     avatar,
-    whenClick = () => { },
-    className
+    whenClick = () => {},
+    className,
 }) {
     return (
         <div
@@ -20,8 +20,7 @@ export default function CustomAvatar({
                 alt="Avatar"
                 fill
                 style={{ objectFit: "cover" }}
-
             />
         </div>
-    )
+    );
 }

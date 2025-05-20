@@ -4,7 +4,9 @@ import {
     QueryClient,
 } from "@tanstack/react-query";
 import { fetchAgency } from "@/action/agencyAction";
-import ShowAgency from "./ShowAgency";
+import ShowAgency from "@/(pages)/(agencies)/agencies/[id]/ShowAgency";
+
+import InterceptModal from "@components/layout/InterceptModal";
 
 export default async function Page({ params }) {
     const { id } = await params;
@@ -22,10 +24,12 @@ export default async function Page({ params }) {
     });
 
     return (
-        <HydrationBoundary state={dehydrate(queryClient)}>
-            <div className="w-full h-full md:w-8/10 lg:w-3/4 mx-auto">
-                <ShowAgency agencyId={id} />
-            </div>
-        </HydrationBoundary>
+        <InterceptModal>
+            <HydrationBoundary state={dehydrate(queryClient)}>
+                <div className="w-full md:w-9/10 2xl:w-8-10 mx-auto shadow-lg">
+                    <ShowAgency agencyId={id} />
+                </div>
+            </HydrationBoundary>
+        </InterceptModal>
     );
 }

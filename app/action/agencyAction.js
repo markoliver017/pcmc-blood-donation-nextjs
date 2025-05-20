@@ -2,18 +2,26 @@
 // https://psgc.gitlab.io/api/island-groups/luzon/provinces Luzon
 "use server";
 
+import { logAuditTrail } from "@lib/audit_trails.utils";
 import { auth } from "@lib/auth";
+import { logErrorToFile } from "@lib/logger.server";
 import { Agency, sequelize, User } from "@lib/models";
 import { agencySchema, agencyStatusSchema } from "@lib/zod/agencySchema";
 
 export async function fetchAgencies() {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     try {
         const agencies = await Agency.findAll({
-            // attributes: { exclude: ["password", "email_verified"] },
+            // attributes: { exclude: ["createdAt", "updatedAt"] },
             include: [
                 {
                     model: User,
                     as: "head",
+                    attributes: { exclude: ["password", "email_verified"] },
+                },
+                {
+                    model: User,
+                    as: "creator",
                     attributes: { exclude: ["password", "email_verified"] },
                 },
             ],
@@ -47,7 +55,7 @@ export async function fetchAgency(id) {
 }
 
 export async function createAgency(formData) {
-    // await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     const session = await auth();
     if (!session) throw "You are not authorized to access this request.";
 
@@ -86,9 +94,16 @@ export async function createAgency(formData) {
 
         await transaction.commit();
 
+        await logAuditTrail({
+            userId: user.id,
+            controller: "agencies",
+            action: "CREATE",
+            details: `A new agency has been successfully created. ID#: ${newAgency.id}`,
+        });
+
         return { success: true, data: newAgency.get({ plain: true }) };
     } catch (err) {
-        console.error("error?????", err);
+        logErrorToFile(err, "CREATE AGENCY");
         await transaction.rollback();
 
         throw err.message || "Unknown error";
@@ -98,6 +113,12 @@ export async function createAgency(formData) {
 export async function updateAgency(formData) {
     await new Promise((resolve) => setTimeout(resolve, 500));
     console.log("formData received on server", formData);
+    const session = await auth();
+    if (!session) throw "You are not authorized to access this request.";
+
+    const { user } = session;
+    formData.updated_by = user.id;
+
     const parsed = agencySchema.safeParse(formData);
 
     if (!parsed.success) {
@@ -128,9 +149,17 @@ export async function updateAgency(formData) {
 
         await transaction.commit();
 
+        await logAuditTrail({
+            userId: user.id,
+            controller: "agencies",
+            action: "UPDATE",
+            details: `Agency has been successfully updated. ID#: ${updatedAgency.id}`,
+        });
+
         return { success: true, data: updatedAgency.get({ plain: true }) };
     } catch (err) {
-        console.error("error?????", err);
+        logErrorToFile(err, "UPDATE AGENCY");
+
         await transaction.rollback();
 
         throw err.message || "Unknown error";
@@ -177,6 +206,13 @@ export async function updateAgencyStatus(formData) {
 
         await transaction.commit();
 
+        await logAuditTrail({
+            userId: user.id,
+            controller: "agencies",
+            action: "UPDATE AGENCY STATUS",
+            details: `User status has been successfully updated. ID#: ${updatedAgency.id}`,
+        });
+
         const title = {
             rejected: "Rejection Successful",
             activated: "Status Update",
@@ -196,7 +232,7 @@ export async function updateAgencyStatus(formData) {
                 text[data.status] || "Agency application updated successfully.",
         };
     } catch (err) {
-        console.error("error?????", err);
+        logErrorToFile(err, "UPDATE AGENCY STATUS");
         await transaction.rollback();
 
         throw err.message || "Unknown error";

@@ -47,7 +47,7 @@ import { uploadPicture } from "@/action/uploads";
 import { GrUpdate } from "react-icons/gr";
 import Toggle from "@components/reusable_components/Toggle";
 import UserLoading from "../../UserLoading";
-import { redirect, useParams } from "next/navigation";
+import { redirect, useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import UserStatusUpdater from "./UserStatusUpdater";
@@ -62,6 +62,7 @@ const fetchRoles = async () => {
 };
 
 export default function UserUpdateForm() {
+    const router = useRouter();
     const params = useParams();
     const id = params.id;
 
@@ -99,6 +100,7 @@ export default function UserUpdateForm() {
             if (!res.success) {
                 throw res; // Throw the error response to trigger onError
             }
+            console.log("update user", res);
             return res.data;
         },
         onSuccess: (data) => {
@@ -109,7 +111,10 @@ export default function UserUpdateForm() {
                 title: "User Updated",
                 text: "The user information has been updated successfully .",
                 icon: "success",
+                showCancelButton: true,
+                cancelButtonText: "Back",
                 confirmButtonText: "Done",
+                onConfirm: () => router.back(),
             });
         },
         onError: (error) => {
@@ -204,9 +209,9 @@ export default function UserUpdateForm() {
     useEffect(() => {
         setValue("image", userData?.image || null);
     }, [uploaded_avatar]);
-    useEffect(() => {
-        console.log("watch()>>>", watch());
-    }, [watch()]);
+    // useEffect(() => {
+    //     console.log("watch()>>>", watch());
+    // }, [watch()]);
     /* end */
 
     if (rolesQuery.isLoading || userQuery.isLoading) return <UserLoading />;
@@ -237,7 +242,6 @@ export default function UserUpdateForm() {
             showCancelButton: true,
             confirmButtonText: "Confirm",
             cancelButtonText: "Cancel",
-
             onConfirm: async () => {
                 const fileUrl = watch("image");
 
@@ -270,7 +274,7 @@ export default function UserUpdateForm() {
                     <div>Update User details.</div>
                 </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent id="form-modal">
                 <Form {...form}>
                     <form
                         onSubmit={handleSubmit(onSubmit)}
@@ -347,7 +351,7 @@ export default function UserUpdateForm() {
                             />
                         </div>
 
-                        <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[500px]">
+                        <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
                             <div>
                                 <InlineLabel>Role: *</InlineLabel>
                                 <fieldset className="fieldset w-full">
@@ -530,7 +534,7 @@ export default function UserUpdateForm() {
                                         >
                                             <BiMaleFemale className="h-3" />
                                             <select
-                                                className="w-full"
+                                                className="w-full dark:bg-inherit"
                                                 {...field}
                                             >
                                                 <option value="">
@@ -551,7 +555,7 @@ export default function UserUpdateForm() {
 
                             <div className="flex justify-end">
                                 <button
-                                    disabled={!isDirty}
+                                    disabled={!isDirty || isPending}
                                     className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300"
                                 >
                                     {isPending ? (

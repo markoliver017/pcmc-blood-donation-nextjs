@@ -13,10 +13,9 @@ import {
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
-import { ArrowLeftIcon, Mail, Send, Text } from "lucide-react";
 
+import { Mail, Send, Text } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BiLeftArrow, BiMaleFemale } from "react-icons/bi";
 import SweetAlert from "@components/ui/SweetAlert";
 import notify from "@components/ui/notify";
 import InlineLabel from "@components/form/InlineLabel";
@@ -36,11 +35,13 @@ import {
 import { Input } from "@components/ui/input";
 
 import { uploadPicture } from "@/action/uploads";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import Link from "next/link";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
+import { BiMaleFemale } from "react-icons/bi";
 
 export default function UserCreateForm({ fetchRoles }) {
+    const router = useRouter();
     const queryClient = useQueryClient();
     const { data, mutate, error, isError, isPending } = useMutation({
         mutationFn: async (formData) => {
@@ -61,6 +62,8 @@ export default function UserCreateForm({ fetchRoles }) {
                 icon: "success",
                 confirmButtonText: "Done",
                 onConfirm: reset,
+                element_id: "user_form",
+                onConfirm: () => router.back(),
             });
         },
         onError: (error) => {
@@ -79,7 +82,7 @@ export default function UserCreateForm({ fetchRoles }) {
                 notify({
                     error: true,
                     message: (
-                        <div tabIndex={0} className="collapse">
+                        <div className="collapse">
                             <input type="checkbox" />
                             <div className="collapse-title font-semibold">
                                 {message}
@@ -122,7 +125,7 @@ export default function UserCreateForm({ fetchRoles }) {
 
     const form = useForm({
         mode: "onChange",
-        // resolver: zodResolver(userSchema),
+        resolver: zodResolver(userSchema),
         defaultValues: {
             profile_picture: null, // or some default value
             role_id: null,
@@ -154,7 +157,7 @@ export default function UserCreateForm({ fetchRoles }) {
             showCancelButton: true,
             confirmButtonText: "Confirm",
             cancelButtonText: "Cancel",
-
+            element_id: "user_form",
             onConfirm: async () => {
                 const fileUrl = watch("image");
                 if (data?.profile_picture && !fileUrl) {
@@ -187,20 +190,21 @@ export default function UserCreateForm({ fetchRoles }) {
     // }, [avatar]);
 
     return (
-        <Card className="p-5 bg-slate-100">
+        <Card className="p-0 md:p-5 bg-slate-100">
             <CardHeader className="text-2xl font-bold">
                 <CardTitle>Create New User</CardTitle>
                 <CardDescription>
                     <div>Create User details.</div>
                 </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent id="user_form">
                 <Form {...form}>
                     {isError && (
-                        <div className="alert alert-error text-gray-700">
+                        <div className="alert alert-error text-gray-700 mb-5">
                             Error: {error.message}
                         </div>
                     )}
+
                     <form
                         onSubmit={handleSubmit(onSubmit)}
                         className="flex flex-wrap xl:flex-nowrap justify-center gap-2 md:gap-5"
@@ -226,6 +230,7 @@ export default function UserCreateForm({ fetchRoles }) {
                                             <FormControl ref={fileInputRef}>
                                                 <Input
                                                     type="file"
+                                                    tabIndex={-1}
                                                     onChange={(e) =>
                                                         onChange(
                                                             e.target.files[0]
@@ -305,6 +310,7 @@ export default function UserCreateForm({ fetchRoles }) {
                                                         resolvedTheme
                                                     )}
                                                     className="sm:text-lg"
+                                                    tabIndex={1}
                                                     isClearable
                                                 />
                                             );
@@ -332,6 +338,7 @@ export default function UserCreateForm({ fetchRoles }) {
                                             <Mail className="h-3" />
                                             <input
                                                 type="email"
+                                                tabIndex={2}
                                                 {...field}
                                                 placeholder="example@email.com"
                                             />
@@ -359,6 +366,7 @@ export default function UserCreateForm({ fetchRoles }) {
                                             <Text className="h-3" />
                                             <input
                                                 type="text"
+                                                tabIndex={3}
                                                 placeholder="Enter user first name"
                                                 {...field}
                                             />
@@ -387,6 +395,7 @@ export default function UserCreateForm({ fetchRoles }) {
                                             <Text className="h-3" />
                                             <input
                                                 type="text"
+                                                tabIndex={4}
                                                 placeholder="Enter user middle name (optional)"
                                                 {...field}
                                             />
@@ -415,6 +424,7 @@ export default function UserCreateForm({ fetchRoles }) {
                                             <Text className="h-3" />
                                             <input
                                                 type="text"
+                                                tabIndex={5}
                                                 placeholder="Enter user last name"
                                                 {...field}
                                             />
@@ -440,7 +450,8 @@ export default function UserCreateForm({ fetchRoles }) {
                                         >
                                             <BiMaleFemale className="h-3" />
                                             <select
-                                                className="w-full"
+                                                className="w-full dark:bg-inherit"
+                                                tabIndex={6}
                                                 {...field}
                                             >
                                                 <option value="">
@@ -462,7 +473,8 @@ export default function UserCreateForm({ fetchRoles }) {
                             <div className="flex justify-end">
                                 <button
                                     disabled={!isDirty || isPending}
-                                    className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300"
+                                    tabIndex={6}
+                                    className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300 focus:ring-2"
                                 >
                                     {isPending ? (
                                         <>
@@ -477,6 +489,11 @@ export default function UserCreateForm({ fetchRoles }) {
                                     )}
                                 </button>
                             </div>
+                            {errors.length && (
+                                <div className="alert alert-error text-gray-700 mt-5">
+                                    Error: {JSON.stringify(errors)}
+                                </div>
+                            )}
                         </div>
                     </form>
                 </Form>
