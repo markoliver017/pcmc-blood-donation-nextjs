@@ -52,8 +52,8 @@ const HeaderNav = ({ currentUser }) => {
     };
     return (
         <>
-            <header className="flex-none flex gap-10 justify-between items-center border-b border-gray-200 p-2 bg-gradient-to-b from-cyan-500 to-blue-900 text-white">
-                <div className="flex-1 flex justify-evenly gap-2 items-center">
+            <header className="flex-none border-b border-gray-200 p-2 bg-gradient-to-b from-cyan-500 to-blue-900 text-white">
+                <div className="flex-1 flex justify-between md:justify-evenly gap-2 items-center">
                     <nav className="hidden md:block">
                         <ul className="flex space-x-4 font-bold text-xl italic tex-white text-shadow">
                             <li>
@@ -79,7 +79,7 @@ const HeaderNav = ({ currentUser }) => {
                             </li>
                             <li>
                                 <Link
-                                    href="/users"
+                                    href="/admin/users"
                                     className="p-3 hover:ring rounded-xl flex-items-center"
                                 >
                                     <Users2 className="h-4" />
@@ -88,7 +88,7 @@ const HeaderNav = ({ currentUser }) => {
                             </li>
                             <li>
                                 <Link
-                                    href="/agencies"
+                                    href="/admin/agencies"
                                     className="p-3 hover:ring rounded-xl flex-items-center"
                                 >
                                     <Building className="h-4" />
@@ -105,20 +105,20 @@ const HeaderNav = ({ currentUser }) => {
                                     className="h-8 w-min p-0"
                                 >
                                     <span className="sr-only">Open menu</span>
-                                    <SquareMenu /> Menu
+                                    <SquareMenu /> Menus
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent side="bottom" align="start">
                                 <DropdownMenuLabel className="flex items-center gap-2 space-x-2">
                                     <Command className="w-3 h-3" />
-                                    Menus
+                                    Navigate
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
 
                                 {/* <Link href={`/`}> */}
                                 <DropdownMenuItem>
                                     <Link
-                                        href="/"
+                                        href="#"
                                         className="w-full hover:ring rounded flex-items-center "
                                     >
                                         <Home className="h-4" />
@@ -127,11 +127,20 @@ const HeaderNav = ({ currentUser }) => {
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
                                     <Link
-                                        href="/request"
+                                        href="#"
                                         className="w-full hover:ring rounded flex-items-center "
                                     >
                                         <FileSliders className="h-4" />
-                                        Data Request Form
+                                        Option 2
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <Link
+                                        href="#"
+                                        className="w-full hover:ring rounded flex-items-center "
+                                    >
+                                        <FileSliders className="h-4" />
+                                        Option 3
                                     </Link>
                                 </DropdownMenuItem>
                                 {/* </Link> */}

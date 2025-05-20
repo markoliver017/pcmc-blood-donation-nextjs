@@ -2,8 +2,16 @@
 @import "tw-animate-css";
 @plugin "daisyui";
 
-.biko {
+.b-red {
     @apply border border-red-500;
+}
+
+.b-blue {
+    @apply border border-blue-500;
+}
+
+.b-green {
+    @apply border border-green-500;
 }
 
 .flex-items-center {

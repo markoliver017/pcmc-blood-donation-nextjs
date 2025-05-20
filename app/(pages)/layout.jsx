@@ -15,6 +15,7 @@ import { auth } from "@lib/auth";
 import { User } from "@lib/models";
 import { getUser } from "@/action/userAction";
 import TansactProviders from "@components/layout/TansactProvider";
+import { headers } from "next/headers";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -35,6 +36,7 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
+
     const session = await auth();
     let currentUser = {
         name: "Bonnie Green",
