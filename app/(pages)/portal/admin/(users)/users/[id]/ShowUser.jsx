@@ -56,7 +56,9 @@ export default function ShowUser({ userId }) {
                     <div>
                         <Button
                             onClick={() =>
-                                router.push(`/admin/users/${user.id}/edit`)
+                                router.push(
+                                    `/portal/admin/users/${user.id}/edit`
+                                )
                             }
                             variant="secondary"
                             className=" hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200"

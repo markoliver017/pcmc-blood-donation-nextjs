@@ -83,7 +83,11 @@ export async function createUser(formData) {
             details: `A new user has been successfully created. ID#: ${newUser.id}`,
         });
 
-        return { success: true, data: newUser.get({ plain: true }) };
+        const userData = await User.findByPk(newUser.id, {
+            attributes: { exclude: ["createdAt", "updatedAt", "password"] },
+        });
+
+        return { success: true, data: userData.get({ plain: true }) };
     } catch (err) {
         logErrorToFile(err, "CREATE USER");
         await transaction.rollback();

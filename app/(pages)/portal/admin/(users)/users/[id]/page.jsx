@@ -37,7 +37,7 @@ export default async function Page({ params }) {
         <HydrationBoundary state={dehydrate(queryClient)}>
             <div className="w-full h-full md:w-8/10 lg:w-3/4 mx-auto">
                 <div className="mb-2">
-                    <Link href="/admin/users">
+                    <Link href="./">
                         <Button>
                             <ArrowLeft />
                             Back

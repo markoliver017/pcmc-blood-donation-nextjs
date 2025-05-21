@@ -44,11 +44,11 @@ export default function LoginForm() {
             email,
             password,
             redirect: false,
-            // callbackUrl: "/users", // redirect after login
+            callbackUrl: "/portal", // redirect after login
         });
 
         setIsLoading(false);
-        // console.log("res>>>>>>>>>", res)
+        console.log("res>>>>>>>>>", res);
         if (res.ok && res.error == undefined) {
             toast.success("Login successful!", {
                 message: "Login successful!",
@@ -183,7 +183,9 @@ export default function LoginForm() {
             </form>
             <button
                 onClick={() => {
-                    signIn("github");
+                    signIn("github", {
+                        callbackUrl: "/portal",
+                    });
                     setIsLoading((prev) => ({ ...prev, github: true }));
                 }}
                 className="btn bg-violet-300 mt-4 w-full hover:bg-neutral-800 hover:text-green-300"
@@ -203,7 +205,7 @@ export default function LoginForm() {
             <button
                 onClick={() => {
                     signIn("google", {
-                        callbackUrl: "/",
+                        callbackUrl: "/portal",
                     });
                     setIsLoading((prev) => ({ ...prev, google: true }));
                 }}

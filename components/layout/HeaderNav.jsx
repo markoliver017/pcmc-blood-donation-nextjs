@@ -79,7 +79,7 @@ const HeaderNav = ({ currentUser }) => {
                             </li>
                             <li>
                                 <Link
-                                    href="/admin/users"
+                                    href="/portal/admin/users"
                                     className="p-3 hover:ring rounded-xl flex-items-center"
                                 >
                                     <Users2 className="h-4" />

@@ -36,15 +36,14 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-
     const session = await auth();
+    console.log("Root layout", session);
     let currentUser = {
         name: "Bonnie Green",
         email: "admin@email.com",
         image: "https://avatar.iran.liara.run/public/boy",
         gender: "unknown",
     };
-    console.log(session);
     return (
         <html lang="en" suppressHydrationWarning={true}>
             <head>

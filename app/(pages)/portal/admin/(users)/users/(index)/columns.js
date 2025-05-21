@@ -149,13 +149,13 @@ export const columns = [
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
 
-                        <Link href={`/admin/users/${data.id}`}>
+                        <Link href={`/portal/admin/users/${data.id}`}>
                             <DropdownMenuItem className="flex items-center space-x-2">
                                 <Eye className="w-4 h-4" />
                                 <span>Show</span>
                             </DropdownMenuItem>
                         </Link>
-                        <Link href={`/admin/users/${data.id}/edit`}>
+                        <Link href={`/portal/admin/users/${data.id}/edit`}>
                             <DropdownMenuItem className="flex items-center space-x-2">
                                 <Pencil className="w-4 h-4" />
                                 <span>Edit</span>

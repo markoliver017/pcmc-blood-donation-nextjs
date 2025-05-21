@@ -11,6 +11,7 @@ import { redirect, usePathname } from "next/navigation";
 
 const Sidebar = ({ currentUser }) => {
     const { status, data } = useSession();
+    // console.log("sidebar session data", data);
 
     if (status == "authenticated") {
         currentUser = data.user;
@@ -18,7 +19,7 @@ const Sidebar = ({ currentUser }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const menus = usePagesStore((state) => state.pages);
     const currentRoute = usePathname();
-    const isAdminRoute = currentRoute.startsWith("/admin");
+    const isAdminRoute = currentRoute.startsWith("/portal");
 
     useEffect(() => {
         const handleResize = () => {
@@ -37,7 +38,12 @@ const Sidebar = ({ currentUser }) => {
     if (isAdminRoute && status == "unauthenticated") {
         redirect("/");
     }
+
     if (status != "authenticated") {
+        return;
+    }
+
+    if (!data?.user?.role_name) {
         return;
     }
 

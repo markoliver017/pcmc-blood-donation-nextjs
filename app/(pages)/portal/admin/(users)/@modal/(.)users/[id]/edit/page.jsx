@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-query";
 import { getUser } from "@/action/userAction";
 import InterceptModal from "@components/layout/InterceptModal";
-import UserUpdateForm from "@/(pages)/admin/(users)/users/[id]/edit/UserUpdateForm";
+import UserUpdateForm from "@/(pages)/portal/admin/(users)/users/[id]/edit/UserUpdateForm";
 
 const fetchRoles = async () => {
     const url = new URL(`/api/roles`, process.env.NEXT_PUBLIC_DOMAIN);
@@ -47,7 +47,6 @@ export default async function Page({ params }) {
                 <div className="px-5">
                     <UserUpdateForm />
                 </div>
-
             </HydrationBoundary>
         </InterceptModal>
     );

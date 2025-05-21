@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import UserCreateForm from "@/(pages)/admin/(users)/users/create/UserCreateForm";
-import UserLoading from "@/(pages)/admin/(users)/users/UserLoading";
+import UserCreateForm from "@/(pages)/portal/admin/(users)/users/create/UserCreateForm";
+import UserLoading from "@/(pages)/portal/admin/(users)/users/UserLoading";
 import InterceptModal from "@components/layout/InterceptModal";
 
 const fetchRoles = async () => {
@@ -17,7 +17,6 @@ const fetchRoles = async () => {
 export default function Page() {
     return (
         <InterceptModal>
-
             <Suspense fallback={<UserLoading />}>
                 <div className="w-9/10 mx-auto shadow-lg">
                     <UserCreateForm fetchRoles={fetchRoles()} />

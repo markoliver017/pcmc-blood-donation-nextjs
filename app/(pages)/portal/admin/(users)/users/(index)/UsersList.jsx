@@ -29,7 +29,7 @@ export default function UsersList() {
         <div>
             <div className="flex justify-between">
                 <Link
-                    href="/admin/users/create"
+                    href="./users/create"
                     className="btn btn-lg btn-neutral dark:btn-accent"
                 >
                     <Plus /> Create

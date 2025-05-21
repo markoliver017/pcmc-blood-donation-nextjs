@@ -2,10 +2,9 @@ import {
     dehydrate,
     HydrationBoundary,
     QueryClient,
-
 } from "@tanstack/react-query";
 import { getUser } from "@/action/userAction";
-import ShowUser from "@/(pages)/admin/(users)/users/[id]/ShowUser";
+import ShowUser from "@/(pages)/portal/admin/(users)/users/[id]/ShowUser";
 import InterceptModal from "@components/layout/InterceptModal";
 
 const fetchRoles = async () => {
@@ -38,7 +37,6 @@ export default async function Page({ params }) {
                 <div className="px-5">
                     <ShowUser userId={id} />
                 </div>
-
             </HydrationBoundary>
         </InterceptModal>
     );

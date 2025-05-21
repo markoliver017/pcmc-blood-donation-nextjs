@@ -19,7 +19,6 @@ export async function up(queryInterface) {
 
         users.push({
             id: faker.string.uuid(),
-            role_id: 2,
             name: firstName + " " + lastName,
             first_name: firstName,
             last_name: lastName,
