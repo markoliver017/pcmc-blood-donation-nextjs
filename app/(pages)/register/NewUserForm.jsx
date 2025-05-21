@@ -62,9 +62,8 @@ export default function NewUserForm({ role }) {
                 text: "New user has been successfully created.",
                 icon: "success",
                 confirmButtonText: "Done",
-                onConfirm: reset,
                 element_id: "user_form",
-                onConfirm: () => router.back(),
+                // onConfirm: reset,
             });
         },
         onError: (error) => {
@@ -108,7 +107,6 @@ export default function NewUserForm({ role }) {
         },
     });
 
-    const { theme, resolvedTheme } = useTheme();
 
     const form = useForm({
         mode: "onChange",
@@ -116,11 +114,12 @@ export default function NewUserForm({ role }) {
         defaultValues: {
             profile_picture: null, // or some default value
             role_id: user_role.id,
-            email: "",
-            first_name: "",
-            last_name: "",
-            password: "",
-            password_confirmation: "",
+            email: "Mark@email.com",
+            first_name: "Mark",
+            last_name: "Roman",
+            gender: "male",
+            password: "User@1234",
+            password_confirmation: "User@1234",
         },
     });
 
@@ -155,9 +154,7 @@ export default function NewUserForm({ role }) {
                     }
                     console.log("Upload result:", result);
                 }
-                // startTransition(async () => {
-                //     formAction(data);
-                // });
+
                 mutate(data);
             },
         });
@@ -255,7 +252,7 @@ export default function NewUserForm({ role }) {
                                 control={form.control}
                                 name="role_id"
                                 render={({ field }) => (
-                                    <FormItem>
+                                    <FormItem className="hidden">
                                         <InlineLabel>Role: *</InlineLabel>
 
                                         <label
@@ -490,6 +487,8 @@ export default function NewUserForm({ role }) {
                 <div>
                     <pre>{JSON.stringify(watch(), null, 3)}</pre>
                     <pre>{JSON.stringify(errors, null, 3)}</pre>
+                    <div>Mutate data</div>
+                    <pre>{JSON.stringify(data, null, 3)}</pre>
                 </div>
                 <div className="divider">
                     or Sign Up with the following provider

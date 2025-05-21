@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import Link from "next/link";
 import { getOrganizerRole } from "@/action/registerAction";
 import Skeleton from "@components/ui/skeleton";
-import NewUserForm from "./NewUserForm";
+import NewUserForm from "../NewUserForm";
 import { auth } from "@lib/auth";
 import NewOrganizerForm from "./NewOrganizerForm";
 

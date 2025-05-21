@@ -22,6 +22,7 @@ import {
     Home,
     LogOut,
     MoreHorizontal,
+    Pen,
     SquareMenu,
     Users2,
 } from "lucide-react";
@@ -93,6 +94,15 @@ const HeaderNav = ({ currentUser }) => {
                                 >
                                     <Building className="h-4" />
                                     Agencies
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/register/organizers"
+                                    className="p-3 hover:ring rounded-xl flex-items-center"
+                                >
+                                    <Pen className="h-4" />
+                                    Organizer Registration
                                 </Link>
                             </li>
                         </ul>

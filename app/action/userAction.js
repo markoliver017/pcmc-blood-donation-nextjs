@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@lib/auth";
 import { logAuditTrail } from "@lib/audit_trails.utils";
 import { logErrorToFile } from "@lib/logger.server";
+import { formatSeqObj } from "@lib/utils/object.utils";
 // import { formatPersonName } from "@lib/utils/string.utils";
 
 export async function getUsers() {
@@ -59,35 +60,95 @@ export async function createUser(formData) {
 
     const { data } = parsed;
 
+    const role = await Role.findByPk(data.role_id, {
+        attributes: ['id', 'role_name']
+    });
+
+    if (!role) {
+        throw {
+            success: false,
+            message: "Database Error: Role not found."
+        }
+    }
+
     const transaction = await sequelize.transaction();
 
     try {
-        const existing = await User.findOne({
+        const existingUser = await User.findOne({
             where: { email: data.email },
+            include: [
+                {
+                    model: sequelize.models.Role,
+                    attributes: ['id', 'role_name'],
+                    as: 'roles',
+                    through: { attributes: [] }
+                }
+            ],
             transaction,
         });
 
-        if (existing) {
-            throw new Error("Email already exists");
+        if (existingUser) {
+            console.log("Existing User")
+            const existingRoles = existingUser.roles.map((role) => role.id);
+            const isExistingRole = existingRoles.includes(data.role_id);
+            if (isExistingRole) {
+                throw {
+                    success: false,
+                    message: `The email is already associated with an existing ${role?.role_name} role in the system.`
+                }
+            }
+
+            // if the roles is not exists; proceed
+            await existingUser.addRoles(data.role_id);
+            await existingUser.reload();
+
+            await transaction.commit();
+
+            const userId = session ? session?.user?.id : existingUser?.id;
+            await logAuditTrail({
+                userId: userId,
+                controller: "users",
+                action: "CREATE",
+                details: `A new user role (${role?.role_name}) has been successfully added to user ID#: ${existingUser.id}`,
+            });
+
+            return {
+                success: true,
+                data: {
+                    user: existingUser.get({ plain: true }),
+                    roles: existingRoles,
+                    isExistingRole: isExistingRole
+                }
+            }
         }
+        console.log("New User")
 
         const newUser = await User.create(data, { transaction });
-
         await transaction.commit();
 
+        await newUser.addRoles(data.role_id);
+        await newUser.reload({
+            include: [
+                {
+                    model: sequelize.models.Role,
+                    attributes: ['id', 'role_name'],
+                    as: 'roles',
+                    through: { attributes: [] }
+                }
+            ]
+        });
+
         const userId = session ? session?.user?.id : newUser?.id;
+
         await logAuditTrail({
             userId: userId,
             controller: "users",
             action: "CREATE",
-            details: `A new user has been successfully created. ID#: ${newUser.id}`,
+            details: `A new user has been successfully created. ID#: ${newUser.id} with role ${role?.role_name}`,
         });
 
-        const userData = await User.findByPk(newUser.id, {
-            attributes: { exclude: ["createdAt", "updatedAt", "password"] },
-        });
+        return { success: true, data: formatSeqObj(newUser) };
 
-        return { success: true, data: userData.get({ plain: true }) };
     } catch (err) {
         logErrorToFile(err, "CREATE USER");
         await transaction.rollback();
