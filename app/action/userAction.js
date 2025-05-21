@@ -37,7 +37,7 @@ export async function getUsers() {
 }
 
 export async function createUser(formData) {
-    await new Promise((resolve) => setTimeout(resolve, 500));
+
     const session = await auth();
     if (session) {
         const { user } = session;
@@ -121,6 +121,9 @@ export async function createUser(formData) {
                 }
             }
         }
+
+
+        /***********************"New User"*************************** */
         console.log("New User")
 
         const newUser = await User.create(data, { transaction });
@@ -150,6 +153,7 @@ export async function createUser(formData) {
         return { success: true, data: formatSeqObj(newUser) };
 
     } catch (err) {
+
         logErrorToFile(err, "CREATE USER");
         await transaction.rollback();
 
