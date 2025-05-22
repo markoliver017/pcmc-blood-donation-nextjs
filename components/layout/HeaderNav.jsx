@@ -31,6 +31,7 @@ import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
+import { MdTrackChanges } from "react-icons/md";
 
 const HeaderNav = ({ currentUser }) => {
     let isLoggedIn = false;
@@ -103,6 +104,15 @@ const HeaderNav = ({ currentUser }) => {
                                 >
                                     <Pen className="h-4" />
                                     Organizer Registration
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/portal/change-role"
+                                    className="p-3 hover:ring rounded-xl flex-items-center"
+                                >
+                                    <MdTrackChanges className="h-4" />
+                                    Change Role
                                 </Link>
                             </li>
                         </ul>

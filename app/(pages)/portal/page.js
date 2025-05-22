@@ -9,19 +9,19 @@ export default async function PortalPage() {
     const session = await auth();
     if (!session) redirect("/");
     console.log("portal session", session);
-    // redirect("./portal/admin");
-    if (!session.user.roles.length) {
+
+
+    if (!session?.user?.roles?.length) {
         return <div>You are not allowed to access this page</div>;
     }
 
-    if (!session.user?.role_name) {
+    const { roles, role_name: session_role } = session.user;
+
+    const currentLoggedInRole = roles.find((role) => role.role_name == session_role);
+
+    if (!currentLoggedInRole) {
         return <AuthSelectRole roles={session?.user?.roles || []} />;
     }
 
-    return (
-        <>
-            Welcome {session.user.role_name}
-            <SessionLogger />
-        </>
-    );
+    redirect(currentLoggedInRole?.url || "/portal?error=RoleUrlNotFound");
 }

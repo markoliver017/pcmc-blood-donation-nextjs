@@ -67,5 +67,22 @@ export const usePagesStore = create((set) => ({
     ],
     setPages: (newPages) => set({ pages: newPages }), // Optional if you need to modify `pages`
     breadcrumbs: [],
-    setBreadcrumbs: (newBreadcrumbs) => set({ breadcrumbs: newBreadcrumbs }), // Optional if you need to modify `pages`
+    setBreadcrumbs: (newBreadcrumbs) => set({ breadcrumbs: newBreadcrumbs }),
+    menus: [
+        {
+            title: "Dashboard",
+            path: "/dashboard",
+            icon: "dashboard-icon",
+            roles: ["admin", "editor", "viewer"],
+            has_child: false,
+            children: [
+                {
+                    title: "Analytics",
+                    path: "/dashboard/analytics",
+                    icon: "analytics-icon",
+                    roles: ["admin", "editor"]
+                }
+            ]
+        }
+    ]
 }));
