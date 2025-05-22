@@ -5,7 +5,7 @@
 import { logAuditTrail } from "@lib/audit_trails.utils";
 import { auth } from "@lib/auth";
 import { logErrorToFile } from "@lib/logger.server";
-import { Agency, sequelize, User } from "@lib/models";
+import { Agency, Role, sequelize, User } from "@lib/models";
 import { agencySchema, agencyStatusSchema } from "@lib/zod/agencySchema";
 
 export async function fetchAgencies() {
@@ -60,6 +60,16 @@ export async function createAgency(formData) {
     if (!session) throw "You are not authorized to access this request.";
 
     const { user } = session;
+
+    const role = await Role.findOne({
+        where: { role_name: "Agency Administrator" },
+        attributes: ["id", "role_name"],
+    });
+
+    if (!role) {
+        throw "Database Error: Agency Administrator role is not set on the system.";
+    }
+
     formData.head_id = user.id;
 
     console.log("formData received on server", formData);
@@ -78,16 +88,45 @@ export async function createAgency(formData) {
 
     const { data } = parsed;
 
+    const userData = await User.findByPk(user.id, {
+        include: [
+            {
+                model: sequelize.models.Role,
+                attributes: ["id", "role_name"],
+                as: "roles",
+                through: { attributes: [] },
+            },
+            {
+                model: sequelize.models.Agency,
+                attributes: ["id", "name"],
+                as: "headedAgency",
+            },
+        ],
+    });
+
+    if (!userData) {
+        throw `User session expired: The user's session might have timed out or been invalidated.`;
+    }
+
+    if (userData.headedAgency) {
+        throw `Your account is currently linked to partner agency "${userData.headedAgency.name}".`;
+    }
+
+    const existingRoles = userData?.roles.map((role) => role.id) || [];
+    const isExistingRole = existingRoles.includes(role.id);
+
     const transaction = await sequelize.transaction();
 
     try {
-        const existing = await Agency.findOne({
-            where: { agency_email: data.agency_email },
-            transaction,
-        });
-
-        if (existing) {
-            throw new Error("Agency Email already exists");
+        if (!isExistingRole) {
+            await userData.addRoles(role.id);
+            await logAuditTrail({
+                userId: userData.id,
+                controller: "agency_action",
+                action: "CREATE",
+                details: `A new user role (${role?.role_name}) has been successfully added to user ID#: ${userData.id}`,
+            });
+            await userData.reload();
         }
 
         const newAgency = await Agency.create(data, { transaction });

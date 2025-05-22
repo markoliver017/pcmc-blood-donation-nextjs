@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-query";
 import { fetchluzonDemographics } from "@/action/locationAction";
 import InterceptModal from "@components/layout/InterceptModal";
-import CreateForm from "@/(pages)/admin/(agencies)/agencies/create/CreateForm";
+import CreateForm from "@/(pages)/portal/admin/(agencies)/agencies/create/NewAgencyForm";
 
 export default async function Page() {
     const queryClient = new QueryClient();

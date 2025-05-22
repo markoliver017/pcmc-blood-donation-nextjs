@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import SweetAlert from "@components/ui/SweetAlert";
 import notify from "@components/ui/notify";
 import InlineLabel from "@components/form/InlineLabel";
-import { useTheme } from "next-themes";
+// import { useTheme } from "next-themes";
 import { userSchema } from "@lib/zod/userSchema";
 import { createUser } from "@/action/userAction";
 import FieldError from "@components/form/FieldError";
@@ -36,13 +36,43 @@ import { useRouter } from "next/navigation";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 
 import { signIn } from "next-auth/react";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
+// import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { BiMaleFemale } from "react-icons/bi";
+import FormLogger from "@lib/utils/FormLogger";
 
 export default function NewUserForm({ role }) {
     const user_role = use(role);
-    const [isLoading, setIsLoading] = useState({});
+    // const [isLoading, setIsLoading] = useState({});
     const router = useRouter();
+
+    const form = useForm({
+        mode: "onChange",
+        resolver: zodResolver(userSchema),
+        defaultValues: {
+            profile_picture: null, // or some default value
+            role_id: user_role.id,
+            email: "mark@email.com",
+            first_name: "Mark",
+            last_name: "Roman",
+            gender: "male",
+            password: "User@1234",
+            password_confirmation: "User@1234",
+        },
+    });
+
+    const {
+        watch,
+        control,
+        handleSubmit,
+        setValue,
+        reset,
+        resetField,
+        formState: { errors, isDirty },
+    } = form;
+
+    const email = watch("email");
+    const password = watch("password");
+
     const queryClient = useQueryClient();
     const { data, mutate, error, isError, isPending } = useMutation({
         mutationFn: async (formData) => {
@@ -58,12 +88,23 @@ export default function NewUserForm({ role }) {
             // Invalidate the posts query to refetch the updated list
             queryClient.invalidateQueries({ queryKey: ["users"] });
             SweetAlert({
-                title: "Submission Successful",
-                text: "New user has been successfully created.",
+                title: "Registration Complete",
+                text: "You've Successfully Registered",
                 icon: "success",
-                confirmButtonText: "Done",
+                showCancelButton: true,
+                cancelButtonText: "Cancel",
+                confirmButtonText: "Proceed to Agency Registration",
                 element_id: "user_form",
-                // onConfirm: reset,
+                onCancel: () => router.push("/"),
+                onConfirm: async () => {
+                    const res = await signIn("credentials", {
+                        email,
+                        password,
+                        redirect: false,
+                    });
+                    if (res.ok) router.refresh();
+                    reset();
+                },
             });
         },
         onError: (error) => {
@@ -106,34 +147,6 @@ export default function NewUserForm({ role }) {
             }
         },
     });
-
-
-    const form = useForm({
-        mode: "onChange",
-        resolver: zodResolver(userSchema),
-        defaultValues: {
-            profile_picture: null, // or some default value
-            role_id: user_role.id,
-            email: "Mark@email.com",
-            first_name: "Mark",
-            last_name: "Roman",
-            gender: "male",
-            password: "User@1234",
-            password_confirmation: "User@1234",
-        },
-    });
-
-    const {
-        register,
-        watch,
-        control,
-        handleSubmit,
-        setError,
-        setValue,
-        reset,
-        resetField,
-        formState: { errors, isDirty },
-    } = form;
 
     const onSubmit = async (data) => {
         SweetAlert({
@@ -484,15 +497,13 @@ export default function NewUserForm({ role }) {
                         </div>
                     </form>
                 </Form>
-                <div>
-                    <pre>{JSON.stringify(watch(), null, 3)}</pre>
-                    <pre>{JSON.stringify(errors, null, 3)}</pre>
-                    <div>Mutate data</div>
-                    <pre>{JSON.stringify(data, null, 3)}</pre>
-                </div>
-                <div className="divider">
+
+                <FormLogger watch={watch} errors={errors} data={data} />
+
+                {/* <div className="divider">
                     or Sign Up with the following provider
                 </div>
+
                 <div className="p-5 border round">
                     <button
                         className="btn bg-black text-white border-black hover:bg-neutral-800 hover:text-green-300"
@@ -515,7 +526,7 @@ export default function NewUserForm({ role }) {
                             </>
                         )}
                     </button>
-                </div>
+                </div> */}
             </CardContent>
         </Card>
     );

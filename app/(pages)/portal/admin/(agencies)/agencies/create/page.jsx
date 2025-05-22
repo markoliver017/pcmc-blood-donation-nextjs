@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-query";
 
 import { fetchluzonDemographics } from "@/action/locationAction";
-import CreateForm from "./CreateForm";
+import CreateForm from "./NewAgencyForm";
 import Link from "next/link";
 import { X } from "lucide-react";
 

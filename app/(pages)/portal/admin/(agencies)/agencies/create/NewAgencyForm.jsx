@@ -38,16 +38,18 @@ import {
     FormMessage,
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
-import Image from "next/image";
+
 import { uploadPicture } from "@/action/uploads";
 import FieldError from "@components/form/FieldError";
-import Link from "next/link";
 import { formatFormalName } from "@lib/utils/string.utils";
 import { agencySchema } from "@lib/zod/agencySchema";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import { useRouter } from "next/navigation";
 
-export default function CreateForm() {
+export default function NewAgencyForm({
+    title = "Create New Agency",
+    description = "Step Up to Host a Blood Drive",
+}) {
     const router = useRouter();
     const { resolvedTheme } = useTheme();
     const queryClient = useQueryClient();
@@ -83,7 +85,6 @@ export default function CreateForm() {
                 icon: "success",
                 confirmButtonText: "Done",
                 onConfirm: reset,
-                onConfirm: () => router.back(),
             });
         },
         onError: (error) => {
@@ -144,7 +145,7 @@ export default function CreateForm() {
         defaultValues: {
             name: "",
             contact_number: "",
-            agency_email: "",
+            // agency_email: "",
             address: "",
             barangay: "",
             city_municipality: "",
@@ -247,10 +248,10 @@ export default function CreateForm() {
 
     return (
         <Card className="p-0 md:p-5 bg-slate-100">
-            <CardHeader className="text-center text-2xl font-bold">
-                <CardTitle>Create New Agency</CardTitle>
+            <CardHeader className="text-2xl font-bold">
+                <CardTitle>{title}</CardTitle>
                 <CardDescription>
-                    <div>Step Up to Host a Blood Drive.</div>
+                    <div>{description}</div>
                 </CardDescription>
             </CardHeader>
             <CardContent id="form-modal">
@@ -377,7 +378,7 @@ export default function CreateForm() {
                                     </FormItem>
                                 )}
                             />
-                            <FormField
+                            {/* <FormField
                                 control={form.control}
                                 name="agency_email"
                                 render={({ field }) => (
@@ -406,7 +407,7 @@ export default function CreateForm() {
                                         />
                                     </FormItem>
                                 )}
-                            />
+                            /> */}
                             <FormField
                                 control={form.control}
                                 name="address"

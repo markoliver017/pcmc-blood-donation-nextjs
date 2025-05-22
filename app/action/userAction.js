@@ -37,7 +37,6 @@ export async function getUsers() {
 }
 
 export async function createUser(formData) {
-
     const session = await auth();
     if (session) {
         const { user } = session;
@@ -61,14 +60,14 @@ export async function createUser(formData) {
     const { data } = parsed;
 
     const role = await Role.findByPk(data.role_id, {
-        attributes: ['id', 'role_name']
+        attributes: ["id", "role_name"],
     });
 
     if (!role) {
         throw {
             success: false,
-            message: "Database Error: Role not found."
-        }
+            message: "Database Error: Role not found.",
+        };
     }
 
     const transaction = await sequelize.transaction();
@@ -76,55 +75,19 @@ export async function createUser(formData) {
     try {
         const existingUser = await User.findOne({
             where: { email: data.email },
-            include: [
-                {
-                    model: sequelize.models.Role,
-                    attributes: ['id', 'role_name'],
-                    as: 'roles',
-                    through: { attributes: [] }
-                }
-            ],
             transaction,
         });
 
         if (existingUser) {
-            console.log("Existing User")
-            const existingRoles = existingUser.roles.map((role) => role.id);
-            const isExistingRole = existingRoles.includes(data.role_id);
-            if (isExistingRole) {
-                throw {
-                    success: false,
-                    message: `The email is already associated with an existing ${role?.role_name} role in the system.`
-                }
-            }
-
-            // if the roles is not exists; proceed
-            await existingUser.addRoles(data.role_id);
-            await existingUser.reload();
-
-            await transaction.commit();
-
-            const userId = session ? session?.user?.id : existingUser?.id;
-            await logAuditTrail({
-                userId: userId,
-                controller: "users",
-                action: "CREATE",
-                details: `A new user role (${role?.role_name}) has been successfully added to user ID#: ${existingUser.id}`,
-            });
-
-            return {
-                success: true,
-                data: {
-                    user: existingUser.get({ plain: true }),
-                    roles: existingRoles,
-                    isExistingRole: isExistingRole
-                }
-            }
+            console.log("Existing User");
+            throw {
+                success: false,
+                message: `The email is already associated with an existing account in the system. Please login then proceed to registration.`,
+            };
         }
 
-
         /***********************"New User"*************************** */
-        console.log("New User")
+        console.log("New User");
 
         const newUser = await User.create(data, { transaction });
         await transaction.commit();
@@ -134,11 +97,11 @@ export async function createUser(formData) {
             include: [
                 {
                     model: sequelize.models.Role,
-                    attributes: ['id', 'role_name'],
-                    as: 'roles',
-                    through: { attributes: [] }
-                }
-            ]
+                    attributes: ["id", "role_name"],
+                    as: "roles",
+                    through: { attributes: [] },
+                },
+            ],
         });
 
         const userId = session ? session?.user?.id : newUser?.id;
@@ -151,9 +114,7 @@ export async function createUser(formData) {
         });
 
         return { success: true, data: formatSeqObj(newUser) };
-
     } catch (err) {
-
         logErrorToFile(err, "CREATE USER");
         await transaction.rollback();
 

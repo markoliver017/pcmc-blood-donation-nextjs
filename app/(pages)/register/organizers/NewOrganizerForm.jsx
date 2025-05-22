@@ -1,31 +1,20 @@
 "use client";
-import { X } from "lucide-react";
-import { signOut } from "next-auth/react";
-import React, { use, useState } from "react";
+import NewAgencyStepForm from "@/(pages)/portal/admin/(agencies)/agencies/create/NewAgencyStepForm";
+import React, { useState } from "react";
 
-export default function NewOrganizerForm({ role }) {
-    const user_role = use(role);
-    const [isLoading, setIsLoading] = useState(false);
+export default function NewOrganizerForm({ admin }) {
+    if (!admin) {
+        throw "You are not allowed to access this page.";
+    }
 
-    const handleCancelReg = () => {
-        setIsLoading(true);
-        signOut({ callbackUrl: "/register/organizers" });
-    };
     return (
         <div>
-            <button
-                onClick={handleCancelReg}
-                className="btn bg-black text-white border-black hover:bg-neutral-800 hover:text-green-300"
-            >
-                {isLoading ? (
-                    "Signing out..."
-                ) : (
-                    <>
-                        <X />
-                        Cancel Registration
-                    </>
-                )}
-            </button>
+            <h1 className="text-2xl mb-5">
+                Agency Administrator:{" "}
+                <span className="font-semibold">{admin.name}</span>{" "}
+                <i>({admin.email})</i>
+            </h1>
+            <NewAgencyStepForm />
         </div>
     );
 }

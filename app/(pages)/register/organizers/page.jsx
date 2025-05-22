@@ -6,10 +6,22 @@ import Skeleton from "@components/ui/skeleton";
 import NewUserForm from "../NewUserForm";
 import { auth } from "@lib/auth";
 import NewOrganizerForm from "./NewOrganizerForm";
+import {
+    dehydrate,
+    HydrationBoundary,
+    QueryClient,
+} from "@tanstack/react-query";
+import { fetchluzonDemographics } from "@/action/locationAction";
 
 export default async function Page() {
     const session = await auth();
     console.log("session in register", session);
+    const queryClient = new QueryClient();
+
+    await queryClient.prefetchQuery({
+        queryKey: ["luzonDemographics"],
+        queryFn: fetchluzonDemographics,
+    });
 
     return (
         <Suspense fallback={<Skeleton />}>
@@ -30,7 +42,9 @@ export default async function Page() {
                         <NewUserForm role={getOrganizerRole()} />
                     </>
                 ) : (
-                    <NewOrganizerForm role={getOrganizerRole()} />
+                    <HydrationBoundary state={dehydrate(queryClient)}>
+                        <NewOrganizerForm admin={session.user} />
+                    </HydrationBoundary>
                 )}
             </div>
         </Suspense>

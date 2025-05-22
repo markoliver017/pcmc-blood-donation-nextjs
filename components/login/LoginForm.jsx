@@ -14,8 +14,8 @@ import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { FaGoogle } from "react-icons/fa";
 
 const credentials = {
-    email: "admin@email.com",
-    password: "password",
+    email: "mark@email.com",
+    password: "User@1234",
 };
 
 export default function LoginForm() {

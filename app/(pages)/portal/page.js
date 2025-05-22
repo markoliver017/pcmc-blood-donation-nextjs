@@ -1,24 +1,27 @@
 import { auth } from "@lib/auth";
-import moment from "moment";
+
 import { redirect } from "next/navigation";
 import React from "react";
+import AuthSelectRole from "./AuthSelectRole";
+import SessionLogger from "@lib/utils/SessionLogger";
 
 export default async function PortalPage() {
     const session = await auth();
     if (!session) redirect("/");
     console.log("portal session", session);
     // redirect("./portal/admin");
-    if (!session.user.role) {
+    if (!session.user.roles.length) {
         return <div>You are not allowed to access this page</div>;
     }
+
+    if (!session.user?.role_name) {
+        return <AuthSelectRole roles={session?.user?.roles || []} />;
+    }
+
     return (
-        <div>
-            Portal : <br />
-            <pre>{JSON.stringify(session, null, 2)}</pre>
-            <br />
-            <br />
-            Expires in:{" "}
-            {moment(session?.expires).format("MMM DD, YYYY | HH:mm:ss")}
-        </div>
+        <>
+            Welcome {session.user.role_name}
+            <SessionLogger />
+        </>
     );
 }

@@ -23,7 +23,7 @@ import {
     View,
     UserRoundPen,
     UserCog,
-} from 'lucide-react';
+} from "lucide-react";
 
 import {
     FaHome,
@@ -41,13 +41,13 @@ import {
     FaHeart,
     FaUserLock,
     FaStar,
-} from 'react-icons/fa';
+} from "react-icons/fa";
 
 import {
     IoIosArrowDropdownCircle,
     IoIosArrowDroprightCircle,
-} from 'react-icons/io';
-import { GiToggles } from 'react-icons/gi';
+} from "react-icons/io";
+import { GiToggles } from "react-icons/gi";
 
 export const lucideReactIcons = {
     House: House,
@@ -79,6 +79,7 @@ export const reactIconsFa = {
     FaHome: FaHome,
     FaFile: FaFile,
     FaPlus: FaPlus,
+    User: User,
     FaUser: FaUser,
     FaUserLock: FaUserLock,
     FaCog: FaCog, // Settings Icon
