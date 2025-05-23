@@ -1,5 +1,5 @@
 "use client";
-import NewAgencyStepForm from "@/(pages)/portal/admin/(agencies)/agencies/create/NewAgencyStepForm";
+import NewAgencyStepForm from "@/(pages)/portal/(role_based)/admin/(agencies)/agencies/create/NewAgencyStepForm";
 import React, { useState } from "react";
 
 export default function NewOrganizerForm({ admin }) {

@@ -7,6 +7,7 @@ import { auth } from "@lib/auth";
 import { logAuditTrail } from "@lib/audit_trails.utils";
 import { logErrorToFile } from "@lib/logger.server";
 import { formatSeqObj } from "@lib/utils/object.utils";
+import { Op } from "sequelize";
 // import { formatPersonName } from "@lib/utils/string.utils";
 
 export async function getUsers() {
@@ -17,8 +18,9 @@ export async function getUsers() {
             include: [
                 {
                     model: Role,
-                    as: "role",
+                    as: "roles",
                     attributes: ["role_name"],
+                    through: { attributes: [] },
                 },
                 {
                     model: User,
@@ -59,14 +61,19 @@ export async function createUser(formData) {
 
     const { data } = parsed;
 
-    const role = await Role.findByPk(data.role_id, {
+    const roles = await Role.findAll({
+        where: {
+            id: {
+                [Op.in]: data.role_ids,
+            },
+        },
         attributes: ["id", "role_name"],
     });
 
-    if (!role) {
+    if (roles.length !== data.role_ids.length) {
         throw {
             success: false,
-            message: "Database Error: Role not found.",
+            message: "Database Error: One or more roles not found.",
         };
     }
 
@@ -90,9 +97,10 @@ export async function createUser(formData) {
         console.log("New User");
 
         const newUser = await User.create(data, { transaction });
+        await newUser.addRoles(data.role_ids, { transaction });
+
         await transaction.commit();
 
-        await newUser.addRoles(data.role_id);
         await newUser.reload({
             include: [
                 {
@@ -110,7 +118,7 @@ export async function createUser(formData) {
             userId: userId,
             controller: "users",
             action: "CREATE",
-            details: `A new user has been successfully created. ID#: ${newUser.id} with role ${role?.role_name}`,
+            details: `A new user has been successfully created. ID#: ${newUser.id}.`,
         });
 
         return { success: true, data: formatSeqObj(newUser) };
@@ -145,6 +153,22 @@ export async function updateUser(formData) {
 
     const { data } = parsed;
 
+    const roles = await Role.findAll({
+        where: {
+            id: {
+                [Op.in]: data.role_ids,
+            },
+        },
+        attributes: ["id", "role_name"],
+    });
+
+    if (roles.length !== data.role_ids.length) {
+        throw {
+            success: false,
+            message: "Database Error: One or more roles not found.",
+        };
+    }
+
     const transaction = await sequelize.transaction();
 
     try {
@@ -156,8 +180,14 @@ export async function updateUser(formData) {
             throw new Error("User Not Found");
         }
         console.log("Validated data for update", data);
-        const updatedUser = await user.update(data, { transaction });
 
+        if (!data?.isChangePassword) {
+            console.log("data?.isChangePassword", data?.isChangePassword);
+            delete data.password;
+        }
+
+        const updatedUser = await user.update(data, { transaction });
+        await updatedUser.setRoles(data.role_ids, { transaction });
         await transaction.commit();
 
         await logAuditTrail({
@@ -259,8 +289,8 @@ export async function getUser(id) {
                 {
                     attributes: ["id", "role_name"],
                     model: Role,
-                    as: "role",
-                    required: false,
+                    as: "roles",
+                    through: { attributes: [] },
                 },
             ],
         });

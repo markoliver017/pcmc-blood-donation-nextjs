@@ -1,13 +1,13 @@
-"use client"
-import { useSession } from 'next-auth/react';
-import { redirect, usePathname } from 'next/navigation'
+"use client";
+import { useSession } from "next-auth/react";
+import { redirect, usePathname } from "next/navigation";
 
 export default function ClientPortal() {
     const { status, data } = useSession();
     const currentRoute = usePathname();
 
-    const isPortalBaseUrl = currentRoute == "/portal";
-    const isPortalChangeRoleUrl = currentRoute == "/portal/change-role";
+    // const isPortalBaseUrl = currentRoute == "/portal";
+    // const isPortalChangeRoleUrl = currentRoute == "/portal/change-role";
 
     if (status == "authenticated") {
         const currentUser = data.user;
@@ -15,11 +15,14 @@ export default function ClientPortal() {
 
         const isUserAllowed = roles.find((role) => {
             if (!role?.url) return false;
-            let roleUrl = role.url.startsWith('.') ? role.url.slice(1) : role.url;
+            let roleUrl = role.url.startsWith(".")
+                ? role.url.slice(1)
+                : role.url;
             return currentRoute.startsWith(roleUrl);
         });
 
-        if (!isUserAllowed && !isPortalBaseUrl && !isPortalChangeRoleUrl) redirect("/");
+        // if (!isUserAllowed && !isPortalBaseUrl && !isPortalChangeRoleUrl) redirect("/");
+        if (!isUserAllowed) redirect("/");
 
         // return <pre>
         //     CurrentRoute: {currentRoute} <br />

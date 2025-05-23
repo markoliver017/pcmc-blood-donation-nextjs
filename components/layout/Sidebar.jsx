@@ -11,13 +11,13 @@ import { redirect, usePathname } from "next/navigation";
 
 const Sidebar = ({ currentUser }) => {
     const { status, data } = useSession();
-    // console.log("sidebar session data", data);
+    console.log("sidebar session data", data);
 
     if (status == "authenticated") {
         currentUser = data.user;
     }
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const menus = usePagesStore((state) => state.pages);
+    const menus = usePagesStore((state) => state.menus);
     const currentRoute = usePathname();
     const isAdminRoute = currentRoute.startsWith("/portal");
 
@@ -43,9 +43,19 @@ const Sidebar = ({ currentUser }) => {
         return;
     }
 
-    if (!data?.user?.role_name) {
+    if (!data?.user?.role_name || !data?.user?.roles.length) {
         return;
     }
+
+    const currentRole = currentUser?.roles.find(
+        (role) => role.role_name == currentUser.role_name
+    );
+
+    if (!currentRole) return;
+
+    const currentRoleMenus = menus.filter((menu) =>
+        menu.roles.includes(currentRole.role_name)
+    );
 
     const currentUserAvatar =
         currentUser?.image ||
@@ -109,40 +119,17 @@ const Sidebar = ({ currentUser }) => {
                 )}
                 <nav className="mt-4">
                     <ul>
-                        {menus.map((menu, index) => (
+                        {currentRoleMenus.map((menu, index) => (
                             <li key={index} className="mb-2">
                                 <SideNavLink
                                     isCollapsed={isCollapsed}
-                                    path={menu.path}
-                                    Icon={menu.icon}
-                                    name={menu.title}
                                     menu={menu}
+                                    currentRoleUrl={
+                                        currentRole?.url || "/portal/donors"
+                                    }
                                 />
                             </li>
                         ))}
-                        {/* <li className="mb-2">
-                            <SideNavLink
-                                isCollapsed={isCollapsed}
-                                path="/"
-                                Icon={<FaHome />}
-                                name="Home"
-                            />
-                        </li>
-                        <li className="mb-2">
-                            <a href="#" className="hover:text-gray-400">
-                                Reports
-                            </a>
-                        </li>
-                        <li className="mb-2">
-                            <a href="#" className="hover:text-gray-400">
-                                Settings
-                            </a>
-                        </li>
-                        <li className="mb-2">
-                            <a href="#" className="hover:text-gray-400">
-                                Profile
-                            </a>
-                        </li> */}
                     </ul>
                 </nav>
             </div>

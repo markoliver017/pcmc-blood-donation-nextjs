@@ -1,5 +1,18 @@
-import { FileQuestion, UserPlus2, Users, Users2 } from "lucide-react";
+import { CardStackIcon, DashboardIcon } from "@radix-ui/react-icons";
+import {
+    Calendar,
+    Droplets,
+    FileQuestion,
+    LocateIcon,
+    UserPlus2,
+    Users,
+    Users2,
+    Users2Icon,
+} from "lucide-react";
 import { BiError } from "react-icons/bi";
+import { FaMicrophone } from "react-icons/fa";
+import { GiBlood, GiRamProfile } from "react-icons/gi";
+import { GrEmergency } from "react-icons/gr";
 import { create } from "zustand";
 
 export const usePagesStore = create((set) => ({
@@ -71,18 +84,125 @@ export const usePagesStore = create((set) => ({
     menus: [
         {
             title: "Dashboard",
-            path: "/dashboard",
-            icon: "dashboard-icon",
-            roles: ["admin", "editor", "viewer"],
+            path: "/",
+            icon: <DashboardIcon />,
+            roles: [
+                "Admin",
+                "Donor",
+                "Developer",
+                "Agency Administrator",
+                "Organizer",
+            ],
             has_child: false,
+            is_role_based: true,
             children: [
                 {
                     title: "Analytics",
                     path: "/dashboard/analytics",
                     icon: "analytics-icon",
-                    roles: ["admin", "editor"]
-                }
-            ]
-        }
-    ]
+                    is_role_based: true,
+                    roles: [
+                        "Admin",
+                        "Donor",
+                        "Developer",
+                        "Agency Administrator",
+                        "Organizer",
+                    ],
+                },
+            ],
+        },
+        {
+            title: "Profile",
+            path: "/profile",
+            icon: <GiRamProfile />,
+            roles: [
+                "Admin",
+                "Donor",
+                "Developer",
+                "Agency Administrator",
+                "Organizer",
+            ],
+            is_role_based: false,
+            has_child: false,
+        },
+        {
+            title: "Blood Drives",
+            path: "/blood-drives",
+            icon: <GiBlood />,
+            roles: ["Admin", "Developer", "Agency Administrator", "Organizer"],
+            is_role_based: true,
+            has_child: false,
+        },
+        {
+            title: "My Appointments",
+            path: "/donor-appointments",
+            icon: <Calendar />,
+            roles: ["Donor"],
+            is_role_based: true,
+            has_child: false,
+        },
+        {
+            title: "Find Donation Drives",
+            path: "/blood-drives",
+            icon: <LocateIcon />,
+            roles: ["Donor"],
+            is_role_based: true,
+            has_child: false,
+        },
+        {
+            title: "View Donor Card",
+            path: "/donor-card",
+            icon: <CardStackIcon />,
+            roles: ["Donor"],
+            is_role_based: true,
+            has_child: false,
+        },
+        {
+            title: "Announcements",
+            path: "/announcements",
+            icon: <FaMicrophone />,
+            roles: ["Admin", "Developer", "Agency Administrator", "Organizer"],
+            is_role_based: true,
+            has_child: false,
+        },
+        {
+            title: "Donors",
+            path: "/donors",
+            icon: <UserPlus2 />,
+            roles: ["Admin", "Developer", "Agency Administrator", "Organizer"],
+            is_role_based: true,
+            has_child: false,
+        },
+        {
+            title: "Emergency Requests",
+            path: "/emergency-requests",
+            icon: <GrEmergency />,
+            roles: [
+                "Admin",
+                "Donor",
+                "Developer",
+                "Agency Administrator",
+                "Organizer",
+            ],
+            is_role_based: true,
+            has_child: false,
+        },
+        {
+            title: "Blood Requests",
+            path: "/blood-requests",
+            icon: <Droplets />,
+            roles: ["Donor"],
+            is_role_based: true,
+            has_child: false,
+        },
+
+        {
+            title: "Manage Coordinators",
+            path: "/manage-coordinators",
+            icon: <Users2Icon />,
+            roles: ["Admin", "Developer", "Agency Administrator"],
+            is_role_based: true,
+            has_child: false,
+        },
+    ],
 }));

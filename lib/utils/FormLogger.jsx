@@ -1,9 +1,10 @@
+"use client";
 import React from "react";
 
 export default function FormLogger({
-    watch = null,
-    errors = null,
-    data = null,
+    watch = null, //RHF
+    errors = null, //RHF
+    data = null, //useMutation
 }) {
     return (
         <div className="card-body border my-5">

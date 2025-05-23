@@ -5,11 +5,16 @@ import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import React, { useState } from "react";
 import { CircleChevronDown, CircleChevronRight } from "lucide-react";
+import { filterUrlWithDotSlash } from "@lib/utils/string.utils";
 
-export default function SideNavLink({ isCollapsed, menu }) {
+export default function SideNavLink({ isCollapsed, menu, currentRoleUrl }) {
     const currentRoute = usePathname();
     const [dropdownOpen, setDropdownOpen] = useState({});
-    const { path, icon, title } = menu;
+    const { path: menu_path, icon, title } = menu;
+
+    const path = menu_path.is_role_based
+        ? currentRoleUrl + filterUrlWithDotSlash(menu_path)
+        : `/portal${filterUrlWithDotSlash(menu_path)}`;
 
     const handleDropdownToggle = () => {
         setDropdownOpen((prevState) => ({

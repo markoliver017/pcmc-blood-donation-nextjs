@@ -8,11 +8,11 @@ import React from "react";
 
 export default function SessionLogger() {
     const { data: session, status, update } = useSession();
-    const router = useRouter()
+    const router = useRouter();
 
     const handleChangeRole = async (role) => {
-        await update({ role_name: role });
-        router.refresh()
+        await update({ role_name: role, action: "reset_role" });
+        router.refresh();
     };
 
     if (status === "loading") return <Skeleton />;
@@ -26,7 +26,7 @@ export default function SessionLogger() {
         <div>
             <button
                 className="btn btn-neutral dark:border-red-500"
-                onClick={() => handleChangeRole(" ")}
+                onClick={() => handleChangeRole("")}
             >
                 Reset Role
             </button>

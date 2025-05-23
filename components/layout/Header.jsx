@@ -4,10 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 // #7F181C
 const Header = () => {
-    const pathname = usePathname()
-    console.log("pathname", pathname)
-    if (pathname.startsWith("/admin")) {
-
+    const pathname = usePathname();
+    console.log("pathname", pathname);
+    if (pathname.startsWith("/portal")) {
         return (
             <header className="flex-none flex gap-10 md:justify-evenly items-center border-b border-gray-200 px-2 relative">
                 <div
@@ -64,12 +63,10 @@ const Header = () => {
                     />
                 </div>
             </header>
-        )
+        );
     }
 
-
     return (
-
         <header className="flex-none flex gap-10 md:justify-evenly items-center border-b h-80 border-gray-200 px-2 relative">
             <div
                 className="absolute inset-0 bg-[url('/blood-bg.jpg')] bg-no-repeat bg-bottom bg-cover opacity-80 pointer-events-none z-0 shadow-2xl rounded"
@@ -94,8 +91,7 @@ const Header = () => {
                     PCMC PedBC - MBD Portal
                 </h1>
                 <h1 className="hidden md:inline-block text-lg md:text-3xl text-blue-900 text-shadow-lg/30 text-shadow-white font-extrabold italic">
-                    PCMC Pediatric Blood Center - Medical Blood Donation
-                    Portal
+                    PCMC Pediatric Blood Center - Medical Blood Donation Portal
                 </h1>
             </Link>
             <div className="hidden md:flex z-1">
@@ -125,7 +121,6 @@ const Header = () => {
                 />
             </div>
         </header>
-
     );
 };
 
