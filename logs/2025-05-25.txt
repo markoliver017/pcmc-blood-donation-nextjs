@@ -1,0 +1,1 @@
+[2025-05-25T12:22:55.379Z] ❌ ERROR (CREATE USER): [object Object]

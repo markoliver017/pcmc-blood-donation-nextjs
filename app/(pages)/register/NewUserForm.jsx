@@ -380,7 +380,7 @@ export default function NewUserForm({ role }) {
                                 name="gender"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <InlineLabel>Gender: *</InlineLabel>
+                                        <InlineLabel>Sex: *</InlineLabel>
 
                                         <label
                                             className={clsx(
