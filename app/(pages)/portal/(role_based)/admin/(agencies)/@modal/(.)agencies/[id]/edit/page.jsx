@@ -5,10 +5,12 @@ import {
 } from "@tanstack/react-query";
 
 import { fetchluzonDemographics } from "@/action/locationAction";
-import AgencyUpdateForm from "@/(pages)/admin/(agencies)/agencies/[id]/edit/AgencyUpdateForm";
+// import AgencyUpdateForm from "@/(pages)/admin/(agencies)/agencies/[id]/edit/AgencyUpdateForm";
+// AgencyUpdateForm
 import { fetchAgency } from "@/action/agencyAction";
 
 import InterceptModal from "@components/layout/InterceptModal";
+import AgencyUpdateForm from "../../../../agencies/[id]/edit/AgencyUpdateForm";
 
 export default async function Page({ params }) {
     const { id: agency_id } = await params;

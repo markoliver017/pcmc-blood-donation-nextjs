@@ -204,5 +204,27 @@ export const usePagesStore = create((set) => ({
             is_role_based: true,
             has_child: false,
         },
+        {
+            title: "System Administation",
+            path: "#",
+            icon: "⚙️",
+            roles: ["Admin", "Developer"],
+            has_child: true,
+            is_role_based: true,
+            child: [
+                {
+                    title: "Users Management",
+                    path: "/portal/admin/users",
+                    icon: <Users />,
+                    roles: ["Admin", "Developer",],
+                },
+                {
+                    title: "Agencies Management",
+                    path: "/portal/agenciies/users",
+                    icon: <Users />,
+                    roles: ["Admin", "Developer",],
+                },
+            ],
+        },
     ],
 }));

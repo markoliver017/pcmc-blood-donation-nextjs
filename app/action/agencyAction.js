@@ -6,6 +6,7 @@ import { logAuditTrail } from "@lib/audit_trails.utils";
 import { auth } from "@lib/auth";
 import { logErrorToFile } from "@lib/logger.server";
 import { Agency, Role, sequelize, User } from "@lib/models";
+import { formatSeqObj } from "@lib/utils/object.utils";
 import { agencySchema, agencyStatusSchema } from "@lib/zod/agencySchema";
 
 export async function fetchAgencies() {
@@ -42,12 +43,12 @@ export async function fetchAgency(id) {
                 {
                     model: User,
                     as: "head",
-                    attributes: { exclude: ["password", "email_verified"] },
+                    attributes: { exclude: ["password", "email_verified", "prefix", "suffix", "createdAt", "updatedAt", "updated_by"] },
                 },
             ],
         });
 
-        return { success: true, data: agency.get({ plain: true }) };
+        return { success: true, data: formatSeqObj(agency) };
     } catch (error) {
         console.error(error);
         throw error;
@@ -228,20 +229,45 @@ export async function updateAgencyStatus(formData) {
 
     const { data } = parsed;
 
-    // return { success: true, data };
+    const agency = await Agency.findByPk(data.id);
+
+    if (!agency) {
+        throw new Error("Database Error: Agency ID was not found");
+    }
+
+    const agency_head = await User.findByPk(agency.head_id, {
+        include: [
+            {
+                where: { role_name: "Agency Administrator" },
+                model: Role,
+                attributes: ["id", "role_name"],
+                as: "roles",
+                required: true,
+                through: {
+                    attributes: ["id", "is_active"],
+                    as: "role",
+                },
+            },
+        ],
+    });
+
+    if (!agency_head) {
+        throw new Error("Database Error: Agency Head was Not found");
+    }
+
+    const agency_head_role = agency_head?.roles[0].role;
 
     const transaction = await sequelize.transaction();
 
     try {
-        const agency = await Agency.findByPk(data.id, {
-            transaction,
-        });
-
-        if (!agency) {
-            throw new Error("Database Error: Agency ID Not found");
-        }
 
         const updatedAgency = await agency.update(data, { transaction });
+
+        const agency_head_status = updatedAgency.status == "activated";
+
+        if (updatedAgency) {
+            await agency_head_role.update({ is_active: agency_head_status }, { transaction })
+        }
 
         await transaction.commit();
 

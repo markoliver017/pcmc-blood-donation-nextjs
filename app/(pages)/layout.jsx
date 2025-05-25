@@ -12,10 +12,8 @@ import Preloader from "@components/layout/Preloader";
 import Providers from "../../components/layout/AuthProvider";
 import Header from "@components/layout/Header";
 import { auth } from "@lib/auth";
-import { User } from "@lib/models";
-import { getUser } from "@/action/userAction";
 import TansactProviders from "@components/layout/TansactProvider";
-import { headers } from "next/headers";
+
 
 const geistSans = Geist({
     variable: "--font-geist-sans",

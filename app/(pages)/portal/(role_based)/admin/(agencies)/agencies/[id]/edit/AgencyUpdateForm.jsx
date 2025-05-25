@@ -300,7 +300,7 @@ export default function AgencyUpdateForm({ agency_id }) {
                             <DropdownMenuItem className="space-x-2">
                                 <Button
                                     onClick={() =>
-                                        router.push(`/agencies/${agency.id}`)
+                                        router.push(`/portal/admin/agencies/${agency.id}`)
                                     }
                                     variant="secondary"
                                     className=" hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200 btn-block"
@@ -377,6 +377,7 @@ export default function AgencyUpdateForm({ agency_id }) {
             <CardContent>
                 <Form {...form}>
                     <form
+                        id="form-modal"
                         onSubmit={handleSubmit(onSubmit)}
                         className="space-y-2 flex flex-wrap gap-3 justify-center"
                     >

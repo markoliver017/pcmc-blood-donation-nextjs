@@ -187,7 +187,7 @@ export const columns = [
                         <DropdownMenuItem className="flex items-center justify-center space-x-2">
                             <Link
                                 className="btn btn-block btn-primary hover:btn-neutral hover:text-blue-400"
-                                href={`/agencies/${data.id}`}
+                                href={`./agencies/${data.id}`}
                             >
                                 <Eye className="w-4 h-4" />
                                 <span>Show</span>

@@ -79,7 +79,7 @@ export default async function Layout({ children }) {
     return (
         <>
             {children}
-            <pre>
+            {/* <pre>
                 User: {JSON.stringify(session.user, null, 2)}
                 <br />
                 <br />
@@ -91,7 +91,7 @@ export default async function Layout({ children }) {
                 <br />
                 <br />
                 Agency Headed = {JSON.stringify(agency, null, 2)}
-            </pre>
+            </pre> */}
         </>
     );
 }

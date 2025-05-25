@@ -10,7 +10,16 @@
             ],
             "@components/*": [
                 "./components/*"
-            ]
+            ],
+            "@pages/*": [
+                "./app/(pages)/*"
+            ],
+            "@role_based/*": [
+                "./app/(pages)/portal/(role_based)/*"
+            ],
+            "@action/*": [
+                "./app/action/*"
+            ],
         }
     }
 }

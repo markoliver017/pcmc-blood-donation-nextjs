@@ -2,13 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { useSearchParams } from 'next/navigation';
+import AuthErrorClient from "./AuthErrorClient";
 
 
 export default function AuthErrorPage() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
-    const error = searchParams?.error;
+    const error = searchParams?.error || "An unexpected error occurred.";
 
     if (error === 'OAuthAccountNotLinked') {
         return (
@@ -27,13 +28,5 @@ export default function AuthErrorPage() {
         );
     }
 
-    return (
-        <div>
-            <h1>Authentication Error</h1>
-            <p>An error occurred: {error}</p>
-            <button onClick={() => router.push('/')}>
-                Back to Sign In
-            </button>
-        </div>
-    );
+    return <AuthErrorClient message={error} />
 }

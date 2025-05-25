@@ -22,7 +22,7 @@ import {
 } from "@components/ui/table";
 import { formatFormalName } from "@lib/utils/string.utils";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Eye, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -39,6 +39,7 @@ export default function ShowAgency({ agencyId }) {
         },
         enabled: !!agencyId,
     });
+
     const { status } = agency;
     let statusClass = "badge-primary";
     if (status == "activated") {
@@ -48,7 +49,7 @@ export default function ShowAgency({ agencyId }) {
     } else if (status == "rejected") {
         statusClass = "badge-error";
     }
-
+    // return "";
     return (
         <Card className="mt-2 p-5 h-full">
             <CardHeader>
@@ -56,7 +57,7 @@ export default function ShowAgency({ agencyId }) {
                     <div className="text-4xl">{agency.name}</div>
                     <Button
                         onClick={() =>
-                            router.push(`/agencies/${agency.id}/edit`)
+                            router.push(`./${agency.id}/edit`)
                         }
                         variant="secondary"
                         className=" hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200"
@@ -108,7 +109,7 @@ export default function ShowAgency({ agencyId }) {
                                     className="link link-primary italic"
                                     href={`mailto:${agency.agency_email}`}
                                 >
-                                    {formatFormalName(agency.agency_email)}
+                                    {formatFormalName(agency.head.email)}
                                 </a>
                             </TableCell>
                         </TableRow>

@@ -4,7 +4,8 @@ import {
     QueryClient,
 } from "@tanstack/react-query";
 import { fetchAgency } from "@/action/agencyAction";
-import ShowAgency from "@/(pages)/admin/(agencies)/agencies/[id]/ShowAgency";
+import ShowAgency from "@role_based/admin/(agencies)/agencies/[id]/ShowAgency";
+
 
 import InterceptModal from "@components/layout/InterceptModal";
 
