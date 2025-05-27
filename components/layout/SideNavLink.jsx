@@ -27,7 +27,7 @@ export default function SideNavLink({ isCollapsed, menu, currentRoleUrl }) {
         return (
             <>
                 <Link
-                    href={path}
+                    href="#"
                     className={clsx(
                         "flex items-center gap-5 p-2 rounded text-xl shadow-sm",
                         isCollapsed && "justify-center",

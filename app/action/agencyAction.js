@@ -43,7 +43,17 @@ export async function fetchAgency(id) {
                 {
                     model: User,
                     as: "head",
-                    attributes: { exclude: ["password", "email_verified", "prefix", "suffix", "createdAt", "updatedAt", "updated_by"] },
+                    attributes: {
+                        exclude: [
+                            "password",
+                            "email_verified",
+                            "prefix",
+                            "suffix",
+                            "createdAt",
+                            "updatedAt",
+                            "updated_by",
+                        ],
+                    },
                 },
             ],
         });
@@ -52,6 +62,94 @@ export async function fetchAgency(id) {
     } catch (error) {
         console.error(error);
         throw error;
+    }
+}
+
+export async function fetchActiveAgency() {
+    try {
+        const agencies = await Agency.findAll({
+            where: { status: "activated" },
+            attributes: {
+                exclude: [
+                    "remarks",
+                    "verified_by",
+                    "updated_by",
+                    "createdAt",
+                    "updatedAt",
+                    "status",
+                    "comments",
+                    "head_id",
+                ],
+            },
+            include: [
+                {
+                    model: User,
+                    as: "head",
+                    attributes: {
+                        exclude: [
+                            "password",
+                            "email_verified",
+                            "prefix",
+                            "suffix",
+                            "createdAt",
+                            "updatedAt",
+                            "updated_by",
+                        ],
+                    },
+                },
+            ],
+        });
+
+        return { success: true, data: formatSeqObj(agencies) };
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function fetchAgencyByName(agencyName) {
+    try {
+        const agencies = await Agency.findOne({
+            where: { name: agencyName },
+            attributes: {
+                exclude: [
+                    "remarks",
+                    "verified_by",
+                    "updated_by",
+                    "createdAt",
+                    "updatedAt",
+                    "status",
+                    "comments",
+                    "head_id",
+                ],
+            },
+            include: [
+                {
+                    model: User,
+                    as: "head",
+                    attributes: {
+                        exclude: [
+                            "password",
+                            "email_verified",
+                            "prefix",
+                            "suffix",
+                            "createdAt",
+                            "updatedAt",
+                            "updated_by",
+                        ],
+                    },
+                },
+            ],
+        });
+
+        if (!agencies) {
+            throw "Agency not found";
+        }
+
+        return { success: true, data: formatSeqObj(agencies) };
+    } catch (error) {
+        console.error(error);
+        return { success: false, message: error.message || "Unknown error" };
     }
 }
 
@@ -260,13 +358,15 @@ export async function updateAgencyStatus(formData) {
     const transaction = await sequelize.transaction();
 
     try {
-
         const updatedAgency = await agency.update(data, { transaction });
 
         const agency_head_status = updatedAgency.status == "activated";
 
         if (updatedAgency) {
-            await agency_head_role.update({ is_active: agency_head_status }, { transaction })
+            await agency_head_role.update(
+                { is_active: agency_head_status },
+                { transaction }
+            );
         }
 
         await transaction.commit();

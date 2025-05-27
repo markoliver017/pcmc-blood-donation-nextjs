@@ -90,6 +90,8 @@ export default function UserUpdateForm({ userId }) {
             console.log("Success: Updated Data:", data);
             // Invalidate the posts query to refetch the updated list
             queryClient.invalidateQueries({ queryKey: ["users"] });
+            queryClient.invalidateQueries({ queryKey: ["user"] });
+
             SweetAlert({
                 title: "User Updated",
                 text: "The user information has been updated successfully .",

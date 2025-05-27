@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { X } from "lucide-react";
 import Link from "next/link";
-import { getOrganizerRole } from "@/action/registerAction";
+import { getRole } from "@/action/registerAction";
 import Skeleton from "@components/ui/skeleton";
 import NewUserForm from "../NewUserForm";
 import { auth } from "@lib/auth";
@@ -13,7 +13,9 @@ import {
 } from "@tanstack/react-query";
 
 import { fetchluzonDemographics } from "@/action/locationAction";
-import NewDonorForm from "./NewDonorForm";
+
+import { ListOfAgenciesTable } from "@components/donors/ListOfAgenciesTable";
+import { ListOfAgenciesColumns } from "@components/donors/ListOfAgenciesColumns";
 
 export default async function Page() {
     const session = await auth();
@@ -27,7 +29,7 @@ export default async function Page() {
 
     return (
         <Suspense fallback={<Skeleton />}>
-            <div className="w-full h-full md:w-8/10 2xl:w-3/4 mx-auto relative">
+            <div className="w-full h-full 2xl:w-9/10 mx-auto relative">
                 {!session || !session?.user ? (
                     <>
                         <Link href="/" className="mb-3 absolute top-5 right-4">
@@ -41,12 +43,10 @@ export default async function Page() {
                                 <X />
                             </button>
                         </Link>
-                        <NewUserForm role={getOrganizerRole()} />
+                        <NewUserForm role={getRole("Donor")} />
                     </>
                 ) : (
-                    <HydrationBoundary state={dehydrate(queryClient)}>
-                        <NewDonorForm admin={session.user} />
-                    </HydrationBoundary>
+                    <ListOfAgenciesTable columns={ListOfAgenciesColumns} />
                 )}
             </div>
         </Suspense>

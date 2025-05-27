@@ -43,6 +43,7 @@ import { MdPassword } from "react-icons/md";
 
 export default function NewUserForm({ role }) {
     const user_role = use(role);
+    console.log("user_role in NewUserForm:", user_role);
     // const [isLoading, setIsLoading] = useState({});
     const router = useRouter();
 

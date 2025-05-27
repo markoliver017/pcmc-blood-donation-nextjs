@@ -26,17 +26,6 @@ import MultiSelect from "@components/reusable_components/MultiSelect";
 import Skeleton from "@components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 
-const fetchRoles = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const url = new URL(`/api/roles`, process.env.NEXT_PUBLIC_DOMAIN);
-    const response = await fetch(url, {
-        method: "GET",
-        cache: "no-store",
-    });
-
-    return await response.json();
-};
-
 export function DataTable({ columns, data, isLoading }) {
     // const { data: roles } = useQuery({
     //     queryKey: ["roles"],

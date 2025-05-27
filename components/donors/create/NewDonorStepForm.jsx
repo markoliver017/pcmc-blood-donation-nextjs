@@ -1,5 +1,4 @@
 "use client";
-import { createAgency } from "@/action/agencyAction";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -26,18 +25,16 @@ import { Form, FormField, FormItem } from "@components/ui/form";
 
 import { uploadPicture } from "@/action/uploads";
 import FieldError from "@components/form/FieldError";
-import { agencySchema } from "@lib/zod/agencySchema";
 
 import { useRouter } from "next/navigation";
 import FirstForm from "./FirstForm";
-import SecondForm from "./SecondForm";
 import FormLogger from "@lib/utils/FormLogger";
 import { IoArrowUndoCircle } from "react-icons/io5";
 import { formatFormalName } from "@lib/utils/string.utils";
 
 const form_sections = [
     {
-        title: "Organizer Details",
+        title: "Basic Information",
         class: "progress-info",
         percent: 30,
     },
@@ -54,9 +51,9 @@ const form_sections = [
     },
 ];
 
-export default function NewAgencyStepForm({
-    title = "Blood Drive Agency Registration",
-    description = "Step Up to Host a Blood Drive",
+export default function NewDonorStepForm({
+    title = "Register as a Blood Donor",
+    description = "Donor Information Form",
 }) {
     const router = useRouter();
     const [sectionNo, setSectionNo] = useState(0);
@@ -71,17 +68,18 @@ export default function NewAgencyStepForm({
         isError,
     } = useMutation({
         mutationFn: async (formData) => {
-            const res = await createAgency(formData);
-            if (!res.success) {
-                throw res; // Throw the error response to trigger onError
-            }
-            return res.data;
+            alert(
+                "Submitting agency registration request...",
+                JSON.stringify(formData, null, 2)
+            );
+            // const res = await createAgency(formData);
+            // if (!res.success) {
+            //     throw res; // Throw the error response to trigger onError
+            // }
+            // return res.data;
         },
         onSuccess: () => {
-            /** note: the return data will be accessible in the debugger
-             *so no need to console the onSuccess(data) here **/
-            // Invalidate the posts query to refetch the updated list
-            queryClient.invalidateQueries({ queryKey: ["users"] });
+            queryClient.invalidateQueries({ queryKey: ["donors"] });
             SweetAlert({
                 title: "Registration Complete",
                 text: "You've successfully submitted a request to become one of our partner agencies. You'll be notified once your application is approved.",
@@ -132,11 +130,10 @@ export default function NewAgencyStepForm({
 
     const form = useForm({
         mode: "onChange",
-        resolver: zodResolver(agencySchema),
+        // resolver: zodResolver(agencySchema),
         defaultValues: {
             name: "PCMC",
             contact_number: "+639663603172",
-            // agency_email: "",
             organization_type: "government",
             file: null,
             address: "PCMC Building",
@@ -165,8 +162,8 @@ export default function NewAgencyStepForm({
 
     const onSubmit = async (data) => {
         SweetAlert({
-            title: "Blood Drive Agency Registration",
-            text: "Submit your agency registration request now? It will be subject to approval.",
+            title: "Blood Donor Registration",
+            text: "Are you sure you want to submit your blood donor registration request?",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Proceed",

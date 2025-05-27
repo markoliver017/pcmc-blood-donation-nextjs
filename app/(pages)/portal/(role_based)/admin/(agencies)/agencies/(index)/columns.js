@@ -68,7 +68,7 @@ export const columns = [
     },
     {
         // id: "date_reported",
-        accessorKey: "agency_email",
+        accessorKey: "head.email",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Email" />
         ),
