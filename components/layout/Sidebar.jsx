@@ -39,7 +39,7 @@ const Sidebar = ({ currentUser }) => {
         redirect("/");
     }
 
-    if (status != "authenticated") {
+    if (status != "authenticated" || !isAdminRoute) {
         return;
     }
 

@@ -7,8 +7,6 @@ import NewUserForm from "../NewUserForm";
 import { auth } from "@lib/auth";
 
 import {
-    dehydrate,
-    HydrationBoundary,
     QueryClient,
 } from "@tanstack/react-query";
 

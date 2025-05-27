@@ -104,7 +104,7 @@ export const ListOfAgenciesColumns = [
             return (
                 <Link
                     className="btn btn-outline btn-accent hover:btn-neutral hover:text-blue-400"
-                    href={`/register/donors/${data.name}`}
+                    href={`/register/organizers/${data.name}`}
                 >
                     <Pen className="w-2 h-2" />
                     <span>Register</span>

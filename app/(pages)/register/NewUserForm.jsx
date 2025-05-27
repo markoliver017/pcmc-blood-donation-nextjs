@@ -91,12 +91,12 @@ export default function NewUserForm({ role }) {
             // Invalidate the posts query to refetch the updated list
             queryClient.invalidateQueries({ queryKey: ["users"] });
             SweetAlert({
-                title: "Registration Complete",
-                text: "You've Successfully Registered",
+                title: "New Account",
+                text: `You've successfully created a new ${role.role_name} account`,
                 icon: "success",
                 showCancelButton: true,
                 cancelButtonText: "Cancel",
-                confirmButtonText: "Proceed to Agency Registration",
+                confirmButtonText: "Proceed to next step",
                 element_id: "user_form",
                 onCancel: () => router.push("/"),
                 onConfirm: async () => {
@@ -154,7 +154,7 @@ export default function NewUserForm({ role }) {
     const onSubmit = async (data) => {
         SweetAlert({
             title: "Confirmation",
-            text: "Are you sure you want to proceed?",
+            text: "Please ensure you have noted your account credentials. Would you like to proceed?",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Confirm",
@@ -194,7 +194,7 @@ export default function NewUserForm({ role }) {
                     Account
                 </CardTitle>
                 <CardDescription>
-                    <div>Create User details.</div>
+                    <div>Please fill up all the * required fields.</div>
                 </CardDescription>
             </CardHeader>
             <CardContent id="user_form">
@@ -291,35 +291,7 @@ export default function NewUserForm({ role }) {
                                     </FormItem>
                                 )}
                             />
-                            <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <InlineLabel>
-                                            Email Address: *
-                                        </InlineLabel>
-                                        <label
-                                            className={clsx(
-                                                "input w-full mt-1",
-                                                errors?.email
-                                                    ? "input-error"
-                                                    : "input-info"
-                                            )}
-                                        >
-                                            <Mail className="h-3" />
-                                            <input
-                                                type="email"
-                                                tabIndex={1}
-                                                {...field}
-                                                placeholder="example@email.com"
-                                            />
-                                        </label>
 
-                                        <FieldError field={errors?.email} />
-                                    </FormItem>
-                                )}
-                            />
                             <FormField
                                 control={form.control}
                                 name="first_name"
@@ -409,6 +381,37 @@ export default function NewUserForm({ role }) {
                                             </select>
                                         </label>
                                         <FieldError field={errors?.gender} />
+                                    </FormItem>
+                                )}
+                            />
+                            <div className="divider mt-10">Account Credentials</div>
+
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <InlineLabel>
+                                            Email Address: *
+                                        </InlineLabel>
+                                        <label
+                                            className={clsx(
+                                                "input w-full mt-1",
+                                                errors?.email
+                                                    ? "input-error"
+                                                    : "input-info"
+                                            )}
+                                        >
+                                            <Mail className="h-3" />
+                                            <input
+                                                type="email"
+                                                tabIndex={1}
+                                                {...field}
+                                                placeholder="example@email.com"
+                                            />
+                                        </label>
+
+                                        <FieldError field={errors?.email} />
                                     </FormItem>
                                 )}
                             />

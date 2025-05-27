@@ -144,3 +144,4 @@
     at async Server.requestListener (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\start-server.js:158:13)
 [2025-05-27T04:04:12.972Z] ❌ ERROR (CREATE USER): [object Object]
 [2025-05-27T05:20:57.382Z] ❌ ERROR (CREATE USER): [object Object]
+[2025-05-27T11:07:44.337Z] ❌ ERROR (CREATE USER): [object Object]
