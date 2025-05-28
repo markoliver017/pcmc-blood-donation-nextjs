@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import Link from "next/link";
 import { getRole } from "@/action/registerAction";
 import Skeleton from "@components/ui/skeleton";
-import NewUserForm from "../../../../../components/user/NewUserForm";
+import NewUserForm from "../../../../../components/user/NewUserBasicInfoForm";
 import { auth } from "@lib/auth";
 
 import { QueryClient } from "@tanstack/react-query";

@@ -7,7 +7,7 @@ const BreadcrumbsMain = ({ breadcrumbs }) => {
         <nav className="breadcrumbs text-sm">
             <ul>
                 {breadcrumbs.map((breadcrumb, index) => (
-                    <li key={index} className="max-w-44 truncate">
+                    <li key={index}>
                         <Link href={breadcrumb?.path}>
                             {breadcrumb?.icon}
                             {breadcrumb?.title}

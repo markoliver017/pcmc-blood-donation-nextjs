@@ -33,6 +33,7 @@ import { redirect } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useQuery } from "@tanstack/react-query";
 import Skeleton from "@components/ui/skeleton";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 
 export default function SecondForm({ details, onNext }) {
     const { resolvedTheme } = useTheme();
@@ -119,13 +120,16 @@ export default function SecondForm({ details, onNext }) {
     }
 
     return (
-        <section className="h-full flex flex-col">
-            <div className="flex flex-wrap sm:gap-5 mb-5">
-                <h2 className="card-title text-2xl">{details.title}</h2>
-                <div className="text-orange-600 italic">* required fields</div>
-            </div>
-
-            <div className="flex flex-col gap-5">
+        <Card className="p-0 md:p-5 bg-slate-100">
+            <CardHeader className="text-2xl font-bold">
+                <CardTitle className="text-2xl">
+                    {details.title}
+                </CardTitle>
+                <CardDescription>
+                    <div>Please fill up all the * required fields.</div>
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
                 <FormField
                     control={control}
                     name="address"
@@ -344,27 +348,28 @@ export default function SecondForm({ details, onNext }) {
                         <FieldError field={errors?.barangay} />
                     </div>
                 )}
-            </div>
+                <div className="flex-none card-actions justify-between mt-5">
+                    <button
+                        onClick={() => onNext(-1)}
+                        className="btn btn-default"
+                        tabIndex={-1}
+                    >
+                        <IoArrowUndoCircle />{" "}
+                        <span className="hidden sm:inline-block">Back</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={onSubmitNext}
+                        tabIndex="6"
+                    >
+                        <MdNextPlan />{" "}
+                        <span className="hidden sm:inline-block">Next</span>
+                    </button>
+                </div>
 
-            <div className="flex-none card-actions justify-between mt-5">
-                <button
-                    onClick={() => onNext(-1)}
-                    className="btn btn-default"
-                    tabIndex={-1}
-                >
-                    <IoArrowUndoCircle />{" "}
-                    <span className="hidden sm:inline-block">Back</span>
-                </button>
-                <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={onSubmitNext}
-                    tabIndex="6"
-                >
-                    <MdNextPlan />{" "}
-                    <span className="hidden sm:inline-block">Next</span>
-                </button>
-            </div>
-        </section>
+
+            </CardContent>
+        </Card >
     );
 }

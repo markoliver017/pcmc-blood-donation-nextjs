@@ -6,7 +6,6 @@ import notify from "@components/ui/notify";
 import clsx from "clsx";
 import { useRef } from "react";
 import { MdNextPlan } from "react-icons/md";
-import { GiCancel } from "react-icons/gi";
 import {
     FormControl,
     FormField,
@@ -20,8 +19,10 @@ import { Building, Building2Icon, Phone } from "lucide-react";
 import FieldError from "@components/form/FieldError";
 import { formatFormalName } from "@lib/utils/string.utils";
 import { useRouter } from "next/navigation";
+import { IoArrowUndoCircle } from "react-icons/io5";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 
-export default function FirstForm({ details, onNext }) {
+export default function AgencyDetailsForm({ details, onNext }) {
     const router = useRouter();
     const {
         trigger,
@@ -56,17 +57,20 @@ export default function FirstForm({ details, onNext }) {
         !errors?.file && uploaded_avatar
             ? URL.createObjectURL(uploaded_avatar)
             : errors?.file
-            ? "/invalid-file.png"
-            : "/default_company_avatar.png";
+                ? "/invalid-file.png"
+                : "/default_company_avatar.png";
 
     return (
-        <section className="h-full flex flex-col">
-            <div className="flex flex-wrap sm:gap-5 mb-5">
-                <h2 className="card-title text-2xl">{details.title}</h2>
-                <div className="text-orange-600 italic">* required fields</div>
-            </div>
-
-            <div className="flex flex-wrap xl:flex-nowrap justify-center gap-2 md:gap-5">
+        <Card className="p-0 md:p-5 bg-slate-100">
+            <CardHeader className="text-2xl font-bold">
+                <CardTitle className="text-2xl">
+                    {details.title}
+                </CardTitle>
+                <CardDescription>
+                    <div>Please fill up all the * required fields.</div>
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-5">
                 <FormField
                     control={control}
                     name="file"
@@ -79,12 +83,12 @@ export default function FirstForm({ details, onNext }) {
                             }
                         };
                         return (
-                            <FormItem className="text-center">
+                            <FormItem className="flex-none text-center w-full md:w-max">
                                 <div>
                                     <CustomAvatar
                                         avatar={avatar}
                                         whenClick={handleImageClick}
-                                        className="w-[150px] h-[150px] sm:w-[250px] sm:h-[250px] md:w-[350px] md:h-[350px]"
+                                        className="w-[150px] h-[150px] sm:w-[250px] sm:h-[250px] lg:w-[350px] lg:h-[350px]"
                                     />
                                     <FormMessage />
                                 </div>
@@ -97,8 +101,8 @@ export default function FirstForm({ details, onNext }) {
                                         Clear
                                     </button>
                                 ) : (
-                                    <label className="text-center">
-                                        Avatar: Click & Upload
+                                    <label className="text-center font-semibold italic text-slate-500">
+                                        Logo
                                     </label>
                                 )}
                                 <FormControl ref={fileInputRef}>
@@ -115,7 +119,7 @@ export default function FirstForm({ details, onNext }) {
                         );
                     }}
                 />
-                <div className="flex flex-col gap-5 w-full sm:min-w-[450px]">
+                <div className="flex-1 md:min-w-[350px] flex flex-col justify-evenly ">
                     <FormField
                         control={control}
                         name="name"
@@ -211,28 +215,28 @@ export default function FirstForm({ details, onNext }) {
                             </FormItem>
                         )}
                     />
+                    <div className="flex-none card-actions justify-between mt-5">
+                        <button
+                            onClick={() => onNext(-1)}
+                            className="btn btn-default"
+                            tabIndex={-1}
+                        >
+                            <IoArrowUndoCircle />{" "}
+                            <span className="hidden sm:inline-block">Back</span>
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={onSubmitNext}
+                            tabIndex="4"
+                        >
+                            <MdNextPlan />{" "}
+                            <span className="hidden sm:inline-block">Next</span>
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <div className="flex-none card-actions justify-between mt-5">
-                <button
-                    onClick={() => router.replace("/")}
-                    className="btn btn-default"
-                    tabIndex={-1}
-                >
-                    <GiCancel />{" "}
-                    <span className="hidden sm:inline-block">Cancel</span>
-                </button>
-                <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={onSubmitNext}
-                    tabIndex="4"
-                >
-                    <MdNextPlan />{" "}
-                    <span className="hidden sm:inline-block">Next</span>
-                </button>
-            </div>
-        </section>
+            </CardContent>
+        </Card>
     );
 }
