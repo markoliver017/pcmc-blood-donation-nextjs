@@ -94,9 +94,8 @@ export default function LoginForm() {
         <>
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="fieldset w-full bg-base-200 border border-base-300 p-4 rounded-box"
+                className="fieldset w-full bg-base-200/50 border border-base-300 px-20 py-5 rounded-box"
             >
-                <legend className="fieldset-legend">PedBC MBD Portal</legend>
                 <div className="flex flex-col items-center justify-center mb-4">
                     <Image
                         src="/pcmc_logo.png"
@@ -107,8 +106,8 @@ export default function LoginForm() {
                         alt="Logo"
                     />
                     <h2 className="text-center font-geist-sans font-semibold text-xl mt-2 leading-tight text-shadow-[_1px_1px_8px_#8b8eee]">
-                        PCMC Pediatric Blood Center - Medical Blood Donation{" "}
-                        <br />
+                        PCMC Pediatric Blood Center <br /> Medical Blood
+                        Donation <br />
                         Login
                     </h2>
                 </div>
@@ -181,48 +180,100 @@ export default function LoginForm() {
                     )}
                 </button>
             </form>
-            <button
-                onClick={() => {
-                    signIn("github", {
-                        callbackUrl: "/portal",
-                    });
-                    setIsLoading((prev) => ({ ...prev, github: true }));
-                }}
-                className="btn bg-violet-300 mt-4 w-full hover:bg-neutral-800 hover:text-green-300"
-            >
-                {isLoading?.github ? (
-                    <>
-                        <span className="loading loading-bars loading-xs"></span>
-                        Signing In...
-                    </>
-                ) : (
-                    <>
-                        <GitHubLogoIcon />
-                        Sign In with Github
-                    </>
-                )}
-            </button>
-            <button
-                onClick={() => {
-                    signIn("google", {
-                        callbackUrl: "/portal",
-                    });
-                    setIsLoading((prev) => ({ ...prev, google: true }));
-                }}
-                className="btn bg-white-300 mt-4 w-full hover:bg-neutral-800 hover:text-green-300"
-            >
-                {isLoading?.google ? (
-                    <>
-                        <span className="loading loading-bars loading-xs"></span>
-                        Signing In...
-                    </>
-                ) : (
-                    <>
-                        <FaGoogle />
-                        Sign In with Google
-                    </>
-                )}
-            </button>
+            <div className="hidden">
+                <button
+                    onClick={() => {
+                        signIn("github", {
+                            callbackUrl: "/portal",
+                        });
+                        setIsLoading((prev) => ({ ...prev, github: true }));
+                    }}
+                    className="btn bg-violet-300 mt-4 w-full hover:bg-neutral-800 hover:text-green-300"
+                >
+                    {isLoading?.github ? (
+                        <>
+                            <span className="loading loading-bars loading-xs"></span>
+                            Signing In...
+                        </>
+                    ) : (
+                        <>
+                            <GitHubLogoIcon />
+                            Sign In with Github
+                        </>
+                    )}
+                </button>
+                <button
+                    onClick={() => {
+                        signIn("google", {
+                            callbackUrl: "/portal",
+                        });
+                        setIsLoading((prev) => ({ ...prev, google: true }));
+                    }}
+                    className="btn bg-white-300 mt-4 w-full hover:bg-neutral-800 hover:text-green-300"
+                >
+                    {isLoading?.google ? (
+                        <>
+                            <span className="loading loading-bars loading-xs"></span>
+                            Signing In...
+                        </>
+                    ) : (
+                        <>
+                            <FaGoogle />
+                            Sign In with Google
+                        </>
+                    )}
+                </button>
+            </div>
+            <div className="flex flex-col gap-3 py-5">
+                {/* Google */}
+                <button className="btn bg-white text-black border-[#e5e5e5]">
+                    <svg
+                        aria-label="Google logo"
+                        width="16"
+                        height="16"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 512 512"
+                    >
+                        <g>
+                            <path d="m0 0H512V512H0" fill="#fff"></path>
+                            <path
+                                fill="#34a853"
+                                d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"
+                            ></path>
+                            <path
+                                fill="#4285f4"
+                                d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"
+                            ></path>
+                            <path
+                                fill="#fbbc02"
+                                d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"
+                            ></path>
+                            <path
+                                fill="#ea4335"
+                                d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"
+                            ></path>
+                        </g>
+                    </svg>
+                    Login with Google
+                </button>
+
+                {/* Facebook */}
+                <button className="btn bg-[#1A77F2] text-white border-[#005fd8]">
+                    <svg
+                        aria-label="Facebook logo"
+                        width="16"
+                        height="16"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 32 32"
+                    >
+                        <path
+                            fill="white"
+                            d="M8 12h5V8c0-6 4-7 11-6v5c-4 0-5 0-5 3v2h5l-1 6h-4v12h-6V18H8z"
+                        ></path>
+                    </svg>
+                    Login with Facebook
+                </button>
+            </div>
         </>
     );
 }

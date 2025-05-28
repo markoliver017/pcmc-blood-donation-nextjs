@@ -189,8 +189,7 @@ export default function NewUserForm({ role }) {
         <Card className="p-0 md:p-5 bg-slate-100">
             <CardHeader className="text-2xl font-bold">
                 <CardTitle>
-                    Create New{" "}
-                    <span className="font-bold">{user_role.role_name}</span>{" "}
+                    New <span className="font-bold">{user_role.role_name}</span>{" "}
                     Account
                 </CardTitle>
                 <CardDescription>
@@ -384,7 +383,9 @@ export default function NewUserForm({ role }) {
                                     </FormItem>
                                 )}
                             />
-                            <div className="divider mt-10">Account Credentials</div>
+                            <div className="divider mt-10">
+                                Account Credentials
+                            </div>
 
                             <FormField
                                 control={form.control}

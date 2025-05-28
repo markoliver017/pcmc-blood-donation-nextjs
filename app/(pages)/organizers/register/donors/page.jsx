@@ -3,12 +3,10 @@ import { X } from "lucide-react";
 import Link from "next/link";
 import { getRole } from "@/action/registerAction";
 import Skeleton from "@components/ui/skeleton";
-import NewUserForm from "../NewUserForm";
+import NewUserForm from "../../../../../components/user/NewUserForm";
 import { auth } from "@lib/auth";
 
-import {
-    QueryClient,
-} from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 
 import { fetchluzonDemographics } from "@/action/locationAction";
 
@@ -44,7 +42,10 @@ export default async function Page() {
                         <NewUserForm role={getRole("Donor")} />
                     </>
                 ) : (
-                    <ListOfAgenciesTable columns={ListOfAgenciesColumns} />
+                    <>
+                        <h1></h1>
+                        <ListOfAgenciesTable columns={ListOfAgenciesColumns} />
+                    </>
                 )}
             </div>
         </Suspense>

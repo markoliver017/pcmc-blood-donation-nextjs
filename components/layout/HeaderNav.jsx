@@ -13,9 +13,11 @@ import {
 import { Button } from "@components/ui/button";
 import {
     Building,
+    Calendar,
     CircleEllipsis,
     Command,
     Database,
+    Droplet,
     Eye,
     File,
     FileSliders,
@@ -23,15 +25,20 @@ import {
     LogOut,
     MoreHorizontal,
     Pen,
+    PhoneCall,
     SquareMenu,
+    User,
+    Users,
     Users2,
+    Users2Icon,
 } from "lucide-react";
 import SweetAlert from "@components/ui/SweetAlert";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
-import { MdTrackChanges } from "react-icons/md";
+import { MdAmpStories, MdTrackChanges } from "react-icons/md";
+import { FaHackerNews } from "react-icons/fa";
 
 const HeaderNav = ({ currentUser }) => {
     let isLoggedIn = false;
@@ -54,23 +61,34 @@ const HeaderNav = ({ currentUser }) => {
     };
     return (
         <>
-            <header className="flex-none border-b border-gray-200 p-2 bg-gradient-to-b from-cyan-500 to-blue-900 text-white">
+            <header className="flex-none border-b border-gray-200 p-2 shadow-lg/100 shadow-gray-500 bg-gradient-to-b from-cyan-100 to-slate-200">
                 <div className="flex-1 flex justify-between md:justify-evenly gap-2 items-center">
-                    <nav className="hidden md:block">
-                        <ul className="flex space-x-4 font-bold text-xl italic tex-white text-shadow">
-                            <li>
-                                <Link href="/">
-                                    <Image
-                                        src="/blood-logo.png"
-                                        className="flex-none rounded-xl bg-transparent"
-                                        width={50}
-                                        height={50}
-                                        alt="logo"
-                                        title="logo"
-                                    />
-                                </Link>
-                            </li>
-                            <li>
+                    <Link
+                        href="/"
+                        className="flex-none flex gap-2 items-center rounded-xl p-2 z-1 text-blue-700 text-shadow-sm/100 text-shadow-yellow-300"
+                    >
+                        <Image
+                            src="/pcmc_logo.png"
+                            // className="flex-none w-24 sm:w-32 md:w-48 lg:w-64"
+                            width={80}
+                            height={80}
+                            alt="Integrated National Medication Reporting System"
+                            title="Integrated National Medication Reporting System"
+                        />
+                        <h1
+                            className="inline-block md:hidden text-lg md:text-base font-extrabold italic"
+                            title="PCMC Pediatric Blood Center - Medical Blood Donation Portal"
+                        >
+                            PCMC PedBC - MBD Portal
+                        </h1>
+                        <h1 className="hidden md:inline-block text-lg md:text-base font-extrabold italic">
+                            PCMC Pediatric Blood Center <br /> Medical Blood
+                            Donation Portal
+                        </h1>
+                    </Link>
+                    <nav>
+                        <ul className="flex items-center space-x-4 font-bold text-xl md:text-sm text-shadow-md italic text-shadow">
+                            <li className="hidden md:block">
                                 <Link
                                     href="/"
                                     className="p-3 hover:ring rounded-xl flex-items-center"
@@ -79,45 +97,119 @@ const HeaderNav = ({ currentUser }) => {
                                     Home
                                 </Link>
                             </li>
-                            <li>
+                            <li className="hidden md:block">
                                 <Link
-                                    href="/portal/admin/users"
+                                    href="#"
                                     className="p-3 hover:ring rounded-xl flex-items-center"
                                 >
-                                    <Users2 className="h-4" />
-                                    Users
+                                    <Droplet className="h-4" />
+                                    Why Donate
                                 </Link>
                             </li>
-                            <li>
+                            <li className="hidden lg:block">
                                 <Link
-                                    href="/portal/admin/agencies"
+                                    href="#"
                                     className="p-3 hover:ring rounded-xl flex-items-center"
                                 >
-                                    <Building className="h-4" />
-                                    Agencies
+                                    <Calendar className="h-4" />
+                                    Upcoming Events
                                 </Link>
                             </li>
-                            <li>
+                            <li className="hidden xl:block">
                                 <Link
-                                    href="/register/organizers"
+                                    href="#"
                                     className="p-3 hover:ring rounded-xl flex-items-center"
                                 >
-                                    <Pen className="h-4" />
-                                    Organizer Registration
+                                    <MdAmpStories className="h-4" />
+                                    Success Stories
                                 </Link>
                             </li>
-                            <li>
+                            <li className="hidden xl:block">
                                 <Link
-                                    href="/portal/change-role"
+                                    href="#"
                                     className="p-3 hover:ring rounded-xl flex-items-center"
                                 >
-                                    <MdTrackChanges className="h-4" />
-                                    Change Role
+                                    <PhoneCall className="h-4" />
+                                    Contact Us
                                 </Link>
+                            </li>
+                            <li className="block xl:hidden">
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            className="h-8 w-min p-0"
+                                        >
+                                            <span className="sr-only">
+                                                Open menu
+                                            </span>
+                                            <SquareMenu />
+                                            <span className="block md:hidden">
+                                                Menus
+                                            </span>
+                                        </Button>
+                                    </DropdownMenuTrigger>
+
+                                    <DropdownMenuContent
+                                        side="bottom"
+                                        align="start"
+                                    >
+                                        <DropdownMenuLabel className="flex items-center gap-2 space-x-2">
+                                            <Command className="w-3 h-3" />
+                                            Navigate
+                                        </DropdownMenuLabel>
+                                        {/* <Link href={`/`}> */}
+                                        <DropdownMenuItem className="block md:hidden p-3 shadow-xs">
+                                            <Link
+                                                href="#"
+                                                className="w-full hover:ring rounded flex-items-center "
+                                            >
+                                                <Home className="h-4" />
+                                                Home
+                                            </Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem className="block md:hidden p-3 shadow-xs">
+                                            <Link
+                                                href="#"
+                                                className="w-full hover:ring rounded flex-items-center"
+                                            >
+                                                <Droplet className="h-4" />
+                                                Why Donate
+                                            </Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem className="block lg:hidden p-3 shadow-xs">
+                                            <Link
+                                                href="#"
+                                                className="w-full hover:ring rounded flex-items-center"
+                                            >
+                                                <Calendar className="h-4" />
+                                                Upcoming Events
+                                            </Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem className="block xl:hidden p-3 shadow-xs">
+                                            <Link
+                                                href="#"
+                                                className="w-full hover:ring rounded flex-items-center"
+                                            >
+                                                <MdAmpStories className="h-4" />
+                                                Success Stories
+                                            </Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem className="block xl:hidden p-3 shadow-xs">
+                                            <Link
+                                                href="#"
+                                                className="w-full hover:ring rounded flex-items-center"
+                                            >
+                                                <PhoneCall className="h-4" />
+                                                Contact Us
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             </li>
                         </ul>
                     </nav>
-                    <div className="block md:hidden">
+                    <div className="">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button
@@ -125,7 +217,7 @@ const HeaderNav = ({ currentUser }) => {
                                     className="h-8 w-min p-0"
                                 >
                                     <span className="sr-only">Open menu</span>
-                                    <SquareMenu /> Menus
+                                    <FaHackerNews /> Developer
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent side="bottom" align="start">
@@ -138,29 +230,47 @@ const HeaderNav = ({ currentUser }) => {
                                 {/* <Link href={`/`}> */}
                                 <DropdownMenuItem>
                                     <Link
-                                        href="#"
+                                        href="/portal"
                                         className="w-full hover:ring rounded flex-items-center "
                                     >
-                                        <Home className="h-4" />
-                                        Home
+                                        <Users className="h-4" />
+                                        Dashboard
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
                                     <Link
-                                        href="#"
+                                        href="/portal/profile"
                                         className="w-full hover:ring rounded flex-items-center "
                                     >
-                                        <FileSliders className="h-4" />
-                                        Option 2
+                                        <User className="h-4" />
+                                        Profile
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
                                     <Link
-                                        href="#"
+                                        href="/portal/change-role"
                                         className="w-full hover:ring rounded flex-items-center "
                                     >
                                         <FileSliders className="h-4" />
-                                        Option 3
+                                        Change Role
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <Link
+                                        href="/portal/admin/users"
+                                        className="w-full hover:ring rounded flex-items-center "
+                                    >
+                                        <Users2Icon className="h-4" />
+                                        Users
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <Link
+                                        href="/portal/admin/agencies"
+                                        className="w-full hover:ring rounded flex-items-center "
+                                    >
+                                        <FileSliders className="h-4" />
+                                        Agencies
                                     </Link>
                                 </DropdownMenuItem>
                                 {/* </Link> */}

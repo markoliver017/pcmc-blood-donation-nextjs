@@ -30,7 +30,7 @@ export default async function Layout({ children }) {
                 },
             });
             if (!agency) {
-                redirect("/register/organizers")
+                redirect("/register/organizers");
                 // return (
                 //     <ErrorPage>
                 //         Hi, {session.user.name}, <br />
@@ -47,9 +47,9 @@ export default async function Layout({ children }) {
                         <ErrorPage className="bg-amber-500">
                             Hi, Mr/Ms <b>{session.user.name}</b>, <br />
                             We appreciate your interest in accessing this page.
-                            However, your request is currently pending approval. You
-                            will receive a notification once a decision has been
-                            made.
+                            However, your request is currently pending approval.
+                            You will receive a notification once a decision has
+                            been made.
                             <br />
                         </ErrorPage>
                     </ErrorModal>
@@ -59,10 +59,12 @@ export default async function Layout({ children }) {
                 return (
                     <ErrorModal>
                         <ErrorPage className="bg-amber-500">
-                            Unfortunately, your request to access this page has been
-                            rejected. The reason for rejection is: {agency?.remarks}
+                            Unfortunately, your request to access this page has
+                            been rejected. The reason for rejection is:{" "}
+                            {agency?.remarks}
                             . If you have any questions or would like further
-                            clarification, please don't hesitate to reach out to us.
+                            clarification, please don't hesitate to reach out to
+                            us.
                             <br />
                         </ErrorPage>
                     </ErrorModal>
@@ -72,16 +74,16 @@ export default async function Layout({ children }) {
                 return (
                     <ErrorModal>
                         <ErrorPage className="bg-amber-500">
-                            Your access to this page has been deactivated. If you
-                            believe this is an error or would like to request
-                            reactivation, please contact us for assistance.
+                            Your access to this page has been deactivated. If
+                            you believe this is an error or would like to
+                            request reactivation, please contact us for
+                            assistance.
                             <br />
                         </ErrorPage>
                     </ErrorModal>
                 );
             }
         }
-
 
         if (session_role == "Donor") {
             const donor = await Donor.findOne({
@@ -95,7 +97,7 @@ export default async function Layout({ children }) {
     }
 
     return (
-        <>
+        <div className="p-5">
             {children}
             {/* <pre>
                 User: {JSON.stringify(session.user, null, 2)}
@@ -110,6 +112,6 @@ export default async function Layout({ children }) {
                 <br />
                 Agency Headed = {JSON.stringify(agency, null, 2)}
             </pre> */}
-        </>
+        </div>
     );
 }

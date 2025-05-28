@@ -14,7 +14,6 @@ import Header from "@components/layout/Header";
 import { auth } from "@lib/auth";
 import TansactProviders from "@components/layout/TansactProvider";
 
-
 const geistSans = Geist({
     variable: "--font-geist-sans",
     subsets: ["latin"],
@@ -60,13 +59,11 @@ export default async function RootLayout({ children }) {
                                 id="main-container"
                                 className="flex flex-col flex-1 h-screen overflow-y-scroll"
                             >
-                                <Header />
                                 <HeaderNav currentUser={currentUser} />
+                                {/* <Header /> */}
                                 {/* <WrapperHead /> */}
                                 <TansactProviders>
-                                    <main className="flex-1 p-4">
-                                        {children}
-                                    </main>
+                                    <main className="flex-1">{children}</main>
                                 </TansactProviders>
                                 <Footer />
                             </div>

@@ -11,8 +11,6 @@ import {
     DrawerClose,
 } from "@components/ui/drawer";
 import LoginForm from "@components/login/LoginForm";
-import Image from "next/image";
-import { X } from "lucide-react";
 
 export default function LoginDrawer() {
     const drawerRef = useRef();
@@ -28,9 +26,9 @@ export default function LoginDrawer() {
                 </div>
             </button>
 
-            <Drawer ref={drawerRef} direction="top">
-                <DrawerContent className="dark:bg-neutral-900 dark:text-slate-100 b-bl">
-                    <DrawerHeader className="hidden">
+            <Drawer ref={drawerRef} direction="right">
+                <DrawerContent className="dark:bg-neutral-900 dark:text-slate-100">
+                    <DrawerHeader>
                         <DrawerTitle className="dark:text-slate-100">
                             SYSTEM ADMINISTRATOR LOGIN
                         </DrawerTitle>
@@ -40,29 +38,15 @@ export default function LoginDrawer() {
                         </DrawerDescription> */}
                     </DrawerHeader>
 
-                    <div className="relative h-screen w-full flex items-center justify-end overflow-hidden">
-                        {/* Background Image */}
-
-                        <Image
-                            src="/blood-bg.jpg"
-                            alt="Login Background"
-                            fill
-                            className="object-cover object-right"
-                            quality={100}
-                            priority
-                        />
-
-                        {/* Login Form */}
-                        <div className="relative p-10 z-20 mr-10 bg-base-300/40 rounded-lg shadow-lg">
-                            <LoginForm />
-                        </div>
-                        <button
-                            className="absolute left-10 top-10 btn btn-circle"
-                            onClick={() => drawerRef.current.close()}
-                        >
-                            <X />
-                        </button>
+                    <div className="p-4">
+                        <LoginForm />
                     </div>
+
+                    <DrawerFooter>
+                        <DrawerClose className="btn btn-default">
+                            Close
+                        </DrawerClose>
+                    </DrawerFooter>
                 </DrawerContent>
             </Drawer>
         </>

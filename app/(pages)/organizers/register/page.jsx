@@ -1,11 +1,9 @@
 import { Suspense } from "react";
-import { X } from "lucide-react";
+import { UserCog, X } from "lucide-react";
 import Link from "next/link";
 import { getOrganizerRole } from "@/action/registerAction";
 import Skeleton from "@components/ui/skeleton";
-import NewUserForm from "../NewUserForm";
 import { auth } from "@lib/auth";
-import NewOrganizerForm from "./NewOrganizerForm";
 import {
     dehydrate,
     HydrationBoundary,
@@ -13,8 +11,17 @@ import {
 } from "@tanstack/react-query";
 import { fetchluzonDemographics } from "@/action/locationAction";
 import { Agency, User } from "@lib/models";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@components/ui/card";
 import Image from "next/image";
+import NewUserForm from "@components/user/NewUserForm";
+import NewOrganizerForm from "@components/organizers/NewOrganizerForm";
+import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 
 export default async function Page() {
     const session = await auth();
@@ -23,7 +30,15 @@ export default async function Page() {
     if (session && session?.user) {
         // const agency_head = await User.findByPk("14abe03d-b9f8-4076-a36f-9d595fd84138", {
         const agency_head = await User.findByPk(session.user.id, {
-            attributes: ["id", "name", "full_name", "first_name", "last_name", "email", "image"],
+            attributes: [
+                "id",
+                "name",
+                "full_name",
+                "first_name",
+                "last_name",
+                "email",
+                "image",
+            ],
             include: [
                 {
                     model: Agency,
@@ -39,18 +54,32 @@ export default async function Page() {
                 <Card className="mx-auto max-w-max">
                     <CardHeader>
                         <CardTitle>
-                            Welcome, <span className="font-bold">{agency_head?.full_name || agency_head?.name}</span>!
+                            Welcome,{" "}
+                            <span className="font-bold">
+                                {agency_head?.full_name || agency_head?.name}
+                            </span>
+                            !
                         </CardTitle>
                         <CardDescription>
-                            Your account is currently linked to the partner agency{" "}
-                            <span className="italic font-semibold">{agency_head.headedAgency.name}</span>.
+                            Your account is currently linked to the partner
+                            agency{" "}
+                            <span className="italic font-semibold">
+                                {agency_head.headedAgency.name}
+                            </span>
+                            .
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Link href="/portal" className="flex items-center gap-4 mt-2 cursor-pointer rounded ring-blue-400 p-5 hover:ring active:ring-2">
+                        <Link
+                            href="/portal"
+                            className="flex items-center gap-4 mt-2 cursor-pointer rounded ring-blue-400 p-5 hover:ring active:ring-2"
+                        >
                             <div className="flex-none h-32 w-32 relative rounded-4xl mx-auto shadow-xl overflow-hidden">
                                 <Image
-                                    src={agency_head.image || "/default_avatar.png"}
+                                    src={
+                                        agency_head.image ||
+                                        "/default_avatar.png"
+                                    }
                                     alt="Avatar"
                                     fill
                                     style={{ objectFit: "cover" }}
@@ -58,17 +87,21 @@ export default async function Page() {
                             </div>
 
                             <div className="flex-1">
-                                <h2 className="text-2xl font-semibold">Dashboard</h2>
-                                <p className="text-sm font-medium text-blue-500 link">{agency_head.email.toLowerCase()}</p>
-                                <p className="text-sm text-muted-foreground ">Agency Administrator</p>
+                                <h2 className="text-2xl font-semibold">
+                                    Dashboard
+                                </h2>
+                                <p className="text-sm font-medium text-blue-500 link">
+                                    {agency_head.email.toLowerCase()}
+                                </p>
+                                <p className="text-sm text-muted-foreground ">
+                                    Agency Administrator
+                                </p>
                             </div>
                         </Link>
                     </CardContent>
                 </Card>
-
-            )
+            );
         }
-
     }
 
     const queryClient = new QueryClient();
@@ -80,10 +113,14 @@ export default async function Page() {
 
     return (
         <Suspense fallback={<Skeleton />}>
-            <div className="w-full h-full md:w-8/10 2xl:w-3/4 mx-auto relative">
+            <div className="w-full h-full md:w-8/10 2xl:w-3/4 mx-auto p-5 relative">
+                <WrapperHeadMain
+                    icon={<UserCog />}
+                    pageTitle="New Account Registration"
+                />
                 {!session || !session?.user ? (
                     <>
-                        <Link href="/" className="mb-3 absolute top-5 right-4">
+                        <Link href="/" className="mb-3 absolute top-25 right-8">
                             <button
                                 className="btn btn-circle btn-warning w-max p-3"
                                 tabIndex={-1}
