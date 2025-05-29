@@ -61,11 +61,11 @@ const HeaderNav = ({ currentUser }) => {
     };
     return (
         <>
-            <header className="flex-none border-b border-gray-200 p-2 shadow-lg/100 shadow-gray-500 bg-gradient-to-b from-cyan-100 to-slate-200">
+            <header className="flex-none border-b border-gray-200 p-2 shadow-lg/100 shadow-gray-500 bg-gradient-to-b from-cyan-100 dark:from-sky-500 to-slate-200 dark:to-sky-800">
                 <div className="flex-1 flex justify-between md:justify-evenly gap-2 items-center">
                     <Link
                         href="/"
-                        className="flex-none flex gap-2 items-center rounded-xl p-2 z-1 text-blue-700 text-shadow-sm/100 text-shadow-yellow-300"
+                        className="flex-none flex gap-2 items-center rounded-xl p-2 z-1 text-blue-700 dark:text-slate-100 text-shadow-sm/100 text-shadow-yellow-300 dark:text-shadow-yellow-800"
                     >
                         <Image
                             src="/pcmc_logo.png"

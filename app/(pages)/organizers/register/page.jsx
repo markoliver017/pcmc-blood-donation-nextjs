@@ -6,7 +6,7 @@ import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 export default async function Page() {
 
     return (
-        <>
+        <div>
             <WrapperHeadMain
                 icon={<Building />}
                 pageTitle="Agency Registration"
@@ -16,10 +16,9 @@ export default async function Page() {
                 ]}
             />
             <div className="w-full h-full xl:w-8/10 2xl:w-7/10 mx-auto p-5 relative">
-
                 <NewOrganizerForm role_name="Agency Administrator" />
 
             </div>
-        </>
+        </div>
     );
 }

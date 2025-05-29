@@ -1,10 +1,5 @@
-import {
-    dehydrate,
-    HydrationBoundary,
-    QueryClient,
-} from "@tanstack/react-query";
+
 import AgencyList from "./AgencyList";
-import { fetchAgencies } from "@/action/agencyAction";
 
 export default async function AgenciesPage() {
     // const queryClient = new QueryClient();

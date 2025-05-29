@@ -21,14 +21,13 @@ import {
 } from "@components/ui/form";
 
 import { MdNextPlan, MdPassword } from "react-icons/md";
-import { useRouter } from "next/navigation";
-import { GiCancel } from "react-icons/gi";
+
 import { useFormContext } from "react-hook-form";
 import { IoArrowUndoCircle } from "react-icons/io5";
+import Preloader3 from "@components/layout/Preloader3";
 
 export default function NewUserCredentialsForm({ details, onNext }) {
 
-    const router = useRouter();
     const {
         trigger,
         control,
@@ -37,7 +36,7 @@ export default function NewUserCredentialsForm({ details, onNext }) {
 
     const onSubmitNext = async () => {
         const valid = await trigger([
-            "isChangePassword",
+            "email",
             "password",
             "password_confirmation",
         ]);
@@ -58,128 +57,131 @@ export default function NewUserCredentialsForm({ details, onNext }) {
 
 
     return (
-        <Card className="p-0 md:p-5 bg-slate-100">
-            <CardHeader className="text-2xl font-bold">
-                <CardTitle className="text-2xl">
-                    {details.title}
-                </CardTitle>
-                <CardDescription>
-                    <div>Please fill up all the * required fields.</div>
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
+        <>
+            <Preloader3 />
+            <Card className="p-0 md:p-5 bg-slate-100">
+                <CardHeader className="text-2xl font-bold">
+                    <CardTitle className="text-2xl">
+                        {details.title}
+                    </CardTitle>
+                    <CardDescription>
+                        <div>Please fill up all the * required fields.</div>
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
 
-                <FormField
-                    control={control}
-                    name="email"
-                    render={({ field }) => (
-                        <FormItem>
-                            <InlineLabel>
-                                Email Address: *
-                            </InlineLabel>
-                            <label
-                                className={clsx(
-                                    "input w-full mt-1",
-                                    errors?.email
-                                        ? "input-error"
-                                        : "input-info"
-                                )}
-                            >
-                                <Mail className="h-3" />
-                                <input
-                                    type="email"
-                                    tabIndex={1}
-                                    {...field}
-                                    placeholder="example@email.com"
+                    <FormField
+                        control={control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                                <InlineLabel>
+                                    Email Address: *
+                                </InlineLabel>
+                                <label
+                                    className={clsx(
+                                        "input w-full mt-1",
+                                        errors?.email
+                                            ? "input-error"
+                                            : "input-info"
+                                    )}
+                                >
+                                    <Mail className="h-3" />
+                                    <input
+                                        type="email"
+                                        tabIndex={1}
+                                        {...field}
+                                        placeholder="example@email.com"
+                                    />
+                                </label>
+
+                                <FieldError field={errors?.email} />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem>
+                                <InlineLabel>Password: *</InlineLabel>
+
+                                <label
+                                    className={clsx(
+                                        "input w-full mt-1",
+                                        errors?.password
+                                            ? "input-error"
+                                            : "input-info"
+                                    )}
+                                >
+                                    <MdPassword className="h-3" />
+                                    <input
+                                        type="password"
+                                        tabIndex={5}
+                                        placeholder="Enter your password"
+                                        {...field}
+                                    />
+                                </label>
+                                <FieldError field={errors?.password} />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={control}
+                        name="password_confirmation"
+                        render={({ field }) => (
+                            <FormItem>
+                                <InlineLabel>
+                                    Confirm Password: *
+                                </InlineLabel>
+
+                                <label
+                                    className={clsx(
+                                        "input w-full mt-1",
+                                        errors?.password_confirmation
+                                            ? "input-error"
+                                            : "input-info"
+                                    )}
+                                >
+                                    <MdPassword className="h-3" />
+                                    <input
+                                        type="password"
+                                        tabIndex={6}
+                                        placeholder="Re-type your password"
+                                        {...field}
+                                    />
+                                </label>
+                                <FieldError
+                                    field={
+                                        errors?.password_confirmation
+                                    }
                                 />
-                            </label>
+                            </FormItem>
+                        )}
+                    />
 
-                            <FieldError field={errors?.email} />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={control}
-                    name="password"
-                    render={({ field }) => (
-                        <FormItem>
-                            <InlineLabel>Password: *</InlineLabel>
+                    <div className="flex-none card-actions justify-between mt-5">
+                        <button
+                            onClick={() => onNext(-1)}
+                            className="btn btn-default"
+                            tabIndex={-1}
+                        >
+                            <IoArrowUndoCircle />{" "}
+                            <span className="hidden sm:inline-block">Back</span>
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={onSubmitNext}
+                            tabIndex="4"
+                        >
+                            <MdNextPlan />{" "}
+                            <span className="hidden sm:inline-block">Next</span>
+                        </button>
+                    </div>
 
-                            <label
-                                className={clsx(
-                                    "input w-full mt-1",
-                                    errors?.password
-                                        ? "input-error"
-                                        : "input-info"
-                                )}
-                            >
-                                <MdPassword className="h-3" />
-                                <input
-                                    type="password"
-                                    tabIndex={5}
-                                    placeholder="Enter your password"
-                                    {...field}
-                                />
-                            </label>
-                            <FieldError field={errors?.password} />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={control}
-                    name="password_confirmation"
-                    render={({ field }) => (
-                        <FormItem>
-                            <InlineLabel>
-                                Confirm Password: *
-                            </InlineLabel>
-
-                            <label
-                                className={clsx(
-                                    "input w-full mt-1",
-                                    errors?.password_confirmation
-                                        ? "input-error"
-                                        : "input-info"
-                                )}
-                            >
-                                <MdPassword className="h-3" />
-                                <input
-                                    type="password"
-                                    tabIndex={6}
-                                    placeholder="Re-type your password"
-                                    {...field}
-                                />
-                            </label>
-                            <FieldError
-                                field={
-                                    errors?.password_confirmation
-                                }
-                            />
-                        </FormItem>
-                    )}
-                />
-
-                <div className="flex-none card-actions justify-between mt-5">
-                    <button
-                        onClick={() => onNext(-1)}
-                        className="btn btn-default"
-                        tabIndex={-1}
-                    >
-                        <IoArrowUndoCircle />{" "}
-                        <span className="hidden sm:inline-block">Back</span>
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={onSubmitNext}
-                        tabIndex="4"
-                    >
-                        <MdNextPlan />{" "}
-                        <span className="hidden sm:inline-block">Next</span>
-                    </button>
-                </div>
-
-            </CardContent>
-        </Card >
+                </CardContent>
+            </Card >
+        </>
     );
 }

@@ -7,7 +7,8 @@ import { auth } from "@lib/auth";
 import { logErrorToFile } from "@lib/logger.server";
 import { Agency, Role, sequelize, User } from "@lib/models";
 import { formatSeqObj } from "@lib/utils/object.utils";
-import { agencySchema, agencyStatusSchema } from "@lib/zod/agencySchema";
+import { agencyRegistrationWithUser, agencySchema, agencyStatusSchema } from "@lib/zod/agencySchema";
+import { Op } from "sequelize";
 
 export async function fetchAgencies() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -38,7 +39,18 @@ export async function fetchAgencies() {
 export async function fetchAgency(id) {
     try {
         const agency = await Agency.findByPk(id, {
-            // attributes: { exclude: ["password", "email_verified"] },
+            attributes: {
+                exclude: [
+                    "remarks",
+                    "verified_by",
+                    "updated_by",
+                    "createdAt",
+                    "updatedAt",
+                    "status",
+                    "comments",
+                    "head_id",
+                ],
+            },
             include: [
                 {
                     model: User,
@@ -58,7 +70,8 @@ export async function fetchAgency(id) {
             ],
         });
 
-        return { success: true, data: formatSeqObj(agency) };
+        return formatSeqObj(agency);
+
     } catch (error) {
         console.error(error);
         throw error;
@@ -100,7 +113,7 @@ export async function fetchActiveAgency() {
             ],
         });
 
-        return { success: true, data: formatSeqObj(agencies) };
+        return formatSeqObj(agencies);
     } catch (error) {
         console.error(error);
         throw error;
@@ -153,6 +166,7 @@ export async function fetchAgencyByName(agencyName) {
     }
 }
 
+/* For admin registration */
 export async function createAgency(formData) {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const session = await auth();
@@ -237,6 +251,82 @@ export async function createAgency(formData) {
             controller: "agencies",
             action: "CREATE",
             details: `A new agency has been successfully created. ID#: ${newAgency.id}`,
+        });
+
+        return { success: true, data: newAgency.get({ plain: true }) };
+    } catch (err) {
+        logErrorToFile(err, "CREATE AGENCY");
+        await transaction.rollback();
+
+        throw err.message || "Unknown error";
+    }
+}
+
+/* For client user registration */
+export async function storeAgency(formData) {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    console.log("formData received on server", formData);
+    const parsed = agencyRegistrationWithUser.safeParse(formData);
+
+    if (!parsed.success) {
+        const fieldErrors = parsed.error.flatten().fieldErrors;
+        return {
+            success: false,
+            type: "validation",
+            message: "Please check your input and try again.",
+            errorObj: parsed.error.flatten().fieldErrors,
+            errorArr: Object.values(fieldErrors).flat(),
+        };
+    }
+
+    const { data } = parsed;
+
+    const existingUser = await User.findOne({
+        where: { email: data.email }
+    });
+    if (existingUser) {
+        throw `The email is already associated with an existing account in the system.`;
+
+    }
+
+    const roles = await Role.findAll({
+        where: {
+            id: {
+                [Op.in]: data.role_ids,
+            },
+        },
+        attributes: ["id", "role_name"],
+    });
+
+    if (roles.length !== data.role_ids.length) {
+
+        throw "Database Error: One or more roles not found.";
+
+    }
+
+    const transaction = await sequelize.transaction();
+
+    try {
+
+        const newUser = await User.create(data, { transaction });
+        if (!newUser) {
+            throw "Registration Failed: There was an error while trying to register a new user account!";
+        }
+
+        await newUser.addRoles(data.role_ids, { transaction });
+
+        data.head_id = newUser.id;
+        console.log("data.head_id >>", data)
+
+        const newAgency = await Agency.create(data, { transaction });
+
+        await transaction.commit();
+
+        await logAuditTrail({
+            userId: newUser.id,
+            controller: "agencies",
+            action: "CREATE",
+            details: `A new agency has been successfully created. Agency ID#: ${newAgency.id} with User account: ${newUser.id}`,
         });
 
         return { success: true, data: newAgency.get({ plain: true }) };

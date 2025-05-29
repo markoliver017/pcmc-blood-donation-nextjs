@@ -17,14 +17,14 @@ export default function FormLogger({
 
             {errors && (
                 <>
-                    <div>Form Errors: </div>
+                    <div className="font-bold text-red-500">Form Errors: </div>
                     <pre>{JSON.stringify(errors, null, 3)}</pre>
                 </>
             )}
 
             {data && (
                 <>
-                    <div>Mutate Success data</div>
+                    <div className="font-bold text-green-500">Mutate Success data</div>
                     <pre>{JSON.stringify(data, null, 3)}</pre>
                 </>
             )}

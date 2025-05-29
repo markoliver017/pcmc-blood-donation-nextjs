@@ -13,6 +13,7 @@ import Providers from "../../components/layout/AuthProvider";
 import Header from "@components/layout/Header";
 import { auth } from "@lib/auth";
 import TansactProviders from "@components/layout/TansactProvider";
+import ModalComponent from "./ModalComponent";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -32,7 +33,7 @@ export const metadata = {
     },
 };
 
-export default async function RootLayout({ children }) {
+export default async function RootLayout({ children, modal }) {
     const session = await auth();
     console.log("Root layout", session);
     let currentUser = {
@@ -63,7 +64,13 @@ export default async function RootLayout({ children }) {
                                 {/* <Header /> */}
                                 {/* <WrapperHead /> */}
                                 <TansactProviders>
-                                    <main className="flex-1">{children}</main>
+                                    <main className="flex-1">
+                                        <ModalComponent>
+
+                                            {modal}
+                                        </ModalComponent>
+                                        {children}
+                                    </main>
                                 </TansactProviders>
                                 <Footer />
                             </div>

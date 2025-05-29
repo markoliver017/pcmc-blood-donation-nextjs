@@ -1,6 +1,6 @@
 "use client"
 import { formatFormalName } from '@lib/utils/string.utils'
-import { Eye, EyeClosed } from 'lucide-react';
+import { Building, Eye, EyeClosed, Key, Map, MapPin, UserCog } from 'lucide-react';
 import React, { useState } from 'react'
 
 export default function ConfirmTable({ watch }) {
@@ -11,10 +11,12 @@ export default function ConfirmTable({ watch }) {
             <tbody>
                 <tr className="bg-gray-200 dark:bg-gray-900 border-b border-gray-300">
                     <th colSpan={2}>
-                        Agency Administrator
+                        <span className='flex-items-center'>
+                            <UserCog /> Agency Administrator
+                        </span>
                     </th>
                 </tr>
-                <tr className="hover:bg-base-300">
+                <tr className="hover:bg-base-300 border-b border-gray-300">
                     <th width="20%">First Name:</th>
                     <td>
                         {watch(
@@ -31,9 +33,12 @@ export default function ConfirmTable({ watch }) {
                     </td>
                 </tr>
 
-                <tr className="bg-gray-200 dark:bg-gray-900 border-b border-gray-300">
+                <tr className="bg-gray-200 dark:bg-gray-900">
                     <th colSpan={2}>
-                        Account Credentials
+                        <span className='flex-items-center'>
+                            <Key />
+                            Account Credentials
+                        </span>
                     </th>
                 </tr>
                 <tr className="hover:bg-base-300">
@@ -67,7 +72,10 @@ export default function ConfirmTable({ watch }) {
 
                 <tr className="bg-gray-200 dark:bg-gray-900 border-b border-gray-300">
                     <th colSpan={2}>
-                        Organizer Details
+                        <span className='flex-items-center'>
+                            <Building />
+                            Agency Details
+                        </span>
                     </th>
                 </tr>
                 <tr className="hover:bg-base-300">
@@ -97,7 +105,10 @@ export default function ConfirmTable({ watch }) {
                 </tr>
                 <tr className="bg-gray-200 dark:bg-gray-900 border-b border-gray-300">
                     <th colSpan={2}>
-                        Location Details
+                        <span className='flex-items-center'>
+                            <MapPin />
+                            Location Details
+                        </span>
                     </th>
                 </tr>
                 <tr className="hover:bg-base-300">

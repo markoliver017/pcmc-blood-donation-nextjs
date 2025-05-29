@@ -30,7 +30,7 @@ export default function SelectRegisterDrawer({ open, setOpen }) {
                     </DrawerHeader>
 
                     <div className="flex gap-3">
-                        <Link href="#">
+                        <Link href="/organizers">
                             <Card className="rounded-sm cursor-pointer hover:ring-1">
                                 <CardHeader>
                                     <CardTitle>Blood Donor</CardTitle>

@@ -15,7 +15,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
-import { MessageCircle, Quote, Send } from "lucide-react";
+import { MessageCircle, Send } from "lucide-react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -35,19 +35,15 @@ import { getRole } from "@/action/registerAction";
 import Skeleton from "@components/ui/skeleton";
 import NewUserBasicInfoForm from "@components/user/NewUserBasicInfoForm";
 import NewUserCredentialsForm from "@components/user/NewUserCredentialsForm";
-import ConfirmTable from "./ConfirmTable";
 
 import DisplayValidationErrors from "@components/form/DisplayValidationErrors";
-import AgencyDetailsForm from "./AgencyDetailsForm";
-import AgencyLocationForm from "./AgencyLocationForm";
 import Preloader3 from "@components/layout/Preloader3";
 import LoadingModal from "@components/layout/LoadingModal";
-import { FaHornbill } from "react-icons/fa";
-import { GiHornInternal } from "react-icons/gi";
+
 
 const form_sections = [
     {
-        title: "Agency Administrator",
+        title: "New Account",
         class: "progress-info",
         percent: 20,
     },
@@ -57,16 +53,6 @@ const form_sections = [
         percent: 40,
     },
     {
-        title: "Agency Details",
-        class: "progress-info",
-        percent: 60,
-    },
-    {
-        title: "Location Details",
-        class: "progress-info",
-        percent: 80,
-    },
-    {
         title: "Confirm",
         class: "progress-success",
         percent: 100,
@@ -74,7 +60,7 @@ const form_sections = [
     },
 ];
 
-export default function NewOrganizerForm({ role_name }) {
+export default function NewDonorForm({ role_name }) {
     const router = useRouter();
 
     const { data: user_role, isLoading: user_role_loading } = useQuery({
@@ -90,18 +76,19 @@ export default function NewOrganizerForm({ role_name }) {
     const queryClient = useQueryClient();
 
     const {
-        data: newAgencyData,
+        data: newDonorData,
         mutate,
         isPending,
         error,
         isError,
     } = useMutation({
         mutationFn: async (formData) => {
-            const res = await storeAgency(formData);
-            if (!res.success) {
-                throw res; // Throw the error response to trigger onError
-            }
-            return res.data;
+            // const res = await storeAgency(formData);
+            // if (!res.success) {
+            //     throw res; // Throw the error response to trigger onError
+            // }
+            // return res.data;
+            return formData;
         },
         onSuccess: () => {
             /** note: the return data will be accessible in the debugger
@@ -113,7 +100,7 @@ export default function NewOrganizerForm({ role_name }) {
                 text: "You've successfully submitted a request to become one of our partner agencies. You'll be notified once your application is approved.",
                 icon: "success",
                 confirmButtonText: "I understand.",
-                onConfirm: () => router.push("/"),
+                // onConfirm: () => router.push("/"),
             });
         },
         onError: (error) => {
@@ -165,17 +152,16 @@ export default function NewOrganizerForm({ role_name }) {
             profile_picture: null,
             file: null,
             image: "",
-            file_url: "",
+            donor_file_url: "",
             email: "mark29@email.com",
             first_name: "Mark",
             last_name: "Roman",
             gender: "male",
             password: "User@1234",
             password_confirmation: "User@1234",
-            name: "PCMC",
             contact_number: "+639663603172",
-            organization_type: "government",
-            address: "PCMC Building",
+            address: "#1 Bonifacio Street",
+            donor_file_url: "",
             barangay: "",
             city_municipality: "",
             province: "Metro Manila",
@@ -201,23 +187,14 @@ export default function NewOrganizerForm({ role_name }) {
 
     const onSubmit = async (data) => {
         SweetAlert({
-            title: "Blood Drive Agency Registration",
-            text: "Submit your agency registration request now? ",
+            title: "Blood Donor Registration",
+            text: "Submit your request now? ",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Proceed",
             cancelButtonText: "Cancel",
             onConfirm: async () => {
                 /* if no file_url but theres an uploaded file proceed to upload picture*/
-                const fileUrl = watch("file_url");
-                if (data?.file && !fileUrl) {
-                    const result = await uploadPicture(data.file);
-                    if (result?.success) {
-                        data.file_url = result.file_data?.url || null;
-                        setValue("file_url", result.file_data?.url);
-                    }
-                    console.log("Upload result:", result);
-                }
                 const fileImage = watch("image");
                 if (data?.profile_picture && !fileImage) {
                     const result = await uploadPicture(data.profile_picture);
@@ -227,6 +204,17 @@ export default function NewOrganizerForm({ role_name }) {
                     }
                     console.log("Upload result:", result);
                 }
+
+                const fileUrl = watch("donor_file_url");
+                if (data?.file && !fileUrl) {
+                    const result = await uploadPicture(data.file);
+                    if (result?.success) {
+                        data.file_url = result.file_data?.url || null;
+                        setValue("file_url", result.file_data?.url);
+                    }
+                    console.log("Upload result:", result);
+                }
+
                 mutate(data);
             },
         });
@@ -296,24 +284,8 @@ export default function NewOrganizerForm({ role_name }) {
                                 ""
                             )}
 
-                            {sectionNo == 2 ? (
-                                <AgencyDetailsForm
-                                    details={form_sections[sectionNo]}
-                                    onNext={handleNext}
-                                />
-                            ) : (
-                                ""
-                            )}
 
-                            {sectionNo == 3 ? (
-                                <AgencyLocationForm
-                                    details={form_sections[sectionNo]}
-                                    onNext={handleNext}
-                                />
-                            ) : (
-                                ""
-                            )}
-                            {sectionNo == 4 ? (
+                            {sectionNo == 2 ? (
                                 <>
                                     <Preloader3 />
                                     <LoadingModal isLoading={isPending}>
@@ -398,7 +370,7 @@ export default function NewOrganizerForm({ role_name }) {
                             {/* <FormLogger
                                 watch={watch}
                                 errors={errors}
-                                data={newAgencyData}
+                                data={newDonorData}
                             /> */}
                         </form>
                     </Form>
