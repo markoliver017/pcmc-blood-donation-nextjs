@@ -14,6 +14,7 @@ import Header from "@components/layout/Header";
 import { auth } from "@lib/auth";
 import TansactProviders from "@components/layout/TansactProvider";
 import ModalComponent from "./ModalComponent";
+import { headers } from "next/headers";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -36,6 +37,11 @@ export const metadata = {
 export default async function RootLayout({ children, modal }) {
     const session = await auth();
     console.log("Root layout", session);
+
+    // const headerList = await headers();
+    // const pathname = headerList.get("x-current-path");
+    // console.log("Layout pathname", pathname);
+
     let currentUser = {
         name: "Bonnie Green",
         email: "admin@email.com",
@@ -65,10 +71,7 @@ export default async function RootLayout({ children, modal }) {
                                 {/* <WrapperHead /> */}
                                 <TansactProviders>
                                     <main className="flex-1">
-                                        <ModalComponent>
-
-                                            {modal}
-                                        </ModalComponent>
+                                        <ModalComponent>{modal}</ModalComponent>
                                         {children}
                                     </main>
                                 </TansactProviders>

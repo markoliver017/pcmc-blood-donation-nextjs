@@ -24,7 +24,6 @@ import {
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
 
-
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 
 // import { GitHubLogoIcon } from "@radix-ui/react-icons";
@@ -36,7 +35,6 @@ import { useFormContext } from "react-hook-form";
 import Preloader3 from "@components/layout/Preloader3";
 
 export default function NewUserBasicInfoForm({ details, onNext }) {
-
     const router = useRouter();
     const {
         trigger,
@@ -199,36 +197,31 @@ export default function NewUserBasicInfoForm({ details, onNext }) {
     // };
 
     const uploaded_avatar = watch("profile_picture");
+    console.log("uploaded_avatar", uploaded_avatar);
     const avatar =
         !errors?.profile_picture && uploaded_avatar
             ? URL.createObjectURL(uploaded_avatar)
-            : "/default_avatar.png";
+            : "/upload-file-profile-pic.png";
 
     useEffect(() => {
         if (watch("image")) setValue("image", null);
     }, [uploaded_avatar]);
-
 
     return (
         <>
             <Preloader3 />
             <Card className="p-0 md:p-5 bg-slate-100">
                 <CardHeader className="text-2xl font-bold">
-                    <CardTitle className="text-2xl">
-                        {details.title}
-                    </CardTitle>
+                    <CardTitle className="text-2xl">{details.title}</CardTitle>
                     <CardDescription>
                         <div>Please fill up all the * required fields.</div>
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-5">
-
                     <FormField
                         control={control}
                         name="profile_picture"
-                        render={({
-                            field: { onChange, value, ...field },
-                        }) => {
+                        render={({ field: { onChange, value, ...field } }) => {
                             const fileInputRef = useRef(null);
                             const handleImageClick = () => {
                                 if (fileInputRef.current) {
@@ -246,9 +239,7 @@ export default function NewUserBasicInfoForm({ details, onNext }) {
                                                 type="file"
                                                 tabIndex={-1}
                                                 onChange={(e) =>
-                                                    onChange(
-                                                        e.target.files[0]
-                                                    )
+                                                    onChange(e.target.files[0])
                                                 }
                                                 {...field}
                                             />
@@ -262,9 +253,7 @@ export default function NewUserBasicInfoForm({ details, onNext }) {
                                     {uploaded_avatar ? (
                                         <button
                                             onClick={() =>
-                                                resetField(
-                                                    "profile_picture"
-                                                )
+                                                resetField("profile_picture")
                                             }
                                             className="btn btn-ghost"
                                         >
@@ -333,9 +322,7 @@ export default function NewUserBasicInfoForm({ details, onNext }) {
                                             {...field}
                                         />
                                     </label>
-                                    <FieldError
-                                        field={errors?.first_name}
-                                    />
+                                    <FieldError field={errors?.first_name} />
                                 </FormItem>
                             )}
                         />
@@ -390,9 +377,7 @@ export default function NewUserBasicInfoForm({ details, onNext }) {
                                             <option value="">
                                                 Select here
                                             </option>
-                                            <option value="male">
-                                                Male
-                                            </option>
+                                            <option value="male">Male</option>
                                             <option value="female">
                                                 Female
                                             </option>
@@ -403,7 +388,6 @@ export default function NewUserBasicInfoForm({ details, onNext }) {
                             )}
                         />
 
-
                         <div className="flex-none card-actions justify-between mt-5">
                             <button
                                 onClick={() => router.replace("/")}
@@ -411,7 +395,9 @@ export default function NewUserBasicInfoForm({ details, onNext }) {
                                 tabIndex={-1}
                             >
                                 <GiCancel />{" "}
-                                <span className="hidden sm:inline-block">Cancel</span>
+                                <span className="hidden sm:inline-block">
+                                    Cancel
+                                </span>
                             </button>
                             <button
                                 type="button"
@@ -420,13 +406,12 @@ export default function NewUserBasicInfoForm({ details, onNext }) {
                                 tabIndex="4"
                             >
                                 <MdNextPlan />{" "}
-                                <span className="hidden sm:inline-block">Next</span>
+                                <span className="hidden sm:inline-block">
+                                    Next
+                                </span>
                             </button>
                         </div>
-
                     </div>
-
-
                 </CardContent>
             </Card>
         </>

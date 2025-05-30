@@ -19,16 +19,22 @@ import { Building, Building2Icon, Phone } from "lucide-react";
 import FieldError from "@components/form/FieldError";
 import { formatFormalName } from "@lib/utils/string.utils";
 import { IoArrowUndoCircle } from "react-icons/io5";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@components/ui/card";
 import Preloader3 from "@components/layout/Preloader3";
 
 export default function AgencyDetailsForm({ details, onNext }) {
-
     const {
         trigger,
         control,
         watch,
         resetField,
+        setValue,
         formState: { errors },
     } = useFormContext();
 
@@ -57,8 +63,8 @@ export default function AgencyDetailsForm({ details, onNext }) {
         !errors?.file && uploaded_avatar
             ? URL.createObjectURL(uploaded_avatar)
             : errors?.file
-                ? "/invalid-file.png"
-                : "/default_company_avatar.png";
+            ? "/invalid-file.png"
+            : "/default-agency-logo.png";
 
     useEffect(() => {
         if (watch("file_url")) setValue("file_url", null);
@@ -69,9 +75,7 @@ export default function AgencyDetailsForm({ details, onNext }) {
             <Preloader3 />
             <Card className="p-0 md:p-5 bg-slate-100">
                 <CardHeader className="text-2xl font-bold">
-                    <CardTitle className="text-2xl">
-                        {details.title}
-                    </CardTitle>
+                    <CardTitle className="text-2xl">{details.title}</CardTitle>
                     <CardDescription>
                         <div>Please fill up all the * required fields.</div>
                     </CardDescription>
@@ -176,7 +180,9 @@ export default function AgencyDetailsForm({ details, onNext }) {
                                         />
                                     </label>
 
-                                    <FieldError field={errors?.contact_number} />
+                                    <FieldError
+                                        field={errors?.contact_number}
+                                    />
                                 </FormItem>
                             )}
                         />
@@ -186,7 +192,9 @@ export default function AgencyDetailsForm({ details, onNext }) {
                             name="organization_type"
                             render={({ field }) => (
                                 <FormItem>
-                                    <InlineLabel>Organization Type: *</InlineLabel>
+                                    <InlineLabel>
+                                        Organization Type: *
+                                    </InlineLabel>
 
                                     <label
                                         className={clsx(
@@ -202,7 +210,9 @@ export default function AgencyDetailsForm({ details, onNext }) {
                                             tabIndex={3}
                                             {...field}
                                         >
-                                            <option value="">Select here</option>
+                                            <option value="">
+                                                Select here
+                                            </option>
                                             {[
                                                 "business",
                                                 "media",
@@ -217,7 +227,9 @@ export default function AgencyDetailsForm({ details, onNext }) {
                                             ))}
                                         </select>
                                     </label>
-                                    <FieldError field={errors?.organization_type} />
+                                    <FieldError
+                                        field={errors?.organization_type}
+                                    />
                                 </FormItem>
                             )}
                         />
@@ -228,7 +240,9 @@ export default function AgencyDetailsForm({ details, onNext }) {
                                 tabIndex={-1}
                             >
                                 <IoArrowUndoCircle />{" "}
-                                <span className="hidden sm:inline-block">Back</span>
+                                <span className="hidden sm:inline-block">
+                                    Back
+                                </span>
                             </button>
                             <button
                                 type="button"
@@ -237,11 +251,12 @@ export default function AgencyDetailsForm({ details, onNext }) {
                                 tabIndex="4"
                             >
                                 <MdNextPlan />{" "}
-                                <span className="hidden sm:inline-block">Next</span>
+                                <span className="hidden sm:inline-block">
+                                    Next
+                                </span>
                             </button>
                         </div>
                     </div>
-
                 </CardContent>
             </Card>
         </>

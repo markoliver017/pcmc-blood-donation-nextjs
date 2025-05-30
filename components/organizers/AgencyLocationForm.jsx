@@ -19,23 +19,25 @@ import clsx from "clsx";
 import { useEffect } from "react";
 import { MdNextPlan } from "react-icons/md";
 import { IoArrowUndoCircle } from "react-icons/io5";
-import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormMessage,
-} from "@components/ui/form";
+import { FormField, FormItem } from "@components/ui/form";
 
 import InlineLabel from "@components/form/InlineLabel";
 import { Text } from "lucide-react";
 import FieldError from "@components/form/FieldError";
-import { redirect } from "next/navigation";
+
 import { useTheme } from "next-themes";
 import { useQuery } from "@tanstack/react-query";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@components/ui/card";
 import Skeleton_form from "@components/ui/Skeleton_form";
 import Preloader3 from "@components/layout/Preloader3";
+import CustomAvatar from "@components/reusable_components/CustomAvatar";
 
 export default function AgencyLocationForm({ details, onNext }) {
     const { resolvedTheme } = useTheme();
@@ -126,150 +128,103 @@ export default function AgencyLocationForm({ details, onNext }) {
             <Preloader3 />
             <Card className="p-0 md:p-5 bg-slate-100">
                 <CardHeader className="text-2xl font-bold">
-                    <CardTitle className="text-2xl">
-                        {details.title}
-                    </CardTitle>
+                    <CardTitle className="text-2xl">{details.title}</CardTitle>
                     <CardDescription>
                         <div>Please fill up all the * required fields.</div>
                     </CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <FormField
-                        control={control}
-                        name="address"
-                        render={({ field }) => (
-                            <FormItem>
-                                <InlineLabel>
-                                    House/Building Address: *{" "}
-                                </InlineLabel>
-
-                                <label
-                                    className={clsx(
-                                        "input w-full mt-1",
-                                        errors?.address
-                                            ? "input-error"
-                                            : "input-info"
-                                    )}
-                                >
-                                    <Text className="h-3" />
-                                    <input
-                                        type="text"
-                                        tabIndex={1}
-                                        placeholder="House / Building / Lot / Block / Street Number "
-                                        {...field}
-                                    />
-                                </label>
-                                <FieldError field={errors?.address} />
-                            </FormItem>
-                        )}
-                    />
-                    <div className="mt-1">
-                        <InlineLabel>Area: *</InlineLabel>
-                        <fieldset className="fieldset w-full">
-                            <Controller
-                                control={control}
-                                name="province"
-                                render={({
-                                    field: { onChange, value, name, ref },
-                                }) => {
-                                    const cityProvincesOptions = [
-                                        {
-                                            label: "NCR",
-                                            options: city_provinces
-                                                .filter((loc) => loc.is_ncr)
-                                                .map((loc) => ({
-                                                    value: loc.name,
-                                                    label: loc.name,
-                                                    code: loc.code,
-                                                    is_ncr: loc.is_ncr,
-                                                })),
-                                        },
-                                        {
-                                            label: "Luzon Provinces",
-                                            options: city_provinces
-                                                .filter((loc) => !loc.is_ncr)
-                                                .map((loc) => ({
-                                                    value: loc.name,
-                                                    label: loc.name,
-                                                    code: loc.code,
-                                                    is_ncr: loc.is_ncr,
-                                                })),
-                                        },
-                                    ];
-
-                                    const selectedOption =
-                                        cityProvincesOptions
-                                            .flatMap((group) => group.options)
-                                            .find(
-                                                (option) => option.value === value
-                                            ) || null;
-
-                                    return (
-                                        <CreatableSelectNoSSR
-                                            name={name}
-                                            ref={ref}
-                                            placeholder="Area "
-                                            value={selectedOption}
-                                            onChange={(selectedOption) => {
-                                                setValue(
-                                                    "selected_province_option",
-                                                    selectedOption
-                                                );
-
-                                                onChange(
-                                                    selectedOption
-                                                        ? selectedOption.value
-                                                        : null
-                                                );
-                                            }}
-                                            isValidNewOption={() => false}
-                                            options={cityProvincesOptions}
-                                            styles={getSingleStyle(resolvedTheme)}
-                                            className="sm:text-lg"
-                                            tabIndex={2}
-                                            isClearable
-                                        />
-                                    );
-                                }}
-                            />
-                        </fieldset>
-                        <FieldError field={errors?.province} />
+                <CardContent className="flex flex-wrap gap-5">
+                    <div className="flex-none text-center w-full md:w-max">
+                        <CustomAvatar
+                            avatar="/agency-location.png"
+                            className="w-[150px] h-[150px] sm:w-[250px] sm:h-[250px] lg:w-[350px] lg:h-[350px]"
+                        />
                     </div>
-                    {cities_isFetching && (
-                        <>
-                            <div className="skeleton w-full h-5"></div>
-                            <div className="skeleton w-full h-5"></div>
-                        </>
-                    )}
-                    {cities_status == "success" && (
+                    <div className="flex-1 md:min-w-[350px] flex flex-col justify-evenly">
+                        <FormField
+                            control={control}
+                            name="address"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <InlineLabel>
+                                        House/Building Address: *{" "}
+                                    </InlineLabel>
+
+                                    <label
+                                        className={clsx(
+                                            "input w-full mt-1",
+                                            errors?.address
+                                                ? "input-error"
+                                                : "input-info"
+                                        )}
+                                    >
+                                        <Text className="h-3" />
+                                        <input
+                                            type="text"
+                                            tabIndex={1}
+                                            placeholder="House / Building / Lot / Block / Street Number "
+                                            {...field}
+                                        />
+                                    </label>
+                                    <FieldError field={errors?.address} />
+                                </FormItem>
+                            )}
+                        />
                         <div className="mt-1">
-                            <InlineLabel>City/Municipality: *</InlineLabel>
+                            <InlineLabel>Area: *</InlineLabel>
                             <fieldset className="fieldset w-full">
                                 <Controller
                                     control={control}
-                                    name="city_municipality"
+                                    name="province"
                                     render={({
                                         field: { onChange, value, name, ref },
                                     }) => {
-                                        const cityMunicipalityOptions =
-                                            cities_municipalities.map((cm) => ({
-                                                label: cm.name,
-                                                value: cm.name,
-                                                code: cm.code,
-                                            }));
+                                        const cityProvincesOptions = [
+                                            {
+                                                label: "NCR",
+                                                options: city_provinces
+                                                    .filter((loc) => loc.is_ncr)
+                                                    .map((loc) => ({
+                                                        value: loc.name,
+                                                        label: loc.name,
+                                                        code: loc.code,
+                                                        is_ncr: loc.is_ncr,
+                                                    })),
+                                            },
+                                            {
+                                                label: "Luzon Provinces",
+                                                options: city_provinces
+                                                    .filter(
+                                                        (loc) => !loc.is_ncr
+                                                    )
+                                                    .map((loc) => ({
+                                                        value: loc.name,
+                                                        label: loc.name,
+                                                        code: loc.code,
+                                                        is_ncr: loc.is_ncr,
+                                                    })),
+                                            },
+                                        ];
+
                                         const selectedOption =
-                                            cityMunicipalityOptions.find(
-                                                (option) => option.value === value
-                                            ) || null;
+                                            cityProvincesOptions
+                                                .flatMap(
+                                                    (group) => group.options
+                                                )
+                                                .find(
+                                                    (option) =>
+                                                        option.value === value
+                                                ) || null;
+
                                         return (
                                             <CreatableSelectNoSSR
                                                 name={name}
                                                 ref={ref}
-                                                placeholder="City/Municipality"
+                                                placeholder="Area "
                                                 value={selectedOption}
                                                 onChange={(selectedOption) => {
                                                     setValue(
-                                                        "selected_city_municipality_option",
+                                                        "selected_province_option",
                                                         selectedOption
                                                     );
 
@@ -280,7 +235,7 @@ export default function AgencyLocationForm({ details, onNext }) {
                                                     );
                                                 }}
                                                 isValidNewOption={() => false}
-                                                options={cityMunicipalityOptions}
+                                                options={cityProvincesOptions}
                                                 styles={getSingleStyle(
                                                     resolvedTheme
                                                 )}
@@ -292,89 +247,174 @@ export default function AgencyLocationForm({ details, onNext }) {
                                     }}
                                 />
                             </fieldset>
-                            <FieldError field={errors?.city_municipality} />
+                            <FieldError field={errors?.province} />
                         </div>
-                    )}
-
-                    {brgy_isFetching && (
-                        <>
-                            <div className="skeleton w-full h-5"></div>
-                            <div className="skeleton w-full h-5"></div>
-                        </>
-                    )}
-                    {brgy_status == "success" && (
-                        <div className="mt-1">
-                            <InlineLabel>Barangay: *</InlineLabel>
-                            <fieldset className="fieldset w-full">
-                                <Controller
-                                    control={control}
-                                    name="barangay"
-                                    render={({
-                                        field: { onChange, value, name, ref },
-                                    }) => {
-                                        const barangayOptions = barangays.map(
-                                            (brgy) => ({
-                                                label: brgy.name,
-                                                value: brgy.name,
-                                                code: brgy.code,
-                                            })
-                                        );
-                                        const selectedOption =
-                                            barangayOptions.find(
-                                                (option) => option.value === value
-                                            ) || null;
-                                        return (
-                                            <CreatableSelectNoSSR
-                                                name={name}
-                                                ref={ref}
-                                                placeholder="Barangay"
-                                                value={selectedOption}
-                                                onChange={(selectedOption) => {
-                                                    onChange(
+                        {cities_isFetching && (
+                            <>
+                                <div className="skeleton w-full h-5"></div>
+                                <div className="skeleton w-full h-5"></div>
+                            </>
+                        )}
+                        {cities_status == "success" && (
+                            <div className="mt-1">
+                                <InlineLabel>City/Municipality: *</InlineLabel>
+                                <fieldset className="fieldset w-full">
+                                    <Controller
+                                        control={control}
+                                        name="city_municipality"
+                                        render={({
+                                            field: {
+                                                onChange,
+                                                value,
+                                                name,
+                                                ref,
+                                            },
+                                        }) => {
+                                            const cityMunicipalityOptions =
+                                                cities_municipalities.map(
+                                                    (cm) => ({
+                                                        label: cm.name,
+                                                        value: cm.name,
+                                                        code: cm.code,
+                                                    })
+                                                );
+                                            const selectedOption =
+                                                cityMunicipalityOptions.find(
+                                                    (option) =>
+                                                        option.value === value
+                                                ) || null;
+                                            return (
+                                                <CreatableSelectNoSSR
+                                                    name={name}
+                                                    ref={ref}
+                                                    placeholder="City/Municipality"
+                                                    value={selectedOption}
+                                                    onChange={(
                                                         selectedOption
-                                                            ? selectedOption.value
-                                                            : null
-                                                    );
-                                                }}
-                                                isValidNewOption={() => false}
-                                                options={barangayOptions}
-                                                styles={getSingleStyle(
-                                                    resolvedTheme
-                                                )}
-                                                className="sm:text-lg"
-                                                tabIndex={3}
-                                                isClearable
-                                            />
-                                        );
-                                    }}
-                                />
-                            </fieldset>
-                            <FieldError field={errors?.barangay} />
+                                                    ) => {
+                                                        setValue(
+                                                            "selected_city_municipality_option",
+                                                            selectedOption
+                                                        );
+
+                                                        onChange(
+                                                            selectedOption
+                                                                ? selectedOption.value
+                                                                : null
+                                                        );
+                                                    }}
+                                                    isValidNewOption={() =>
+                                                        false
+                                                    }
+                                                    options={
+                                                        cityMunicipalityOptions
+                                                    }
+                                                    styles={getSingleStyle(
+                                                        resolvedTheme
+                                                    )}
+                                                    className="sm:text-lg"
+                                                    tabIndex={2}
+                                                    isClearable
+                                                />
+                                            );
+                                        }}
+                                    />
+                                </fieldset>
+                                <FieldError field={errors?.city_municipality} />
+                            </div>
+                        )}
+
+                        {brgy_isFetching && (
+                            <>
+                                <div className="skeleton w-full h-5"></div>
+                                <div className="skeleton w-full h-5"></div>
+                            </>
+                        )}
+                        {brgy_status == "success" && (
+                            <div className="mt-1">
+                                <InlineLabel>Barangay: *</InlineLabel>
+                                <fieldset className="fieldset w-full">
+                                    <Controller
+                                        control={control}
+                                        name="barangay"
+                                        render={({
+                                            field: {
+                                                onChange,
+                                                value,
+                                                name,
+                                                ref,
+                                            },
+                                        }) => {
+                                            const barangayOptions =
+                                                barangays.map((brgy) => ({
+                                                    label: brgy.name,
+                                                    value: brgy.name,
+                                                    code: brgy.code,
+                                                }));
+                                            const selectedOption =
+                                                barangayOptions.find(
+                                                    (option) =>
+                                                        option.value === value
+                                                ) || null;
+                                            return (
+                                                <CreatableSelectNoSSR
+                                                    name={name}
+                                                    ref={ref}
+                                                    placeholder="Barangay"
+                                                    value={selectedOption}
+                                                    onChange={(
+                                                        selectedOption
+                                                    ) => {
+                                                        onChange(
+                                                            selectedOption
+                                                                ? selectedOption.value
+                                                                : null
+                                                        );
+                                                    }}
+                                                    isValidNewOption={() =>
+                                                        false
+                                                    }
+                                                    options={barangayOptions}
+                                                    styles={getSingleStyle(
+                                                        resolvedTheme
+                                                    )}
+                                                    className="sm:text-lg"
+                                                    tabIndex={3}
+                                                    isClearable
+                                                />
+                                            );
+                                        }}
+                                    />
+                                </fieldset>
+                                <FieldError field={errors?.barangay} />
+                            </div>
+                        )}
+                        <div className="flex-none card-actions justify-between mt-5">
+                            <button
+                                onClick={() => onNext(-1)}
+                                className="btn btn-default"
+                                tabIndex={-1}
+                            >
+                                <IoArrowUndoCircle />{" "}
+                                <span className="hidden sm:inline-block">
+                                    Back
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={onSubmitNext}
+                                tabIndex="6"
+                            >
+                                <MdNextPlan />{" "}
+                                <span className="hidden sm:inline-block">
+                                    Next
+                                </span>
+                            </button>
                         </div>
-                    )}
-                    <div className="flex-none card-actions justify-between mt-5">
-                        <button
-                            onClick={() => onNext(-1)}
-                            className="btn btn-default"
-                            tabIndex={-1}
-                        >
-                            <IoArrowUndoCircle />{" "}
-                            <span className="hidden sm:inline-block">Back</span>
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={onSubmitNext}
-                            tabIndex="6"
-                        >
-                            <MdNextPlan />{" "}
-                            <span className="hidden sm:inline-block">Next</span>
-                        </button>
                     </div>
-
-
                 </CardContent>
-            </Card >
+            </Card>
         </>
     );
 }

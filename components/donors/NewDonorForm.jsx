@@ -1,5 +1,4 @@
 "use client";
-import { storeAgency } from "@/action/agencyAction";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -26,7 +25,6 @@ import { Form, FormField, FormItem } from "@components/ui/form";
 
 import { uploadPicture } from "@/action/uploads";
 import FieldError from "@components/form/FieldError";
-import { agencyRegistrationWithUser } from "@lib/zod/agencySchema";
 
 import { useRouter } from "next/navigation";
 import FormLogger from "@lib/utils/FormLogger";
@@ -39,28 +37,47 @@ import NewUserCredentialsForm from "@components/user/NewUserCredentialsForm";
 import DisplayValidationErrors from "@components/form/DisplayValidationErrors";
 import Preloader3 from "@components/layout/Preloader3";
 import LoadingModal from "@components/layout/LoadingModal";
-
+import DonorBasicInfoForm from "./DonorBasicInfoForm";
+import AgencyLocationForm from "@components/organizers/AgencyLocationForm";
+import DonorBloodDonationInfoForm from "./DonorBloodDonationInfoForm";
+import ConfirmTable from "./ConfirmTable";
+import { donorRegistrationWithUser } from "@lib/zod/donorSchema";
+import { storeDonor } from "@/action/donorAction";
 
 const form_sections = [
     {
-        title: "New Account",
+        title: "New Account Details",
         class: "progress-info",
-        percent: 20,
+        percent: 15,
     },
     {
         title: "Account Credentials",
         class: "progress-info",
-        percent: 40,
+        percent: 30,
+    },
+    {
+        title: "Personal Information",
+        class: "progress-info",
+        percent: 45,
+    },
+    {
+        title: "Location Details",
+        class: "progress-info",
+        percent: 60,
+    },
+    {
+        title: "Blood Donation Details",
+        class: "progress-info",
+        percent: 75,
     },
     {
         title: "Confirm",
         class: "progress-success",
         percent: 100,
-        bg: "/bg-5.jpg",
     },
 ];
 
-export default function NewDonorForm({ role_name }) {
+export default function NewDonorForm({ role_name, agency_id }) {
     const router = useRouter();
 
     const { data: user_role, isLoading: user_role_loading } = useQuery({
@@ -83,12 +100,11 @@ export default function NewDonorForm({ role_name }) {
         isError,
     } = useMutation({
         mutationFn: async (formData) => {
-            // const res = await storeAgency(formData);
-            // if (!res.success) {
-            //     throw res; // Throw the error response to trigger onError
-            // }
-            // return res.data;
-            return formData;
+            const res = await storeDonor(formData);
+            if (!res.success) {
+                throw res; // Throw the error response to trigger onError
+            }
+            return res.data;
         },
         onSuccess: () => {
             /** note: the return data will be accessible in the debugger
@@ -97,7 +113,7 @@ export default function NewDonorForm({ role_name }) {
             queryClient.invalidateQueries({ queryKey: ["users"] });
             SweetAlert({
                 title: "Registration Complete",
-                text: "You've successfully submitted a request to become one of our partner agencies. You'll be notified once your application is approved.",
+                text: "Thank you for registering as a blood donor with one of our partner agencies.Your application has been successfully submitted and is now pending agency approval. You’ll be notified via email or system notification once your registration is approved.",
                 icon: "success",
                 confirmButtonText: "I understand.",
                 // onConfirm: () => router.push("/"),
@@ -146,31 +162,40 @@ export default function NewDonorForm({ role_name }) {
     // console.log("agencyRegistrationSchema", z.object(userSchema.shape))
     const form = useForm({
         mode: "onChange",
-        resolver: zodResolver(agencyRegistrationWithUser),
+        // resolver: zodResolver(donorRegistrationWithUser),
         defaultValues: {
+            agency_id: agency_id,
             role_ids: [user_role?.id],
             profile_picture: null,
-            file: null,
-            image: "",
-            donor_file_url: "",
+            file: "",
+            image: null,
+            id_url: null,
             email: "mark29@email.com",
             first_name: "Mark",
             last_name: "Roman",
             gender: "male",
             password: "User@1234",
             password_confirmation: "User@1234",
+            date_of_birth: "",
+            civil_status: "",
             contact_number: "+639663603172",
+            nationality: "Filipino",
+            occupation: "",
             address: "#1 Bonifacio Street",
-            donor_file_url: "",
             barangay: "",
             city_municipality: "",
             province: "Metro Manila",
-            comments: "",
             selected_province_option: {
                 code: "130000000",
                 name: "Metro Manila",
                 is_ncr: true,
             },
+            is_regular_donor: false,
+            blood_type_id: "",
+            blood_type_label: "",
+            last_donation_date: "",
+            blood_service_facility: "",
+            comments: "",
         },
     });
 
@@ -220,6 +245,20 @@ export default function NewDonorForm({ role_name }) {
         });
     };
 
+    const govtId = watch("file");
+    const profilePic = watch("profile_picture");
+    const govtIdFile = {
+        name: govtId?.name,
+        size: govtId?.size,
+        type: govtId?.type,
+        lastModified: govtId?.lastModified,
+    };
+    const profilePicFile = {
+        name: profilePic?.name,
+        size: profilePic?.size,
+        type: profilePic?.type,
+        lastModified: profilePic?.lastModified,
+    };
 
     useEffect(() => {
         if (user_role_loading) return;
@@ -230,12 +269,11 @@ export default function NewDonorForm({ role_name }) {
 
     return (
         <>
-            <Card className="p-0 md:p-5 bg-slate-100">
+            <Card className="bg-slate-100 ">
                 <CardHeader className="text-2xl font-bold">
                     <CardTitle></CardTitle>
                     <CardDescription>
-                        <div></div>
-                        <div className="flex pt-2 justify-center rounded items-center dark:bg-slate-800 ">
+                        <div className="flex justify-center rounded items-center dark:bg-slate-800 ">
                             <ul className="steps ">
                                 {form_sections.map((sec, i) => (
                                     <li
@@ -246,7 +284,7 @@ export default function NewDonorForm({ role_name }) {
                                         )}
                                         onClick={() => {
                                             if (sectionNo < i) return;
-                                            setSectionNo(i)
+                                            setSectionNo(i);
                                         }}
                                     >
                                         <small className="italic hover:text-blue-500">
@@ -284,8 +322,34 @@ export default function NewDonorForm({ role_name }) {
                                 ""
                             )}
 
-
                             {sectionNo == 2 ? (
+                                <DonorBasicInfoForm
+                                    details={form_sections[sectionNo]}
+                                    onNext={handleNext}
+                                />
+                            ) : (
+                                ""
+                            )}
+
+                            {sectionNo == 3 ? (
+                                <AgencyLocationForm
+                                    details={form_sections[sectionNo]}
+                                    onNext={handleNext}
+                                />
+                            ) : (
+                                ""
+                            )}
+
+                            {sectionNo == 4 ? (
+                                <DonorBloodDonationInfoForm
+                                    details={form_sections[sectionNo]}
+                                    onNext={handleNext}
+                                />
+                            ) : (
+                                ""
+                            )}
+
+                            {sectionNo == 5 ? (
                                 <>
                                     <Preloader3 />
                                     <LoadingModal isLoading={isPending}>
@@ -293,9 +357,13 @@ export default function NewDonorForm({ role_name }) {
                                     </LoadingModal>
                                     <Card>
                                         <CardHeader>
-                                            <CardTitle className="text-2xl">Registration Summary</CardTitle>
+                                            <CardTitle className="text-2xl">
+                                                Registration Summary
+                                            </CardTitle>
                                             <CardDescription>
-                                                <DisplayValidationErrors errors={errors} />
+                                                <DisplayValidationErrors
+                                                    errors={errors}
+                                                />
                                             </CardDescription>
                                         </CardHeader>
                                         <CardContent>
@@ -307,7 +375,7 @@ export default function NewDonorForm({ role_name }) {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <InlineLabel>
-                                                            <span className='flex-items-center'>
+                                                            <span className="flex-items-center">
                                                                 <MessageCircle />
                                                                 Any Message:{" "}
                                                             </span>
@@ -322,7 +390,9 @@ export default function NewDonorForm({ role_name }) {
                                                             {...field}
                                                         />
                                                         <FieldError
-                                                            field={errors?.comments}
+                                                            field={
+                                                                errors?.comments
+                                                            }
                                                         />
                                                     </FormItem>
                                                 )}
@@ -330,7 +400,9 @@ export default function NewDonorForm({ role_name }) {
 
                                             <div className="flex justify-between mt-4">
                                                 <button
-                                                    onClick={() => handleNext(-1)}
+                                                    onClick={() =>
+                                                        handleNext(-1)
+                                                    }
                                                     className="btn btn-default"
                                                     tabIndex={-1}
                                                 >
@@ -340,7 +412,9 @@ export default function NewDonorForm({ role_name }) {
                                                     </span>
                                                 </button>
                                                 <button
-                                                    disabled={!isDirty || isPending}
+                                                    disabled={
+                                                        !isDirty || isPending
+                                                    }
                                                     className="btn btn-neutral hover:bg-neutral-800 hover:text-green-300"
                                                 >
                                                     {isPending ? (
@@ -356,22 +430,26 @@ export default function NewDonorForm({ role_name }) {
                                                     )}
                                                 </button>
                                             </div>
-
                                         </CardContent>
                                     </Card>
                                 </>
-
-
-
                             ) : (
                                 ""
                             )}
 
-                            {/* <FormLogger
+                            <FormLogger
                                 watch={watch}
                                 errors={errors}
                                 data={newDonorData}
-                            /> */}
+                            />
+                            <pre>
+                                <b>User profile File: </b>{" "}
+                                {JSON.stringify(profilePicFile)}
+                            </pre>
+                            <pre>
+                                <b>Govt ID File: </b>{" "}
+                                {JSON.stringify(govtIdFile)}
+                            </pre>
                         </form>
                     </Form>
                 </CardContent>
