@@ -34,13 +34,13 @@ export const metadata = {
     },
 };
 
-export default async function RootLayout({ children, modal }) {
+export default async function RootLayout({ children, organizers }) {
     const session = await auth();
     console.log("Root layout", session);
 
-    // const headerList = await headers();
-    // const pathname = headerList.get("x-current-path");
-    // console.log("Layout pathname", pathname);
+    const headerList = await headers();
+    const pathname = headerList.get("x-current-path");
+    console.log("Root layout pathname", pathname);
 
     let currentUser = {
         name: "Bonnie Green",
@@ -71,7 +71,8 @@ export default async function RootLayout({ children, modal }) {
                                 {/* <WrapperHead /> */}
                                 <TansactProviders>
                                     <main className="flex-1">
-                                        <ModalComponent>{modal}</ModalComponent>
+                                        {/* <ModalComponent>{modal}</ModalComponent> */}
+                                        {organizers}
                                         {children}
                                     </main>
                                 </TansactProviders>

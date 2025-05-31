@@ -33,6 +33,7 @@ import { useRouter } from "next/navigation";
 import { GiCancel } from "react-icons/gi";
 import { useFormContext } from "react-hook-form";
 import Preloader3 from "@components/layout/Preloader3";
+import FormCardComponent from "@components/form/FormCardComponent";
 
 export default function NewUserBasicInfoForm({ details, onNext }) {
     const router = useRouter();
@@ -208,212 +209,200 @@ export default function NewUserBasicInfoForm({ details, onNext }) {
     }, [uploaded_avatar]);
 
     return (
-        <>
-            <Preloader3 />
-            <Card className="p-0 md:p-5 bg-slate-100">
-                <CardHeader className="text-2xl font-bold">
-                    <CardTitle className="text-2xl">{details.title}</CardTitle>
-                    <CardDescription>
-                        <div>Please fill up all the * required fields.</div>
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-wrap gap-5">
+        <FormCardComponent details={details}>
+            <CardContent className="flex flex-wrap gap-5">
+                <FormField
+                    control={control}
+                    name="profile_picture"
+                    render={({ field: { onChange, value, ...field } }) => {
+                        const fileInputRef = useRef(null);
+                        const handleImageClick = () => {
+                            if (fileInputRef.current) {
+                                fileInputRef.current.click(); // Trigger the file input click
+                            }
+                        };
+                        return (
+                            <FormItem className="flex-none text-center w-full md:w-max">
+                                <div className="hidden">
+                                    <FormControl ref={fileInputRef}>
+                                        <Input
+                                            type="file"
+                                            tabIndex={-1}
+                                            onChange={(e) =>
+                                                onChange(e.target.files[0])
+                                            }
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                </div>
+                                <CustomAvatar
+                                    avatar={avatar}
+                                    whenClick={handleImageClick}
+                                    className="w-[150px] h-[150px] sm:w-[250px] sm:h-[250px] lg:w-[350px] lg:h-[350px]"
+                                />
+                                {uploaded_avatar ? (
+                                    <button
+                                        onClick={() =>
+                                            resetField("profile_picture")
+                                        }
+                                        className="btn btn-ghost"
+                                    >
+                                        Clear
+                                    </button>
+                                ) : (
+                                    <label className="text-center font-semibold italic text-slate-500">
+                                        Profile Picture
+                                    </label>
+                                )}
+                                <FormMessage />
+                            </FormItem>
+                        );
+                    }}
+                />
+
+                <div className="flex-1 md:min-w-[350px] flex flex-col justify-evenly ">
                     <FormField
                         control={control}
-                        name="profile_picture"
-                        render={({ field: { onChange, value, ...field } }) => {
-                            const fileInputRef = useRef(null);
-                            const handleImageClick = () => {
-                                if (fileInputRef.current) {
-                                    fileInputRef.current.click(); // Trigger the file input click
-                                }
-                            };
-                            return (
-                                <FormItem className="flex-none text-center w-full md:w-max">
-                                    <div className="hidden">
-                                        <InlineLabel>
-                                            New Profile Picture
-                                        </InlineLabel>
-                                        <FormControl ref={fileInputRef}>
-                                            <Input
-                                                type="file"
-                                                tabIndex={-1}
-                                                onChange={(e) =>
-                                                    onChange(e.target.files[0])
-                                                }
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                    </div>
-                                    <CustomAvatar
-                                        avatar={avatar}
-                                        whenClick={handleImageClick}
-                                        className="w-[150px] h-[150px] sm:w-[250px] sm:h-[250px] lg:w-[350px] lg:h-[350px]"
-                                    />
-                                    {uploaded_avatar ? (
-                                        <button
-                                            onClick={() =>
-                                                resetField("profile_picture")
-                                            }
-                                            className="btn btn-ghost"
-                                        >
-                                            Clear
-                                        </button>
-                                    ) : (
-                                        <label className="text-center font-semibold italic text-slate-500">
-                                            Profile Picture
-                                        </label>
+                        name="role_ids"
+                        render={({ field }) => (
+                            <FormItem className="hidden">
+                                <InlineLabel>Role: *</InlineLabel>
+
+                                <label
+                                    className={clsx(
+                                        "input w-full mt-1",
+                                        errors?.role_ids
+                                            ? "input-error"
+                                            : "input-info"
                                     )}
-                                    <FormMessage />
-                                </FormItem>
-                            );
-                        }}
+                                >
+                                    <Text className="h-3" />
+                                    <input
+                                        type="text"
+                                        tabIndex={-1}
+                                        placeholder="Your Role ID"
+                                        {...field}
+                                    />
+                                </label>
+                                <FieldError field={errors?.role_ids} />
+                            </FormItem>
+                        )}
                     />
 
-                    <div className="flex-1 md:min-w-[350px] flex flex-col justify-evenly ">
-                        <FormField
-                            control={control}
-                            name="role_ids"
-                            render={({ field }) => (
-                                <FormItem className="hidden">
-                                    <InlineLabel>Role: *</InlineLabel>
+                    <FormField
+                        control={control}
+                        name="first_name"
+                        render={({ field }) => (
+                            <FormItem>
+                                <InlineLabel>First Name: </InlineLabel>
 
-                                    <label
-                                        className={clsx(
-                                            "input w-full mt-1",
-                                            errors?.role_ids
-                                                ? "input-error"
-                                                : "input-info"
-                                        )}
+                                <label
+                                    className={clsx(
+                                        "input w-full mt-1",
+                                        errors?.first_name
+                                            ? "input-error"
+                                            : "input-info"
+                                    )}
+                                >
+                                    <Text className="h-3" />
+                                    <input
+                                        type="text"
+                                        tabIndex={2}
+                                        placeholder="Enter user first name"
+                                        {...field}
+                                    />
+                                </label>
+                                <FieldError field={errors?.first_name} />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={control}
+                        name="last_name"
+                        render={({ field }) => (
+                            <FormItem>
+                                <InlineLabel>Last Name: </InlineLabel>
+
+                                <label
+                                    className={clsx(
+                                        "input w-full mt-1",
+                                        errors?.last_name
+                                            ? "input-error"
+                                            : "input-info"
+                                    )}
+                                >
+                                    <Text className="h-3" />
+                                    <input
+                                        type="text"
+                                        tabIndex={3}
+                                        placeholder="Enter user last name"
+                                        {...field}
+                                    />
+                                </label>
+                                <FieldError field={errors?.last_name} />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={control}
+                        name="gender"
+                        render={({ field }) => (
+                            <FormItem>
+                                <InlineLabel>Sex: </InlineLabel>
+
+                                <label
+                                    className={clsx(
+                                        "input w-full mt-1",
+                                        errors?.gender
+                                            ? "input-error"
+                                            : "input-info"
+                                    )}
+                                >
+                                    <BiMaleFemale className="h-3" />
+                                    <select
+                                        className="w-full dark:bg-inherit"
+                                        tabIndex={4}
+                                        {...field}
                                     >
-                                        <Text className="h-3" />
-                                        <input
-                                            type="text"
-                                            tabIndex={-1}
-                                            placeholder="Your Role ID"
-                                            {...field}
-                                        />
-                                    </label>
-                                    <FieldError field={errors?.role_ids} />
-                                </FormItem>
-                            )}
-                        />
+                                        <option value="">
+                                            Select here
+                                        </option>
+                                        <option value="male">Male</option>
+                                        <option value="female">
+                                            Female
+                                        </option>
+                                    </select>
+                                </label>
+                                <FieldError field={errors?.gender} />
+                            </FormItem>
+                        )}
+                    />
 
-                        <FormField
-                            control={control}
-                            name="first_name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <InlineLabel>First Name: *</InlineLabel>
-
-                                    <label
-                                        className={clsx(
-                                            "input w-full mt-1",
-                                            errors?.first_name
-                                                ? "input-error"
-                                                : "input-info"
-                                        )}
-                                    >
-                                        <Text className="h-3" />
-                                        <input
-                                            type="text"
-                                            tabIndex={2}
-                                            placeholder="Enter user first name"
-                                            {...field}
-                                        />
-                                    </label>
-                                    <FieldError field={errors?.first_name} />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={control}
-                            name="last_name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <InlineLabel>Last Name: *</InlineLabel>
-
-                                    <label
-                                        className={clsx(
-                                            "input w-full mt-1",
-                                            errors?.last_name
-                                                ? "input-error"
-                                                : "input-info"
-                                        )}
-                                    >
-                                        <Text className="h-3" />
-                                        <input
-                                            type="text"
-                                            tabIndex={3}
-                                            placeholder="Enter user last name"
-                                            {...field}
-                                        />
-                                    </label>
-                                    <FieldError field={errors?.last_name} />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={control}
-                            name="gender"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <InlineLabel>Sex: *</InlineLabel>
-
-                                    <label
-                                        className={clsx(
-                                            "input w-full mt-1",
-                                            errors?.gender
-                                                ? "input-error"
-                                                : "input-info"
-                                        )}
-                                    >
-                                        <BiMaleFemale className="h-3" />
-                                        <select
-                                            className="w-full dark:bg-inherit"
-                                            tabIndex={4}
-                                            {...field}
-                                        >
-                                            <option value="">
-                                                Select here
-                                            </option>
-                                            <option value="male">Male</option>
-                                            <option value="female">
-                                                Female
-                                            </option>
-                                        </select>
-                                    </label>
-                                    <FieldError field={errors?.gender} />
-                                </FormItem>
-                            )}
-                        />
-
-                        <div className="flex-none card-actions justify-between mt-5">
-                            <button
-                                onClick={() => router.replace("/")}
-                                className="btn btn-default"
-                                tabIndex={-1}
-                            >
-                                <GiCancel />{" "}
-                                <span className="hidden sm:inline-block">
-                                    Cancel
-                                </span>
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={onSubmitNext}
-                                tabIndex="4"
-                            >
-                                <MdNextPlan />{" "}
-                                <span className="hidden sm:inline-block">
-                                    Next
-                                </span>
-                            </button>
-                        </div>
+                    <div className="flex-none card-actions justify-between mt-5">
+                        <button
+                            onClick={() => router.replace("/")}
+                            className="btn btn-default"
+                            tabIndex={-1}
+                        >
+                            <GiCancel />{" "}
+                            <span className="hidden sm:inline-block">
+                                Cancel
+                            </span>
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={onSubmitNext}
+                            tabIndex="4"
+                        >
+                            <MdNextPlan />{" "}
+                            <span className="hidden sm:inline-block">
+                                Next
+                            </span>
+                        </button>
                     </div>
-                </CardContent>
-            </Card>
-        </>
+                </div>
+            </CardContent>
+        </FormCardComponent>
     );
 }

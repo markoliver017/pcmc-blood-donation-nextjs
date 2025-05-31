@@ -66,7 +66,7 @@ const form_sections = [
         percent: 60,
     },
     {
-        title: "Blood Donation Details",
+        title: "Blood Donation History",
         class: "progress-info",
         percent: 75,
     },
@@ -88,7 +88,7 @@ export default function NewDonorForm({ role_name, agency_id }) {
         cacheTime: 20 * 60 * 1000,
     });
 
-    const [sectionNo, setSectionNo] = useState(0);
+    const [sectionNo, setSectionNo] = useState(3);
 
     const queryClient = useQueryClient();
 
@@ -116,11 +116,12 @@ export default function NewDonorForm({ role_name, agency_id }) {
                 text: "Thank you for registering as a blood donor with one of our partner agencies.Your application has been successfully submitted and is now pending agency approval. You’ll be notified via email or system notification once your registration is approved.",
                 icon: "success",
                 confirmButtonText: "I understand.",
-                // onConfirm: () => router.push("/"),
+                onConfirm: () => router.push("/"),
             });
         },
         onError: (error) => {
             if (error?.type === "validation" && error?.errorArr.length) {
+
                 let detailContent = "";
                 const { errorArr: details, message } = error;
 
@@ -151,6 +152,7 @@ export default function NewDonorForm({ role_name, agency_id }) {
                 });
             } else {
                 // Handle server errors
+
                 notify({
                     error: true,
                     message: error?.message,
@@ -162,7 +164,7 @@ export default function NewDonorForm({ role_name, agency_id }) {
     // console.log("agencyRegistrationSchema", z.object(userSchema.shape))
     const form = useForm({
         mode: "onChange",
-        // resolver: zodResolver(donorRegistrationWithUser),
+        resolver: zodResolver(donorRegistrationWithUser),
         defaultValues: {
             agency_id: agency_id,
             role_ids: [user_role?.id],
@@ -176,11 +178,11 @@ export default function NewDonorForm({ role_name, agency_id }) {
             gender: "male",
             password: "User@1234",
             password_confirmation: "User@1234",
-            date_of_birth: "",
-            civil_status: "",
+            date_of_birth: "1993-04-23",
+            civil_status: "single",
             contact_number: "+639663603172",
             nationality: "Filipino",
-            occupation: "",
+            occupation: "Programmer",
             address: "#1 Bonifacio Street",
             barangay: "",
             city_municipality: "",
@@ -244,6 +246,13 @@ export default function NewDonorForm({ role_name, agency_id }) {
             },
         });
     };
+
+    // if (isError) {
+    //     notify({
+    //         error: true,
+    //         message: error?.message,
+    //     });
+    // }
 
     const govtId = watch("file");
     const profilePic = watch("profile_picture");
@@ -374,14 +383,12 @@ export default function NewDonorForm({ role_name, agency_id }) {
                                                 name="comments"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <InlineLabel>
+                                                        <InlineLabel required={false} optional={true}>
                                                             <span className="flex-items-center">
                                                                 <MessageCircle />
                                                                 Any Message:{" "}
                                                             </span>
-                                                            <sup className="italic">
-                                                                (optional)
-                                                            </sup>
+
                                                         </InlineLabel>
 
                                                         <textarea

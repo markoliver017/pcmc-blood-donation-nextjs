@@ -135,7 +135,7 @@ export default function ConfirmTable({ watch }) {
                 <tr className="hover:bg-base-300">
                     <th>Last Donation Date:</th>
                     <td>
-                        {moment(watch("last_donation_date")).format(
+                        {watch("last_donation_date") && moment(watch("last_donation_date")).format(
                             "MMM DD, YYYY"
                         )}
                     </td>

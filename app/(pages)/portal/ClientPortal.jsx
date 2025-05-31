@@ -16,7 +16,7 @@ export default function ClientPortal() {
     if (status == "authenticated") {
         const currentUser = data.user;
         const { roles } = currentUser;
-        console.log("Client portal currentUser", currentUser);
+        // console.log("Client portal currentUser", currentUser);
 
         const currentRole = roles.find(
             (role) => role.role_name == currentUser.role_name

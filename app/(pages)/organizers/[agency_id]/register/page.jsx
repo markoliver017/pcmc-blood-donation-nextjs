@@ -23,6 +23,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BiBuildings } from "react-icons/bi";
+import { ToastContainer } from "react-toastify";
 
 export default async function page({ params }) {
     const { agency_id } = await params;
@@ -34,6 +35,7 @@ export default async function page({ params }) {
 
     return (
         <>
+            <ToastContainer />
             <WrapperHeadMain
                 icon={<User />}
                 pageTitle="Donor Registration"

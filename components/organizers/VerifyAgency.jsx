@@ -59,9 +59,11 @@ export default function VerifyAgency({
     const { handleSubmit, reset } = form;
 
     const onSubmit = async (data) => {
+        console.log("verfiy agency", data)
+        const text = data?.status == "activated" ? `Are you sure you want to activate this agency application?` : `Are you sure you want to deactivate this agency application?`;
         SweetAlert({
             title: "Confirm your action?",
-            text: "Are you sure you want to proceed?",
+            text,
             icon: "info",
             showCancelButton: true,
             confirmButtonText: "Proceed",

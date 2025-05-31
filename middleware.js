@@ -4,7 +4,16 @@ export async function middleware(request) {
     const headers = new Headers(request.headers);
     headers.set("x-current-path", request.nextUrl.pathname);
 
-    return NextResponse.next({ headers });
+    const response = NextResponse.next({
+        request: {
+            headers: request.headers,
+        },
+    });
+
+    response.headers.set('x-current-path', request.nextUrl.pathname);
+
+    return response;
+
 }
 
 // See "Matching Paths" below to learn more

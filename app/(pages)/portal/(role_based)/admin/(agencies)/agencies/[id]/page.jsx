@@ -14,19 +14,13 @@ export default async function Page({ params }) {
     const queryClient = new QueryClient();
     await queryClient.prefetchQuery({
         queryKey: ["agency", id],
-        queryFn: async () => {
-            const res = await fetchAgency(id);
-            if (!res.success) {
-                throw res; // Throw the error response to trigger onError
-            }
-            return res.data;
-        },
+        queryFn: async () => await fetchAgency(id)
     });
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
             <div className="w-full h-full md:w-8/10 2xl:w-3/4 mx-auto relative">
-                <Link href="/agencies" className="absolute top-5 right-4">
+                <Link href="/portal/admin/agencies" className="absolute top-5 right-4">
                     <button
                         className="btn btn-circle btn-default w-max p-3"
                         tabIndex={-1}

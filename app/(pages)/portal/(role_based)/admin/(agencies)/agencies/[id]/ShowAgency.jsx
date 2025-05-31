@@ -30,13 +30,7 @@ export default function ShowAgency({ agencyId }) {
     const router = useRouter();
     const { data: agency } = useQuery({
         queryKey: ["agency", agencyId],
-        queryFn: async () => {
-            const res = await fetchAgency(agencyId);
-            if (!res.success) {
-                throw res; // Throw the error response to trigger onError
-            }
-            return res.data;
-        },
+        queryFn: async () => await fetchAgency(agencyId),
         enabled: !!agencyId,
     });
 

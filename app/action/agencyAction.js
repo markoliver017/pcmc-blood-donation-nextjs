@@ -39,18 +39,6 @@ export async function fetchAgencies() {
 export async function fetchAgency(id) {
     try {
         const agency = await Agency.findByPk(id, {
-            attributes: {
-                exclude: [
-                    "remarks",
-                    "verified_by",
-                    "updated_by",
-                    "createdAt",
-                    "updatedAt",
-                    "status",
-                    "comments",
-                    "head_id",
-                ],
-            },
             include: [
                 {
                     model: User,
@@ -91,6 +79,45 @@ export async function fetchActiveAgency() {
                     "updatedAt",
                     "status",
                     "comments",
+                    "head_id",
+                ],
+            },
+            include: [
+                {
+                    model: User,
+                    as: "head",
+                    attributes: {
+                        exclude: [
+                            "password",
+                            "email_verified",
+                            "prefix",
+                            "suffix",
+                            "createdAt",
+                            "updatedAt",
+                            "updated_by",
+                        ],
+                    },
+                },
+            ],
+        });
+
+        return formatSeqObj(agencies);
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function fetchAgencyByStatus(status) {
+    try {
+        const agencies = await Agency.findAll({
+            where: { status },
+            attributes: {
+                exclude: [
+                    "remarks",
+                    "verified_by",
+                    "updated_by",
+                    "updatedAt",
                     "head_id",
                 ],
             },
@@ -397,7 +424,7 @@ export async function updateAgency(formData) {
 export async function updateAgencyStatus(formData) {
     const session = await auth();
     if (!session) throw "You are not authorized to access this request.";
-
+    console.log("updateAgencyStatus", formData)
     const { user } = session;
     formData.verified_by = user.id;
 

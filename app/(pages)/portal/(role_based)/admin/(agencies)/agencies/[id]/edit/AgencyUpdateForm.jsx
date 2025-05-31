@@ -67,8 +67,8 @@ import FieldError from "@components/form/FieldError";
 import Link from "next/link";
 import { formatFormalName } from "@lib/utils/string.utils";
 
-import RejectDialog from "../../(index)/RejectDialog";
-import VerifyAgency from "../../(index)/VerifyAgency";
+import RejectDialog from "../../../../../../../../../components/organizers/RejectDialog";
+import VerifyAgency from "../../../../../../../../../components/organizers/VerifyAgency";
 import { toastError } from "@lib/utils/toastError.utils";
 
 import CustomAvatar from "@components/reusable_components/CustomAvatar";

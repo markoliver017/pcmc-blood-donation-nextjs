@@ -20,7 +20,7 @@ export default async function AgenciesPage() {
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
             <div className="w-full h-full md:w-8/10 2xl:w-3/4 mx-auto relative">
-                <Link href="/agencies" className="mb-3 absolute top-5 right-4">
+                <Link href="/portal/admin/agencies" className="mb-3 absolute top-5 right-4">
                     <button
                         className="btn btn-circle btn-warning w-max p-3"
                         tabIndex={-1}

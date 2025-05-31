@@ -11,6 +11,7 @@ import { Op } from "sequelize";
 export async function storeDonor(formData) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log("formData received on server", formData);
+    if (!formData.blood_type_id) formData.blood_type_id = null;
     const parsed = donorRegistrationWithUser.safeParse(formData);
 
     if (!parsed.success) {
@@ -25,6 +26,8 @@ export async function storeDonor(formData) {
     }
 
     const { data } = parsed;
+
+    console.log("data parsed", data)
 
     const existingUser = await User.findOne({
         where: { email: data.email },

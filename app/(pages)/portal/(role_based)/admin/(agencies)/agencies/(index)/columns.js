@@ -14,8 +14,8 @@ import { Button } from "@components/ui/button";
 import { CheckIcon, Command, Eye, MoreHorizontal, XIcon } from "lucide-react";
 import Link from "next/link";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
-import VerifyAgency from "./VerifyAgency";
-import RejectDialog from "./RejectDialog";
+import VerifyAgency from "../../../../../../../../components/organizers/VerifyAgency";
+import RejectDialog from "../../../../../../../../components/organizers/RejectDialog";
 export const columns = [
     {
         accessorKey: "id",

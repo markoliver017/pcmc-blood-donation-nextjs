@@ -12,9 +12,7 @@ export default function OrganizerPage() {
 
                 <AgencyListCard />
             </div>
-            {/* <pre>
-                {JSON.stringify(agencies, null, 2)}
-            </pre> */}
+
         </div>
     )
 }
