@@ -3,9 +3,9 @@ import { X } from "lucide-react";
 import Link from "next/link";
 import { getOrganizerRole } from "@/action/registerAction";
 import Skeleton from "@components/ui/skeleton";
-import NewUserForm from "../../../components/user/NewUserBasicInfoForm";
+import NewUserForm from "../../../../components/user/NewUserBasicInfoForm";
 import { auth } from "@lib/auth";
-import NewOrganizerForm from "../../../components/organizers/NewOrganizerForm";
+import NewOrganizerForm from "../../../../components/organizers/NewOrganizerForm";
 import {
     dehydrate,
     HydrationBoundary,

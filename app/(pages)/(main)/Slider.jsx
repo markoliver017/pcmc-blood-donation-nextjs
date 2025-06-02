@@ -20,7 +20,7 @@ export default function MainSlider() {
         slidesToShow: 1,
         slidesToScroll: 1,
         autoplay: true, // Add this line
-        autoplaySpeed: 10000,
+        autoplaySpeed: 15000,
     };
     return (
         <>
@@ -53,7 +53,7 @@ export default function MainSlider() {
                             quibusdam!
                         </p>
                     </div>
-                    <div className="h-140 relative">
+                    {/* <div className="h-140 relative">
                         <Image
                             src="/slide2.jpg"
                             className="h-full w-full object-fill"
@@ -69,7 +69,7 @@ export default function MainSlider() {
                             molestiae nisi tempora nostrum rem praesentium ea
                             quam dolores aliquam ad, voluptas vel corporis vero
                         </p>
-                    </div>
+                    </div> */}
                     <div className="h-140 relative">
                         <Image
                             src="/pcmc-hospital-bg.jpg"

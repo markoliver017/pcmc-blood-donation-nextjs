@@ -1,5 +1,6 @@
 "use client";
 import { updateAgencyStatus } from "@/action/agencyAction";
+import { updateCoordinatorStatus } from "@/action/coordinatorAction";
 
 import { Form } from "@components/ui/form";
 import notify from "@components/ui/notify";
@@ -10,7 +11,7 @@ import clsx from "clsx";
 import { Save } from "lucide-react";
 import { useForm } from "react-hook-form";
 
-export default function VerifyAgency({
+export default function VerifyCoordinator({
     agencyData,
     icon = <Save />,
     label = "Save",
@@ -25,7 +26,7 @@ export default function VerifyAgency({
         isPending,
     } = useMutation({
         mutationFn: async (formData) => {
-            const res = await updateAgencyStatus(formData);
+            const res = await updateCoordinatorStatus(formData);
             if (!res.success) {
                 throw res; // Throw the error response to trigger onError
             }

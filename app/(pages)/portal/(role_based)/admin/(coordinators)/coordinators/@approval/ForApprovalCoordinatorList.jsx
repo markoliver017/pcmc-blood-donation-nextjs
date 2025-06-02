@@ -7,23 +7,23 @@ import {
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
-import { fetchAgencyByStatus } from "@/action/agencyAction";
 import Skeleton_user from "@components/ui/Skeleton_user";
 import { useQuery } from "@tanstack/react-query";
 import { formatFormalName } from "@lib/utils/string.utils";
 import moment from "moment";
-import ApprovalRejectComponent from "@components/organizers/ApprovalRejectComponent";
-import { FileClock } from "lucide-react";
 
-export default function ForApprovalAgencyList() {
-    const { data: agencies, isLoading: agencyIsFetching } = useQuery({
-        queryKey: ["agencies", "for approval"],
-        queryFn: async () => fetchAgencyByStatus("for approval"),
+import { FileClock } from "lucide-react";
+import { getCoordinatorsByStatus } from "@/action/coordinatorAction";
+
+export default function ForApprovalCoordinatorList() {
+    const { data: coordinators, isLoading: coordinatorIsFetching } = useQuery({
+        queryKey: ["coordinators", "for approval"],
+        queryFn: async () => getCoordinatorsByStatus("for approval"),
         staleTime: 0,
         cacheTime: 0,
     });
 
-    if (agencyIsFetching)
+    if (coordinatorIsFetching)
         return (
             <>
                 <Skeleton_user />
@@ -32,7 +32,7 @@ export default function ForApprovalAgencyList() {
             </>
         );
 
-    if (!agencies || agencies.length === 0)
+    if (!coordinators || coordinators.length === 0)
         return (
             <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
                 <FileClock className="w-12 h-12 mb-4 text-primary" />
@@ -43,49 +43,40 @@ export default function ForApprovalAgencyList() {
 
     return (
         <>
-            {agencies.map((agency) => (
+            {coordinators.map((coor) => (
                 <Card
-                    key={agency.id}
+                    key={coor.id}
                     className="hover:ring-2 hover:ring-blue-400 group transition shadow-lg/40"
                 >
                     <CardHeader>
                         <CardTitle className="flex flex-wrap justify-between">
-                            <span className="text-xl">{agency.name}</span>
+                            <span className="text-xl">{coor.agency.name}</span>
                             <span className="text-sm text-slate-600">
-                                {moment(agency.createdAt).format(
-                                    "MMM DD, YYYY"
-                                )}
+                                {moment(coor.createdAt).format("MMM DD, YYYY")}
                             </span>
                         </CardTitle>
                         <CardDescription className="flex flex-wrap flex-col gap-1">
-                            <div className="flex justify-between">
-                                <span>
-                                    {formatFormalName(agency.organization_type)}
-                                </span>
-                                <ApprovalRejectComponent agency={agency} />
-                            </div>
-                            <span>{agency.agency_address}</span>
+                            <span>{coor.agency.agency_address}</span>
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="flex flex-wrap items-center justify-center gap-4 px-2 md:px-15 transform transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-110">
                         <div>
                             <CustomAvatar
                                 avatar={
-                                    agency?.file_url ||
-                                    "/default_company_avatar.png"
+                                    coor.user?.image || "/default_avatar.png"
                                 }
                                 className="flex-none w-[150px] h-[150px] "
                             />
                         </div>
                         <div className="md:flex-1 flex flex-col gap-2">
                             <span className="text-lg text-slate-800 font-semibold">
-                                {agency.head.full_name}
+                                {coor.user.full_name}
                             </span>
                             <span className="text-blue-700 italic">
-                                {agency.head.email.toLowerCase()}
+                                {coor.user.email.toLowerCase()}
                             </span>
                             <span className=" text-slate-700 italic">
-                                {agency.contact_number}
+                                {coor.contact_number}
                             </span>
                         </div>
                     </CardContent>

@@ -87,13 +87,13 @@ const Sidebar = ({ currentUser }) => {
             {/* User Profile */}
             <div
                 className={clsx(
-                    "flex items-center mt-4 hover:bg-gray-300 truncate hover:text-blue-900 dark:hover:text-blue-200 dark:hover:bg-slate-700 rounded cursor-pointer",
+                    "flex items-center mt-4 hover:bg-gray-500 truncate rounded cursor-pointer group transition ",
                     !isCollapsed && "p-4"
                 )}
             >
                 <Image
                     src={currentUserAvatar}
-                    className="flex-none rounded-4xl"
+                    className="flex-none rounded-4xl transform transition-transform duration-300 group-hover:scale-120"
                     width={50}
                     height={50}
                     layout="intrinsic"
@@ -101,10 +101,13 @@ const Sidebar = ({ currentUser }) => {
                 />
 
                 {!isCollapsed && (
-                    <div className="ml-2">
-                        <h5 className="text-lg font-bold ">
+                    <div className="ml-2 transform transition-transform duration-300 group-hover:font-bold">
+                        <h5 className="text-lg font-bold transform transition-transform duration-300 group-hover:text-2xl">
                             {currentUser.name || "Juan Dela Cruz"}
                         </h5>
+                        <p className="text-slate-300 truncate w-full overflow-hidden whitespace-nowrap dark:text-slate-200">
+                            {currentRole?.role_name || "Donor"}
+                        </p>
                         <p className="text-blue-300 truncate w-full overflow-hidden whitespace-nowrap dark:text-slate-200">
                             {currentUser.email}
                         </p>

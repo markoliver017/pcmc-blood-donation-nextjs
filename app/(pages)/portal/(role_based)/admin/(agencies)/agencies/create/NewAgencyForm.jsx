@@ -79,7 +79,7 @@ export default function NewAgencyForm({
             /** note: the return data will be accessible in the debugger
              *so no need to console the onSuccess(data) here **/
             // Invalidate the posts query to refetch the updated list
-            queryClient.invalidateQueries({ queryKey: ["users"] });
+            queryClient.invalidateQueries({ queryKey: ["verified-agencies"] });
             SweetAlert({
                 title: "Submission Successful",
                 text: "New agency has been successfully created.",
@@ -257,7 +257,6 @@ export default function NewAgencyForm({
             </CardHeader>
             <CardContent id="form-modal">
                 <Form {...form}>
-
                     {isError && (
                         <div className="alert alert-error text-gray-700 mb-5">
                             Error: {error.message}

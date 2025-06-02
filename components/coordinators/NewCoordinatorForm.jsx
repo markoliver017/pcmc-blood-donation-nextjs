@@ -14,7 +14,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
-import { MessageCircle, Send } from "lucide-react";
+import { MessageCircle, Phone, Send } from "lucide-react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -26,7 +26,12 @@ import { Form, FormField, FormItem } from "@components/ui/form";
 import { uploadPicture } from "@/action/uploads";
 import FieldError from "@components/form/FieldError";
 
-import { useRouter } from "next/navigation";
+import {
+    redirect,
+    usePathname,
+    useRouter,
+    useSearchParams,
+} from "next/navigation";
 import FormLogger from "@lib/utils/FormLogger";
 import { IoArrowUndoCircle } from "react-icons/io5";
 import { getRole } from "@/action/registerAction";
@@ -37,38 +42,21 @@ import NewUserCredentialsForm from "@components/user/NewUserCredentialsForm";
 import DisplayValidationErrors from "@components/form/DisplayValidationErrors";
 import Preloader3 from "@components/layout/Preloader3";
 import LoadingModal from "@components/layout/LoadingModal";
-import DonorBasicInfoForm from "./DonorBasicInfoForm";
-import AgencyLocationForm from "@components/organizers/AgencyLocationForm";
-import DonorBloodDonationInfoForm from "./DonorBloodDonationInfoForm";
-import ConfirmTable from "./ConfirmTable";
-import { donorRegistrationWithUser } from "@lib/zod/donorSchema";
-import { storeDonor } from "@/action/donorAction";
+
+import CoordinatorConfirmTable from "./CoordinatorConfirmTable";
+import { coordinatorRegistrationWithUser } from "@lib/zod/agencySchema";
+import { storeCoordinator } from "@/action/agencyAction";
 
 const form_sections = [
     {
         title: "New Account Details",
         class: "progress-info",
-        percent: 15,
+        percent: 35,
     },
     {
         title: "Account Credentials",
         class: "progress-info",
-        percent: 30,
-    },
-    {
-        title: "Personal Information",
-        class: "progress-info",
-        percent: 45,
-    },
-    {
-        title: "Location Details",
-        class: "progress-info",
-        percent: 60,
-    },
-    {
-        title: "Blood Donation History",
-        class: "progress-info",
-        percent: 75,
+        percent: 70,
     },
     {
         title: "Confirm",
@@ -77,8 +65,8 @@ const form_sections = [
     },
 ];
 
-export default function NewDonorForm({ role_name, agency_id }) {
-    const router = useRouter();
+export default function NewCoordinatorForm({ role_name, agency_id }) {
+    const params = useSearchParams();
 
     const { data: user_role, isLoading: user_role_loading } = useQuery({
         queryKey: ["role", role_name],
@@ -88,7 +76,9 @@ export default function NewDonorForm({ role_name, agency_id }) {
         cacheTime: 20 * 60 * 1000,
     });
 
-    const [sectionNo, setSectionNo] = useState(0);
+    const [sectionNo, setSectionNo] = useState(
+        Number(params?.get("step")) || 0
+    );
 
     const queryClient = useQueryClient();
 
@@ -100,23 +90,20 @@ export default function NewDonorForm({ role_name, agency_id }) {
         isError,
     } = useMutation({
         mutationFn: async (formData) => {
-            const res = await storeDonor(formData);
+            const res = await storeCoordinator(formData);
             if (!res.success) {
                 throw res; // Throw the error response to trigger onError
             }
             return res.data;
         },
         onSuccess: () => {
-            /** note: the return data will be accessible in the debugger
-             *so no need to console the onSuccess(data) here **/
-            // Invalidate the posts query to refetch the updated list
             queryClient.invalidateQueries({ queryKey: ["users"] });
             SweetAlert({
                 title: "Registration Complete",
-                text: "Thank you for registering as a blood donor with one of our partner agencies.Your application has been successfully submitted and is now pending agency approval. You’ll be notified via email or system notification once your registration is approved.",
+                text: "Thank you for registering as a coordinator with one of our partner agencies. Your application has been submitted successfully and is now pending approval from the agency. You will receive a notification via email or system alert once your registration has been approved.",
                 icon: "success",
                 confirmButtonText: "I understand.",
-                onConfirm: () => router.push("/"),
+                onConfirm: () => window.location.reload(),
             });
         },
         onError: (error) => {
@@ -163,39 +150,19 @@ export default function NewDonorForm({ role_name, agency_id }) {
     // console.log("agencyRegistrationSchema", z.object(userSchema.shape))
     const form = useForm({
         mode: "onChange",
-        resolver: zodResolver(donorRegistrationWithUser),
+        resolver: zodResolver(coordinatorRegistrationWithUser),
         defaultValues: {
             agency_id: agency_id,
             role_ids: [user_role?.id],
             profile_picture: null,
-            file: "",
             image: null,
-            id_url: null,
             email: "mark29@email.com",
             first_name: "Mark",
             last_name: "Roman",
             gender: "male",
+            contact_number: "+639123456789",
             password: "User@1234",
             password_confirmation: "User@1234",
-            date_of_birth: "1993-04-23",
-            civil_status: "single",
-            contact_number: "+639663603172",
-            nationality: "Filipino",
-            occupation: "Programmer",
-            address: "#1 Bonifacio Street",
-            barangay: "",
-            city_municipality: "",
-            province: "Metro Manila",
-            selected_province_option: {
-                code: "130000000",
-                name: "Metro Manila",
-                is_ncr: true,
-            },
-            is_regular_donor: false,
-            blood_type_id: "",
-            blood_type_label: "",
-            last_donation_date: "",
-            blood_service_facility: "",
             comments: "",
         },
     });
@@ -213,7 +180,7 @@ export default function NewDonorForm({ role_name, agency_id }) {
 
     const onSubmit = async (data) => {
         SweetAlert({
-            title: "Blood Donor Registration",
+            title: "Coordinator Registration",
             text: "Submit your request now? ",
             icon: "question",
             showCancelButton: true,
@@ -230,37 +197,12 @@ export default function NewDonorForm({ role_name, agency_id }) {
                     }
                     console.log("Upload result:", result);
                 }
-
-                const fileUrl = watch("donor_file_url");
-                if (data?.file && !fileUrl) {
-                    const result = await uploadPicture(data.file);
-                    if (result?.success) {
-                        data.file_url = result.file_data?.url || null;
-                        setValue("file_url", result.file_data?.url);
-                    }
-                    console.log("Upload result:", result);
-                }
-
                 mutate(data);
             },
         });
     };
-
-    // if (isError) {
-    //     notify({
-    //         error: true,
-    //         message: error?.message,
-    //     });
-    // }
-
-    const govtId = watch("file");
     const profilePic = watch("profile_picture");
-    const govtIdFile = {
-        name: govtId?.name,
-        size: govtId?.size,
-        type: govtId?.type,
-        lastModified: govtId?.lastModified,
-    };
+
     const profilePicFile = {
         name: profilePic?.name,
         size: profilePic?.size,
@@ -314,9 +256,51 @@ export default function NewDonorForm({ role_name, agency_id }) {
                         <form onSubmit={handleSubmit(onSubmit)}>
                             {sectionNo == 0 ? (
                                 <NewUserBasicInfoForm
+                                    triggerFields={[
+                                        "profile_picture",
+                                        "role_ids",
+                                        "first_name",
+                                        "last_name",
+                                        "gender",
+                                        "contact_number",
+                                    ]}
                                     details={form_sections[sectionNo]}
                                     onNext={handleNext}
-                                />
+                                >
+                                    <FormField
+                                        control={form.control}
+                                        name="contact_number"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <InlineLabel>
+                                                    Contact Number:{" "}
+                                                </InlineLabel>
+                                                <label
+                                                    className={clsx(
+                                                        "input w-full mt-1",
+                                                        errors?.contact_number
+                                                            ? "input-error"
+                                                            : "input-info"
+                                                    )}
+                                                >
+                                                    <Phone className="h-3" />
+                                                    <input
+                                                        type="text"
+                                                        tabIndex={4}
+                                                        {...field}
+                                                        placeholder="+63#########"
+                                                    />
+                                                </label>
+
+                                                <FieldError
+                                                    field={
+                                                        errors?.contact_number
+                                                    }
+                                                />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </NewUserBasicInfoForm>
                             ) : (
                                 ""
                             )}
@@ -331,33 +315,6 @@ export default function NewDonorForm({ role_name, agency_id }) {
                             )}
 
                             {sectionNo == 2 ? (
-                                <DonorBasicInfoForm
-                                    details={form_sections[sectionNo]}
-                                    onNext={handleNext}
-                                />
-                            ) : (
-                                ""
-                            )}
-
-                            {sectionNo == 3 ? (
-                                <AgencyLocationForm
-                                    details={form_sections[sectionNo]}
-                                    onNext={handleNext}
-                                />
-                            ) : (
-                                ""
-                            )}
-
-                            {sectionNo == 4 ? (
-                                <DonorBloodDonationInfoForm
-                                    details={form_sections[sectionNo]}
-                                    onNext={handleNext}
-                                />
-                            ) : (
-                                ""
-                            )}
-
-                            {sectionNo == 5 ? (
                                 <>
                                     <Preloader3 />
                                     <LoadingModal isLoading={isPending}>
@@ -375,7 +332,9 @@ export default function NewDonorForm({ role_name, agency_id }) {
                                             </CardDescription>
                                         </CardHeader>
                                         <CardContent>
-                                            <ConfirmTable watch={watch} />
+                                            <CoordinatorConfirmTable
+                                                watch={watch}
+                                            />
 
                                             <FormField
                                                 control={form.control}
@@ -445,7 +404,7 @@ export default function NewDonorForm({ role_name, agency_id }) {
                                 ""
                             )}
 
-                            <FormLogger
+                            {/* <FormLogger
                                 watch={watch}
                                 errors={errors}
                                 data={newDonorData}
@@ -453,11 +412,7 @@ export default function NewDonorForm({ role_name, agency_id }) {
                             <pre>
                                 <b>User profile File: </b>{" "}
                                 {JSON.stringify(profilePicFile)}
-                            </pre>
-                            <pre>
-                                <b>Govt ID File: </b>{" "}
-                                {JSON.stringify(govtIdFile)}
-                            </pre>
+                            </pre> */}
                         </form>
                     </Form>
                 </CardContent>

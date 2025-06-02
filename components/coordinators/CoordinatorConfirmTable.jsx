@@ -7,11 +7,12 @@ import {
     Key,
     Map,
     MapPin,
+    User2Icon,
     UserCog,
 } from "lucide-react";
 import React, { useState } from "react";
 
-export default function ConfirmTable({ watch }) {
+export default function CoordinatorConfirmTable({ watch }) {
     const [showPassword, setShowPassword] = useState(false);
     return (
         <table className="table border mb-5">
@@ -19,7 +20,7 @@ export default function ConfirmTable({ watch }) {
                 <tr className="bg-gray-200 dark:bg-gray-900 border-b border-gray-300">
                     <th colSpan={2}>
                         <span className="flex-items-center">
-                            <UserCog /> Agency Administrator
+                            <User2Icon /> New Coordinator Account
                         </span>
                     </th>
                 </tr>
@@ -33,7 +34,11 @@ export default function ConfirmTable({ watch }) {
                 </tr>
                 <tr className="hover:bg-base-300">
                     <th width="20%">Sex:</th>
-                    <td>{formatFormalName(watch("gender"))}</td>
+                    <td>{formatFormalName(watch("gender") || "N/A")}</td>
+                </tr>
+                <tr className="hover:bg-base-300">
+                    <th width="20%">Contact Number:</th>
+                    <td>{watch("contact_number")}</td>
                 </tr>
 
                 <tr className="bg-gray-200 dark:bg-gray-900">
@@ -68,52 +73,6 @@ export default function ConfirmTable({ watch }) {
                             )}
                         </button>
                     </td>
-                </tr>
-
-                <tr className="bg-gray-200 dark:bg-gray-900 border-b border-gray-300">
-                    <th colSpan={2}>
-                        <span className="flex-items-center">
-                            <Building />
-                            Agency Details
-                        </span>
-                    </th>
-                </tr>
-                <tr className="hover:bg-base-300">
-                    <th width="20%">Name:</th>
-                    <td>{watch("name").toUpperCase()}</td>
-                </tr>
-
-                <tr className="hover:bg-base-300">
-                    <th>Contact Number:</th>
-                    <td>{watch("contact_number")}</td>
-                </tr>
-                <tr className="hover:bg-base-300">
-                    <th>Organization Type:</th>
-                    <td>{formatFormalName(watch("organization_type"))}</td>
-                </tr>
-                <tr className="bg-gray-200 dark:bg-gray-900 border-b border-gray-300">
-                    <th colSpan={2}>
-                        <span className="flex-items-center">
-                            <MapPin />
-                            Location Details
-                        </span>
-                    </th>
-                </tr>
-                <tr className="hover:bg-base-300">
-                    <th>Address:</th>
-                    <td>{watch("address")}</td>
-                </tr>
-                <tr className="hover:bg-base-300">
-                    <th>Barangay:</th>
-                    <td>{watch("barangay")}</td>
-                </tr>
-                <tr className="hover:bg-base-300">
-                    <th>City/Municipality:</th>
-                    <td>{watch("city_municipality")}</td>
-                </tr>
-                <tr className="hover:bg-base-300">
-                    <th>Area:</th>
-                    <td>{watch("province")}</td>
                 </tr>
             </tbody>
         </table>

@@ -50,9 +50,7 @@ export default function ShowAgency({ agencyId }) {
                 <CardTitle className="flex items-center gap-5">
                     <div className="text-4xl">{agency.name}</div>
                     <Button
-                        onClick={() =>
-                            router.push(`./${agency.id}/edit`)
-                        }
+                        onClick={() => router.push(`./${agency.id}/edit`)}
                         variant="secondary"
                         className=" hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200"
                     >
@@ -101,9 +99,9 @@ export default function ShowAgency({ agencyId }) {
                             <TableCell>
                                 <a
                                     className="link link-primary italic"
-                                    href={`mailto:${agency.agency_email}`}
+                                    href={`mailto:${agency.head.email}`}
                                 >
-                                    {formatFormalName(agency.head.email)}
+                                    {agency.head.email.toLowerCase() || "N/A"}
                                 </a>
                             </TableCell>
                         </TableRow>

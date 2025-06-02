@@ -37,7 +37,6 @@ import { Input } from "@components/ui/input";
 
 import { uploadPicture } from "@/action/uploads";
 import { GrUpdate } from "react-icons/gr";
-import UserLoading from "../../app/(pages)/portal/(role_based)/admin/(users)/users/UserLoading";
 import { useRouter } from "next/navigation";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import UserStatusUpdater from "./UserStatusUpdater";
@@ -45,6 +44,7 @@ import FormLogger from "@lib/utils/FormLogger";
 import { MdPassword } from "react-icons/md";
 import ToggleChangePassword from "@components/reusable_components/ToggleChangePassword";
 import { fetchRoles } from "@/action/roleAction";
+import Skeleton_user from "@components/ui/Skeleton_user";
 
 export default function UserUpdateForm({ userId }) {
     const router = useRouter();
@@ -201,7 +201,7 @@ export default function UserUpdateForm({ userId }) {
         setValue("image", userData?.image || null);
     }, [uploaded_avatar]);
 
-    if (rolesQuery.isLoading || userQuery.isLoading) return <UserLoading />;
+    if (rolesQuery.isLoading || userQuery.isLoading) return <Skeleton_user />;
     if (userQuery.isError)
         return (
             <div className="alert alert-error text-gray-700">

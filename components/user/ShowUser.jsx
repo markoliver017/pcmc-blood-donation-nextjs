@@ -10,6 +10,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
+import Skeleton_user from "@components/ui/Skeleton_user";
 import {
     Table,
     TableBody,
@@ -24,7 +25,6 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import UserLoading from "../../app/(pages)/portal/(role_based)/admin/(users)/users/UserLoading";
 
 export default function ShowUser({ userId }) {
     const router = useRouter();
@@ -44,7 +44,7 @@ export default function ShowUser({ userId }) {
         enabled: !!userId,
     });
 
-    if (isLoading || isFetching) return <UserLoading />;
+    if (isLoading || isFetching) return <Skeleton_user />;
 
     return (
         <Card className="p-5 h-full">

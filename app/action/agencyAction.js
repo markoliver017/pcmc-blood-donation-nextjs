@@ -5,9 +5,14 @@
 import { logAuditTrail } from "@lib/audit_trails.utils";
 import { auth } from "@lib/auth";
 import { logErrorToFile } from "@lib/logger.server";
-import { Agency, Role, sequelize, User } from "@lib/models";
+import { Agency, AgencyCoordinator, Role, sequelize, User } from "@lib/models";
 import { formatSeqObj } from "@lib/utils/object.utils";
-import { agencyRegistrationWithUser, agencySchema, agencyStatusSchema } from "@lib/zod/agencySchema";
+import {
+    agencyRegistrationWithUser,
+    agencySchema,
+    agencyStatusSchema,
+    coordinatorRegistrationWithUser,
+} from "@lib/zod/agencySchema";
 import { Op } from "sequelize";
 
 export async function fetchAgencies() {
@@ -36,9 +41,43 @@ export async function fetchAgencies() {
     }
 }
 
+export async function fetchVerifiedAgencies() {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+        const agencies = await Agency.findAll({
+            where: {
+                status: {
+                    [Op.not]: "for approval",
+                },
+            },
+            include: [
+                {
+                    model: User,
+                    as: "head",
+                    attributes: { exclude: ["password", "email_verified"] },
+                },
+                {
+                    model: User,
+                    as: "creator",
+                    attributes: { exclude: ["password", "email_verified"] },
+                },
+            ],
+        });
+
+        return JSON.parse(JSON.stringify(agencies));
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
 export async function fetchAgency(id) {
     try {
-        const agency = await Agency.findByPk(id, {
+        const agency = await Agency.findOne({
+            where: {
+                id: id,
+                status: "activated",
+            },
             include: [
                 {
                     model: User,
@@ -57,9 +96,9 @@ export async function fetchAgency(id) {
                 },
             ],
         });
+        console.log("agency fetcheddd", agency);
 
         return formatSeqObj(agency);
-
     } catch (error) {
         console.error(error);
         throw error;
@@ -309,11 +348,10 @@ export async function storeAgency(formData) {
     const { data } = parsed;
 
     const existingUser = await User.findOne({
-        where: { email: data.email }
+        where: { email: data.email },
     });
     if (existingUser) {
         throw `The email is already associated with an existing account in the system.`;
-
     }
 
     const roles = await Role.findAll({
@@ -326,15 +364,12 @@ export async function storeAgency(formData) {
     });
 
     if (roles.length !== data.role_ids.length) {
-
         throw "Database Error: One or more roles not found.";
-
     }
 
     const transaction = await sequelize.transaction();
 
     try {
-
         const newUser = await User.create(data, { transaction });
         if (!newUser) {
             throw "Registration Failed: There was an error while trying to register a new user account!";
@@ -343,7 +378,7 @@ export async function storeAgency(formData) {
         await newUser.addRoles(data.role_ids, { transaction });
 
         data.head_id = newUser.id;
-        console.log("data.head_id >>", data)
+        console.log("data.head_id >>", data);
 
         const newAgency = await Agency.create(data, { transaction });
 
@@ -424,7 +459,7 @@ export async function updateAgency(formData) {
 export async function updateAgencyStatus(formData) {
     const session = await auth();
     if (!session) throw "You are not authorized to access this request.";
-    console.log("updateAgencyStatus", formData)
+    console.log("updateAgencyStatus", formData);
     const { user } = session;
     formData.verified_by = user.id;
 
@@ -515,6 +550,80 @@ export async function updateAgencyStatus(formData) {
         };
     } catch (err) {
         logErrorToFile(err, "UPDATE AGENCY STATUS");
+        await transaction.rollback();
+
+        throw err.message || "Unknown error";
+    }
+}
+
+export async function storeCoordinator(formData) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log("storeCoordinator formData received on server", formData);
+    const parsed = coordinatorRegistrationWithUser.safeParse(formData);
+
+    if (!parsed.success) {
+        const fieldErrors = parsed.error.flatten().fieldErrors;
+        return {
+            success: false,
+            type: "validation",
+            message: "Please check your input and try again.",
+            errorObj: parsed.error.flatten().fieldErrors,
+            errorArr: Object.values(fieldErrors).flat(),
+        };
+    }
+
+    const { data } = parsed;
+
+    console.log("data parsed", data);
+
+    const existingUser = await User.findOne({
+        where: { email: data.email },
+    });
+    if (existingUser) {
+        throw `The email is already associated with an existing account in the system.`;
+    }
+
+    const roles = await Role.findAll({
+        where: {
+            id: {
+                [Op.in]: data.role_ids,
+            },
+        },
+        attributes: ["id", "role_name"],
+    });
+
+    if (roles.length !== data.role_ids.length) {
+        throw "Database Error: One or more roles not found.";
+    }
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        const newUser = await User.create(data, { transaction });
+        if (!newUser) {
+            throw "Registration Failed: There was an error while trying to register a new user account!";
+        }
+
+        await newUser.addRoles(data.role_ids, { transaction });
+
+        data.user_id = newUser.id;
+
+        const newCoordinator = await AgencyCoordinator.create(data, {
+            transaction,
+        });
+
+        await transaction.commit();
+
+        await logAuditTrail({
+            userId: newUser.id,
+            controller: "agencies",
+            action: "storeCoordinator",
+            details: `A new coordinator has been successfully created. Coordinator ID#: ${newCoordinator.id} with User account: ${newUser.id}`,
+        });
+
+        return { success: true, data: newCoordinator.get({ plain: true }) };
+    } catch (err) {
+        logErrorToFile(err, "storeCoordinator");
         await transaction.rollback();
 
         throw err.message || "Unknown error";

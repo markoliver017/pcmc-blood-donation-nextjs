@@ -35,7 +35,18 @@ import { useFormContext } from "react-hook-form";
 import Preloader3 from "@components/layout/Preloader3";
 import FormCardComponent from "@components/form/FormCardComponent";
 
-export default function NewUserBasicInfoForm({ details, onNext }) {
+export default function NewUserBasicInfoForm({
+    children,
+    triggerFields = [
+        "profile_picture",
+        "role_ids",
+        "first_name",
+        "last_name",
+        "gender",
+    ],
+    details,
+    onNext,
+}) {
     const router = useRouter();
     const {
         trigger,
@@ -47,14 +58,7 @@ export default function NewUserBasicInfoForm({ details, onNext }) {
     } = useFormContext();
 
     const onSubmitNext = async () => {
-        const valid = await trigger([
-            "profile_picture",
-            "role_ids",
-            "email",
-            "first_name",
-            "last_name",
-            "gender",
-        ]);
+        const valid = await trigger(triggerFields);
         if (valid) {
             onNext(1);
         } else {
@@ -260,7 +264,7 @@ export default function NewUserBasicInfoForm({ details, onNext }) {
                     }}
                 />
 
-                <div className="flex-1 md:min-w-[350px] flex flex-col justify-evenly ">
+                <div className="flex-1 md:min-w-[350px] flex flex-col justify-evenly gap-2">
                     <FormField
                         control={control}
                         name="role_ids"
@@ -364,19 +368,16 @@ export default function NewUserBasicInfoForm({ details, onNext }) {
                                         tabIndex={4}
                                         {...field}
                                     >
-                                        <option value="">
-                                            Select here
-                                        </option>
+                                        <option value="">Select here</option>
                                         <option value="male">Male</option>
-                                        <option value="female">
-                                            Female
-                                        </option>
+                                        <option value="female">Female</option>
                                     </select>
                                 </label>
                                 <FieldError field={errors?.gender} />
                             </FormItem>
                         )}
                     />
+                    {children}
 
                     <div className="flex-none card-actions justify-between mt-5">
                         <button
@@ -396,9 +397,7 @@ export default function NewUserBasicInfoForm({ details, onNext }) {
                             tabIndex="4"
                         >
                             <MdNextPlan />{" "}
-                            <span className="hidden sm:inline-block">
-                                Next
-                            </span>
+                            <span className="hidden sm:inline-block">Next</span>
                         </button>
                     </div>
                 </div>
