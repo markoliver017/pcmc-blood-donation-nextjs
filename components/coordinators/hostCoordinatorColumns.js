@@ -10,10 +10,10 @@ import {
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
-import { Command, Eye, MoreHorizontal, Pencil } from "lucide-react";
+import { Command, Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
-export const columns = [
+export const hostCoordinatorColumns = [
     {
         accessorKey: "id",
         header: ({ column }) => (
@@ -122,7 +122,9 @@ export const columns = [
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
 
-                        <Link href={`/portal/admin/coordinators/${data.id}`}>
+                        <Link
+                            href={`/portal/hosts/manage-coordinators/${data.id}`}
+                        >
                             <DropdownMenuItem className="flex items-center space-x-2">
                                 <Eye className="w-4 h-4" />
                                 <span>Show</span>

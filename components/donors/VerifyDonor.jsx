@@ -1,6 +1,7 @@
 "use client";
 import { updateAgencyStatus } from "@/action/agencyAction";
 import { updateCoordinatorStatus } from "@/action/coordinatorAction";
+import { updateDonorStatus } from "@/action/donorAction";
 
 import { Form } from "@components/ui/form";
 import notify from "@components/ui/notify";
@@ -11,8 +12,8 @@ import clsx from "clsx";
 import { Save } from "lucide-react";
 import { useForm } from "react-hook-form";
 
-export default function VerifyCoordinator({
-    agencyData,
+export default function VerifyDonor({
+    donorData,
     icon = <Save />,
     label = "Save",
     className = "btn-neutral",
@@ -21,12 +22,12 @@ export default function VerifyCoordinator({
     const queryClient = useQueryClient();
 
     const {
-        // data: newAgencyData,
+        // data: donorData,
         mutate,
         isPending,
     } = useMutation({
         mutationFn: async (formData) => {
-            const res = await updateCoordinatorStatus(formData);
+            const res = await updateDonorStatus(formData);
             if (!res.success) {
                 throw res; // Throw the error response to trigger onError
             }
@@ -34,12 +35,12 @@ export default function VerifyCoordinator({
         },
         onSuccess: (data) => {
             console.log("onSuccess", data);
-            queryClient.invalidateQueries({ queryKey: ["coordinators"] });
+            queryClient.invalidateQueries({ queryKey: ["donors"] });
             queryClient.invalidateQueries({
-                queryKey: ["verified-coordinators"],
+                queryKey: ["verified-donors"],
             });
             queryClient.invalidateQueries({
-                queryKey: ["agency"],
+                queryKey: ["donor"],
             });
 
             SweetAlert({
@@ -57,17 +58,17 @@ export default function VerifyCoordinator({
 
     const form = useForm({
         mode: "onChange",
-        defaultValues: agencyData,
+        defaultValues: donorData,
     });
 
     const { handleSubmit, reset } = form;
 
     const onSubmit = async (data) => {
-        console.log("verfiy agency", data);
+        console.log("verfiy donor", data);
         const text =
             data?.status == "activated"
-                ? `Are you sure you want to activate this coordinator application?`
-                : `Are you sure you want to deactivate this coordinator application?`;
+                ? `Are you sure you want to activate this donor?`
+                : `Are you sure you want to deactivate this donor?`;
         SweetAlert({
             title: "Confirm your action?",
             text,

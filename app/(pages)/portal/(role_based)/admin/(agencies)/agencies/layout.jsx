@@ -4,7 +4,7 @@ import React from "react";
 export default function AgenciesLayout({ children, approval }) {
     return (
         <>
-            <Tabs defaultValue="all">
+            <Tabs defaultValue="all" className="p-5">
                 <TabsList>
                     <TabsTrigger value="all">All</TabsTrigger>
                     <TabsTrigger value="for-approval">For Approval</TabsTrigger>

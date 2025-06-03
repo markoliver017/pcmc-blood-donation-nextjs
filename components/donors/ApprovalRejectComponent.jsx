@@ -9,20 +9,19 @@ import {
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
 import { CheckIcon, Command, Eye, SquareMenu } from "lucide-react";
-import RejectDialog from "@components/organizers/RejectDialog";
 
 import { useRouter } from "next/navigation";
-import VerifyCoordinator from "./VerifyCoordinator";
-import RejectCoordinator from "./RejectCoordinator";
+import VerifyDonor from "./VerifyDonor";
+import RejectDonor from "./RejectDonor";
 
-export default function ApprovalRejectComponent({ coordinator }) {
+export default function ApprovalRejectComponent({ data, callbackUrl }) {
     const router = useRouter();
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="default" className="h-8 w-min p-0">
                     <span className="sr-only">Open menu</span>
-                    {formatFormalName(coordinator.status)}
+                    {formatFormalName(data.status)}
                     <SquareMenu className="h-4 w-4" />
                 </Button>
             </DropdownMenuTrigger>
@@ -34,11 +33,7 @@ export default function ApprovalRejectComponent({ coordinator }) {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="space-x-2">
                     <Button
-                        onClick={() =>
-                            router.push(
-                                `/portal/admin/coordinators/${coordinator.id}`
-                            )
-                        }
+                        onClick={() => router.push(callbackUrl)}
                         variant="secondary"
                         className=" hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200 btn-block"
                     >
@@ -48,9 +43,9 @@ export default function ApprovalRejectComponent({ coordinator }) {
                 </DropdownMenuItem>
 
                 <DropdownMenuItem className="space-x-2 flex justify-between">
-                    <VerifyCoordinator
-                        agencyData={{
-                            id: coordinator.id,
+                    <VerifyDonor
+                        donorData={{
+                            id: data.id,
                             status: "activated",
                         }}
                         label="Approve"
@@ -60,8 +55,8 @@ export default function ApprovalRejectComponent({ coordinator }) {
                     />
                 </DropdownMenuItem>
                 <div className="px-2 flex justify-between">
-                    <RejectCoordinator
-                        coordinatorId={coordinator.id}
+                    <RejectDonor
+                        donorId={data.id}
                         className="w-full btn-error"
                     />
                 </div>

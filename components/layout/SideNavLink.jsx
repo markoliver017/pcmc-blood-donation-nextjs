@@ -12,7 +12,7 @@ export default function SideNavLink({ isCollapsed, menu, currentRoleUrl }) {
     const [dropdownOpen, setDropdownOpen] = useState({});
     const { path: menu_path, icon, title } = menu;
 
-    const path = menu_path.is_role_based
+    const path = menu.is_role_based
         ? currentRoleUrl + filterUrlWithDotSlash(menu_path)
         : `/portal${filterUrlWithDotSlash(menu_path)}`;
 

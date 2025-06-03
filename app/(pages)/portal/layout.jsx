@@ -97,7 +97,7 @@ export default async function Layout({ children }) {
     }
 
     return (
-        <div className="p-5">
+        <div>
             {children}
             {/* <pre>
                 User: {JSON.stringify(session.user, null, 2)}

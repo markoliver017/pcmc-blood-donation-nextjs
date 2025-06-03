@@ -7,13 +7,12 @@ export async function up(queryInterface) {
     for (let i = 0; i < 10; i++) {
         agencies.push({
             head_id: [
-                "14abe03d-b9f8-4076-a36f-9d595fd84138",
-                "fb607157-b1dc-42e2-b832-16085ef72c01",
-                "617cdcec-5323-4ded-9e75-0f6c06450d4e",
-                "25401ede-1454-4b8d-bffe-b171354bfc08",
-                "7cba8734-4827-4729-80b4-182fcd1b7afc",
-                "a6cd4d3e-183f-4c5f-9339-e6b729ab4a19"
-            ][Math.floor(Math.random() * 6)], // Assuming you have users with UUIDs
+                "7838dca3-13bd-41f0-9bf1-ef6707436ea2",
+                "207ac622-41c8-4f4d-948d-419bd6c0a795",
+                "62e044f9-97b9-42e0-b1f9-504f0530713f",
+                "806e519a-8b1d-4176-854a-68394bd84d09",
+                "b10b971a-ad59-4cc0-bde2-65136c3c37ac",
+            ][Math.floor(Math.random() * 5)], // Assuming you have users with UUIDs
             name: faker.company.name(),
             contact_number: faker.phone.number("##########"),
             address: faker.location.streetAddress(),

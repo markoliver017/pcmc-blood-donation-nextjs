@@ -2,10 +2,10 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { RefreshCcw, Users2Icon } from "lucide-react";
 import Skeleton from "@components/ui/skeleton";
-import { getVerifiedCoordinators } from "@/action/coordinatorAction";
 import { Card } from "@components/ui/card";
 import { DataTable } from "@components/coordinators/Datatable";
-import { adminCoordinatorColumns } from "@components/coordinators/adminCoordinatorColumns";
+import { hostCoordinatorColumns } from "@components/coordinators/hostCoordinatorColumns";
+import { getVerifiedCoordinatorsByAgency } from "@/action/hostCoordinatorAction";
 
 export default function CoordinatorList() {
     const queryClient = useQueryClient();
@@ -16,7 +16,7 @@ export default function CoordinatorList() {
         isLoading,
     } = useQuery({
         queryKey: ["verified-coordinators"],
-        queryFn: getVerifiedCoordinators,
+        queryFn: getVerifiedCoordinatorsByAgency,
         staleTime: 1 * 60 * 1000, // Data is fresh for 1 minute
         cacheTime: 2 * 60 * 1000, // Cache persists for 2 minute
     });
@@ -25,6 +25,7 @@ export default function CoordinatorList() {
 
     if (error) return <div>Error: {error.message}</div>;
 
+    // return <pre>{JSON.stringify(coordinators, null, 2)}</pre>;
     return (
         <div>
             {coordinators.length === 0 ? (
@@ -52,7 +53,7 @@ export default function CoordinatorList() {
                         </button>
                     </div>
                     <DataTable
-                        columns={adminCoordinatorColumns}
+                        columns={hostCoordinatorColumns}
                         data={coordinators}
                         isLoading={isLoading}
                     />

@@ -1,4 +1,4 @@
-import CoordinatorList from "./CoordinatorList";
+import CoordinatorList from "./DonorList";
 
 export default function Page() {
     return (

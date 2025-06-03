@@ -204,8 +204,8 @@ export const usePagesStore = create((set) => ({
             has_child: false,
         },
         {
-            title: "Manage Coordinators",
-            path: "/admin/coordinators",
+            title: "Coordinators",
+            path: "/coordinators",
             icon: <Users2Icon />,
             roles: ["Admin", "Developer"],
             is_role_based: true,

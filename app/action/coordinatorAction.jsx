@@ -1,18 +1,22 @@
 "use server";
+import { logAuditTrail } from "@lib/audit_trails.utils";
+import { auth } from "@lib/auth";
 import { logErrorToFile } from "@lib/logger.server";
-import { Agency, AgencyCoordinator, User } from "@lib/models";
+import { Agency, AgencyCoordinator, Role, sequelize, User } from "@lib/models";
 import { formatSeqObj } from "@lib/utils/object.utils";
+import { agencyStatusSchema } from "@lib/zod/agencySchema";
+import { Op } from "sequelize";
 
 export async function getVerifiedCoordinators() {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     try {
         const users = await AgencyCoordinator.findAll({
-            // where: {
-            //     status: {
-            //         [Op.not]: "for approval",
-            //     },
-            // },
+            where: {
+                status: {
+                    [Op.not]: "for approval",
+                },
+            },
             include: [
                 {
                     model: User,
@@ -118,16 +122,16 @@ export async function updateCoordinatorStatus(formData) {
 
     const { data } = parsed;
 
-    const agency = await Agency.findByPk(data.id);
+    const agencyCoordinator = await AgencyCoordinator.findByPk(data.id);
 
-    if (!agency) {
-        throw new Error("Database Error: Agency ID was not found");
+    if (!agencyCoordinator) {
+        throw new Error("Database Error: Agency coordinator ID was not found");
     }
 
-    const agency_head = await User.findByPk(agency.head_id, {
+    const coordinator = await User.findByPk(agencyCoordinator.user_id, {
         include: [
             {
-                where: { role_name: "Agency Administrator" },
+                where: { role_name: "Organizer" },
                 model: Role,
                 attributes: ["id", "role_name"],
                 as: "roles",
@@ -140,22 +144,24 @@ export async function updateCoordinatorStatus(formData) {
         ],
     });
 
-    if (!agency_head) {
+    if (!coordinator) {
         throw new Error("Database Error: Agency Head was Not found");
     }
 
-    const agency_head_role = agency_head?.roles[0].role;
+    const coordinator_role = coordinator?.roles[0].role;
 
     const transaction = await sequelize.transaction();
 
     try {
-        const updatedAgency = await agency.update(data, { transaction });
+        const updatedCoordinator = await agencyCoordinator.update(data, {
+            transaction,
+        });
 
-        const agency_head_status = updatedAgency.status == "activated";
+        const coordinator_status = updatedCoordinator.status == "activated";
 
-        if (updatedAgency) {
-            await agency_head_role.update(
-                { is_active: agency_head_status },
+        if (updatedCoordinator) {
+            await coordinator_role.update(
+                { is_active: coordinator_status },
                 { transaction }
             );
         }
@@ -165,30 +171,31 @@ export async function updateCoordinatorStatus(formData) {
         await logAuditTrail({
             userId: user.id,
             controller: "agencies",
-            action: "UPDATE AGENCY STATUS",
-            details: `User status has been successfully updated. ID#: ${updatedAgency.id}`,
+            action: "UPDATE COORDINATOR STATUS",
+            details: `Coordinator status has been successfully updated. ID#: ${updatedCoordinator.id}`,
         });
 
         const title = {
-            rejected: "Rejection Successful",
-            activated: "Status Update",
-            deactivated: "Status Update",
+            rejected: "Coordinator Rejected",
+            activated: "Coordinator Activated",
+            deactivated: "Coordinator Deactivated",
         };
         const text = {
-            rejected: "Agency application rejected successfully.",
-            activated: "The agency activated successfully.",
-            deactivated: "The agency deactivated successfully.",
+            rejected: "The coordinator was rejected successfully.",
+            activated: "The coordinator was activated successfully.",
+            deactivated: "The coordinator was deactivated successfully.",
         };
 
         return {
             success: true,
-            data: updatedAgency.get({ plain: true }),
+            data: updatedCoordinator.get({ plain: true }),
             title: title[data.status] || "Update!",
             text:
-                text[data.status] || "Agency application updated successfully.",
+                text[data.status] ||
+                "Coordinator application updated successfully.",
         };
     } catch (err) {
-        logErrorToFile(err, "UPDATE AGENCY STATUS");
+        logErrorToFile(err, "UPDATE COORDINATOR STATUS");
         await transaction.rollback();
 
         throw err.message || "Unknown error";
