@@ -17,46 +17,49 @@ export default function AuthSelectRole({ roles }) {
 
     return (
         <>
-            <SessionTimer />
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-                {roles.map((role, i) => (
-                    <motion.div
-                        key={i}
-                        whileHover={{
-                            scale: 1.05,
-                            fontWeight: "bolder",
-                            transition: { duration: 0.3 },
-                        }}
-                        className="min-w-96 rounded-xl shadow-md"
-                    >
-                        <Card className="text-center text-3xl hover:ring-blue-400 hover:ring shadow-xl/30">
-                            <CardHeader>
-                                <CardTitle>
-                                    <span className="flex-items-center justify-center gap-2">
-                                        {React.createElement(
-                                            reactIconsFa[role.icon]
-                                        )}
-                                        {role.role_name.toUpperCase()}
-                                    </span>
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <button
-                                    onClick={async () => {
-                                        await update({
-                                            role_name: role.role_name,
-                                        });
-                                        window.location.replace("/portal");
-                                    }}
-                                    className="btn"
-                                >
-                                    <LogIn />
-                                    Log In
-                                </button>
-                            </CardContent>
-                        </Card>
-                    </motion.div>
-                ))}
+
+            <div className="flex flex-col items-center justify-center px-4 p-5 ">
+                <div className="text-center mb-8">
+                    <h1 className="text-4xl font-bold mb-2">Select Your Role</h1>
+                    <p className="text-gray-500">Choose which role you'd like to log in as</p>
+                    <SessionTimer />
+                </div>
+
+                <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl w-full">
+                    {roles.map((role, i) => (
+                        <motion.div
+                            key={i}
+                            whileHover={{
+                                scale: 1.03,
+                                transition: { duration: 0.3 },
+                            }}
+                            className="w-full"
+                        >
+                            <Card className="hover:shadow-lg border border-gray-200 hover:border-blue-500 transition-all duration-300">
+                                <CardHeader className="text-center">
+                                    <CardTitle className="flex flex-col items-center justify-center gap-3 text-xl font-semibold text-gray-700">
+                                        <span className="text-blue-500 text-4xl">
+                                            {React.createElement(reactIconsFa[role.icon])}
+                                        </span>
+                                        <span>{role.role_name}</span>
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="flex justify-center">
+                                    <button
+                                        onClick={async () => {
+                                            await update({ role_name: role.role_name });
+                                            window.location.replace("/portal");
+                                        }}
+                                        className="btn btn-primary flex items-center gap-2"
+                                    >
+                                        <LogIn className="w-4 h-4" />
+                                        Log In
+                                    </button>
+                                </CardContent>
+                            </Card>
+                        </motion.div>
+                    ))}
+                </div>
             </div>
             <SessionLogger />
         </>

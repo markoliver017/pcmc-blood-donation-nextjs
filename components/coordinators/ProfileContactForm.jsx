@@ -1,36 +1,30 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { Mail } from "lucide-react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import SweetAlert from "@components/ui/SweetAlert";
 import notify from "@components/ui/notify";
 import InlineLabel from "@components/form/InlineLabel";
-
-import { userAccountCredentialSchema } from "@lib/zod/userSchema";
-import { updateUserCredentials } from "@/action/userAction";
 import FieldError from "@components/form/FieldError";
 import clsx from "clsx";
 import { Form, FormField, FormItem } from "@components/ui/form";
 
-import { uploadPicture } from "@/action/uploads";
 import { GrUpdate } from "react-icons/gr";
-import { useRouter } from "next/navigation";
+import { coordinatorSchema } from "@lib/zod/agencySchema";
+import { Phone } from "lucide-react";
 import FormLogger from "@lib/utils/FormLogger";
-import { MdPassword } from "react-icons/md";
+import { updateCoordinator } from "@/action/agencyAction";
 
-export default function UserChangePassword({ userQuery }) {
-    const router = useRouter();
+export default function ProfileContactForm({ coordinator }) {
+
 
     const queryClient = useQueryClient();
 
-    const { data: userData } = userQuery;
-
     const { mutate, isPending } = useMutation({
         mutationFn: async (formData) => {
-            const res = await updateUserCredentials(formData);
+            const res = await updateCoordinator(formData);
             if (!res.success) {
                 throw res; // Throw the error response to trigger onError
             }
@@ -39,8 +33,8 @@ export default function UserChangePassword({ userQuery }) {
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["user"] });
             SweetAlert({
-                title: "User Updated",
-                text: "Your account credentials has been updated successfully .",
+                title: "Contact Information Updated",
+                text: "Your contact details has been updated successfully .",
                 icon: "success",
                 confirmButtonText: "Okay",
             });
@@ -88,51 +82,33 @@ export default function UserChangePassword({ userQuery }) {
 
     const form = useForm({
         mode: "onChange",
-        resolver: zodResolver(userAccountCredentialSchema),
+        resolver: zodResolver(coordinatorSchema),
         defaultValues: {
-            id: "",
-            email: "",
-            password: "",
-            password_confirmation: "",
+            id: coordinator.id,
+            agency_id: coordinator.agency_id,
+            contact_number: coordinator.contact_number
         },
     });
 
     const {
         watch,
         handleSubmit,
-        setValue,
-        reset,
         formState: { errors, isDirty },
     } = form;
 
-    useEffect(() => {
-        if (userData) {
-            reset({
-                id: userData.id,
-                email: userData?.email || "",
-                password: "",
-                password_confirmation: "",
-            });
-        }
-    }, [userData, reset]);
 
-    if (userQuery.isError)
-        return (
-            <div className="alert alert-error text-gray-700">
-                Error: {userQuery.error.message}
-            </div>
-        );
+
 
     const onSubmit = async (formData) => {
         SweetAlert({
             title: "Confirmation",
-            text: "Are you sure you want to update your credentials?",
+            text: "Are you sure you want to update your contact information?",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Confirm",
             cancelButtonText: "Cancel",
             onConfirm: async () => {
-                formData.id = userData.id;
+
                 mutate(formData);
             },
         });
@@ -140,84 +116,33 @@ export default function UserChangePassword({ userQuery }) {
 
     return (
         <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 p-5 shadow border rounded-2xl">
+            <form onSubmit={handleSubmit(onSubmit)} className="p-5 shadow border rounded-2xl">
                 <FormField
                     control={form.control}
-                    name="email"
+                    name="contact_number"
                     render={({ field }) => (
                         <FormItem>
-                            <InlineLabel>Email Address: </InlineLabel>
-                            <label
-                                className={clsx(
-                                    "input w-full",
-                                    errors?.email ? "input-error" : "input-info"
-                                )}
-                            >
-                                <Mail className="h-3" />
-                                <input
-                                    type="email"
-                                    tabIndex={1}
-                                    {...field}
-                                    placeholder="example@email.com"
-                                />
-                            </label>
-
-                            <FieldError field={errors?.email} />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                        <FormItem>
-                            <InlineLabel>Password: </InlineLabel>
-
+                            <InlineLabel>Contact Number: </InlineLabel>
                             <label
                                 className={clsx(
                                     "input w-full mt-1",
-                                    errors?.password
+                                    errors?.contact_number
                                         ? "input-error"
                                         : "input-info"
                                 )}
                             >
-                                <MdPassword className="h-3" />
+                                <Phone className="h-3" />
                                 <input
-                                    type="password"
+                                    type="text"
                                     tabIndex={2}
-                                    placeholder="Enter your password"
                                     {...field}
+                                    placeholder="+63#########"
                                 />
                             </label>
-                            <FieldError field={errors?.password} />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="password_confirmation"
-                    render={({ field }) => (
-                        <FormItem>
-                            <InlineLabel>Confirm Password: </InlineLabel>
 
-                            <label
-                                className={clsx(
-                                    "input w-full mt-1",
-                                    errors?.password_confirmation
-                                        ? "input-error"
-                                        : "input-info"
-                                )}
-                            >
-                                <MdPassword className="h-3" />
-                                <input
-                                    type="password"
-                                    tabIndex={3}
-                                    placeholder="Re-type your password"
-                                    {...field}
-                                />
-                            </label>
-                            <FieldError field={errors?.password_confirmation} />
+                            <FieldError
+                                field={errors?.contact_number}
+                            />
                         </FormItem>
                     )}
                 />
@@ -242,7 +167,7 @@ export default function UserChangePassword({ userQuery }) {
                     </button>
                 </div>
             </form>
-            {/* <FormLogger watch={watch} errors={errors} /> */}
+            <FormLogger watch={watch} errors={errors} />
         </Form>
     );
 }

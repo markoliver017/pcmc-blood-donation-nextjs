@@ -42,52 +42,29 @@ export default function LoginForm() {
         const { email, password } = data;
         const res = await signIn("credentials", {
             email,
+            debugEmail: email,
             password,
             redirect: false,
             callbackUrl: "/portal", // redirect after login
         });
 
-        setIsLoading(false);
-        console.log("res>>>>>>>>>", res);
+
         if (res.ok && res.error == undefined) {
             toast.success("Login successful!", {
                 message: "Login successful!",
                 position: "top-right",
             });
 
-            router.push(res.url);
+            // router.push(res.url);
+            setTimeout(() => window.location.href = res.url, 500)
         } else {
+            setIsLoading(false);
             setError("password", {
                 type: "manual",
                 message: "Invalid email or password!",
             });
         }
 
-        // setTimeout(() => {
-        //     // Perform login logic here
-        //     if (
-        //         data.email === credentials.email &&
-        //         data.password === credentials.password
-        //     ) {
-        //         toast.success("Login successful!", {
-        //             // message: "Login successful!",
-        //             position: "bottom-left",
-        //         });
-        //         // Redirect to the dashboard or perform any other action
-        //         redirect("/admin");
-        //     } else {
-        //         setError("password", {
-        //             type: "manual",
-        //             message: "Invalid email or password!",
-        //         });
-
-        //         toast.error("Invalid email or password!", {
-        //             position: "bottom-left",
-        //         });
-        //     }
-
-        //     setIsLoading(false);
-        // }, 2000);
     };
 
     return (
@@ -130,7 +107,7 @@ export default function LoginForm() {
                                 },
                             })}
                             placeholder="mail@site.com"
-                            // required
+                        // required
                         />
                     </label>
                     <p className="text-red-500 text-sm">
@@ -166,7 +143,9 @@ export default function LoginForm() {
                     </p>
                 </div>
 
-                <button className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300">
+                <button
+                    disabled={isLoading?.credentials}
+                    className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300">
                     {isLoading?.credentials ? (
                         <>
                             <span className="loading loading-bars loading-xs"></span>

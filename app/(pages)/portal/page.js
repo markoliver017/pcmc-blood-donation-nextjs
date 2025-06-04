@@ -19,4 +19,7 @@ export default async function PortalPage() {
     }
 
     redirect(currentLoggedInRole?.url || "/portal?error=RoleUrlNotFound");
+    return <pre>
+        {JSON.stringify(session, null, 2)}
+    </pre>
 }

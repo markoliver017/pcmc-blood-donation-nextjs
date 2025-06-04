@@ -8,13 +8,13 @@ export async function up(queryInterface) {
     const users = [];
     const saltRounds = 10;
 
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 3; i++) {
         // Generate 50 admin records
         const firstName = faker.person.firstName();
         const lastName = faker.person.lastName();
         const email = faker.internet.email(firstName);
         // const password = faker.internet.password(12); // At least 12 characters
-        const password = "password"; // At least 12 characters
+        const password = "User@1234"; // At least 12 characters
         const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
         users.push({

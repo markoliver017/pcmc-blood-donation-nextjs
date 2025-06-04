@@ -7,7 +7,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
-import { Building, Cog, User2Icon } from "lucide-react";
+import { Building, Cog, Phone, User2Icon } from "lucide-react";
 
 // import UserProfileForm from "./UserProfileForm";
 // import UserChangePassword from "./UserChangePassword";
@@ -21,6 +21,7 @@ import SessionLogger from "@lib/utils/SessionLogger";
 import Skeleton_user from "@components/ui/Skeleton_user";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import UpdateAgencyProfile from "@components/profile/UpdateAgencyProfile";
+import ProfileContactForm from "@components/coordinators/ProfileContactForm";
 
 export default function OrganizerProfile({ user }) {
     // const { data, status } = useSession();
@@ -36,7 +37,15 @@ export default function OrganizerProfile({ user }) {
 
     if (isLoading === "loading") return <Skeleton_user />;
 
-    const isAgencyHead = user?.role_name == "Agency Administrator" || false;
+    const agencyRoles = ["Agency Administrator", "Organizer", "Donor"];
+    const isHavingAgency = agencyRoles.includes(user?.role_name) || false;
+
+    let agency = userData?.headedAgency
+    let isCoordinator = false;
+    if (user?.role_name == "Organizer") {
+        isCoordinator = true;
+        agency = userData?.coordinator?.agency;
+    }
 
     // return <SessionLogger />;
     return (
@@ -56,6 +65,17 @@ export default function OrganizerProfile({ user }) {
                                 User Profile
                             </span>
                         </TabsTrigger>
+                        {isCoordinator && (
+                            <TabsTrigger
+                                value="coordinator-contact"
+                                title="Contact Details"
+                            >
+                                <Phone />
+                                <span className="hidden md:inline-block">
+                                    Contact Details
+                                </span>
+                            </TabsTrigger>
+                        )}
                         {user.provider == "credentials" && (
                             <TabsTrigger
                                 value="user-credentials"
@@ -67,7 +87,7 @@ export default function OrganizerProfile({ user }) {
                                 </span>
                             </TabsTrigger>
                         )}
-                        {isAgencyHead && (
+                        {isHavingAgency && (
                             <TabsTrigger
                                 value="agency-details"
                                 title="Agency Details"
@@ -78,20 +98,30 @@ export default function OrganizerProfile({ user }) {
                                 </span>
                             </TabsTrigger>
                         )}
+
                     </TabsList>
                     <TabsContent className="p-2" value="user-profile">
                         <UserProfileForm userQuery={userQuery} />
+                    </TabsContent>
+                    <TabsContent value="coordinator-contact">
+                        <ProfileContactForm coordinator={{
+                            id: userData?.coordinator?.id,
+                            agency_id: userData?.coordinator?.agency?.id,
+                            contact_number: userData?.coordinator?.contact_number || ""
+                        }}
+                        />
                     </TabsContent>
                     <TabsContent value="user-credentials">
                         <UserChangePassword userQuery={userQuery} />
                     </TabsContent>
                     <TabsContent value="agency-details">
-                        <UpdateAgencyProfile agency={userData?.headedAgency} />
+                        <UpdateAgencyProfile agency={agency} />
                     </TabsContent>
                 </Tabs>
                 <div>
                     <h1>Agency Data</h1>
                     <pre>{JSON.stringify(userData, null, 3)}</pre>
+                    <SessionLogger />
                 </div>
             </CardContent>
         </Card>

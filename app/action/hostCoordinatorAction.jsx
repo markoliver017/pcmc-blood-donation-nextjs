@@ -145,6 +145,11 @@ export async function getOrganizerProfile() {
                     model: Agency,
                     as: "headedAgency",
                     required: false,
+                    include: {
+                        model: User,
+                        as: "head",
+                        attributes: ["id", "name", "email", "image"],
+                    },
                 },
                 {
                     model: AgencyCoordinator,
@@ -164,7 +169,7 @@ export async function getOrganizerProfile() {
                         include: {
                             model: User,
                             as: "head",
-                            attributes: ["id", "name", "email"],
+                            attributes: ["id", "name", "email", "image"],
                         },
                     },
                 },

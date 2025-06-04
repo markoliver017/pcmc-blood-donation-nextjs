@@ -205,6 +205,10 @@ export default function UpdateAgencyProfile({ agency }) {
         agency?.city_municipality,
     ]);
 
+    if (!agency) {
+        return <div className='text-center alert alert-error'>Agency not found.</div>
+    }
+
     return (
         <Form {...form}>
             <form
@@ -253,6 +257,11 @@ export default function UpdateAgencyProfile({ agency }) {
                             );
                         }}
                     />
+                    <div className="shadow p-3">
+                        <label className="font-semibold">Agency Administrator:</label>
+                        <h3>{agency.head.name}</h3>
+                        <h4 className="text-blue-700 italic">{agency.head.email}</h4>
+                    </div>
                 </div>
 
                 <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">

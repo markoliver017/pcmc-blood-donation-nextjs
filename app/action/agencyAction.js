@@ -12,11 +12,12 @@ import {
     agencySchema,
     agencyStatusSchema,
     coordinatorRegistrationWithUser,
+    coordinatorSchema,
 } from "@lib/zod/agencySchema";
 import { Op } from "sequelize";
 
 export async function fetchAgencies() {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
     try {
         const agencies = await Agency.findAll({
             // attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -42,7 +43,7 @@ export async function fetchAgencies() {
 }
 
 export async function fetchVerifiedAgencies() {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
     try {
         const agencies = await Agency.findAll({
             where: {
@@ -234,7 +235,7 @@ export async function fetchAgencyByName(agencyName) {
 
 /* For admin registration */
 export async function createAgency(formData) {
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // await new Promise((resolve) => setTimeout(resolve, 500));
     const session = await auth();
     if (!session) throw "You are not authorized to access this request.";
 
@@ -330,7 +331,7 @@ export async function createAgency(formData) {
 
 /* For client user registration */
 export async function storeAgency(formData) {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    // await new Promise((resolve) => setTimeout(resolve, 5000));
     console.log("formData received on server", formData);
     const parsed = agencyRegistrationWithUser.safeParse(formData);
 
@@ -401,7 +402,7 @@ export async function storeAgency(formData) {
 }
 
 export async function updateAgency(formData) {
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // await new Promise((resolve) => setTimeout(resolve, 500));
     console.log("formData received on server", formData);
     const session = await auth();
     if (!session) throw "You are not authorized to access this request.";
@@ -557,7 +558,7 @@ export async function updateAgencyStatus(formData) {
 }
 
 export async function storeCoordinator(formData) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log("storeCoordinator formData received on server", formData);
     const parsed = coordinatorRegistrationWithUser.safeParse(formData);
 
@@ -624,6 +625,59 @@ export async function storeCoordinator(formData) {
         return { success: true, data: newCoordinator.get({ plain: true }) };
     } catch (err) {
         logErrorToFile(err, "storeCoordinator");
+        await transaction.rollback();
+
+        throw err.message || "Unknown error";
+    }
+}
+
+export async function updateCoordinator(formData) {
+
+    console.log("updateCoordinator formData received on server", formData);
+    const parsed = coordinatorSchema.safeParse(formData);
+
+    if (!parsed.success) {
+        const fieldErrors = parsed.error.flatten().fieldErrors;
+        return {
+            success: false,
+            type: "validation",
+            message: "Please check your input and try again.",
+            errorObj: parsed.error.flatten().fieldErrors,
+            errorArr: Object.values(fieldErrors).flat(),
+        };
+    }
+
+    const { data } = parsed;
+
+    console.log("updateCoordinator parsed on server", data);
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        const coordinator = await AgencyCoordinator.findByPk(data.id, {
+            transaction,
+        });
+
+        if (!coordinator) {
+            throw "Database Error: Coordinator ID Not found";
+        }
+
+        const updatedCoordinator = await coordinator.update(data, {
+            transaction,
+        });
+
+        await transaction.commit();
+
+        await logAuditTrail({
+            userId: updatedCoordinator.user_id,
+            controller: "agencies",
+            action: "updateCoordinator",
+            details: `The coordinator data has been successfully updated. Coordinator ID#: ${updatedCoordinator.id}.`,
+        });
+
+        return { success: true, data: updatedCoordinator.get({ plain: true }) };
+    } catch (err) {
+        logErrorToFile(err, "updateCoordinator");
         await transaction.rollback();
 
         throw err.message || "Unknown error";
