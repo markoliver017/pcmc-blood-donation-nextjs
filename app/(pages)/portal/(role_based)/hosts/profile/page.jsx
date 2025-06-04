@@ -7,13 +7,16 @@ import { getUser } from "@/action/userAction";
 import { auth } from "@lib/auth";
 import { fetchRoles } from "@/action/roleAction";
 import UserProfileTabs from "@components/profile/UserProfileTabs";
+import WrapperHeadMain from "@components/layout/WrapperHeadMain";
+import { User } from "lucide-react";
+import OrganizerProfile from "@components/organizers/OrganizerProfile";
 
 export default async function Page() {
     const session = await auth();
 
     const { user } = session;
 
-    console.log("Authenticated user:", user);
+    console.log("Organizer session user:", user);
 
     if (!user) throw "No Authenticated users found!";
 
@@ -43,8 +46,19 @@ export default async function Page() {
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <div className="w-full h-full md:w-8/10 lg:w-3/4 mx-auto">
-                <UserProfileTabs userId={user.id} provider={user?.provider} />
+            <WrapperHeadMain
+                icon={<User />}
+                pageTitle="Profile"
+                breadcrumbs={[
+                    {
+                        path: "/portal/admin/profile",
+                        icon: <User className="w-4" />,
+                        title: "Account Information",
+                    },
+                ]}
+            />
+            <div className="w-full h-full md:w-8/10 lg:w-3/4 mx-auto p-1 md:p-5">
+                <OrganizerProfile user={user} />
             </div>
         </HydrationBoundary>
     );

@@ -29,9 +29,9 @@ export default function UserProfileTabs({ userId, provider }) {
     return (
         <Card className="md:p-5 bg-gray-100">
             <CardHeader className="text-2xl font-bold">
-                <CardTitle>Update User</CardTitle>
+                <CardTitle>Account Information</CardTitle>
                 <CardDescription>
-                    <div>Update User details.</div>
+                    <div>Update your account.</div>
                 </CardDescription>
             </CardHeader>
             <CardContent id="form-modal">

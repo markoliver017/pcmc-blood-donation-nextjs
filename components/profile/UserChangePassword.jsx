@@ -163,7 +163,7 @@ export default function UserChangePassword({ userQuery }) {
                     name="email"
                     render={({ field }) => (
                         <FormItem>
-                            <InlineLabel>Email Address: *</InlineLabel>
+                            <InlineLabel>Email Address: </InlineLabel>
                             <label
                                 className={clsx(
                                     "input w-full",
@@ -189,7 +189,7 @@ export default function UserChangePassword({ userQuery }) {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <InlineLabel>Password: *</InlineLabel>
+                            <InlineLabel>Password: </InlineLabel>
 
                             <label
                                 className={clsx(
@@ -216,7 +216,7 @@ export default function UserChangePassword({ userQuery }) {
                     name="password_confirmation"
                     render={({ field }) => (
                         <FormItem>
-                            <InlineLabel>Confirm Password: *</InlineLabel>
+                            <InlineLabel>Confirm Password: </InlineLabel>
 
                             <label
                                 className={clsx(
@@ -259,7 +259,7 @@ export default function UserChangePassword({ userQuery }) {
                     </button>
                 </div>
             </form>
-            <FormLogger watch={watch} errors={errors} />
+            {/* <FormLogger watch={watch} errors={errors} /> */}
         </Form>
     );
 }

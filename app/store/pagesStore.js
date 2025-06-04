@@ -122,7 +122,7 @@ export const usePagesStore = create((set) => ({
                 "Agency Administrator",
                 "Organizer",
             ],
-            is_role_based: false,
+            is_role_based: true,
             has_child: false,
         },
         {

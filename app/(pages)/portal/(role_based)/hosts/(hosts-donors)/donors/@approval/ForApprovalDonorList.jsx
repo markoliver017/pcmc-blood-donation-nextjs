@@ -12,14 +12,14 @@ import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 
 import { FileClock } from "lucide-react";
-import { getDonorsByStatus } from "@/action/donorAction";
 import { calculateAge } from "@lib/utils/string.utils";
 import ApprovalRejectComponent from "@components/donors/ApprovalRejectComponent";
+import { getHostDonorsByStatus } from "@/action/hostDonorAction";
 
 export default function ForApprovalDonorList() {
     const { data: donors, isLoading: donorsIsFetching } = useQuery({
         queryKey: ["donors", "for approval"],
-        queryFn: async () => getDonorsByStatus("for approval"),
+        queryFn: async () => getHostDonorsByStatus("for approval"),
         staleTime: 0,
         cacheTime: 0,
     });

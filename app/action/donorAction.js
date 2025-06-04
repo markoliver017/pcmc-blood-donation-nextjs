@@ -127,7 +127,7 @@ export async function getDonorsByStatus(status) {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     try {
-        const users = await Donor.findAll({
+        const donors = await Donor.findAll({
             where: { status },
             include: [
                 {
@@ -145,7 +145,7 @@ export async function getDonorsByStatus(status) {
             ],
         });
 
-        return formatSeqObj(users);
+        return formatSeqObj(donors);
     } catch (err) {
         logErrorToFile(err, "getCoordinatorsByStatus ERROR");
         throw {

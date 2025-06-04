@@ -7,6 +7,8 @@ import { getUser } from "@/action/userAction";
 import { auth } from "@lib/auth";
 import { fetchRoles } from "@/action/roleAction";
 import UserProfileTabs from "@components/profile/UserProfileTabs";
+import WrapperHeadMain from "@components/layout/WrapperHeadMain";
+import { User } from "lucide-react";
 
 export default async function Page() {
     const session = await auth();
@@ -43,7 +45,18 @@ export default async function Page() {
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <div className="w-full h-full md:w-8/10 lg:w-3/4 mx-auto">
+            <WrapperHeadMain
+                icon={<User />}
+                pageTitle="Profile"
+                breadcrumbs={[
+                    {
+                        path: "/portal/admin/profile",
+                        icon: <User className="w-4" />,
+                        title: "Account Information",
+                    },
+                ]}
+            />
+            <div className="w-full h-full md:w-8/10 lg:w-3/4 mx-auto p-1 md:p-5">
                 <UserProfileTabs userId={user.id} provider={user?.provider} />
             </div>
         </HydrationBoundary>

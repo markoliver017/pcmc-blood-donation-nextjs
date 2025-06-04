@@ -3,15 +3,15 @@ import { Agency, Donor } from "@lib/models";
 import { redirect } from "next/navigation";
 import React from "react";
 import ErrorPage from "./ErrorPage";
-import InterceptModal from "@components/layout/InterceptModal";
 import ErrorModal from "@components/layout/ErrorModal";
 
-export default async function Layout({ children }) {
+export default async function PortalLayout({ children }) {
     const session = await auth();
 
     if (!session || !session?.user?.roles?.length) redirect("/");
 
     const { roles, role_name: session_role } = session.user;
+
     let currentLoggedInRole = roles.find(
         (role) => role.role_name == session_role
     );
@@ -30,7 +30,7 @@ export default async function Layout({ children }) {
                 },
             });
             if (!agency) {
-                redirect("/register/organizers");
+                redirect("/organizers/register");
                 // return (
                 //     <ErrorPage>
                 //         Hi, {session.user.name}, <br />
@@ -91,7 +91,7 @@ export default async function Layout({ children }) {
                 attributes: ["id"],
             });
             if (!donor) {
-                redirect("/register/donors");
+                redirect("/organizers");
             }
         }
     }

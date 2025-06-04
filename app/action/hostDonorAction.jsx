@@ -1,12 +1,11 @@
 "use server";
-import { logAuditTrail } from "@lib/audit_trails.utils";
 import { auth } from "@lib/auth";
 import { logErrorToFile } from "@lib/logger.server";
-import { Agency, AgencyCoordinator, User } from "@lib/models";
+import { Agency, AgencyCoordinator, BloodType, Donor, User } from "@lib/models";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import { Op } from "sequelize";
 
-export async function getVerifiedCoordinatorsByAgency() {
+export async function getVerifiedDonorsByAgency() {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const session = await auth();
     if (!session) throw "You are not authorized to access this page.";
@@ -36,7 +35,7 @@ export async function getVerifiedCoordinatorsByAgency() {
             throw "Agency not found or not activated.";
         }
 
-        const coordinators = await AgencyCoordinator.findAll({
+        const donors = await Donor.findAll({
             where: {
                 agency_id: agency.id,
                 status: {
@@ -52,12 +51,16 @@ export async function getVerifiedCoordinatorsByAgency() {
                     model: Agency,
                     as: "agency",
                 },
+                {
+                    model: BloodType,
+                    as: "blood_type",
+                },
             ],
         });
 
-        return formatSeqObj(coordinators);
+        return formatSeqObj(donors);
     } catch (err) {
-        logErrorToFile(err, "getVerifiedCoordinators ERROR");
+        logErrorToFile(err, "hostDonorAction ERROR");
         throw {
             success: false,
             type: "server",
@@ -67,7 +70,7 @@ export async function getVerifiedCoordinatorsByAgency() {
 }
 
 /* for approval for head agency */
-export async function getHostCoordinatorsByStatus(status) {
+export async function getHostDonorsByStatus(status) {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const session = await auth();
     if (!session) throw "You are not authorized to access this page.";
@@ -97,7 +100,7 @@ export async function getHostCoordinatorsByStatus(status) {
             throw "Agency not found or not activated.";
         }
 
-        const coordinators = await AgencyCoordinator.findAll({
+        const donors = await Donor.findAll({
             where: { status, agency_id: agency.id },
             include: [
                 {
@@ -108,86 +111,16 @@ export async function getHostCoordinatorsByStatus(status) {
                     model: Agency,
                     as: "agency",
                 },
-            ],
-        });
-
-        return formatSeqObj(coordinators);
-    } catch (err) {
-        logErrorToFile(err, "getHostCoordinatorsByStatus ERROR");
-        throw {
-            success: false,
-            type: "server",
-            message: err.message || "Unknown error",
-        };
-    }
-}
-
-export async function getOrganizerProfile() {
-    const session = await auth();
-    if (!session) throw "You are not authorized to access this page.";
-
-    const { user } = session;
-
-    try {
-        /* For Agency Administrator */
-        const profile = await User.findByPk(user?.id, {
-            attributes: {
-                exclude: [
-                    "password",
-                    "createdAt",
-                    "updatedAt",
-                    "updated_by",
-                    "email_verified",
-                ],
-            },
-            include: [
                 {
-                    model: Agency,
-                    as: "headedAgency",
-                    required: false,
-                },
-                {
-                    model: AgencyCoordinator,
-                    as: "coordinator",
-                    attributes: [
-                        "id",
-                        "status",
-                        "contact_number",
-                        "comments",
-                        "remarks",
-                    ],
-                    where: { status: "activated" },
-                    required: false,
-                    include: {
-                        model: Agency,
-                        as: "agency",
-                        include: {
-                            model: User,
-                            as: "head",
-                            attributes: ["id", "name", "email"],
-                        },
-                    },
+                    model: BloodType,
+                    as: "blood_type",
                 },
             ],
         });
 
-        /* For Organizer */
-        // if (user?.role_name == "Organizer") {
-        //     profile = await AgencyCoordinator.findOne({
-        //         where: {
-        //             user_id: user.id,
-        //             status: "activated",
-        //         },
-        //     });
-        // }
-
-        if (!profile) {
-            throw "User not found or not activated.";
-        }
-
-        return formatSeqObj(profile);
+        return formatSeqObj(donors);
     } catch (err) {
-        logErrorToFile(err, "getHostCoordinatorsByStatus ERROR");
+        logErrorToFile(err, "getHostDonorsByStatus ERROR");
         throw {
             success: false,
             type: "server",

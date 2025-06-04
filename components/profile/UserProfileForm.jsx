@@ -255,7 +255,7 @@ export default function UserProfileForm({ userQuery }) {
                         name="first_name"
                         render={({ field }) => (
                             <FormItem>
-                                <InlineLabel>First Name: *</InlineLabel>
+                                <InlineLabel>First Name: </InlineLabel>
 
                                 <label
                                     className={clsx(
@@ -281,7 +281,9 @@ export default function UserProfileForm({ userQuery }) {
                         name="middle_name"
                         render={({ field }) => (
                             <FormItem>
-                                <InlineLabel>Middle Name: </InlineLabel>
+                                <InlineLabel required={false}>
+                                    Middle Name:{" "}
+                                </InlineLabel>
 
                                 <label
                                     className={clsx(
@@ -307,7 +309,7 @@ export default function UserProfileForm({ userQuery }) {
                         name="last_name"
                         render={({ field }) => (
                             <FormItem>
-                                <InlineLabel>Last Name: *</InlineLabel>
+                                <InlineLabel>Last Name: </InlineLabel>
 
                                 <label
                                     className={clsx(
@@ -333,7 +335,7 @@ export default function UserProfileForm({ userQuery }) {
                         name="gender"
                         render={({ field }) => (
                             <FormItem>
-                                <InlineLabel>Gender: *</InlineLabel>
+                                <InlineLabel>Sex: </InlineLabel>
 
                                 <label
                                     className={clsx(
@@ -378,7 +380,7 @@ export default function UserProfileForm({ userQuery }) {
                     </div>
                 </Card>
             </form>
-            <FormLogger watch={watch} errors={errors} />
+            {/* <FormLogger watch={watch} errors={errors} /> */}
         </Form>
     );
 }

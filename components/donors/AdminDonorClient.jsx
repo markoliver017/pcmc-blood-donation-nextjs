@@ -27,14 +27,14 @@ export default function AdminDonorClient({ children, approval }) {
                     icon={<Building />}
                     pageTitle={
                         currentTab == "all"
-                            ? "List of Coordinators"
-                            : "Coordinators for Approval"
+                            ? "List of Donors"
+                            : "Donors for Approval"
                     }
                     breadcrumbs={[
                         {
-                            path: "/portal/admin/coordinators?tab=for-approval",
+                            path: "/portal/admin/donors",
                             icon: <Users2 className="w-4" />,
-                            title: "Manage Coordinators",
+                            title: "Manage Donors",
                         },
                     ]}
                 />
