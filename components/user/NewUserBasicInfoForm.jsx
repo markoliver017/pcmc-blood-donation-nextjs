@@ -1,13 +1,7 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@components/ui/card";
+import { CardContent } from "@components/ui/card";
 
 import { Mail, Text } from "lucide-react";
 import notify from "@components/ui/notify";
@@ -32,7 +26,6 @@ import { MdNextPlan, MdPassword } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { GiCancel } from "react-icons/gi";
 import { useFormContext } from "react-hook-form";
-import Preloader3 from "@components/layout/Preloader3";
 import FormCardComponent from "@components/form/FormCardComponent";
 
 export default function NewUserBasicInfoForm({
@@ -71,135 +64,6 @@ export default function NewUserBasicInfoForm({
             );
         }
     };
-
-    // const form = useForm({
-    //     mode: "onChange",
-    //     resolver: zodResolver(userSchema),
-    //     defaultValues: {
-    //         profile_picture: null, // or some default value
-    //         role_ids: [user_role?.id],
-    //         email: "mark@email.com",
-    //         first_name: "Mark",
-    //         last_name: "Roman",
-    //         gender: "male",
-    //         isChangePassword: true,
-    //         password: "User@1234",
-    //         password_confirmation: "User@1234",
-    //     },
-    // });
-
-    // const {
-    //     watch,
-    //     control,
-    //     handleSubmit,
-    //     setValue,
-    //     reset,
-    //     resetField,
-    //     formState: { errors, isDirty },
-    // } = form;
-
-    // const email = watch("email");
-    // const password = watch("password");
-
-    // const queryClient = useQueryClient();
-    // const { data, mutate, error, isError, isPending } = useMutation({
-    //     mutationFn: async (formData) => {
-    //         const res = await createUser(formData);
-    //         if (!res.success) {
-    //             throw res; // Throw the error response to trigger onError
-    //         }
-    //         return res.data;
-    //     },
-    //     onSuccess: () => {
-    //         /** note: the return data will be accessible in the debugger
-    //          *so no need to console the onSuccess(data) here **/
-    //         // Invalidate the posts query to refetch the updated list
-    //         queryClient.invalidateQueries({ queryKey: ["users"] });
-    //         SweetAlert({
-    //             title: "New Account",
-    //             text: `You've successfully created a new ${role.role_name} account`,
-    //             icon: "success",
-    //             showCancelButton: true,
-    //             cancelButtonText: "Cancel",
-    //             confirmButtonText: "Proceed to next step",
-    //             element_id: "user_form",
-    //             onCancel: () => router.push("/"),
-    //             onConfirm: async () => {
-    //                 const res = await signIn("credentials", {
-    //                     email,
-    //                     password,
-    //                     redirect: false,
-    //                 });
-    //                 if (res.ok) router.refresh();
-    //                 reset();
-    //             },
-    //         });
-    //     },
-    //     onError: (error) => {
-    //         // Handle validation errors
-    //         if (error?.type === "validation" && error?.errorArr.length) {
-    //             let detailContent = "";
-    //             const { errorArr: details, message } = error;
-
-    //             detailContent = (
-    //                 <ul className="list-disc list-inside">
-    //                     {details.map((err, index) => (
-    //                         <li key={index}>{err}</li>
-    //                     ))}
-    //                 </ul>
-    //             );
-    //             notify({
-    //                 error: true,
-    //                 message: (
-    //                     <div className="collapse">
-    //                         <input type="checkbox" />
-    //                         <div className="collapse-title font-semibold">
-    //                             {message}
-    //                             <br />
-    //                             <small className="link link-warning">
-    //                                 See details
-    //                             </small>
-    //                         </div>
-    //                         <div className="collapse-content text-sm">
-    //                             {detailContent}
-    //                         </div>
-    //                     </div>
-    //                 ),
-    //             });
-    //         } else {
-    //             // Handle server errors
-    //             notify({
-    //                 error: true,
-    //                 message: error?.message,
-    //             });
-    //         }
-    //     },
-    // });
-
-    // const onSubmit = async (data) => {
-    //     SweetAlert({
-    //         title: "Confirmation",
-    //         text: "Please ensure you have noted your account credentials. Would you like to proceed?",
-    //         icon: "question",
-    //         showCancelButton: true,
-    //         confirmButtonText: "Confirm",
-    //         cancelButtonText: "Cancel",
-    //         element_id: "user_form",
-    //         onConfirm: async () => {
-    //             const fileUrl = watch("image");
-    //             if (data?.profile_picture && !fileUrl) {
-    //                 const result = await uploadPicture(data.profile_picture);
-    //                 if (result?.success) {
-    //                     data.image = result.file_data?.url || null;
-    //                     setValue("image", result.file_data?.url);
-    //                 }
-    //                 console.log("Upload result:", result);
-    //             }
-
-    //             mutate(data);
-    //         },
-    //     });
-    // };
 
     const uploaded_avatar = watch("profile_picture");
     console.log("uploaded_avatar", uploaded_avatar);

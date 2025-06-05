@@ -13,15 +13,23 @@ import React from "react";
 export default function AuthSelectRole({ roles }) {
     const { status, update } = useSession();
 
-    if (status === "loading") return <Skeleton />;
+    if (status === "loading")
+        return (
+            <div className="p-5">
+                <Skeleton />
+            </div>
+        );
 
     return (
         <>
-
             <div className="flex flex-col items-center justify-center px-4 p-5 ">
                 <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold mb-2">Select Your Role</h1>
-                    <p className="text-gray-500">Choose which role you'd like to log in as</p>
+                    <h1 className="text-4xl font-bold mb-2">
+                        Select Your Role
+                    </h1>
+                    <p className="text-gray-500">
+                        Choose which role you'd like to log in as
+                    </p>
                     <SessionTimer />
                 </div>
 
@@ -39,7 +47,9 @@ export default function AuthSelectRole({ roles }) {
                                 <CardHeader className="text-center">
                                     <CardTitle className="flex flex-col items-center justify-center gap-3 text-xl font-semibold text-gray-700">
                                         <span className="text-blue-500 text-4xl">
-                                            {React.createElement(reactIconsFa[role.icon])}
+                                            {React.createElement(
+                                                reactIconsFa[role.icon]
+                                            )}
                                         </span>
                                         <span>{role.role_name}</span>
                                     </CardTitle>
@@ -47,7 +57,9 @@ export default function AuthSelectRole({ roles }) {
                                 <CardContent className="flex justify-center">
                                     <button
                                         onClick={async () => {
-                                            await update({ role_name: role.role_name });
+                                            await update({
+                                                role_name: role.role_name,
+                                            });
                                             window.location.replace("/portal");
                                         }}
                                         className="btn btn-primary flex items-center gap-2"

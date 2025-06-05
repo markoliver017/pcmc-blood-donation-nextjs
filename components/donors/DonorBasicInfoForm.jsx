@@ -1,11 +1,9 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 
-import {
-    CardContent,
-} from "@components/ui/card";
+import { CardContent } from "@components/ui/card";
 
-import { Calendar, File, Phone, Text, Users } from "lucide-react";
+import { Calendar, File, Flag, Phone, Text, Users } from "lucide-react";
 import notify from "@components/ui/notify";
 import InlineLabel from "@components/form/InlineLabel";
 // import { useTheme } from "next-themes";
@@ -82,14 +80,13 @@ export default function DonorBasicInfoForm({ details, onNext }) {
     };
 
     const uploaded_avatar = watch("file");
-    console.log("uploaded_avatar", uploaded_avatar);
     const avatar =
         !errors?.file && uploaded_avatar
             ? URL.createObjectURL(uploaded_avatar)
             : "/default-govt-issued-id.png";
 
     useEffect(() => {
-        if (watch("image")) setValue("image", null);
+        if (watch("id_url")) setValue("id_url", null);
     }, [uploaded_avatar]);
 
     if (nationalities_loading) return <Skeleton_form />;
@@ -166,9 +163,7 @@ export default function DonorBasicInfoForm({ details, onNext }) {
                                         tabIndex={2}
                                         {...field}
                                     >
-                                        <option value="">
-                                            Select here
-                                        </option>
+                                        <option value="">Select here</option>
                                         {[
                                             "single",
                                             "married",
@@ -201,22 +196,20 @@ export default function DonorBasicInfoForm({ details, onNext }) {
                                             : "input-info"
                                     )}
                                 >
-                                    <Users className="h-3" />
+                                    <Flag className="h-3" />
                                     <select
                                         className="w-full dark:bg-inherit"
                                         tabIndex={3}
                                         {...field}
                                     >
-                                        <option value="">
-                                            Select here
-                                        </option>
+                                        <option value="">Select here</option>
                                         {nationalities
                                             .map((country) => {
                                                 const name =
                                                     country.name?.common;
                                                 const nationality =
-                                                    country.demonyms?.eng
-                                                        ?.m || name;
+                                                    country.demonyms?.eng?.m ||
+                                                    name;
                                                 return (
                                                     <option
                                                         key={name}
@@ -260,9 +253,7 @@ export default function DonorBasicInfoForm({ details, onNext }) {
                                     />
                                 </label>
 
-                                <FieldError
-                                    field={errors?.contact_number}
-                                />
+                                <FieldError field={errors?.contact_number} />
                             </FormItem>
                         )}
                     />
@@ -271,7 +262,9 @@ export default function DonorBasicInfoForm({ details, onNext }) {
                         name="occupation"
                         render={({ field }) => (
                             <FormItem>
-                                <InlineLabel required={false} optional={true}>Occupation: </InlineLabel>
+                                <InlineLabel required={false} optional={true}>
+                                    Occupation:{" "}
+                                </InlineLabel>
 
                                 <label
                                     className={clsx(
@@ -296,11 +289,11 @@ export default function DonorBasicInfoForm({ details, onNext }) {
                     <FormField
                         control={control}
                         name="file"
-                        render={({
-                            field: { onChange, value, ...field },
-                        }) => (
+                        render={({ field: { onChange, value, ...field } }) => (
                             <FormItem>
-                                <InlineLabel required={false} optional={true}>Govt issued ID: </InlineLabel>
+                                <InlineLabel required={false} optional={true}>
+                                    Govt issued ID:{" "}
+                                </InlineLabel>
                                 <FormControl ref={fileInputRef}>
                                     <input
                                         type="file"
@@ -329,9 +322,7 @@ export default function DonorBasicInfoForm({ details, onNext }) {
                             tabIndex={-1}
                         >
                             <IoArrowUndoCircle />{" "}
-                            <span className="hidden sm:inline-block">
-                                Back
-                            </span>
+                            <span className="hidden sm:inline-block">Back</span>
                         </button>
                         <button
                             type="button"
@@ -340,15 +331,11 @@ export default function DonorBasicInfoForm({ details, onNext }) {
                             tabIndex="6"
                         >
                             <MdNextPlan />{" "}
-                            <span className="hidden sm:inline-block">
-                                Next
-                            </span>
+                            <span className="hidden sm:inline-block">Next</span>
                         </button>
                     </div>
                 </div>
             </CardContent>
         </FormCardComponent>
-
-
     );
 }

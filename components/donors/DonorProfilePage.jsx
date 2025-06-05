@@ -7,7 +7,16 @@ import {
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
-import { Building, Cog, Phone, User2Icon } from "lucide-react";
+import {
+    Building,
+    Cog,
+    Droplet,
+    Phone,
+    User2Icon,
+    UserCheck,
+    UserCircle,
+    UserIcon,
+} from "lucide-react";
 
 // import UserProfileForm from "./UserProfileForm";
 // import UserChangePassword from "./UserChangePassword";
@@ -21,31 +30,21 @@ import SessionLogger from "@lib/utils/SessionLogger";
 import Skeleton_user from "@components/ui/Skeleton_user";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import UpdateAgencyProfile from "@components/profile/UpdateAgencyProfile";
-import ProfileContactForm from "@components/coordinators/ProfileContactForm";
+import { getDonorProfile } from "@/action/donorAction";
+import DonorProfileTabForm from "./DonorProfileTabForm";
+import BloodTypeTabForm from "./BloodTypeTabForm";
 
-export default function OrganizerProfile({ user }) {
-    // const { data, status } = useSession();
-    // console.log("Organizer profile session status", status);
-    // console.log("Organizer profile session data", data);
-
+export default function DonorProfilePage({ user }) {
     const userQuery = useQuery({
         queryKey: ["user", user?.id],
-        queryFn: async () => await getOrganizerProfile(user?.id),
+        queryFn: async () => await getDonorProfile(user?.id),
     });
 
     const { data: userData, isLoading } = userQuery;
 
     if (isLoading === "loading") return <Skeleton_user />;
 
-    const agencyRoles = ["Agency Administrator", "Organizer"];
-    const isHavingAgency = agencyRoles.includes(user?.role_name) || false;
-
-    let agency = userData?.headedAgency;
-    let isCoordinator = false;
-    if (user?.role_name == "Organizer") {
-        isCoordinator = true;
-        agency = userData?.coordinator?.agency;
-    }
+    const agency = userData?.donor?.agency;
 
     // return <SessionLogger />;
     return (
@@ -65,17 +64,22 @@ export default function OrganizerProfile({ user }) {
                                 User Profile
                             </span>
                         </TabsTrigger>
-                        {isCoordinator && (
-                            <TabsTrigger
-                                value="coordinator-contact"
-                                title="Contact Details"
-                            >
-                                <Phone />
-                                <span className="hidden md:inline-block">
-                                    Contact Details
-                                </span>
-                            </TabsTrigger>
-                        )}
+                        <TabsTrigger
+                            value="donor-profile"
+                            title="Donor's Profile"
+                        >
+                            <UserCircle />
+                            <span className="hidden md:inline-block">
+                                Donor's Profile
+                            </span>
+                        </TabsTrigger>
+                        <TabsTrigger value="blood-type" title="Blood Type">
+                            <Droplet />
+                            <span className="hidden md:inline-block">
+                                Blood Type
+                            </span>
+                        </TabsTrigger>
+
                         {user.provider == "credentials" && (
                             <TabsTrigger
                                 value="user-credentials"
@@ -87,28 +91,27 @@ export default function OrganizerProfile({ user }) {
                                 </span>
                             </TabsTrigger>
                         )}
-                        {isHavingAgency && (
-                            <TabsTrigger
-                                value="agency-details"
-                                title="Agency Details"
-                            >
-                                <Building />
-                                <span className="hidden md:inline-block">
-                                    Agency Details
-                                </span>
-                            </TabsTrigger>
-                        )}
+                        <TabsTrigger
+                            value="agency-details"
+                            title="Agency Details"
+                        >
+                            <Building />
+                            <span className="hidden md:inline-block">
+                                Agency Details
+                            </span>
+                        </TabsTrigger>
                     </TabsList>
                     <TabsContent className="p-2" value="user-profile">
                         <UserProfileForm userQuery={userQuery} />
                     </TabsContent>
-                    <TabsContent value="coordinator-contact">
-                        <ProfileContactForm
-                            coordinator={{
-                                id: userData?.coordinator?.id,
-                                agency_id: userData?.coordinator?.agency?.id,
-                                contact_number:
-                                    userData?.coordinator?.contact_number || "",
+                    <TabsContent className="p-2" value="donor-profile">
+                        <DonorProfileTabForm donor={userData?.donor} />
+                    </TabsContent>
+                    <TabsContent className="p-2" value="blood-type">
+                        <BloodTypeTabForm
+                            donor={{
+                                id: userData?.donor?.id,
+                                blood_type_id: userData?.donor?.blood_type_id,
                             }}
                         />
                     </TabsContent>
@@ -116,7 +119,10 @@ export default function OrganizerProfile({ user }) {
                         <UserChangePassword userQuery={userQuery} />
                     </TabsContent>
                     <TabsContent value="agency-details">
-                        <UpdateAgencyProfile agency={agency} />
+                        <UpdateAgencyProfile
+                            agency={agency}
+                            isReadOnly={true}
+                        />
                     </TabsContent>
                 </Tabs>
                 {/* <div>

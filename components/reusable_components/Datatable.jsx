@@ -20,7 +20,7 @@ import {
 } from "@components/ui/table";
 import { DataTablePagination } from "@components/reusable_components/DataTablePagination";
 import { DataTableViewOptions } from "@components/reusable_components/DataTableViewOptions";
-import { Filter, User, UserCog2 } from "lucide-react";
+import { Filter } from "lucide-react";
 import MultiSelect from "@components/reusable_components/MultiSelect";
 
 import Skeleton from "@components/ui/skeleton";

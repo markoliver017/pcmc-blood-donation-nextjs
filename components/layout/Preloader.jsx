@@ -48,8 +48,14 @@ export default function Preloader() {
                             width={500}
                             height={500}
                             alt="Logo"
-                            unoptimized
+                            priority
                         />
+                        {/* <img
+  src="/loader_1.gif"
+  width={500}
+  height={500}
+  alt="Logo"
+/> */}
                     </motion.div>
                 </motion.div>
             )}

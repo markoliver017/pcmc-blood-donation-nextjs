@@ -56,7 +56,7 @@ const form_sections = [
         percent: 30,
     },
     {
-        title: "Personal Information",
+        title: "Donor's Profile",
         class: "progress-info",
         percent: 45,
     },
@@ -231,12 +231,12 @@ export default function NewDonorForm({ role_name, agency_id }) {
                     console.log("Upload result:", result);
                 }
 
-                const fileUrl = watch("donor_file_url");
+                const fileUrl = watch("id_url");
                 if (data?.file && !fileUrl) {
                     const result = await uploadPicture(data.file);
                     if (result?.success) {
-                        data.file_url = result.file_data?.url || null;
-                        setValue("file_url", result.file_data?.url);
+                        data.id_url = result.file_data?.url || null;
+                        setValue("id_url", result.file_data?.url);
                     }
                     console.log("Upload result:", result);
                 }
@@ -245,13 +245,6 @@ export default function NewDonorForm({ role_name, agency_id }) {
             },
         });
     };
-
-    // if (isError) {
-    //     notify({
-    //         error: true,
-    //         message: error?.message,
-    //     });
-    // }
 
     const govtId = watch("file");
     const profilePic = watch("profile_picture");

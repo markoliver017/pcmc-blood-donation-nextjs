@@ -24,9 +24,11 @@ import FieldError from "@components/form/FieldError";
 import { useTheme } from "next-themes";
 import { useQuery } from "@tanstack/react-query";
 
-import Skeleton_form from "@components/ui/Skeleton_form";
-
-export default function AgencyLocationFields({ form, city_provinces }) {
+export default function LocationFields({
+    form,
+    city_provinces,
+    isReadOnly = false,
+}) {
     const { resolvedTheme } = useTheme();
 
     const {
@@ -168,6 +170,7 @@ export default function AgencyLocationFields({ form, city_provinces }) {
                                     className="sm:text-lg"
                                     tabIndex={2}
                                     isClearable
+                                    isDisabled={isReadOnly}
                                 />
                             );
                         }}
@@ -225,6 +228,7 @@ export default function AgencyLocationFields({ form, city_provinces }) {
                                         className="sm:text-lg"
                                         tabIndex={2}
                                         isClearable
+                                        isDisabled={isReadOnly}
                                     />
                                 );
                             }}
@@ -280,6 +284,7 @@ export default function AgencyLocationFields({ form, city_provinces }) {
                                         className="sm:text-lg"
                                         tabIndex={3}
                                         isClearable
+                                        isDisabled={isReadOnly}
                                     />
                                 );
                             }}

@@ -27,15 +27,15 @@ import { GrUpdate } from "react-icons/gr";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import FormLogger from "@lib/utils/FormLogger";
 import { formatFormalName } from "@lib/utils/string.utils";
-import AgencyLocationFields from "@components/organizers/AgencyLocationFields";
 import {
     fetchCitiesMunicipalities,
     fetchluzonDemographics,
 } from "@/action/locationAction";
 import { agencySchema } from "@lib/zod/agencySchema";
 import { updateAgency } from "@/action/agencyAction";
+import LocationFields from "@components/organizers/LocationFields";
 
-export default function UpdateAgencyProfile({ agency }) {
+export default function UpdateAgencyProfile({ agency, isReadOnly = false }) {
     const fileInputRef = useRef(null);
 
     const queryClient = useQueryClient();
@@ -206,7 +206,11 @@ export default function UpdateAgencyProfile({ agency }) {
     ]);
 
     if (!agency) {
-        return <div className='text-center alert alert-error'>Agency not found.</div>
+        return (
+            <div className="text-center alert alert-error">
+                Agency not found.
+            </div>
+        );
     }
 
     return (
@@ -236,6 +240,7 @@ export default function UpdateAgencyProfile({ agency }) {
                                                     onChange(e.target.files[0])
                                                 }
                                                 {...field}
+                                                disabled={isReadOnly}
                                             />
                                         </FormControl>
                                     </div>
@@ -258,9 +263,13 @@ export default function UpdateAgencyProfile({ agency }) {
                         }}
                     />
                     <div className="shadow p-3">
-                        <label className="font-semibold">Agency Administrator:</label>
+                        <label className="font-semibold">
+                            Agency Administrator:
+                        </label>
                         <h3>{agency.head.name}</h3>
-                        <h4 className="text-blue-700 italic">{agency.head.email}</h4>
+                        <h4 className="text-blue-700 italic">
+                            {agency.head.email}
+                        </h4>
                     </div>
                 </div>
 
@@ -294,6 +303,7 @@ export default function UpdateAgencyProfile({ agency }) {
                                             type="text"
                                             placeholder="Enter user agency name"
                                             {...field}
+                                            readOnly={isReadOnly}
                                         />
                                     </label>
                                     <FieldError field={errors?.name} />
@@ -321,6 +331,7 @@ export default function UpdateAgencyProfile({ agency }) {
                                             tabIndex={2}
                                             {...field}
                                             placeholder="+63#########"
+                                            readOnly={isReadOnly}
                                         />
                                     </label>
 
@@ -352,6 +363,7 @@ export default function UpdateAgencyProfile({ agency }) {
                                             className="w-full dark:bg-inherit"
                                             tabIndex={3}
                                             {...field}
+                                            readOnly={isReadOnly}
                                         >
                                             <option value="">
                                                 Select here
@@ -382,9 +394,10 @@ export default function UpdateAgencyProfile({ agency }) {
                         <>
                             <h1 className="text-xl font-bold">Location:</h1>
                             <div className="pl-4">
-                                <AgencyLocationFields
+                                <LocationFields
                                     form={form}
                                     city_provinces={city_provinces}
+                                    isReadOnly={isReadOnly}
                                 />
                             </div>
                         </>
@@ -394,28 +407,29 @@ export default function UpdateAgencyProfile({ agency }) {
                             <div className="skeleton w-full h-5"></div>
                         </>
                     )}
-
-                    <div className="flex justify-end">
-                        <button
-                            disabled={!isDirty || isPending}
-                            className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300"
-                        >
-                            {isPending ? (
-                                <>
-                                    <span className="loading loading-bars loading-xs"></span>
-                                    Submitting ...
-                                </>
-                            ) : (
-                                <>
-                                    <GrUpdate />
-                                    Update
-                                </>
-                            )}
-                        </button>
-                    </div>
+                    {!isReadOnly && (
+                        <div className="flex justify-end">
+                            <button
+                                disabled={!isDirty || isPending}
+                                className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300"
+                            >
+                                {isPending ? (
+                                    <>
+                                        <span className="loading loading-bars loading-xs"></span>
+                                        Submitting ...
+                                    </>
+                                ) : (
+                                    <>
+                                        <GrUpdate />
+                                        Update
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    )}
                 </Card>
             </form>
-            <FormLogger watch={watch} errors={errors} />
+            {/* <FormLogger watch={watch} errors={errors} /> */}
         </Form>
     );
 }

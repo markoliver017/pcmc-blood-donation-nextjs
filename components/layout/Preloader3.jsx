@@ -42,14 +42,17 @@ export default function Preloader3() {
                         // transition={{ repeat: Infinity, duration: 1, ease: "easeInOut" }}
                         initial={{ y: 0 }}
                         animate={{ y: [0, -15, 0] }}
-                        transition={{ repeat: Infinity, duration: 0.8, ease: "easeInOut" }}
+                        transition={{
+                            repeat: Infinity,
+                            duration: 0.8,
+                            ease: "easeInOut",
+                        }}
                     >
                         <Image
                             src="/blood-logo.png"
-                            className="flex-none rounded-4xl"
+                            className="object-contain rounded-4xl"
                             width={150}
                             height={150}
-                            layout="intrinsic"
                             alt="Logo"
                         />
                     </motion.div>

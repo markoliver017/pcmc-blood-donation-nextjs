@@ -7,7 +7,9 @@ import { logErrorToFile } from "@lib/logger.server";
 import { Agency, BloodType, Donor, Role, sequelize, User } from "@lib/models";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import {
+    bloodtypeSchema,
     donorRegistrationWithUser,
+    donorSchema,
     donorStatusSchema,
 } from "@lib/zod/donorSchema";
 import { Op } from "sequelize";
@@ -189,6 +191,120 @@ export async function getDonorById(id) {
     }
 }
 
+export async function updateDonor(formData) {
+    const session = await auth();
+    if (!session) throw "You are not authorized to access this request.";
+    console.log("updateDonorStatus", formData);
+    const { user } = session;
+    formData.updated_by = user.id;
+
+    const parsed = donorSchema.safeParse(formData);
+
+    if (!parsed.success) {
+        const fieldErrors = parsed.error.flatten().fieldErrors;
+        return {
+            success: false,
+            type: "validation",
+            message:
+                "Validation Error: Please try again. If the issue persists, contact your administrator for assistance.",
+            errorObj: parsed.error.flatten().fieldErrors,
+            errorArr: Object.values(fieldErrors).flat(),
+        };
+    }
+
+    const { data } = parsed;
+
+    const donor = await Donor.findByPk(data.id);
+
+    if (!donor) {
+        throw new Error("Database Error: Donor ID was not found");
+    }
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        const updatedDonor = await donor.update(data, {
+            transaction,
+        });
+
+        await transaction.commit();
+
+        await logAuditTrail({
+            userId: user.id,
+            controller: "donors",
+            action: "UPDATE DONOR",
+            details: `The Donor's profile has been successfully updated. ID#: ${updatedDonor.id}`,
+        });
+
+        return {
+            success: true,
+            data: updatedDonor.get({ plain: true }),
+        };
+    } catch (err) {
+        logErrorToFile(err, "UPDATE DONOR");
+        await transaction.rollback();
+
+        throw err.message || "Unknown error";
+    }
+}
+
+export async function updateDonorBloodType(formData) {
+    const session = await auth();
+    if (!session) throw "You are not authorized to access this request.";
+
+    const { user } = session;
+    formData.updated_by = user.id;
+
+    const parsed = bloodtypeSchema.safeParse(formData);
+
+    if (!parsed.success) {
+        const fieldErrors = parsed.error.flatten().fieldErrors;
+        return {
+            success: false,
+            type: "validation",
+            message:
+                "Validation Error: Please try again. If the issue persists, contact your administrator for assistance.",
+            errorObj: parsed.error.flatten().fieldErrors,
+            errorArr: Object.values(fieldErrors).flat(),
+        };
+    }
+
+    const { data } = parsed;
+
+    const donor = await Donor.findByPk(data.id);
+
+    if (!donor) {
+        throw new Error("Database Error: Donor ID was not found");
+    }
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        const updatedDonor = await donor.update(data, {
+            transaction,
+        });
+
+        await transaction.commit();
+
+        await logAuditTrail({
+            userId: user.id,
+            controller: "donors",
+            action: "UPDATE DONOR BLOOD TYPE",
+            details: `The Donor's blood type has been successfully updated. ID#: ${updatedDonor.id}`,
+        });
+
+        return {
+            success: true,
+            data: updatedDonor.get({ plain: true }),
+        };
+    } catch (err) {
+        logErrorToFile(err, "UPDATE DONOR");
+        await transaction.rollback();
+
+        throw err.message || "Unknown error";
+    }
+}
+
 export async function updateDonorStatus(formData) {
     const session = await auth();
     if (!session) throw "You are not authorized to access this request.";
@@ -247,11 +363,11 @@ export async function updateDonorStatus(formData) {
             transaction,
         });
 
-        const coordinator_status = updatedDonor.status == "activated";
+        const donor_status = updatedDonor.status == "activated";
 
         if (updatedDonor) {
             await donor_role.update(
-                { is_active: coordinator_status },
+                { is_active: donor_status },
                 { transaction }
             );
         }
@@ -288,5 +404,63 @@ export async function updateDonorStatus(formData) {
         await transaction.rollback();
 
         throw err.message || "Unknown error";
+    }
+}
+
+export async function getDonorProfile() {
+    const session = await auth();
+    if (!session) throw "You are not authorized to access this page.";
+
+    const { user } = session;
+
+    try {
+        /* For Agency Administrator */
+        const profile = await User.findByPk(user?.id, {
+            attributes: {
+                exclude: [
+                    "password",
+                    "createdAt",
+                    "updatedAt",
+                    "updated_by",
+                    "email_verified",
+                ],
+            },
+            include: [
+                {
+                    model: Donor,
+                    as: "donor",
+                    required: false,
+                    include: [
+                        {
+                            model: Agency,
+                            as: "agency",
+                            required: false,
+                            include: {
+                                model: User,
+                                as: "head",
+                                attributes: ["id", "name", "email", "image"],
+                            },
+                        },
+                        {
+                            model: BloodType,
+                            as: "blood_type",
+                        },
+                    ],
+                },
+            ],
+        });
+
+        if (!profile) {
+            throw "User not found or not activated.";
+        }
+
+        return formatSeqObj(profile);
+    } catch (err) {
+        logErrorToFile(err, "getHostCoordinatorsByStatus ERROR");
+        throw {
+            success: false,
+            type: "server",
+            message: err.message || "Unknown error",
+        };
     }
 }

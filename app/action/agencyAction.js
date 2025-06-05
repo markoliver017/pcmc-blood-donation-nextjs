@@ -406,8 +406,12 @@ export async function updateAgency(formData) {
     console.log("formData received on server", formData);
     const session = await auth();
     if (!session) throw "You are not authorized to access this request.";
-
+    console.log("updateAgency session", session);
     const { user } = session;
+
+    if (user.role_name !== "Agency Administrator") {
+        throw "You are not authorized to update agency information.";
+    }
     formData.updated_by = user.id;
 
     const parsed = agencySchema.safeParse(formData);
@@ -632,7 +636,6 @@ export async function storeCoordinator(formData) {
 }
 
 export async function updateCoordinator(formData) {
-
     console.log("updateCoordinator formData received on server", formData);
     const parsed = coordinatorSchema.safeParse(formData);
 

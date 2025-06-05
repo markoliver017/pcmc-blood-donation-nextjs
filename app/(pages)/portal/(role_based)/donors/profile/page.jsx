@@ -10,6 +10,8 @@ import UserProfileTabs from "@components/profile/UserProfileTabs";
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 import { User } from "lucide-react";
 import OrganizerProfile from "@components/organizers/OrganizerProfile";
+import DonorProfile from "@components/donors/DonorProfilePage";
+import DonorProfilePage from "@components/donors/DonorProfilePage";
 
 export default async function Page() {
     const session = await auth();
@@ -47,7 +49,7 @@ export default async function Page() {
                 ]}
             />
             <div className="w-full h-full md:w-8/10 lg:w-3/4 mx-auto p-1 md:p-5">
-                <OrganizerProfile user={user} />
+                <DonorProfilePage user={user} />
             </div>
         </HydrationBoundary>
     );
