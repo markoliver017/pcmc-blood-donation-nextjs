@@ -32,7 +32,9 @@ export async function getAllEventsByAgency() {
             if (!response?.headedAgency) {
                 throw "Agency not found or not activated.";
             }
-            agency_id = response.agency.id;
+
+            agency_id = response?.headedAgency?.id;
+
         } else if (user?.role_name == "Organizer") {
             const response = await User.findByPk(user?.id, {
                 attributes: ["id"],
@@ -81,11 +83,12 @@ export async function getAllEventsByAgency() {
 
         throw "Unauthorized access: You are not allowed to access this resources.";
     } catch (err) {
+
         logErrorToFile(err, "getAllEventsByAgency ERROR");
         throw {
             success: false,
             type: "server",
-            message: err.message || "Unknown error",
+            message: err || "Unknown error",
         };
     }
 }

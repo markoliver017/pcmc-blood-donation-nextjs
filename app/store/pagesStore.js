@@ -127,7 +127,7 @@ export const usePagesStore = create((set) => ({
         },
         {
             title: "Blood Drives",
-            path: "/blood-drives",
+            path: "/events",
             icon: <GiBlood />,
             roles: ["Admin", "Developer", "Agency Administrator", "Organizer"],
             is_role_based: true,

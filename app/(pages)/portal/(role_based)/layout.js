@@ -9,7 +9,6 @@ export default async function RoleBasedLayout({ children }) {
 
     const headerList = await headers();
     const currentRoute = headerList.get("x-current-path");
-    console.log("RoleBasedLayout currentRoute", currentRoute);
 
     if (!session || !session?.user) redirect("/");
 

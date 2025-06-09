@@ -5,6 +5,7 @@ import React from "react";
 import { eventColumns } from "./eventColumns";
 import { getAllEventsByAgency } from "@/action/eventAction";
 import { CalendarPlus } from "lucide-react";
+import Link from "next/link";
 
 export default function ListofEvents() {
     const { data: events, isLoading } = useQuery({
@@ -16,9 +17,9 @@ export default function ListofEvents() {
     });
     return (
         <div className="w-full p-4">
-            <button className="btn btn-neutral mb-4">
+            <Link href="./events/create" className="btn btn-neutral mb-4">
                 <CalendarPlus /> Add New Event{" "}
-            </button>
+            </Link>
             <h1 className="text-2xl font-semibold">List of Events</h1>
             <DataTable
                 data={events || []}

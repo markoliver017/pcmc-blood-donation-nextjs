@@ -16,6 +16,7 @@ import { coordinatorSchema } from "@lib/zod/agencySchema";
 import { Phone } from "lucide-react";
 import FormLogger from "@lib/utils/FormLogger";
 import { updateCoordinator } from "@/action/agencyAction";
+import { toastError } from "@lib/utils/toastError.utils";
 
 export default function ProfileContactForm({ coordinator }) {
 
@@ -42,34 +43,7 @@ export default function ProfileContactForm({ coordinator }) {
         onError: (error) => {
             // Handle validation errors
             if (error?.type === "validation" && error?.errorArr.length) {
-                let detailContent = "";
-                const { errorArr: details, message } = error;
-
-                detailContent = (
-                    <ul className="list-disc list-inside">
-                        {details.map((err, index) => (
-                            <li key={index}>{err}</li>
-                        ))}
-                    </ul>
-                );
-                notify({
-                    error: true,
-                    message: (
-                        <div tabIndex={0} className="collapse">
-                            <input type="checkbox" />
-                            <div className="collapse-title font-semibold">
-                                {message}
-                                <br />
-                                <small className="link link-warning">
-                                    See details
-                                </small>
-                            </div>
-                            <div className="collapse-content text-sm">
-                                {detailContent}
-                            </div>
-                        </div>
-                    ),
-                });
+                toastError(error);
             } else {
                 // Handle server errors
                 notify({
