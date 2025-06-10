@@ -1,7 +1,8 @@
 "use client";
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
-import { CalendarCheck } from "lucide-react";
+import { CalendarCheck, CalendarPlus } from "lucide-react";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function HostEventClient({ children, approval }) {
@@ -34,10 +35,18 @@ export default function HostEventClient({ children, approval }) {
                         },
                     ]}
                 />
+                <div className="p-5">
+                    <Link
+                        href="/portal/hosts/events/create"
+                        className="btn btn-neutral mb-4"
+                    >
+                        <CalendarPlus /> Add New Event{" "}
+                    </Link>
+                </div>
                 <Tabs
                     defaultValue={currentTab}
                     onValueChange={handleTabChange}
-                    className="p-5"
+                    className="px-1 md:px-5"
                 >
                     <TabsList>
                         <TabsTrigger value="all">All</TabsTrigger>

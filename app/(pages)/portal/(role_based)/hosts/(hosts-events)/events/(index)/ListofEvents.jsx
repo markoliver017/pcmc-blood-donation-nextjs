@@ -8,22 +8,27 @@ import { CalendarPlus } from "lucide-react";
 import Link from "next/link";
 
 export default function ListofEvents() {
-    const { data: events, isLoading } = useQuery({
+    const { data: events, isLoading, error, isError } = useQuery({
         queryKey: ["agency_events"],
-        queryFn: getAllEventsByAgency,
-        staleTime: 1000 * 60 * 5, // 5 minutes
+        queryFn: async () => {
+            const res = await getAllEventsByAgency();
+
+            if (!res.success) {
+                throw res?.message || 'unknown error'
+            }
+            return res.data;
+        },
+        staleTime: 1000 * 60 * 5,
         refetchOnWindowFocus: false,
         refetchOnMount: false,
     });
+
+    if (isError) return (<div className="alert alert-error">
+        <pre>{JSON.stringify(error?.message || error, null, 2)}</pre>
+    </div>)
+
     return (
         <div className="w-full p-4">
-            <Link
-                href="/portal/hosts/events/create"
-                className="btn btn-neutral mb-4"
-            >
-                <CalendarPlus /> Add New Event{" "}
-            </Link>
-            <h1 className="text-2xl font-semibold">List of Events</h1>
             <DataTable
                 data={events || []}
                 columns={eventColumns}

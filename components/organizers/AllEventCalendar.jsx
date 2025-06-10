@@ -31,8 +31,10 @@ export default function AllEventCalendar() {
                         events?.map((event) => ({
                             title: "",
                             start: event.from_date,
-                            end: event.to_date,
-                            backgroundColor: "blue",
+                            end: new Date(event.from_date).getTime() === new Date(event.to_date).getTime()
+                                ? event.to_date
+                                : new Date(new Date(event.to_date).setMinutes(new Date(event.to_date).getMinutes() + 1)).toISOString(),
+                            backgroundColor: event?.status == "approved" ? "green" : "orange",
                         })) || []
                     }
                     eventContent={(eventInfo) => (
@@ -57,10 +59,10 @@ export default function AllEventCalendar() {
                         timeGridWeek: { buttonText: "Week" },
                         timeGridDay: { buttonText: "Day" },
                     }}
-                    eventClick={(info) => alert(`Event: ${info.event.title}`)}
+                    // eventClick={(info) => alert(`Event: ${info.event?.status}`)}
                     height="100%"
                     contentHeight="auto"
-                    // aspectRatio={3} //Sets the aspect ratio of the calendar. A higher value will make the calendar wider, while a lower value will make it taller.
+                // aspectRatio={3} //Sets the aspect ratio of the calendar. A higher value will make the calendar wider, while a lower value will make it taller.
                 />
             </CardContent>
         </Card>

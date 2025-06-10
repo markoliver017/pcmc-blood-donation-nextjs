@@ -14,6 +14,7 @@ import {
     CalendarPlus2,
     Maximize,
     Plus,
+    Save,
     Text,
     Timer,
     X,
@@ -40,7 +41,7 @@ import { BiMaleFemale, BiTime } from "react-icons/bi";
 import { useRouter } from "next/navigation";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import SweetAlert from "@components/ui/SweetAlert";
 import { toastError } from "@lib/utils/toastError.utils";
 import FormCardSingleForm from "@components/form/FormCardSingleForm";
@@ -50,21 +51,29 @@ import { MdDeleteForever } from "react-icons/md";
 import ToggleAny from "@components/reusable_components/ToggleAny";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { bloodDonationEventSchema } from "@lib/zod/bloodDonationSchema";
-import { storeEvent } from "@/action/eventAction";
+import { getEventsById, storeEvent, updateEvent } from "@/action/eventAction";
 import { uploadPicture } from "@/action/uploads";
 import AllEventCalendar from "@components/organizers/AllEventCalendar";
 import DrawerComponent from "@components/reusable_components/DrawerComponent";
 import { DrawerTrigger } from "@components/ui/drawer";
+import moment from "moment";
 // import DrawerComponent from "@components/reusable_components/Drawer";
 
-export default function CreateEventForm({ agency }) {
+export default function UpdateEventForm({ eventId }) {
     const router = useRouter();
 
     const queryClient = useQueryClient();
 
+    const { data: event } = useQuery({
+        queryKey: ["agency_events", eventId],
+        queryFn: async () => await getEventsById(eventId),
+        enabled: !!eventId,
+        staleTime: 0
+    });
+
     const { data, mutate, isPending, isError, error } = useMutation({
         mutationFn: async (formData) => {
-            const res = await storeEvent(formData);
+            const res = await updateEvent(eventId, formData);
             if (!res.success) {
                 throw res;
             }
@@ -78,8 +87,8 @@ export default function CreateEventForm({ agency }) {
                 queryKey: ["all_event_schedules"],
             });
             SweetAlert({
-                title: "New Blood Donation Event",
-                text: "You have successfully created a new blood donation event.",
+                title: "Update Blood Donation Event",
+                text: "You have successfully updated the blood donation event.",
                 icon: "success",
                 confirmButtonText: "Okay",
                 onConfirm: () => {
@@ -108,23 +117,13 @@ export default function CreateEventForm({ agency }) {
         mode: "onChange",
         resolver: zodResolver(bloodDonationEventSchema),
         defaultValues: {
-            agency_id: agency?.id,
-            title: "Sample Title ",
-            description:
-                '<p><span style="font-size: 24px"><em>This is a sample description</em></span></p>',
-            from_date: "2025-07-01",
-            to_date: "2025-07-01",
-            file: null,
-            file_url: null,
-            time_schedules: [
-                {
-                    time_start: "08:00",
-                    time_end: "17:00",
-                    has_limit: false,
-                    max_limit: 0,
-                },
-            ],
-        },
+            ...event,
+            time_schedules: event?.time_schedules.map((sched) => ({
+                ...sched,
+                time_start: moment(sched.time_start, "HH:mm:ss").format("HH:mm"),
+                time_end: moment(sched.time_end, "HH:mm:ss").format("HH:mm"),
+            }))
+        }
     });
 
     const {
@@ -145,7 +144,7 @@ export default function CreateEventForm({ agency }) {
     const onSubmit = async (formData) => {
         SweetAlert({
             title: "Confirmation",
-            text: "Are you sure you want to create new Blood Donation Event?",
+            text: "Are you sure you want to update this Blood Donation Event?",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Confirm",
@@ -187,7 +186,7 @@ export default function CreateEventForm({ agency }) {
                     <CardHeader className="text-2xl font-bold">
                         <CardTitle className="flex justify-between">
                             <div className="text-2xl">
-                                Create New Blood Donation Event
+                                Update Blood Donation Event
                             </div>
                             <div className="flex justify-end">
                                 <DrawerComponent
@@ -639,8 +638,8 @@ export default function CreateEventForm({ agency }) {
                                         </>
                                     ) : (
                                         <>
-                                            <CalendarPlus2 />
-                                            Add Event
+                                            <Save />
+                                            Update Event
                                         </>
                                     )}
                                 </button>
@@ -649,7 +648,7 @@ export default function CreateEventForm({ agency }) {
                     </CardContent>
                 </Card>
             </form>
-            <FormLogger watch={watch} errors={errors} data={agency} />
+            {/* <FormLogger watch={watch} errors={errors} data={event} /> */}
         </Form>
     );
 }

@@ -87,7 +87,10 @@ export async function getAllEventsByAgency() {
     const agency_id = await getAgencyId();
 
     if (!agency_id) {
-        throw "Unauthorized access: You are not allowed to access this resources.";
+        return {
+            success: false,
+            message: 'Agency not found or inactive!'
+        }
     }
 
     try {
@@ -109,10 +112,11 @@ export async function getAllEventsByAgency() {
 
         const formattedEvents = formatSeqObj(events);
 
-        return formattedEvents;
+        return { success: true, data: formattedEvents }
+
     } catch (err) {
         logErrorToFile(err, "getAllEventsByAgency ERROR");
-        throw {
+        return {
             success: false,
             type: "server",
             message: err || "Unknown error",
@@ -302,6 +306,126 @@ export async function storeEvent(formData) {
         };
     } catch (err) {
         logErrorToFile(err, "STORE EVENT");
+        await transaction.rollback();
+
+        return {
+            success: false,
+            type: "server",
+            message: err || "Unknown error",
+        };
+    }
+}
+
+export async function updateEvent(id, formData) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const session = await auth();
+    if (!session) throw "You are not authorized to access this request.";
+    const { user } = session;
+    formData.requester_id = user.id;
+
+    console.log("formData received on server", formData);
+
+    const parsed = bloodDonationEventSchema.safeParse(formData);
+
+    if (!parsed.success) {
+        const fieldErrors = parsed.error.flatten().fieldErrors;
+        return {
+            success: false,
+            type: "validation",
+            message: "Please check your input and try again.",
+            errorObj: parsed.error.flatten().fieldErrors,
+            errorArr: Object.values(fieldErrors).flat(),
+        };
+    }
+
+    const { data } = parsed;
+
+    const agency = await Agency.findByPk(data?.agency_id, {
+        where: { status: "activated" },
+    });
+
+    if (!agency) {
+        throw "Database Error: Agency not found or inactive.";
+    }
+
+    const existingEvent = await BloodDonationEvent.findByPk(id);
+
+    if (!existingEvent) {
+        throw "Event not found.";
+    }
+
+    const conflictingEvent = await BloodDonationEvent.findOne({
+        where: {
+            id: { [Op.ne]: id },
+            status: {
+                [Op.in]: ["approved", "for approval"],
+            },
+            [Op.or]: [
+                {
+                    from_date: {
+                        [Op.between]: [data.from_date, data.to_date],
+                    },
+                },
+                {
+                    to_date: {
+                        [Op.between]: [data.from_date, data.to_date],
+                    },
+                },
+                {
+                    [Op.and]: [
+                        {
+                            from_date: {
+                                [Op.lte]: data.from_date,
+                            },
+                        },
+                        {
+                            to_date: {
+                                [Op.gte]: data.to_date,
+                            },
+                        },
+                    ],
+                },
+            ],
+        },
+    });
+
+    if (conflictingEvent) {
+        throw "Event date conflict: Another event is already scheduled for this date.";
+    }
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        await existingEvent.update(data, { transaction });
+
+        await EventTimeSchedule.destroy({
+            where: { blood_donation_event_id: id },
+            transaction,
+        });
+
+        await EventTimeSchedule.bulkCreate(
+            data.time_schedules.map((row) => ({
+                blood_donation_event_id: id,
+                ...row,
+            })),
+            { transaction }
+        );
+
+        await transaction.commit();
+
+        await logAuditTrail({
+            userId: user.id,
+            controller: "events",
+            action: "UPDATE EVENT",
+            details: `Blood donation event has been successfully updated. ID#: ${id}`,
+        });
+
+        return {
+            success: true,
+            data: existingEvent.get({ plain: true }),
+        };
+    } catch (err) {
+        logErrorToFile(err, "UPDATE EVENT");
         await transaction.rollback();
 
         return {

@@ -11,6 +11,8 @@ import {
 import { Button } from "@components/ui/button";
 import { Command, Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
+import moment from "moment";
+import parse from "html-react-parser";
 
 export const eventColumns = [
     {
@@ -29,19 +31,68 @@ export const eventColumns = [
     },
 
     {
-        accessorKey: "date",
+        accessorKey: "from_date",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Date" />
+            <DataTableColumnHeader column={column} title="Date Started" />
         ),
+        cell: ({ getValue }) => moment(getValue()).format("MMM DD, YYYY"),
         filterFn: "columnFilter",
     },
     {
-        accessorKey: "description",
+        accessorKey: "to_date",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Description" />
+            <DataTableColumnHeader column={column} title="Date Ended" />
         ),
+        cell: ({ getValue }) => moment(getValue()).format("MMM DD, YYYY"),
         filterFn: "columnFilter",
     },
+    {
+        accessorKey: "requester.name",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Organizer" />
+        ),
+        cell: ({ getValue }) => getValue(),
+        filterFn: "columnFilter",
+    },
+    {
+        accessorKey: "status",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Status" />
+        ),
+        filterFn: "columnFilter",
+        cell: ({ row }) => {
+            const data = row.original;
+            const status = data.status.toUpperCase();
+            if (status == "APPROVED") {
+                return (
+                    <div className="badge p-2 font-semibold text-xs badge-success">
+                        {status}
+                    </div>
+                );
+            } else if (status == "FOR APPROVAL") {
+                return (
+                    <div className="badge p-2 font-semibold text-xs badge-warning">
+                        {status}
+                    </div>
+                );
+            } else {
+                return (
+                    <div className="badge p-2 font-semibold text-xs badge-error">
+                        {status}
+                    </div>
+                );
+            }
+        },
+    },
+
+    // {
+    //     accessorKey: "description",
+    //     header: ({ column }) => (
+    //         <DataTableColumnHeader column={column} title="Description" />
+    //     ),
+    //     cell: ({ getValue }) => parse(getValue()),
+    //     filterFn: "columnFilter",
+    // },
 
     {
         id: "actions",

@@ -28,6 +28,7 @@ import {
     PhoneCall,
     SquareMenu,
     User,
+    UserCog2Icon,
     Users,
     Users2,
     Users2Icon,
@@ -217,7 +218,7 @@ const HeaderNav = ({ currentUser }) => {
                                     className="h-8 w-min p-0"
                                 >
                                     <span className="sr-only">Open menu</span>
-                                    <FaHackerNews /> Developer
+                                    <UserCog2Icon /> Developer
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent side="bottom" align="start">

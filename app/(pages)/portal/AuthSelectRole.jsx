@@ -73,7 +73,7 @@ export default function AuthSelectRole({ roles }) {
                     ))}
                 </div>
             </div>
-            <SessionLogger />
+            {/* <SessionLogger /> */}
         </>
     );
 }
