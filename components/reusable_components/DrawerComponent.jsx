@@ -1,0 +1,40 @@
+"use client";
+
+import { Button } from "@components/ui/button";
+import {
+    Drawer,
+    DrawerContent,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerClose,
+    DrawerTrigger,
+} from "@components/ui/drawer";
+import { X } from "lucide-react";
+
+export default function DrawerComponent({
+    children,
+    trigger,
+    title,
+    description = "",
+    direction = "right",
+}) {
+    return (
+        <Drawer direction={direction}>
+            {trigger}
+            <DrawerContent className="p-5 md:min-w-[900px]">
+                <DrawerHeader>
+                    <DrawerTitle>{title}</DrawerTitle>
+                    <DrawerDescription>{description}</DrawerDescription>
+                </DrawerHeader>
+                {children}
+                <DrawerFooter>
+                    <DrawerClose className="btn btn-neutral">
+                        <X /> Close
+                    </DrawerClose>
+                </DrawerFooter>
+            </DrawerContent>
+        </Drawer>
+    );
+}

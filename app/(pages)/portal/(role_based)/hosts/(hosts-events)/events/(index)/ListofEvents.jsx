@@ -9,7 +9,7 @@ import Link from "next/link";
 
 export default function ListofEvents() {
     const { data: events, isLoading } = useQuery({
-        queryKey: ["events"],
+        queryKey: ["agency_events"],
         queryFn: getAllEventsByAgency,
         staleTime: 1000 * 60 * 5, // 5 minutes
         refetchOnWindowFocus: false,
@@ -17,7 +17,10 @@ export default function ListofEvents() {
     });
     return (
         <div className="w-full p-4">
-            <Link href="./events/create" className="btn btn-neutral mb-4">
+            <Link
+                href="/portal/hosts/events/create"
+                className="btn btn-neutral mb-4"
+            >
                 <CalendarPlus /> Add New Event{" "}
             </Link>
             <h1 className="text-2xl font-semibold">List of Events</h1>

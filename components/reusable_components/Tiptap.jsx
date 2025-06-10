@@ -1,33 +1,33 @@
-'use client'
+"use client";
 
-import { FontFamily } from '@lib/tiptap/fontFamilyExtension'
-import { FontSize } from '@lib/tiptap/fontSizeExtension'
-import TextStyle from '@tiptap/extension-text-style'
-import Underline from '@tiptap/extension-underline'
-import { useEditor, EditorContent } from '@tiptap/react'
+import { FontFamily } from "@lib/tiptap/fontFamilyExtension";
+import { FontSize } from "@lib/tiptap/fontSizeExtension";
+import TextStyle from "@tiptap/extension-text-style";
+import Underline from "@tiptap/extension-underline";
+import { useEditor, EditorContent } from "@tiptap/react";
 // import { FontFamily } from './fontFamilyExtension'
 
-import StarterKit from '@tiptap/starter-kit'
-import { useEffect, useState } from 'react'
+import StarterKit from "@tiptap/starter-kit";
+import { useEffect, useState } from "react";
 
 // Sample font family options
 const fontFamilyOptions = [
-    { label: 'Default', value: '' },
-    { label: 'Arial', value: 'Arial, sans-serif' },
-    { label: 'Georgia', value: 'Georgia, serif' },
-    { label: 'Courier New', value: '"Courier New", monospace' },
-]
+    { label: "Default", value: "" },
+    { label: "Arial", value: "Arial, sans-serif" },
+    { label: "Georgia", value: "Georgia, serif" },
+    { label: "Courier New", value: '"Courier New", monospace' },
+];
 
 const fontSizeOptions = [
-    { label: 'Small', value: 12 },
-    { label: 'Normal', value: 16 },
-    { label: 'Large', value: 24 },
-    { label: 'Xtra Large', value: 32 },
-]
+    { label: "Small", value: 12 },
+    { label: "Normal", value: 16 },
+    { label: "Large", value: 24 },
+    { label: "Xtra Large", value: 32 },
+];
 
-const Tiptap = ({ content = '', onContentChange }) => {
-    const [fontSize, setFontSize] = useState(16)
-    const [fontFamily, setFontFamily] = useState('')
+const Tiptap = ({ content = "", onContentChange }) => {
+    const [fontSize, setFontSize] = useState(16);
+    const [fontFamily, setFontFamily] = useState("");
 
     const editor = useEditor({
         extensions: [
@@ -35,78 +35,81 @@ const Tiptap = ({ content = '', onContentChange }) => {
             TextStyle,
             Underline,
             FontSize.configure({
-                defaultFontSize: '16px',
+                defaultFontSize: "16px",
                 minFontSize: 8,
                 maxFontSize: 72,
                 fontSizeStep: 2,
             }),
             FontFamily.configure({
-                defaultFontFamily: '', // or 'Arial, sans-serif'
+                defaultFontFamily: "", // or 'Arial, sans-serif'
             }),
             // You need to create or import a FontFamily extension like FontSize
             // For demo, assume you have a similar FontFamily extension configured here
         ],
         content,
         onUpdate: ({ editor }) => {
-            const html = editor.getHTML()
-            if (typeof onContentChange === 'function') onContentChange(html)
+            const html = editor.getHTML();
+            if (typeof onContentChange === "function") onContentChange(html);
         },
         editorProps: {
             attributes: {
-                class:
-                    'px-4 py-2 text-gray-900 dark:text-gray-50 min-h-[80px] border border-gray-300 rounded',
+                class: "px-4 py-2 bg-white text-gray-900 dark:text-gray-50 min-h-[80px] border border-gray-300 rounded",
+                tabIndex: "3",
             },
         },
-    })
+    });
 
     useEffect(() => {
-        if (!editor) return
+        if (!editor) return;
 
         const updateToolbar = () => {
-            const { from } = editor.state.selection
-            const marks = editor.state.doc.resolve(from).marks()
+            const { from } = editor.state.selection;
+            const marks = editor.state.doc.resolve(from).marks();
 
             // Font size
-            const textStyleMark = marks.find((mark) => mark.type.name === 'textStyle')
+            const textStyleMark = marks.find(
+                (mark) => mark.type.name === "textStyle"
+            );
             const currentFontSize = textStyleMark?.attrs?.fontSize
-                ? parseInt(textStyleMark.attrs.fontSize.replace('px', ''), 10)
-                : 16
-            setFontSize(currentFontSize)
+                ? parseInt(textStyleMark.attrs.fontSize.replace("px", ""), 10)
+                : 16;
+            setFontSize(currentFontSize);
 
             // Font family example (if stored in textStyle attrs)
-            const currentFontFamily = textStyleMark?.attrs?.fontFamily || ''
-            setFontFamily(currentFontFamily)
-        }
+            const currentFontFamily = textStyleMark?.attrs?.fontFamily || "";
+            setFontFamily(currentFontFamily);
+        };
 
-        updateToolbar()
-        editor.on('selectionUpdate', updateToolbar)
-        editor.on('transaction', updateToolbar)
+        updateToolbar();
+        editor.on("selectionUpdate", updateToolbar);
+        editor.on("transaction", updateToolbar);
 
         return () => {
-            editor.off('selectionUpdate', updateToolbar)
-            editor.off('transaction', updateToolbar)
-        }
-    }, [editor])
+            editor.off("selectionUpdate", updateToolbar);
+            editor.off("transaction", updateToolbar);
+        };
+    }, [editor]);
 
-    const toggleBold = () => editor.chain().focus().toggleBold().run()
-    const toggleItalic = () => editor.chain().focus().toggleItalic().run()
-    const toggleUnderline = () => editor.chain().focus().toggleUnderline().run()
+    const toggleBold = () => editor.chain().focus().toggleBold().run();
+    const toggleItalic = () => editor.chain().focus().toggleItalic().run();
+    const toggleUnderline = () =>
+        editor.chain().focus().toggleUnderline().run();
 
     const handleFontSizeChange = (size) => {
-        setFontSize(size)
-        editor.chain().focus().setFontSize(size).run()
-    }
+        setFontSize(size);
+        editor.chain().focus().setFontSize(size).run();
+    };
 
     const handleFontFamilyChange = (e) => {
-        const family = e.target.value
-        setFontFamily(family)
-        editor.chain().focus().setFontFamily(family).run() // Assuming you have this extension
-    }
+        const family = e.target.value;
+        setFontFamily(family);
+        editor.chain().focus().setFontFamily(family).run(); // Assuming you have this extension
+    };
 
-    const undo = () => editor.chain().focus().undo().run()
-    const redo = () => editor.chain().focus().redo().run()
+    const undo = () => editor.chain().focus().undo().run();
+    const redo = () => editor.chain().focus().redo().run();
 
-    if (!editor) return null
+    if (!editor) return null;
 
     return (
         <div className="border rounded p-4">
@@ -114,8 +117,9 @@ const Tiptap = ({ content = '', onContentChange }) => {
                 {/* Bold */}
                 <button
                     onClick={toggleBold}
-                    className={`px-2 py-1 border rounded ${editor.isActive('bold') ? 'bg-blue-500 text-white' : ''
-                        }`}
+                    className={`px-2 py-1 border rounded ${
+                        editor.isActive("bold") ? "bg-blue-500 text-white" : ""
+                    }`}
                     title="Bold"
                     type="button"
                 >
@@ -125,8 +129,11 @@ const Tiptap = ({ content = '', onContentChange }) => {
                 {/* Italic */}
                 <button
                     onClick={toggleItalic}
-                    className={`px-2 py-1 border rounded ${editor.isActive('italic') ? 'bg-blue-500 text-white' : ''
-                        }`}
+                    className={`px-2 py-1 border rounded ${
+                        editor.isActive("italic")
+                            ? "bg-blue-500 text-white"
+                            : ""
+                    }`}
                     title="Italic"
                     type="button"
                 >
@@ -136,8 +143,11 @@ const Tiptap = ({ content = '', onContentChange }) => {
                 {/* Underline */}
                 <button
                     onClick={toggleUnderline}
-                    className={`px-2 py-1 border rounded ${editor.isActive('underline') ? 'bg-blue-500 text-white' : ''
-                        }`}
+                    className={`px-2 py-1 border rounded ${
+                        editor.isActive("underline")
+                            ? "bg-blue-500 text-white"
+                            : ""
+                    }`}
                     title="Underline"
                     type="button"
                 >
@@ -147,7 +157,9 @@ const Tiptap = ({ content = '', onContentChange }) => {
                 {/* Font Size */}
                 <select
                     value={fontSize}
-                    onChange={(e) => handleFontSizeChange(Number(e.target.value))}
+                    onChange={(e) =>
+                        handleFontSizeChange(Number(e.target.value))
+                    }
                     className="px-3 py-1 border rounded"
                     title="Font Size"
                 >
@@ -198,7 +210,7 @@ const Tiptap = ({ content = '', onContentChange }) => {
 
             <EditorContent editor={editor} />
         </div>
-    )
-}
+    );
+};
 
-export default Tiptap
+export default Tiptap;

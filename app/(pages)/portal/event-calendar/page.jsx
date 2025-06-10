@@ -1,9 +1,9 @@
+import React from "react";
 import EventCalendar from "@components/dashboard/EventCalendar";
 
 export default function page() {
     return (
-        <div className="flex justify-between items-center p-5">
-            <h1 className="text-3xl">WELCOME MBD TEAM</h1>
+        <div className="p-5">
             <EventCalendar />
         </div>
     );

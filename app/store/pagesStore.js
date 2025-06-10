@@ -1,6 +1,7 @@
 import { CardStackIcon, DashboardIcon } from "@radix-ui/react-icons";
 import {
     Calendar,
+    CalendarCheck,
     Droplets,
     FileQuestion,
     LocateIcon,
@@ -128,7 +129,7 @@ export const usePagesStore = create((set) => ({
         {
             title: "Blood Drives",
             path: "/events",
-            icon: <GiBlood />,
+            icon: <CalendarCheck />,
             roles: ["Admin", "Developer", "Agency Administrator", "Organizer"],
             is_role_based: true,
             has_child: false,

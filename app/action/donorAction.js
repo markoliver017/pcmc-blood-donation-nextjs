@@ -194,7 +194,6 @@ export async function getDonorById(id) {
 export async function updateDonor(formData) {
     const session = await auth();
     if (!session) throw "You are not authorized to access this request.";
-    console.log("updateDonorStatus", formData);
     const { user } = session;
     formData.updated_by = user.id;
 
