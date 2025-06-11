@@ -9,10 +9,10 @@ import {
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
-import { Command, Eye, MoreHorizontal } from "lucide-react";
+import { Command, Eye, MoreHorizontal, Pencil } from "lucide-react";
 import Link from "next/link";
 import moment from "moment";
-import parse from "html-react-parser";
+// import parse from "html-react-parser";
 
 export const eventColumns = [
     {
@@ -84,6 +84,14 @@ export const eventColumns = [
             }
         },
     },
+    {
+        accessorKey: "createdAt",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Date Created" />
+        ),
+        cell: ({ getValue }) => moment(getValue()).format("MMM DD, YYYY"),
+        filterFn: "columnFilter",
+    },
 
     // {
     //     accessorKey: "description",
@@ -123,12 +131,16 @@ export const eventColumns = [
                                 <span>Show</span>
                             </DropdownMenuItem>
                         </Link>
-                        {/* <Link href={`/portal/admin/users/${data.id}/edit`}>
-                            <DropdownMenuItem className="flex items-center space-x-2">
-                                <Pencil className="w-4 h-4" />
-                                <span>Edit</span>
-                            </DropdownMenuItem>
-                        </Link> */}
+                        {data.status == "for approval" ? (
+                            <Link href={`/portal/hosts/events/${data.id}/edit`}>
+                                <DropdownMenuItem className="flex items-center space-x-2">
+                                    <Pencil className="w-4 h-4" />
+                                    <span>Edit</span>
+                                </DropdownMenuItem>
+                            </Link>
+                        ) : (
+                            ""
+                        )}
                     </DropdownMenuContent>
                 </DropdownMenu>
             );

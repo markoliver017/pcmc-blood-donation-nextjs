@@ -58,8 +58,25 @@ export default function SelectRegisterDrawer({ open, setOpen }) {
                                         className="w-40 h-20 object-fill rounded-lg"
                                         width={150}
                                         height={150}
-                                        alt="Donor"
-                                        title="Donor"
+                                        alt="Agency"
+                                        title="Agency"
+                                    />
+                                </CardContent>
+                            </Card>
+                        </Link>
+                        <Link href="/organizers/coordinators">
+                            <Card className="rounded-sm cursor-pointer hover:ring-1">
+                                <CardHeader>
+                                    <CardTitle>Coordinator</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <Image
+                                        src="/coordinator-img.jpeg"
+                                        className="w-40 h-20 object-fill rounded-lg"
+                                        width={150}
+                                        height={150}
+                                        alt="Coordinator"
+                                        title="Coordinator"
                                     />
                                 </CardContent>
                             </Card>

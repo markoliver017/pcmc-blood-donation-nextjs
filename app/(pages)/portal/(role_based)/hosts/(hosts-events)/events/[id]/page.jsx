@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { getEventsById } from "@/action/eventAction";
+import { getEventsById } from "@/action/hostEventAction";
 import ShowEvents from "@components/events/ShowEvents";
 
 export default async function Page({ params }) {

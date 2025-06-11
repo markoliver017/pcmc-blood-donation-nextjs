@@ -4,19 +4,23 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { useQuery } from "@tanstack/react-query";
-import { getAllEvents } from "@/action/eventAction";
-
+import { getAgencyId, getAllEvents } from "@/action/hostEventAction";
+import parse from "html-react-parser";
 import { CalendarCheck2 } from "lucide-react";
 import Skeleton_line from "@components/ui/skeleton_line";
+import notify from "@components/ui/notify";
 
 export default function AllEventCalendar() {
     const { data: events, isLoading } = useQuery({
         queryKey: ["all_event_schedules"],
         queryFn: getAllEvents,
-        // staleTime: 0,
+    });
+    const { data: agency_id, isLoading: agencyIdIsLoading } = useQuery({
+        queryKey: ["agency_id"],
+        queryFn: getAgencyId,
     });
 
-    if (isLoading) return <Skeleton_line />;
+    if (isLoading || agencyIdIsLoading) return <Skeleton_line />;
 
     return (
         <Card>
@@ -29,16 +33,35 @@ export default function AllEventCalendar() {
                     initialView="dayGridMonth"
                     events={
                         events?.map((event) => ({
-                            title: "",
+                            title: event?.title,
+                            // agency_id == event?.agency_id
+                            //     ? event?.title
+                            //     : "",
                             start: event.from_date,
-                            end: new Date(event.from_date).getTime() === new Date(event.to_date).getTime()
-                                ? event.to_date
-                                : new Date(new Date(event.to_date).setMinutes(new Date(event.to_date).getMinutes() + 1)).toISOString(),
-                            backgroundColor: event?.status == "approved" ? "green" : "orange",
+                            end:
+                                new Date(event.from_date).getTime() ===
+                                new Date(event.to_date).getTime()
+                                    ? event.to_date
+                                    : new Date(
+                                          new Date(event.to_date).setMinutes(
+                                              new Date(
+                                                  event.to_date
+                                              ).getMinutes() + 1
+                                          )
+                                      ).toISOString(),
+                            backgroundColor:
+                                event?.status == "approved"
+                                    ? "green"
+                                    : "orange",
+                            extendedProps: {
+                                isCurrentAgency: agency_id == event?.agency_id,
+                                status: event?.status,
+                                description: event?.description,
+                            },
                         })) || []
                     }
                     eventContent={(eventInfo) => (
-                        <div className="flex justify-center rounded-2xl p-2">
+                        <div className="flex justify-center items-center gap-1 rounded-2xl p-2">
                             <CalendarCheck2 size={20} /> {eventInfo.event.title}
                         </div>
                     )}
@@ -59,10 +82,10 @@ export default function AllEventCalendar() {
                         timeGridWeek: { buttonText: "Week" },
                         timeGridDay: { buttonText: "Day" },
                     }}
-                    // eventClick={(info) => alert(`Event: ${info.event?.status}`)}
+                    eventClick={(info) => alert(`Event - ${info.event?.title}`)}
                     height="100%"
                     contentHeight="auto"
-                // aspectRatio={3} //Sets the aspect ratio of the calendar. A higher value will make the calendar wider, while a lower value will make it taller.
+                    // aspectRatio={3} //Sets the aspect ratio of the calendar. A higher value will make the calendar wider, while a lower value will make it taller.
                 />
             </CardContent>
         </Card>

@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 import parse from "html-react-parser";
 
+import { getEventsById } from "@/action/hostEventAction";
 import React from "react";
 
 export default function ShowEvents({ eventId }) {
@@ -89,10 +90,9 @@ export default function ShowEvents({ eventId }) {
                                     Contact Number
                                 </TableCell>
                                 <TableCell>
-                                    {
-                                        event?.requester?.coordinator
-                                            ?.contact_number
-                                    }
+                                    {event?.requester?.coordinator
+                                        ?.contact_number ||
+                                        event?.agency?.contact_number}
                                 </TableCell>
                             </TableRow>
 

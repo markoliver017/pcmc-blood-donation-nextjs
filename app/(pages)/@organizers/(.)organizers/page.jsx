@@ -1,11 +1,10 @@
 import InterceptModal from "@components/layout/InterceptModal";
-import AgencyListCard from "@components/organizers/AgencyListCard";
-
+import AgencyListCardForDonor from "@components/organizers/AgencyListCardForDonor";
 
 export default function page() {
     return (
         <InterceptModal>
-            <AgencyListCard />
+            <AgencyListCardForDonor />
         </InterceptModal>
-    )
+    );
 }

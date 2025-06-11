@@ -7,7 +7,7 @@ export default function FormLogger({
     data = null, //useMutation
 }) {
     return (
-        <div className="card-body border my-5">
+        <div className="card-body border my-5 dark:text-white">
             {watch && (
                 <>
                     <div className="font-bold">Watch FormData:</div>
@@ -24,7 +24,9 @@ export default function FormLogger({
 
             {data && (
                 <>
-                    <div className="font-bold text-green-500">Mutate Success data</div>
+                    <div className="font-bold text-green-500">
+                        Mutate Success data
+                    </div>
                     <pre>{JSON.stringify(data, null, 3)}</pre>
                 </>
             )}

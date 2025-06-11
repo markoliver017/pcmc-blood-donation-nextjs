@@ -11,7 +11,10 @@ import {
     User,
 } from "@lib/models";
 import { formatSeqObj } from "@lib/utils/object.utils";
-import { bloodDonationEventSchema } from "@lib/zod/bloodDonationSchema";
+import {
+    bloodDonationEventSchema,
+    eventStatusSchema,
+} from "@lib/zod/bloodDonationSchema";
 import { Op } from "sequelize";
 // import { logAuditTrail } from "@lib/audit_trails.utils";
 
@@ -56,6 +59,7 @@ export async function getAgencyId() {
     return null;
 }
 
+/* use in allDataEvents components event calendar */
 export async function getAllEvents() {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -63,17 +67,39 @@ export async function getAllEvents() {
         const events = await BloodDonationEvent.findAll({
             where: {
                 status: {
-                    [Op.in]: ["for approval", "approved"],
+                    [Op.not]: "for approval",
                 },
             },
+            order: [["createdAt", "DESC"]],
+            include: [
+                {
+                    model: User,
+                    as: "requester",
+                    attributes: ["id", "name", "email", "image"],
+                },
+                {
+                    model: Agency,
+                    as: "agency",
+                },
+                {
+                    model: User,
+                    as: "validator",
+                    attributes: ["id", "name", "email", "image"],
+                },
+                {
+                    model: User,
+                    as: "editor",
+                    attributes: ["id", "name", "email", "image"],
+                },
+            ],
         });
 
         const formattedEvents = formatSeqObj(events);
 
-        return formattedEvents;
+        return { success: true, data: formattedEvents };
     } catch (err) {
         logErrorToFile(err, "getAllEvents ERROR");
-        throw {
+        return {
             success: false,
             type: "server",
             message: err || "Unknown error",
@@ -89,8 +115,8 @@ export async function getAllEventsByAgency() {
     if (!agency_id) {
         return {
             success: false,
-            message: 'Agency not found or inactive!'
-        }
+            message: "Agency not found or inactive!",
+        };
     }
 
     try {
@@ -112,8 +138,7 @@ export async function getAllEventsByAgency() {
 
         const formattedEvents = formatSeqObj(events);
 
-        return { success: true, data: formattedEvents }
-
+        return { success: true, data: formattedEvents };
     } catch (err) {
         logErrorToFile(err, "getAllEventsByAgency ERROR");
         return {
@@ -123,19 +148,13 @@ export async function getAllEventsByAgency() {
         };
     }
 }
-export async function getForApprovalEventsByAgency(status) {
+
+export async function getEventsByStatus(status) {
     // await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const agency_id = await getAgencyId();
-
-    if (!agency_id) {
-        throw "Unauthorized access: You are not allowed to access this resources.";
-    }
 
     try {
         const events = await BloodDonationEvent.findAll({
             where: {
-                agency_id,
                 status: {
                     [Op.eq]: status,
                 },
@@ -153,7 +172,7 @@ export async function getForApprovalEventsByAgency(status) {
 
         return formattedEvents;
     } catch (err) {
-        logErrorToFile(err, "getForApprovalEventsByAgency ERROR");
+        logErrorToFile(err, "getEventsByStatus ERROR");
         throw {
             success: false,
             type: "server",
@@ -433,5 +452,75 @@ export async function updateEvent(id, formData) {
             type: "server",
             message: err || "Unknown error",
         };
+    }
+}
+
+export async function updateEventStatus(formData) {
+    const session = await auth();
+    if (!session) throw "You are not authorized to access this request.";
+
+    const { user } = session;
+    formData.verified_by = user.id;
+
+    const parsed = eventStatusSchema.safeParse(formData);
+
+    if (!parsed.success) {
+        const fieldErrors = parsed.error.flatten().fieldErrors;
+        return {
+            success: false,
+            type: "validation",
+            message:
+                "Validation Error: Please try again. If the issue persists, contact your administrator for assistance.",
+            errorObj: parsed.error.flatten().fieldErrors,
+            errorArr: Object.values(fieldErrors).flat(),
+        };
+    }
+
+    const { data } = parsed;
+
+    const event = await BloodDonationEvent.findByPk(data.id);
+
+    if (!event) {
+        throw new Error("Database Error: Event ID was not found");
+    }
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        const updatedEvent = await event.update(data, { transaction });
+
+        await transaction.commit();
+
+        await logAuditTrail({
+            userId: user.id,
+            controller: "adminEventAction",
+            action: "UPDATE EVENT STATUS",
+            details: `Event status has been successfully updated. ID#: ${updatedEvent?.id}`,
+        });
+
+        const title = {
+            rejected: "Rejection Successful",
+            approved: "Status Update",
+            cancelled: "Status Update",
+        };
+        const text = {
+            rejected: "Blood donation event rejected successfully.",
+            approved: "Blood donation event activated successfully.",
+            cancelled: "Blood donation event cancelled successfully.",
+        };
+
+        return {
+            success: true,
+            data: updatedEvent.get({ plain: true }),
+            title: title[data.status] || "Update!",
+            text:
+                text[data.status] ||
+                "Blood donation event updated successfully.",
+        };
+    } catch (err) {
+        logErrorToFile(err, "UPDATE EVENT STATUS");
+        await transaction.rollback();
+
+        throw err.message || "Unknown error";
     }
 }

@@ -61,7 +61,7 @@ export const adminDonorColumns = [
     {
         accessorKey: "agency.name",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Display Name" />
+            <DataTableColumnHeader column={column} title="Agency Name" />
         ),
         filterFn: "columnFilter",
     },

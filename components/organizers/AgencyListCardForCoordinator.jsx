@@ -13,7 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { Building2 } from "lucide-react";
 
-export default function AgencyListCard() {
+export default function AgencyListCardForCoordinator() {
     const { data: agencies, isLoading: agencyIsFetching } = useQuery({
         queryKey: ["agencies"],
         queryFn: fetchActiveAgency,
@@ -48,7 +48,7 @@ export default function AgencyListCard() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {agencies.map((agency, i) => (
                             <Link
-                                href={`/organizers/${agency.id}/register`}
+                                href={`/organizers/${agency.id}/register-coordinators`}
                                 key={i}
                             >
                                 <Card className="hover:ring-2 hover:ring-blue-400 group transition shadow-lg/40">

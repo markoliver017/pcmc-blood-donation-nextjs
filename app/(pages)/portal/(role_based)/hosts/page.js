@@ -1,4 +1,4 @@
-import EventCalendar from "@components/dashboard/EventCalendar";
+import AllEventCalendar from "@components/organizers/AllEventCalendar";
 import { auth } from "@lib/auth";
 import SessionTimer from "@lib/utils/SessionTimer";
 
@@ -17,7 +17,7 @@ export default async function page() {
             </div>
 
             <div className="">
-                <EventCalendar />
+                <AllEventCalendar />
             </div>
         </div>
     );

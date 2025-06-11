@@ -102,7 +102,9 @@ export default function ShowDonor({ donorId }) {
                             <TableCell className="font-semibold">
                                 Blood Type
                             </TableCell>
-                            <TableCell>{donor.blood_type.blood_type}</TableCell>
+                            <TableCell>
+                                {donor?.blood_type?.blood_type}
+                            </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">

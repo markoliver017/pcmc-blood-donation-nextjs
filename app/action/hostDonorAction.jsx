@@ -20,6 +20,7 @@ export async function getVerifiedDonorsByAgency() {
                 status: "activated",
             },
         });
+        let agency_id = agency?.id;
 
         /* For Organizer */
         if (user?.role_name == "Organizer") {
@@ -29,6 +30,7 @@ export async function getVerifiedDonorsByAgency() {
                     status: "activated",
                 },
             });
+            agency_id = agency?.agency_id;
         }
 
         if (!agency) {
@@ -37,7 +39,7 @@ export async function getVerifiedDonorsByAgency() {
 
         const donors = await Donor.findAll({
             where: {
-                agency_id: agency.id,
+                agency_id,
                 status: {
                     [Op.not]: "for approval",
                 },
@@ -85,6 +87,7 @@ export async function getHostDonorsByStatus(status) {
                 status: "activated",
             },
         });
+        let agency_id = agency?.id;
 
         /* For Organizer */
         if (user?.role_name == "Organizer") {
@@ -94,6 +97,7 @@ export async function getHostDonorsByStatus(status) {
                     status: "activated",
                 },
             });
+            agency_id = agency?.agency_id;
         }
 
         if (!agency) {
@@ -101,7 +105,7 @@ export async function getHostDonorsByStatus(status) {
         }
 
         const donors = await Donor.findAll({
-            where: { status, agency_id: agency.id },
+            where: { status, agency_id },
             include: [
                 {
                     model: User,
@@ -117,7 +121,8 @@ export async function getHostDonorsByStatus(status) {
                 },
             ],
         });
-
+        console.log(">>>>>>>>>>>>>>>>>>agency", agency.id);
+        console.log(">>>>>>>>>>>>>>>>>>donors", donors);
         return formatSeqObj(donors);
     } catch (err) {
         logErrorToFile(err, "getHostDonorsByStatus ERROR");

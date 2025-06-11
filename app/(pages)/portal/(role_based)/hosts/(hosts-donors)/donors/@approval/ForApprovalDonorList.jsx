@@ -69,7 +69,7 @@ export default function ForApprovalDonorList() {
                             <span>Address: {donor.full_address}</span>
                             <ApprovalRejectComponent
                                 data={donor}
-                                callbackUrl={`/portal/admin/donors/${donor.id}`}
+                                callbackUrl={`/portal/hosts/donors/${donor.id}`}
                             />
                         </CardDescription>
                     </CardHeader>

@@ -11,13 +11,15 @@ import Skeleton_user from "@components/ui/Skeleton_user";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 
-import { FileClock } from "lucide-react";
+import { FileClock, Pencil } from "lucide-react";
 import parse from "html-react-parser";
 
-import { getForApprovalEventsByAgency } from "@/action/eventAction";
+import { getForApprovalEventsByAgency } from "@/action/hostEventAction";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function ForApprovalEventList() {
+    const router = useRouter();
     const { data: events, isLoading: eventsIsFetching } = useQuery({
         queryKey: ["agency_events", "for approval"],
         queryFn: async () => getForApprovalEventsByAgency("for approval"),
@@ -51,11 +53,27 @@ export default function ForApprovalEventList() {
                         <CardHeader>
                             <CardTitle className="flex flex-wrap justify-between">
                                 <span className="text-xl">{event?.title}</span>
-                                <span className="text-sm text-slate-600">
-                                    {moment(event?.createdAt).format(
-                                        "MMM DD, YYYY"
-                                    )}
-                                </span>
+                                <div className="flex gap-1">
+                                    <span className="text-sm text-slate-600">
+                                        {moment(event?.createdAt).format(
+                                            "MMM DD, YYYY"
+                                        )}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        className="btn btn-xs btn-ghost"
+                                        title="Edit"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            e.preventDefault();
+                                            router.push(
+                                                `/portal/hosts/events/${event.id}/edit`
+                                            );
+                                        }}
+                                    >
+                                        <Pencil className="h-4" />
+                                    </button>
+                                </div>
                             </CardTitle>
                             <CardDescription className="flex flex-wrap flex-col gap-1">
                                 <span>

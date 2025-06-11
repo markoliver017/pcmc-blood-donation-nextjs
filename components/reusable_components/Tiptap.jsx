@@ -53,7 +53,7 @@ const Tiptap = ({ content = "", onContentChange }) => {
         },
         editorProps: {
             attributes: {
-                class: "px-4 py-2 bg-white text-gray-900 dark:text-gray-50 min-h-[80px] border border-gray-300 rounded",
+                class: "px-4 py-2 bg-white dark:bg-inherit text-gray-900 dark:text-gray-50 min-h-[80px] border border-gray-300 rounded",
                 tabIndex: "3",
             },
         },

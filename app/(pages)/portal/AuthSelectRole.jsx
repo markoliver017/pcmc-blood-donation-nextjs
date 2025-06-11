@@ -1,4 +1,5 @@
 "use client";
+import LoadingModal from "@components/layout/LoadingModal";
 import { reactIconsFa } from "@components/reusable_components/PreloadedIcons";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import Skeleton from "@components/ui/skeleton";
@@ -8,10 +9,11 @@ import { motion } from "framer-motion";
 import { LogIn } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
 export default function AuthSelectRole({ roles }) {
     const { status, update } = useSession();
+    const [isLoading, setIsLoading] = useState(false);
 
     if (status === "loading")
         return (
@@ -22,6 +24,7 @@ export default function AuthSelectRole({ roles }) {
 
     return (
         <>
+            <LoadingModal isLoading={isLoading} />
             <div className="flex flex-col items-center justify-center px-4 p-5 ">
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-bold mb-2">
@@ -57,6 +60,7 @@ export default function AuthSelectRole({ roles }) {
                                 <CardContent className="flex justify-center">
                                     <button
                                         onClick={async () => {
+                                            setIsLoading(true);
                                             await update({
                                                 role_name: role.role_name,
                                             });

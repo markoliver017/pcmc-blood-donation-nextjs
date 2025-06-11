@@ -50,7 +50,7 @@ import { MdDeleteForever } from "react-icons/md";
 import ToggleAny from "@components/reusable_components/ToggleAny";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { bloodDonationEventSchema } from "@lib/zod/bloodDonationSchema";
-import { storeEvent } from "@/action/eventAction";
+import { storeEvent } from "@/action/hostEventAction";
 import { uploadPicture } from "@/action/uploads";
 import AllEventCalendar from "@components/organizers/AllEventCalendar";
 import DrawerComponent from "@components/reusable_components/DrawerComponent";
@@ -181,7 +181,6 @@ export default function CreateEventForm({ agency }) {
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="p-5 shadow border rounded-2xl"
-                id="form-modal"
             >
                 <Card className="md:p-4 bg-slate-100 p-3">
                     <CardHeader className="text-2xl font-bold">
@@ -194,7 +193,10 @@ export default function CreateEventForm({ agency }) {
                                     title="Event Calendar"
                                     trigger={
                                         <DrawerTrigger className="btn btn-primary">
-                                            <CalendarPlus2 /> <span className="hidden md:inline-block">Event Calendar</span>
+                                            <CalendarPlus2 />{" "}
+                                            <span className="hidden md:inline-block">
+                                                Event Calendar
+                                            </span>
                                         </DrawerTrigger>
                                     }
                                 >
@@ -397,7 +399,7 @@ export default function CreateEventForm({ agency }) {
                                     />
                                 </CardDescription>
 
-                                <CardContent>
+                                <CardContent id="form-modal">
                                     <div className="flex gap-3 flex-wrap px-2">
                                         {fields.map((item, index) => (
                                             <Card
