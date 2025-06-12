@@ -38,9 +38,8 @@ const multiSelectVariants = (variant) => {
             "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         inverted: "inverted",
     };
-    return `m-1 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 ${
-        variants[variant || "default"]
-    }`;
+    return `m-1 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 ${variants[variant || "default"]
+        }`;
 };
 
 const MultiSelect = forwardRef(
@@ -157,17 +156,28 @@ const MultiSelect = forwardRef(
                                                     )}
                                                     {option?.label.length > 15
                                                         ? `${option.label.substring(
-                                                              0,
-                                                              15
-                                                          )}...`
+                                                            0,
+                                                            15
+                                                        )}...`
                                                         : option.label}
-                                                    <XCircle
+                                                    {/* <XCircle
                                                         className="ml-2 h-4 w-4 cursor-pointer"
                                                         onClick={(event) => {
                                                             event.stopPropagation();
+                                                            event.preventDefault();
                                                             toggleOption(value);
                                                         }}
-                                                    />
+                                                    /> */}
+                                                    <div
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            e.preventDefault();
+                                                            toggleOption(value);
+                                                        }}
+                                                        className="cursor-pointer"
+                                                    >
+                                                        <XCircle className="ml-2 h-4 w-4" />
+                                                    </div>
                                                 </Badge>
                                             );
                                         })}
@@ -180,32 +190,37 @@ const MultiSelect = forwardRef(
                                                     : "",
                                                 multiSelectVariants(variant)
                                             )}
+
                                             style={{
                                                 animationDuration: `${animation}s`,
                                             }}
                                         >
-                                            {`+ ${
-                                                selectedValues.length - maxCount
-                                            } more`}
-                                            <XCircle
-                                                className="ml-2 h-4 w-4 cursor-pointer"
-                                                onClick={(event) => {
-                                                    event.stopPropagation();
+                                            {`+ ${selectedValues.length - maxCount
+                                                } more`}
+                                            <div
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    e.preventDefault();
                                                     clearExtraOptions();
                                                 }}
-                                            />
+                                                className="cursor-pointer"
+                                            >
+                                                <XCircle className="ml-2 h-4 w-4" />
+                                            </div>
                                         </Badge>
                                     )}
                                 </div>
                                 <div className="flex items-center justify-between z-50">
-                                    <XIcon
-                                        className="h-4 mx-2 cursor-pointer text-muted-foreground"
-                                        onClick={(event) => {
-                                            event.stopPropagation();
-                                            console.log("XIcon clicked");
+                                    <div
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            e.preventDefault();
                                             handleClear();
                                         }}
-                                    />
+                                        className="cursor-pointer"
+                                    >
+                                        <XIcon className="h-4 mx-2 text-muted-foreground" />
+                                    </div>
                                     <Separator
                                         orientation="vertical"
                                         className="flex min-h-6 h-full"

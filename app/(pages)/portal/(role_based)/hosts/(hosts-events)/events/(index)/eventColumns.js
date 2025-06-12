@@ -9,12 +9,18 @@ import {
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
-import { Command, Eye, MoreHorizontal, Pencil } from "lucide-react";
+import { Check, CircleCheck, Command, Eye, MoreHorizontal, Pencil, XIcon } from "lucide-react";
 import Link from "next/link";
 import moment from "moment";
+import EventRegistrationStatus from "@components/organizers/EventRegistrationStatus";
+import { GiClosedDoors, GiOpenBook } from "react-icons/gi";
+import { formatFormalName } from "@lib/utils/string.utils";
+import { ExclamationTriangleIcon, QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+import { BiCalendarExclamation } from "react-icons/bi";
+import { FaExclamation } from "react-icons/fa";
 // import parse from "html-react-parser";
 
-export const eventColumns = [
+export const eventColumns = (setIsLoading) => [
     {
         accessorKey: "id",
         header: ({ column }) => (
@@ -64,24 +70,63 @@ export const eventColumns = [
             const data = row.original;
             const status = data.status.toUpperCase();
             if (status == "APPROVED") {
+
                 return (
-                    <div className="badge p-2 font-semibold text-xs badge-success">
-                        {status}
+                    <div className="space-x-2 space-y-1">
+                        <div className="badge p-2 font-semibold text-xs badge-success">
+                            <CircleCheck className="h-4" />{status}
+                        </div>
                     </div>
                 );
             } else if (status == "FOR APPROVAL") {
                 return (
                     <div className="badge p-2 font-semibold text-xs badge-warning">
-                        {status}
+                        <QuestionMarkCircledIcon className="h-4" />{status}
                     </div>
                 );
             } else {
                 return (
                     <div className="badge p-2 font-semibold text-xs badge-error">
-                        {status}
+                        <FaExclamation className="h-3" /> {status}
                     </div>
                 );
             }
+        },
+    },
+    {
+        accessorKey: "registration_status",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Registration" />
+        ),
+        filterFn: "columnFilter",
+        cell: ({ row }) => {
+            const data = row.original;
+
+            let regStatusBadge = (
+                <div className="badge p-2 font-semibold text-xs badge-warning">
+                    <ExclamationTriangleIcon /> {formatFormalName(data.registration_status)}
+                </div>
+            )
+            if (data.registration_status == "closed") {
+                regStatusBadge = (
+                    <div className="badge p-2 font-semibold text-xs badge-error">
+                        <GiClosedDoors /> {formatFormalName(data.registration_status)}
+                    </div>
+                )
+            }
+            if (data.registration_status == "ongoing") {
+                regStatusBadge = (
+                    <div className="badge p-2 font-semibold text-xs badge-primary">
+                        <GiOpenBook /> {formatFormalName(data.registration_status)}
+                    </div>
+                )
+            }
+            return (
+                <div className="space-x-2 space-y-1">
+                    {regStatusBadge}
+                </div>
+            );
+
         },
     },
     {
@@ -126,7 +171,7 @@ export const eventColumns = [
                         <DropdownMenuSeparator />
 
                         <Link href={`/portal/hosts/events/${data.id}`}>
-                            <DropdownMenuItem className="flex items-center space-x-2">
+                            <DropdownMenuItem className="btn btn-ghost btn-neutral space-x-2">
                                 <Eye className="w-4 h-4" />
                                 <span>Show</span>
                             </DropdownMenuItem>
@@ -138,6 +183,18 @@ export const eventColumns = [
                                     <span>Edit</span>
                                 </DropdownMenuItem>
                             </Link>
+                        ) : (
+                            ""
+                        )}
+
+                        {data.status == "approved" ? (
+                            <DropdownMenuItem>
+                                <EventRegistrationStatus
+                                    data={data}
+                                    setIsLoading={setIsLoading}
+                                />
+                            </DropdownMenuItem>
+
                         ) : (
                             ""
                         )}

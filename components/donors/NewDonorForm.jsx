@@ -438,7 +438,7 @@ export default function NewDonorForm({ role_name, agency_id }) {
                                 ""
                             )}
 
-                            <FormLogger
+                            {/* <FormLogger
                                 watch={watch}
                                 errors={errors}
                                 data={newDonorData}
@@ -450,7 +450,7 @@ export default function NewDonorForm({ role_name, agency_id }) {
                             <pre>
                                 <b>Govt ID File: </b>{" "}
                                 {JSON.stringify(govtIdFile)}
-                            </pre>
+                            </pre> */}
                         </form>
                     </Form>
                 </CardContent>

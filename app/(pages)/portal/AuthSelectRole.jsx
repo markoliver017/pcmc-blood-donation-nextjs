@@ -24,7 +24,7 @@ export default function AuthSelectRole({ roles }) {
 
     return (
         <>
-            <LoadingModal isLoading={isLoading} />
+            <LoadingModal imgSrc="/loader_3.gif" isLoading={isLoading} />
             <div className="flex flex-col items-center justify-center px-4 p-5 ">
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-bold mb-2">

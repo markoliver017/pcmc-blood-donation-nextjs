@@ -6,7 +6,8 @@ const MySwal = withReactContent(Swal);
 
 export default function SweetAlert({
     title = 'Notification',
-    text = 'Are you sure about this action?',
+    text = "",
+    html = "",
     icon = 'warning',
     showCancelButton = false,
     confirmButtonText = 'Yes',
@@ -19,6 +20,7 @@ export default function SweetAlert({
         target: document.getElementById(element_id),
         title: <p>{title}</p>,
         text,
+        html,
         icon,
         showCancelButton,
         confirmButtonText,

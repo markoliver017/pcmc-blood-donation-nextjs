@@ -10,7 +10,7 @@ import {
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-export default function LoadingModal({ isLoading }) {
+export default function LoadingModal({ imgSrc = "/loader_2.gif", isLoading }) {
 
     return (
         <Dialog
@@ -29,7 +29,7 @@ export default function LoadingModal({ isLoading }) {
                 <div className="flex flex-col justify-center items-center">
 
                     <Image
-                        src="/loader_2.gif"
+                        src={imgSrc}
                         className="flex-none rounded-4xl"
                         width={250}
                         height={250}

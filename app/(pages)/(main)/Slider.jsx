@@ -35,7 +35,7 @@ export default function MainSlider() {
                             alt="Philippine Children's Medical Center"
                             title="Philippine Children's Medical Center"
                         />
-                        <p className="absolute top-10 left-10 z-50 bg-white/70 p-4 rounded w-120">
+                        <p className="absolute top-10 left-10 z-50 bg-white/70 p-4 rounded w-120 dark:text-slate-600">
                             Lorem ipsum dolor sit amet consectetur adipisicing
                             elit. Odit temporibus laborum cum inventore
                             molestiae nisi tempora nostrum rem praesentium ea
@@ -72,14 +72,14 @@ export default function MainSlider() {
                     </div> */}
                     <div className="h-140 relative">
                         <Image
-                            src="/pcmc-hospital-bg.jpg"
-                            className="h-full w-full object-cover"
-                            width={1500}
-                            height={1000}
+                            src="/slide-main-2.png"
+                            className="h-full w-full object-fit"
+                            width={1920}
+                            height={654}
                             alt="Philippine Children's Medical Center"
                             title="Philippine Children's Medical Center"
                         />
-                        <p className="absolute top-3 right-20 z-50 bg-white/70 p-4 rounded w-140">
+                        {/* <p className="absolute top-3 right-20 z-50 bg-white/70 p-4 rounded w-140">
                             Lorem ipsum dolor sit amet consectetur adipisicing
                             elit. Odit temporibus laborum cum inventore
                             molestiae nisi tempora nostrum rem praesentium ea
@@ -95,7 +95,7 @@ export default function MainSlider() {
                             vel eius veniam quisquam ex totam repellat, facilis
                             dolorum ipsam, impedit soluta obcaecati nesciunt
                             quibusdam!
-                        </p>
+                        </p> */}
                     </div>
                 </Slider>
                 <div className="absolute bottom-10 left-30 flex gap-5">

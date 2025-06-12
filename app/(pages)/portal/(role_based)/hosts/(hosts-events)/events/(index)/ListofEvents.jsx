@@ -1,16 +1,18 @@
 "use client";
 import { DataTable } from "@components/reusable_components/Datatable";
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import React, { useState } from "react";
 import { eventColumns } from "./eventColumns";
 import { getAllEventsByAgency } from "@/action/hostEventAction";
 import { CalendarPlus } from "lucide-react";
 import Link from "next/link";
+import LoadingModal from "@components/layout/LoadingModal";
 
 export default function ListofEvents() {
+    const [isLoading, setIsLoading] = useState(false)
     const {
         data: events,
-        isLoading,
+        isLoading: eventIsLoading,
         error,
         isError,
     } = useQuery({
@@ -35,12 +37,15 @@ export default function ListofEvents() {
             </div>
         );
 
+    const columns = eventColumns(setIsLoading);
+
     return (
-        <div className="w-full p-4">
+        <div>
+            <LoadingModal imgSrc="/loader_3.gif" isLoading={isLoading} />
             <DataTable
                 data={events || []}
-                columns={eventColumns}
-                isLoading={isLoading}
+                columns={columns}
+                isLoading={eventIsLoading}
             />
         </div>
     );

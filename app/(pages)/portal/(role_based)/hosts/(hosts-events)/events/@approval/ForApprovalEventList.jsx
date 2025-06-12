@@ -54,7 +54,7 @@ export default function ForApprovalEventList() {
                             <CardTitle className="flex flex-wrap justify-between">
                                 <span className="text-xl">{event?.title}</span>
                                 <div className="flex gap-1">
-                                    <span className="text-sm text-slate-600">
+                                    <span className="text-sm text-slate-600 dark:text-slate-400">
                                         {moment(event?.createdAt).format(
                                             "MMM DD, YYYY"
                                         )}
@@ -75,7 +75,7 @@ export default function ForApprovalEventList() {
                                     </button>
                                 </div>
                             </CardTitle>
-                            <CardDescription className="flex flex-wrap flex-col gap-1">
+                            <CardDescription className="flex flex-wrap flex-col gap-1 dark:text-slate-300">
                                 <span>
                                     Description: {parse(event?.description)}
                                 </span>
@@ -93,19 +93,19 @@ export default function ForApprovalEventList() {
                             </div>
                             <div className="md:flex-1 flex flex-col gap-2">
                                 <label className="text-xs">From:</label>
-                                <span className="text-lg text-slate-800 font-semibold">
+                                <span className="text-lg text-slate-800 dark:text-slate-300 font-semibold">
                                     {moment(event?.from_date).format(
                                         "MMM DD, YYYY"
                                     )}
                                 </span>
                                 <label className="text-xs">To:</label>
-                                <span className="text-lg text-slate-800 font-semibold">
+                                <span className="text-lg text-slate-800 dark:text-slate-300 font-semibold">
                                     {moment(event?.to_date).format(
                                         "MMM DD, YYYY"
                                     )}
                                 </span>
                                 <label className="text-xs">Organizer:</label>
-                                <span className="text-lg text-slate-800 font-semibold">
+                                <span className="text-lg text-slate-800 dark:text-slate-300 font-semibold">
                                     {event?.requester?.name}
                                 </span>
                             </div>

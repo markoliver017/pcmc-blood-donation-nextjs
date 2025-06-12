@@ -143,8 +143,8 @@ export const usePagesStore = create((set) => ({
             has_child: false,
         },
         {
-            title: "Find Donation Drives",
-            path: "/blood-drives",
+            title: "Blood Drives",
+            path: "/events",
             icon: <LocateIcon />,
             roles: ["Donor"],
             is_role_based: true,

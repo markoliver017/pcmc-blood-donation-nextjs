@@ -19,13 +19,13 @@ export default function ApprovalRejectComponent({ data, callbackUrl }) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="default" className="h-8 w-min p-0">
+                <Button variant="default" className="h-8 w-min p-0 border">
                     <span className="sr-only">Open menu</span>
-                    {formatFormalName(data.status)}
                     <SquareMenu className="h-4 w-4" />
+                    Actions
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="start">
                 <DropdownMenuLabel className="flex items-center space-x-2">
                     <Command className="w-3 h-3" />
                     <span>Actions</span>

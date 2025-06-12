@@ -50,9 +50,8 @@ export default function LoginForm() {
 
 
         if (res.ok && res.error == undefined) {
-            toast.success("Login successful!", {
-                message: "Login successful!",
-                position: "top-right",
+            toast.success("You're now signed in.", {
+                position: "bottom-right",
             });
 
             // router.push(res.url);

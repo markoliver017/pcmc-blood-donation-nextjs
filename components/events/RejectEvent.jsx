@@ -4,6 +4,7 @@ import { updateAgencyStatus } from "@/action/agencyAction";
 
 import {
     Dialog,
+    DialogContent,
     DialogContentNoX,
     DialogDescription,
     DialogHeader,
@@ -99,7 +100,7 @@ export default function RejectEvent({ eventId, className = "btn-error" }) {
             >
                 <XIcon /> Reject
             </DialogTrigger>
-            <DialogContentNoX>
+            <DialogContent>
                 <ToastContainer />
                 <DialogHeader>
                     <div
@@ -112,10 +113,10 @@ export default function RejectEvent({ eventId, className = "btn-error" }) {
                         <Cross2Icon className="h-4 w-4" />
                         <span className="sr-only">Close</span>
                     </div>
-                    <DialogTitle>
-                        Are you sure you want to reject this application?
+                    <DialogTitle className="dark:text-white">
+                        Are you sure you want to reject this blood drive event?
                     </DialogTitle>
-                    <DialogDescription>
+                    <DialogDescription className="dark:text-slate-200">
                         This action cannot be undone.
                     </DialogDescription>
                     <Form {...form}>
@@ -133,7 +134,7 @@ export default function RejectEvent({ eventId, className = "btn-error" }) {
                                         </label>
 
                                         <textarea
-                                            className="textarea textarea-info h-24 w-full border"
+                                            className="textarea dark:text-white textarea-info h-24 w-full border"
                                             placeholder="Your reason"
                                             {...field}
                                         />
@@ -142,11 +143,12 @@ export default function RejectEvent({ eventId, className = "btn-error" }) {
                                 )}
                             />
                             <div className="flex justify-end">
+
                                 <button
                                     type="button"
                                     onClick={() => handleSubmit(onSubmit)()}
                                     disabled={!isDirty || isPending}
-                                    className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300"
+                                    className="btn btn-neutral mt-4 space-x-2 hover:bg-neutral-800 hover:text-red-300"
                                 >
                                     {isPending ? (
                                         <>
@@ -156,7 +158,7 @@ export default function RejectEvent({ eventId, className = "btn-error" }) {
                                     ) : (
                                         <>
                                             <Save />
-                                            Submit
+                                            Reject
                                         </>
                                     )}
                                 </button>
@@ -164,7 +166,7 @@ export default function RejectEvent({ eventId, className = "btn-error" }) {
                         </form>
                     </Form>
                 </DialogHeader>
-            </DialogContentNoX>
+            </DialogContent>
         </Dialog>
     );
 }

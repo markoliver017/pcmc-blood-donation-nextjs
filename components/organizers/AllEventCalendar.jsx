@@ -40,15 +40,15 @@ export default function AllEventCalendar() {
                             start: event.from_date,
                             end:
                                 new Date(event.from_date).getTime() ===
-                                new Date(event.to_date).getTime()
+                                    new Date(event.to_date).getTime()
                                     ? event.to_date
                                     : new Date(
-                                          new Date(event.to_date).setMinutes(
-                                              new Date(
-                                                  event.to_date
-                                              ).getMinutes() + 1
-                                          )
-                                      ).toISOString(),
+                                        new Date(event.to_date).setMinutes(
+                                            new Date(
+                                                event.to_date
+                                            ).getMinutes() + 1
+                                        )
+                                    ).toISOString(),
                             backgroundColor:
                                 event?.status == "approved"
                                     ? "green"
@@ -85,7 +85,7 @@ export default function AllEventCalendar() {
                     eventClick={(info) => alert(`Event - ${info.event?.title}`)}
                     height="100%"
                     contentHeight="auto"
-                    // aspectRatio={3} //Sets the aspect ratio of the calendar. A higher value will make the calendar wider, while a lower value will make it taller.
+                // aspectRatio={3} //Sets the aspect ratio of the calendar. A higher value will make the calendar wider, while a lower value will make it taller.
                 />
             </CardContent>
         </Card>

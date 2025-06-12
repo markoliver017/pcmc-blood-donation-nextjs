@@ -18,7 +18,7 @@ export default async function Page({ params }) {
     });
 
     return (
-        <InterceptModal>
+        <InterceptModal className="2xl:min-w-8/10">
             <HydrationBoundary state={dehydrate(queryClient)}>
                 <div className="w-full md:w-9/10 2xl:w-8-10 mx-auto shadow-lg">
                     <UpdateEventForm eventId={id} />

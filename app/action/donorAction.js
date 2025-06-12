@@ -4,7 +4,7 @@ import { logAuditTrail } from "@lib/audit_trails.utils";
 import { auth } from "@lib/auth";
 
 import { logErrorToFile } from "@lib/logger.server";
-import { Agency, BloodType, Donor, Role, sequelize, User } from "@lib/models";
+import { Agency, BloodDonationEvent, BloodType, Donor, Role, sequelize, User } from "@lib/models";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import {
     bloodtypeSchema,
@@ -13,6 +13,61 @@ import {
     donorStatusSchema,
 } from "@lib/zod/donorSchema";
 import { Op } from "sequelize";
+
+export async function getApprovedEventsByAgency() {
+    // await new Promise((resolve) => setTimeout(resolve, 500));
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+    const { user } = session;
+    const donor = await Donor.findOne({
+        where: {
+            user_id: user.id,
+            status: "activated"
+        }
+    })
+
+    if (!donor) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+
+    try {
+        const events = await BloodDonationEvent.findAll({
+            where: {
+                agency_id: donor.agency_id,
+                status: {
+                    [Op.eq]: "approved",
+                },
+            },
+            order: [["createdAt", "DESC"]],
+            include: [
+                {
+                    model: User,
+                    as: "requester",
+                    attributes: ["id", "name", "email", "image"],
+                },
+            ],
+        });
+
+        const formattedEvents = formatSeqObj(events);
+
+        return { success: true, data: formattedEvents };
+    } catch (err) {
+        logErrorToFile(err, "getApprovedEventsByAgency ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: err || "Unknown error",
+        };
+    }
+}
 
 /* For client user registration */
 export async function storeDonor(formData) {

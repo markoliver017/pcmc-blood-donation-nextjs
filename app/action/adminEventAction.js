@@ -13,6 +13,7 @@ import {
 import { formatSeqObj } from "@lib/utils/object.utils";
 import {
     bloodDonationEventSchema,
+    eventRegistrationStatusSchema,
     eventStatusSchema,
 } from "@lib/zod/bloodDonationSchema";
 import { Op } from "sequelize";
@@ -456,6 +457,7 @@ export async function updateEvent(id, formData) {
 }
 
 export async function updateEventStatus(formData) {
+
     const session = await auth();
     if (!session) throw "You are not authorized to access this request.";
 
@@ -517,6 +519,80 @@ export async function updateEventStatus(formData) {
                 text[data.status] ||
                 "Blood donation event updated successfully.",
         };
+    } catch (err) {
+        logErrorToFile(err, "UPDATE EVENT STATUS");
+        await transaction.rollback();
+
+        throw err.message || "Unknown error";
+    }
+}
+
+
+export async function updateEventRegistrationStatus(formData) {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const session = await auth();
+    if (!session) throw "You are not authorized to access this request.";
+
+    const { user } = session;
+    formData.updated_by = user.id;
+
+    const parsed = eventRegistrationStatusSchema.safeParse(formData);
+
+    if (!parsed.success) {
+        const fieldErrors = parsed.error.flatten().fieldErrors;
+        return {
+            success: false,
+            type: "validation",
+            message:
+                "Validation Error: Please try again. If the issue persists, contact your administrator for assistance.",
+            errorObj: parsed.error.flatten().fieldErrors,
+            errorArr: Object.values(fieldErrors).flat(),
+        };
+    }
+
+    const { data } = parsed;
+
+    const event = await BloodDonationEvent.findByPk(data.id);
+
+    if (!event) {
+        throw new Error("Database Error: Event ID was not found");
+    }
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        const updatedEvent = await event.update(data, { transaction });
+
+        await transaction.commit();
+
+        await logAuditTrail({
+            userId: user.id,
+            controller: "adminEventAction",
+            action: "UPDATE EVENT REGISTRATION STATUS",
+            details: `The Event registration status has been successfully updated to ${data?.registration_status}. ID#: ${updatedEvent?.id}`,
+        });
+
+        const title = {
+            ongoing: "Registration Ongoing",
+            closed: "Registration Closed",
+            completed: "Update Successful",
+        };
+
+        const text = {
+            ongoing: "Blood donation event registration is now open.",
+            closed: "Blood donation event registration has been closed successfully.",
+            completed: "Blood donation event registration details have been updated successfully.",
+        };
+
+
+        return {
+            success: true,
+            data: updatedEvent.get({ plain: true }),
+            title: title[data.registration_status] || "Updated Status",
+            text: text[data.registration_status] || `Blood donation event registration status updated to ${data.registration_status}.`,
+        };
+
+
     } catch (err) {
         logErrorToFile(err, "UPDATE EVENT STATUS");
         await transaction.rollback();

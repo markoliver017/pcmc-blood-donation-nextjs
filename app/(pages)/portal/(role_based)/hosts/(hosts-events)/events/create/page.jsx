@@ -30,7 +30,10 @@ export default async function page() {
                     },
                 ]}
             />
-            <CreateEventForm agency={agency.get({ plain: true })} />
+            <div className="p-2 md:px-5">
+
+                <CreateEventForm agency={agency.get({ plain: true })} />
+            </div>
         </>
     );
 }

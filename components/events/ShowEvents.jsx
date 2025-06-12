@@ -7,6 +7,16 @@ import {
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@components/ui/dropdown-menu";
+import { Button } from "@components/ui/button";
+import { Command, Eye, MenuSquare, MoreHorizontal, Pencil } from "lucide-react";
 import { Table, TableBody, TableCell, TableRow } from "@components/ui/table";
 import { calculateAge } from "@lib/utils/string.utils";
 import { useQuery } from "@tanstack/react-query";
@@ -14,23 +24,34 @@ import moment from "moment";
 import parse from "html-react-parser";
 
 import { getEventsById } from "@/action/hostEventAction";
-import React from "react";
+import React, { useState } from "react";
+import EventRegistrationStatus from "@components/organizers/EventRegistrationStatus";
+import LoadingModal from "@components/layout/LoadingModal";
+import Link from "next/link";
 
 export default function ShowEvents({ eventId }) {
+    const [isLoading, setIsLoading] = useState(false)
     const { data: event } = useQuery({
         queryKey: ["agency_events", eventId],
         queryFn: async () => await getEventsById(eventId),
         enabled: !!eventId,
     });
 
-    const { status } = event;
-    let statusClass = "badge-primary";
-    if (status == "activated") {
+    const { status, registration_status } = event;
+    let statusClass = "badge-error";
+    if (status == "approved") {
         statusClass = "badge-success";
     } else if (status == "deactivated") {
         statusClass = "badge-warning";
-    } else if (status == "rejected") {
-        statusClass = "badge-error";
+    } else if (status == "for approval") {
+        statusClass = "badge-primary";
+    }
+
+    let regStatusClass = "badge-error";
+    if (registration_status == "ongoing") {
+        regStatusClass = "badge-success";
+    } else if (registration_status == "not started") {
+        regStatusClass = "badge-warning";
     }
     // return "";
     return (
@@ -39,9 +60,52 @@ export default function ShowEvents({ eventId }) {
                 <CardTitle className="flex">
                     <div className="text-4xl">{event?.title}</div>
                 </CardTitle>
-                <CardDescription>{parse(event?.description)}</CardDescription>
+                <CardDescription className="flex justify-between">
+                    <span>{parse(event?.description)}</span>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" >
+                                <span className="sr-only">Open menu</span>
+                                <MenuSquare className="h-4 w-4" />
+                                <span className="hidden md:inline-block">Action</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel className="flex items-center space-x-2">
+                                <Command className="w-3 h-3" />
+                                <span>Actions</span>
+                            </DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+
+                            {event.status == "for approval" ? (
+                                <Link href={`/portal/hosts/events/${event.id}/edit`}>
+                                    <DropdownMenuItem className="flex items-center space-x-2">
+                                        <Pencil className="w-4 h-4" />
+                                        <span>Edit</span>
+                                    </DropdownMenuItem>
+                                </Link>
+                            ) : (
+                                ""
+                            )}
+
+                            {event.status == "approved" ? (
+                                <DropdownMenuItem>
+                                    <EventRegistrationStatus
+                                        data={event}
+                                        setIsLoading={setIsLoading}
+                                    />
+                                </DropdownMenuItem>
+
+                            ) : (
+                                ""
+                            )}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                </CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-wrap xl:flex-nowrap gap-2">
+            <CardContent id="form-modal" className="flex flex-wrap xl:flex-nowrap gap-2">
+                <LoadingModal imgSrc="/loader_3.gif" isLoading={isLoading} />
                 <CustomAvatar
                     avatar={event?.file_url || "/blood-logo.png"}
                     className="w-[150px] h-[150px] sm:w-[200px] sm:h-[200px] md:w-[250px] md:h-[250px] xl:w-[350px] xl:h-[350px] flex-none"
@@ -64,6 +128,18 @@ export default function ShowEvents({ eventId }) {
                                         className={`badge p-2 font-semibold text-xs ${statusClass}`}
                                     >
                                         {event?.status.toUpperCase()}
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell className="font-semibold">
+                                    Registration Status
+                                </TableCell>
+                                <TableCell>
+                                    <div
+                                        className={`badge p-2 font-semibold text-xs ${regStatusClass}`}
+                                    >
+                                        {event?.registration_status.toUpperCase()}
                                     </div>
                                 </TableCell>
                             </TableRow>

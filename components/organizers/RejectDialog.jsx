@@ -98,7 +98,7 @@ export default function RejectDialog({ agencyId, className = "btn-error" }) {
             >
                 <XIcon /> Reject
             </DialogTrigger>
-            <DialogContentNoX>
+            <DialogContentNoX className="dark:text-white">
                 <ToastContainer />
                 <DialogHeader>
                     <div
@@ -111,10 +111,10 @@ export default function RejectDialog({ agencyId, className = "btn-error" }) {
                         <Cross2Icon className="h-4 w-4" />
                         <span className="sr-only">Close</span>
                     </div>
-                    <DialogTitle>
+                    <DialogTitle className="dark:text-white">
                         Are you sure you want to reject this application?
                     </DialogTitle>
-                    <DialogDescription>
+                    <DialogDescription className="dark:text-white">
                         This action cannot be undone.
                     </DialogDescription>
                     <Form {...form}>
