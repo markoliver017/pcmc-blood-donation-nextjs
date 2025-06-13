@@ -7,7 +7,7 @@ export default async function page() {
     if (!session) throw "You are not allowed to access this page.";
     const { user } = session;
     return (
-        <div className="p-5 h-screen">
+        <div className="p-5">
             <div className="flex justify-between">
                 <div>
                     <h1 className="text-3xl">WELCOME, {user.name} </h1>

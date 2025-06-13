@@ -92,18 +92,11 @@ export default function ForApprovalEventList() {
                                 />
                             </div>
                             <div className="md:flex-1 flex flex-col gap-2">
-                                <label className="text-xs">From:</label>
+                                <label className="text-xs">Event Date:</label>
                                 <span className="text-lg text-slate-800 dark:text-slate-300 font-semibold">
-                                    {moment(event?.from_date).format(
-                                        "MMM DD, YYYY"
-                                    )}
+                                    {moment(event?.date).format("MMM DD, YYYY")}
                                 </span>
-                                <label className="text-xs">To:</label>
-                                <span className="text-lg text-slate-800 dark:text-slate-300 font-semibold">
-                                    {moment(event?.to_date).format(
-                                        "MMM DD, YYYY"
-                                    )}
-                                </span>
+
                                 <label className="text-xs">Organizer:</label>
                                 <span className="text-lg text-slate-800 dark:text-slate-300 font-semibold">
                                     {event?.requester?.name}

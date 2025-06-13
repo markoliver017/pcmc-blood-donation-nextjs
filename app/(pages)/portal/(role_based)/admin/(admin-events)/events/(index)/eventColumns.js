@@ -47,21 +47,14 @@ export const eventColumns = [
     },
 
     {
-        accessorKey: "from_date",
+        accessorKey: "date",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Date Started" />
+            <DataTableColumnHeader column={column} title="Date" />
         ),
         cell: ({ getValue }) => moment(getValue()).format("MMM DD, YYYY"),
         filterFn: "columnFilter",
     },
-    {
-        accessorKey: "to_date",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Date Ended" />
-        ),
-        cell: ({ getValue }) => moment(getValue()).format("MMM DD, YYYY"),
-        filterFn: "columnFilter",
-    },
+
     {
         accessorKey: "requester.name",
         header: ({ column }) => (

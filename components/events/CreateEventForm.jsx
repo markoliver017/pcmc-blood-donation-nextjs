@@ -112,8 +112,7 @@ export default function CreateEventForm({ agency }) {
             title: "Sample Title ",
             description:
                 '<p><span style="font-size: 24px"><em>This is a sample description</em></span></p>',
-            from_date: "2025-07-01",
-            to_date: "2025-07-01",
+            date: "2025-07-01",
             file: null,
             file_url: null,
             time_schedules: [
@@ -298,65 +297,33 @@ export default function CreateEventForm({ agency }) {
                                     </FormItem>
                                 )}
                             />
-                            <InlineLabel>Event Date: </InlineLabel>
-                            <div className="ml-0 md:ml-5 flex flex-wrap gap-5">
-                                <FormField
-                                    control={control}
-                                    name="from_date"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-wrap md:flex-nowrap items-center gap-2">
-                                            <label>From: </label>
-                                            <label
-                                                className={clsx(
-                                                    "input ",
-                                                    errors?.from_date
-                                                        ? "input-error"
-                                                        : "input-info"
-                                                )}
-                                            >
-                                                <Calendar className="h-3" />
-                                                <input
-                                                    type="date"
-                                                    tabIndex={2}
-                                                    placeholder="Enter start date"
-                                                    {...field}
-                                                />
-                                            </label>
-                                            <FieldError
-                                                field={errors?.from_date}
+                            <FormField
+                                control={control}
+                                name="date"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <InlineLabel>Event Date: </InlineLabel>
+                                        <label
+                                            className={clsx(
+                                                "input w-full mt-1",
+                                                errors?.date
+                                                    ? "input-error"
+                                                    : "input-info"
+                                            )}
+                                        >
+                                            <Calendar className="h-3" />
+                                            <input
+                                                type="date"
+                                                tabIndex={2}
+                                                placeholder="Enter event date"
+                                                {...field}
                                             />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={control}
-                                    name="to_date"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-wrap md:flex-nowrap items-center gap-2">
-                                            <label>To: </label>
-                                            <label
-                                                className={clsx(
-                                                    "input",
-                                                    errors?.to_date
-                                                        ? "input-error"
-                                                        : "input-info"
-                                                )}
-                                            >
-                                                <Calendar className="h-3" />
-                                                <input
-                                                    type="date"
-                                                    tabIndex={2}
-                                                    placeholder="Enter end date"
-                                                    {...field}
-                                                />
-                                            </label>
-                                            <FieldError
-                                                field={errors?.to_date}
-                                            />
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
+                                        </label>
+                                        <FieldError field={errors?.date} />
+                                    </FormItem>
+                                )}
+                            />
+
                             <FormField
                                 control={control}
                                 name="description"

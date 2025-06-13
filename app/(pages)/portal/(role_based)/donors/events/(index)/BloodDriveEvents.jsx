@@ -7,9 +7,11 @@ import { getApprovedEventsByAgency } from "@/action/donorAction";
 import Skeleton_user from "@components/ui/Skeleton_user";
 import EventCardList from "./EventCardList";
 import AllEventCalendar from "@components/organizers/AllEventCalendar";
+import moment from "moment";
+import { getBookedAppointmentsByDonor } from "@/action/donorAppointmentAction";
 
 export default function BloodDriveEvents() {
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
     const {
         data: events,
         isLoading: eventIsLoading,
@@ -30,15 +32,56 @@ export default function BloodDriveEvents() {
         refetchOnMount: true,
     });
 
+    const {
+        data: donor_booked_appointments,
+        isLoading: donorBookedAppointmentIsLoading,
+        error: donorBookedAppointmentError,
+        isError: donorBookedAppointmentIsError,
+    } = useQuery({
+        queryKey: ["donor_booked_appointments"],
+        queryFn: async () => {
+            const res = await getBookedAppointmentsByDonor();
+
+            if (!res.success) {
+                throw res?.message || "unknown error";
+            }
+            return res.data;
+        },
+        staleTime: 1000 * 60 * 5,
+        refetchOnWindowFocus: true,
+        refetchOnMount: true,
+    });
+
     if (isError)
         return (
             <div className="alert alert-error">
                 <pre>{JSON.stringify(error?.message || error, null, 2)}</pre>
+                <pre>
+                    {JSON.stringify(
+                        donorBookedAppointmentError?.message ||
+                            donorBookedAppointmentError,
+                        null,
+                        2
+                    )}
+                </pre>
+            </div>
+        );
+    if (donorBookedAppointmentIsError)
+        return (
+            <div className="alert alert-error">
+                <pre>
+                    {JSON.stringify(
+                        donorBookedAppointmentError?.message ||
+                            donorBookedAppointmentError,
+                        null,
+                        2
+                    )}
+                </pre>
             </div>
         );
 
-    if (eventIsLoading) {
-        return <Skeleton_user />
+    if (eventIsLoading || donorBookedAppointmentIsLoading) {
+        return <Skeleton_user />;
     }
 
     return (
@@ -57,15 +100,33 @@ export default function BloodDriveEvents() {
                 >
                     {/* Left: Event List */}
                     <div className="flex flex-col h-full border border-gray-300 rounded-lg p-4 overflow-hidden">
-                        <h2 className="text-2xl font-semibold mb-4">Available Donation Drives</h2>
+                        <div className="flex flex-wrap gap-2 items-center justify-between">
+                            <h2 className="text-2xl font-semibold mb-4">
+                                Available Donation Drives
+                            </h2>
+                            <span className="font-semibold">
+                                {moment().format("MMMM DD, YYYY")}
+                            </span>
+                        </div>
                         <div className="flex-1 overflow-y-auto space-y-4 p-2">
-                            <EventCardList events={events} />
+                            <EventCardList
+                                events={events.filter(
+                                    (event) =>
+                                        event.registration_status == "ongoing"
+                                )}
+                                booked_appointments={donor_booked_appointments.map(
+                                    (appointnments) =>
+                                        appointnments.time_schedule_id
+                                )}
+                            />
                         </div>
                     </div>
 
                     {/* Right: Calendar */}
                     <div className="flex flex-col h-full border border-gray-300 rounded-lg p-4 overflow-hidden">
-                        <h2 className="text-2xl font-semibold mb-4">Event Calendar</h2>
+                        <h2 className="text-2xl font-semibold mb-4">
+                            Event Calendar
+                        </h2>
                         <div className="flex-1 overflow-auto">
                             <AllEventCalendar />
                         </div>
@@ -73,15 +134,46 @@ export default function BloodDriveEvents() {
                 </TabsContent>
 
                 {/* Upcoming Tab */}
-                <TabsContent value="upcoming" className="mt-4">
-                    <div className="border border-gray-300 rounded-lg p-4">
-                        <h2 className="text-2xl font-semibold">Upcoming Events</h2>
-                        {/* Add content here */}
+                <TabsContent
+                    value="upcoming"
+                    className="mt-4 grid grid-cols-1 xl:grid-cols-[3fr_2fr] gap-4 xl:h-[calc(100vh-10rem)]"
+                >
+                    {/* Left: Event List */}
+                    <div className="flex flex-col h-full border border-gray-300 rounded-lg p-4 overflow-hidden">
+                        <div className="flex flex-wrap gap-2 items-center justify-between">
+                            <h2 className="text-2xl font-semibold mb-4">
+                                Available Donation Drives
+                            </h2>
+                            <span className="font-semibold">
+                                {moment().format("MMMM DD, YYYY")}
+                            </span>
+                        </div>
+                        <div className="flex-1 overflow-y-auto space-y-4 p-2">
+                            <EventCardList
+                                events={events.filter(
+                                    (event) =>
+                                        event.registration_status ==
+                                        "not started"
+                                )}
+                                booked_appointments={donor_booked_appointments.map(
+                                    (appointnments) =>
+                                        appointnments.time_schedule_id
+                                )}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Right: Calendar */}
+                    <div className="flex flex-col h-full border border-gray-300 rounded-lg p-4 overflow-hidden">
+                        <h2 className="text-2xl font-semibold mb-4">
+                            Event Calendar
+                        </h2>
+                        <div className="flex-1 overflow-auto">
+                            <AllEventCalendar />
+                        </div>
                     </div>
                 </TabsContent>
             </Tabs>
-
-
         </div>
     );
 }

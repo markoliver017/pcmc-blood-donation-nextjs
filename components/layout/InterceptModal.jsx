@@ -25,12 +25,12 @@ export default function InterceptModal({ children, className = "" }) {
             modal={true}
         >
             {/* <DialogOverlay> */}
+            <ToastContainer />
             <DialogContent
                 onInteractOutside={(event) => event.preventDefault()}
-                className={`min-w-full md:min-w-8/10 2xl:min-w-7/10  max-h-97/100 overflow-y-scroll ${className}`}
+                className={`min-w-full md:min-w-8/10 2xl:min-w-7/10  max-h-97/100 overflow-y-scroll pt-10 ${className}`}
                 tabIndex={-1}
             >
-                <ToastContainer />
                 <DialogHeader className="hidden">
                     <DialogTitle>Title</DialogTitle>
                 </DialogHeader>
@@ -38,6 +38,5 @@ export default function InterceptModal({ children, className = "" }) {
             </DialogContent>
             {/* </DialogOverlay> */}
         </Dialog>
-
     );
 }

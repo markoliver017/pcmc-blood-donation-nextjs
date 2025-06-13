@@ -9,14 +9,22 @@ import {
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
-import { Check, CircleCheck, Command, Eye, MoreHorizontal, Pencil, XIcon } from "lucide-react";
+import {
+    CircleCheck,
+    Command,
+    Eye,
+    MoreHorizontal,
+    Pencil,
+} from "lucide-react";
 import Link from "next/link";
 import moment from "moment";
 import EventRegistrationStatus from "@components/organizers/EventRegistrationStatus";
 import { GiClosedDoors, GiOpenBook } from "react-icons/gi";
 import { formatFormalName } from "@lib/utils/string.utils";
-import { ExclamationTriangleIcon, QuestionMarkCircledIcon } from "@radix-ui/react-icons";
-import { BiCalendarExclamation } from "react-icons/bi";
+import {
+    ExclamationTriangleIcon,
+    QuestionMarkCircledIcon,
+} from "@radix-ui/react-icons";
 import { FaExclamation } from "react-icons/fa";
 // import parse from "html-react-parser";
 
@@ -37,21 +45,14 @@ export const eventColumns = (setIsLoading) => [
     },
 
     {
-        accessorKey: "from_date",
+        accessorKey: "date",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Date Started" />
+            <DataTableColumnHeader column={column} title="Date" />
         ),
         cell: ({ getValue }) => moment(getValue()).format("MMM DD, YYYY"),
         filterFn: "columnFilter",
     },
-    {
-        accessorKey: "to_date",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Date Ended" />
-        ),
-        cell: ({ getValue }) => moment(getValue()).format("MMM DD, YYYY"),
-        filterFn: "columnFilter",
-    },
+
     {
         accessorKey: "requester.name",
         header: ({ column }) => (
@@ -70,18 +71,19 @@ export const eventColumns = (setIsLoading) => [
             const data = row.original;
             const status = data.status.toUpperCase();
             if (status == "APPROVED") {
-
                 return (
                     <div className="space-x-2 space-y-1">
                         <div className="badge p-2 font-semibold text-xs badge-success">
-                            <CircleCheck className="h-4" />{status}
+                            <CircleCheck className="h-4" />
+                            {status}
                         </div>
                     </div>
                 );
             } else if (status == "FOR APPROVAL") {
                 return (
                     <div className="badge p-2 font-semibold text-xs badge-warning">
-                        <QuestionMarkCircledIcon className="h-4" />{status}
+                        <QuestionMarkCircledIcon className="h-4" />
+                        {status}
                     </div>
                 );
             } else {
@@ -104,29 +106,27 @@ export const eventColumns = (setIsLoading) => [
 
             let regStatusBadge = (
                 <div className="badge p-2 font-semibold text-xs badge-warning">
-                    <ExclamationTriangleIcon /> {formatFormalName(data.registration_status)}
+                    <ExclamationTriangleIcon />{" "}
+                    {formatFormalName(data.registration_status)}
                 </div>
-            )
+            );
             if (data.registration_status == "closed") {
                 regStatusBadge = (
                     <div className="badge p-2 font-semibold text-xs badge-error">
-                        <GiClosedDoors /> {formatFormalName(data.registration_status)}
+                        <GiClosedDoors />{" "}
+                        {formatFormalName(data.registration_status)}
                     </div>
-                )
+                );
             }
             if (data.registration_status == "ongoing") {
                 regStatusBadge = (
                     <div className="badge p-2 font-semibold text-xs badge-primary">
-                        <GiOpenBook /> {formatFormalName(data.registration_status)}
+                        <GiOpenBook />{" "}
+                        {formatFormalName(data.registration_status)}
                     </div>
-                )
+                );
             }
-            return (
-                <div className="space-x-2 space-y-1">
-                    {regStatusBadge}
-                </div>
-            );
-
+            return <div className="space-x-2 space-y-1">{regStatusBadge}</div>;
         },
     },
     {
@@ -194,7 +194,6 @@ export const eventColumns = (setIsLoading) => [
                                     setIsLoading={setIsLoading}
                                 />
                             </DropdownMenuItem>
-
                         ) : (
                             ""
                         )}

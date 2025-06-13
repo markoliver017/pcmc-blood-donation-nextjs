@@ -4,7 +4,18 @@ import { logAuditTrail } from "@lib/audit_trails.utils";
 import { auth } from "@lib/auth";
 
 import { logErrorToFile } from "@lib/logger.server";
-import { Agency, BloodDonationEvent, BloodType, Donor, Role, sequelize, User } from "@lib/models";
+import {
+    Agency,
+    AgencyCoordinator,
+    BloodDonationEvent,
+    BloodType,
+    Donor,
+    DonorAppointmentInfo,
+    EventTimeSchedule,
+    Role,
+    sequelize,
+    User,
+} from "@lib/models";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import {
     bloodtypeSchema,
@@ -12,10 +23,12 @@ import {
     donorSchema,
     donorStatusSchema,
 } from "@lib/zod/donorSchema";
+import moment from "moment";
 import { Op } from "sequelize";
 
 export async function getApprovedEventsByAgency() {
     // await new Promise((resolve) => setTimeout(resolve, 500));
+    const currentDate = moment().format("YYYY-MM-DD");
     const session = await auth();
     if (!session) {
         return {
@@ -27,9 +40,9 @@ export async function getApprovedEventsByAgency() {
     const donor = await Donor.findOne({
         where: {
             user_id: user.id,
-            status: "activated"
-        }
-    })
+            status: "activated",
+        },
+    });
 
     if (!donor) {
         return {
@@ -45,13 +58,44 @@ export async function getApprovedEventsByAgency() {
                 status: {
                     [Op.eq]: "approved",
                 },
+                date: {
+                    [Op.gte]: currentDate,
+                },
             },
-            order: [["createdAt", "DESC"]],
+            order: [["date", "ASC"]],
             include: [
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedules",
+                    attributes: [
+                        "id",
+                        "blood_donation_event_id",
+                        "time_start",
+                        "time_end",
+                        "status",
+                        "has_limit",
+                        "max_limit",
+                    ],
+                    include: {
+                        model: DonorAppointmentInfo,
+                        as: "donors",
+                    },
+                },
                 {
                     model: User,
                     as: "requester",
                     attributes: ["id", "name", "email", "image"],
+                    include: {
+                        model: AgencyCoordinator,
+                        as: "coordinator",
+                        attributes: ["contact_number"],
+                        required: false,
+                    },
+                },
+                {
+                    model: Agency,
+                    as: "agency",
+                    attributes: ["head_id", "name", "contact_number"],
                 },
             ],
         });

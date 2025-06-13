@@ -246,32 +246,35 @@ export async function storeEvent(formData) {
             status: {
                 [Op.in]: ["approved", "for approval"],
             },
-            [Op.or]: [
-                {
-                    from_date: {
-                        [Op.between]: [data.from_date, data.to_date],
-                    },
-                },
-                {
-                    to_date: {
-                        [Op.between]: [data.from_date, data.to_date],
-                    },
-                },
-                {
-                    [Op.and]: [
-                        {
-                            from_date: {
-                                [Op.lte]: data.from_date,
-                            },
-                        },
-                        {
-                            to_date: {
-                                [Op.gte]: data.to_date,
-                            },
-                        },
-                    ],
-                },
-            ],
+            date: {
+                [Op.eq]: data.date,
+            },
+            // [Op.or]: [
+            //     {
+            //         from_date: {
+            //             [Op.between]: [data.from_date, data.to_date],
+            //         },
+            //     },
+            //     {
+            //         to_date: {
+            //             [Op.between]: [data.from_date, data.to_date],
+            //         },
+            //     },
+            //     {
+            //         [Op.and]: [
+            //             {
+            //                 from_date: {
+            //                     [Op.lte]: data.from_date,
+            //                 },
+            //             },
+            //             {
+            //                 to_date: {
+            //                     [Op.gte]: data.to_date,
+            //                 },
+            //             },
+            //         ],
+            //     },
+            // ],
         },
     });
 
@@ -327,8 +330,6 @@ export async function updateEvent(id, formData) {
     if (!session) throw "You are not authorized to access this request.";
     const { user } = session;
 
-    console.log("formData received on server", formData);
-
     const parsed = bloodDonationEventSchema.safeParse(formData);
 
     if (!parsed.success) {
@@ -364,32 +365,9 @@ export async function updateEvent(id, formData) {
             status: {
                 [Op.in]: ["approved", "for approval"],
             },
-            [Op.or]: [
-                {
-                    from_date: {
-                        [Op.between]: [data.from_date, data.to_date],
-                    },
-                },
-                {
-                    to_date: {
-                        [Op.between]: [data.from_date, data.to_date],
-                    },
-                },
-                {
-                    [Op.and]: [
-                        {
-                            from_date: {
-                                [Op.lte]: data.from_date,
-                            },
-                        },
-                        {
-                            to_date: {
-                                [Op.gte]: data.to_date,
-                            },
-                        },
-                    ],
-                },
-            ],
+            date: {
+                [Op.eq]: data.date,
+            },
         },
     });
 

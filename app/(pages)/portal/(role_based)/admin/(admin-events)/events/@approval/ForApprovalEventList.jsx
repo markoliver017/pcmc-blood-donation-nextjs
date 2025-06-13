@@ -75,7 +75,7 @@ export default function ForApprovalEventList() {
                         <CardTitle className="flex flex-wrap justify-between">
                             <span className="text-xl">{event?.title}</span>
                             <div className="flex items-center gap-2">
-                                <span className="text-sm text-slate-600">
+                                <span className="text-sm text-slate-600 dark:text-slate-300">
                                     {moment(event?.createdAt).format(
                                         "MMM DD, YYYY"
                                     )}
@@ -139,13 +139,13 @@ export default function ForApprovalEventList() {
                                 </DropdownMenu>
                             </div>
                         </CardTitle>
-                        <CardDescription className="flex flex-wrap flex-col gap-1">
+                        <CardDescription className="flex flex-wrap flex-col gap-1 dark:text-slate-200">
                             <span>
                                 Description: {parse(event?.description)}
                             </span>
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="flex flex-wrap items-center justify-center gap-4 px-2 md:px-15 transform transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-110">
+                    <CardContent className="flex flex-wrap items-center justify-center gap-4 px-2 md:px-15 transform transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-110 dark:text-slate-200">
                         <div>
                             <CustomAvatar
                                 avatar={
@@ -155,18 +155,12 @@ export default function ForApprovalEventList() {
                             />
                         </div>
                         <div className="md:flex-1 flex flex-col gap-2">
-                            <label className="text-xs">From:</label>
-                            <span className="text-lg text-slate-800 font-semibold">
-                                {moment(event?.from_date).format(
-                                    "MMM DD, YYYY"
-                                )}
-                            </span>
-                            <label className="text-xs">To:</label>
-                            <span className="text-lg text-slate-800 font-semibold">
-                                {moment(event?.to_date).format("MMM DD, YYYY")}
+                            <label className="text-xs">Event Date:</label>
+                            <span className="text-lg  font-semibold">
+                                {moment(event?.date).format("MMM DD, YYYY")}
                             </span>
                             <label className="text-xs">Organizer:</label>
-                            <span className="text-lg text-slate-800 font-semibold">
+                            <span className="text-lg font-semibold">
                                 {event?.requester?.name}
                             </span>
                         </div>

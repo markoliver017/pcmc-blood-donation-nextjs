@@ -30,7 +30,7 @@ import LoadingModal from "@components/layout/LoadingModal";
 import Link from "next/link";
 
 export default function ShowEvents({ eventId }) {
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
     const { data: event } = useQuery({
         queryKey: ["agency_events", eventId],
         queryFn: async () => await getEventsById(eventId),
@@ -64,10 +64,12 @@ export default function ShowEvents({ eventId }) {
                     <span>{parse(event?.description)}</span>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" >
+                            <Button variant="ghost">
                                 <span className="sr-only">Open menu</span>
                                 <MenuSquare className="h-4 w-4" />
-                                <span className="hidden md:inline-block">Action</span>
+                                <span className="hidden md:inline-block">
+                                    Action
+                                </span>
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
@@ -78,7 +80,9 @@ export default function ShowEvents({ eventId }) {
                             <DropdownMenuSeparator />
 
                             {event.status == "for approval" ? (
-                                <Link href={`/portal/hosts/events/${event.id}/edit`}>
+                                <Link
+                                    href={`/portal/hosts/events/${event.id}/edit`}
+                                >
                                     <DropdownMenuItem className="flex items-center space-x-2">
                                         <Pencil className="w-4 h-4" />
                                         <span>Edit</span>
@@ -95,16 +99,17 @@ export default function ShowEvents({ eventId }) {
                                         setIsLoading={setIsLoading}
                                     />
                                 </DropdownMenuItem>
-
                             ) : (
                                 ""
                             )}
                         </DropdownMenuContent>
                     </DropdownMenu>
-
                 </CardDescription>
             </CardHeader>
-            <CardContent id="form-modal" className="flex flex-wrap xl:flex-nowrap gap-2">
+            <CardContent
+                id="form-modal"
+                className="flex flex-wrap xl:flex-nowrap gap-2"
+            >
                 <LoadingModal imgSrc="/loader_3.gif" isLoading={isLoading} />
                 <CustomAvatar
                     avatar={event?.file_url || "/blood-logo.png"}
@@ -174,22 +179,10 @@ export default function ShowEvents({ eventId }) {
 
                             <TableRow>
                                 <TableCell className="font-semibold">
-                                    Date Started
+                                    Event Date
                                 </TableCell>
                                 <TableCell>
-                                    {moment(event.from_date).format(
-                                        "MMM DD, YYYY"
-                                    )}
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className="font-semibold">
-                                    Date Ended
-                                </TableCell>
-                                <TableCell>
-                                    {moment(event.to_date).format(
-                                        "MMM DD, YYYY"
-                                    )}
+                                    {moment(event.date).format("MMM DD, YYYY")}
                                 </TableCell>
                             </TableRow>
 

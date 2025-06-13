@@ -37,18 +37,23 @@ export default function AllEventCalendar() {
                             // agency_id == event?.agency_id
                             //     ? event?.title
                             //     : "",
-                            start: event.from_date,
-                            end:
-                                new Date(event.from_date).getTime() ===
-                                    new Date(event.to_date).getTime()
-                                    ? event.to_date
-                                    : new Date(
-                                        new Date(event.to_date).setMinutes(
-                                            new Date(
-                                                event.to_date
-                                            ).getMinutes() + 1
-                                        )
-                                    ).toISOString(),
+                            start: `${event.date}T08:00:00`,
+                            end: `${event.date}T17:00:00`,
+
+                            // new Date(event.from_date).getTime() ===
+                            // new Date(event.to_date).getTime()
+                            //     ? new Date(
+                            //           `${event.to_date}T17:00:00`
+                            //       ).toISOString()
+                            //     : new Date(
+                            //           new Date(event.to_date).setMinutes(
+                            //               new Date(
+                            //                   event.to_date
+                            //               ).getMinutes() + 1
+                            //           )
+                            //       ).toISOString(),
+
+                            allDay: false,
                             backgroundColor:
                                 event?.status == "approved"
                                     ? "green"
@@ -60,6 +65,7 @@ export default function AllEventCalendar() {
                             },
                         })) || []
                     }
+                    eventDisplay="block"
                     eventContent={(eventInfo) => (
                         <div className="flex justify-center items-center gap-1 rounded-2xl p-2">
                             <CalendarCheck2 size={20} /> {eventInfo.event.title}
@@ -82,10 +88,14 @@ export default function AllEventCalendar() {
                         timeGridWeek: { buttonText: "Week" },
                         timeGridDay: { buttonText: "Day" },
                     }}
-                    eventClick={(info) => alert(`Event - ${info.event?.title}`)}
+                    eventClick={(info) =>
+                        alert(
+                            `Event - ${info.event?.title} (${info.event?.start} - ${info.event?.end}) `
+                        )
+                    }
                     height="100%"
                     contentHeight="auto"
-                // aspectRatio={3} //Sets the aspect ratio of the calendar. A higher value will make the calendar wider, while a lower value will make it taller.
+                    // aspectRatio={3} //Sets the aspect ratio of the calendar. A higher value will make the calendar wider, while a lower value will make it taller.
                 />
             </CardContent>
         </Card>
