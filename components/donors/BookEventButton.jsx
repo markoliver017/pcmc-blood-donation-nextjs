@@ -21,6 +21,8 @@ export default function BookEventButton({
     label = "Book",
     className = "btn-neutral",
     formClassName = "",
+    onLoad = () => { },
+    onFinish = () => { }
 }) {
     const queryClient = useQueryClient();
 
@@ -30,6 +32,7 @@ export default function BookEventButton({
         isPending,
     } = useMutation({
         mutationFn: async (formData) => {
+            onLoad();
             const res = await bookDonorAppointment(formData);
             if (!res.success) {
                 throw res; // Throw the error response to trigger onError
@@ -38,18 +41,16 @@ export default function BookEventButton({
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["blood_drives"] });
-
             SweetAlert({
                 title: "Blood Donation Booked",
-                text: `You have successfully booked an appointment for ${
-                    event?.title
-                } on ${moment(schedule?.date).format(
-                    "MMM DD, YYYY"
-                )} from ${moment(schedule?.time_start, "HH:mm:ss").format(
-                    "hh:mm A"
-                )} to ${moment(schedule?.time_end, "HH:mm:ss").format(
-                    "hh:mm A"
-                )}.`,
+                text: `You have successfully booked an appointment for ${event?.title
+                    } on ${moment(schedule?.date).format(
+                        "MMM DD, YYYY"
+                    )} from ${moment(schedule?.time_start, "HH:mm:ss").format(
+                        "hh:mm A"
+                    )} to ${moment(schedule?.time_end, "HH:mm:ss").format(
+                        "hh:mm A"
+                    )}.`,
 
                 icon: "info",
                 confirmButtonText: "Done",
@@ -57,6 +58,10 @@ export default function BookEventButton({
         },
         onError: (error) => {
             notify({ error: true, message: error?.message });
+            onFinish();
+        },
+        onSettled: () => {
+            onFinish();
         },
     });
 
@@ -86,6 +91,7 @@ export default function BookEventButton({
             showCancelButton: true,
             confirmButtonText: "Proceed",
             onConfirm: () => {
+
                 mutate(data);
             },
         });

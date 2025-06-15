@@ -23,7 +23,7 @@ import {
 } from "@components/ui/table";
 import BookEventButton from "@components/donors/BookEventButton";
 
-export default function EventCardList({ events, booked_appointments }) {
+export default function EventCardList({ events, booked_appointments, onLoad, onFinish, isRegistrationOpen = false }) {
     if (!events || events.length === 0)
         return (
             <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
@@ -36,6 +36,8 @@ export default function EventCardList({ events, booked_appointments }) {
                 </p>
             </Card>
         );
+
+    const isAlreadyBooked = (id) => booked_appointments.includes(id);
 
     return (
         <>
@@ -128,31 +130,29 @@ export default function EventCardList({ events, booked_appointments }) {
                         </div>
                         <div className="py-5">
                             <h2 className="text-blue-600 font-semibold text-xl">
-                                Time Schedules
+                                Time Schedule(s)
                             </h2>
                             <Table>
                                 <TableCaption>
                                     Available time schedules.
-                                    {JSON.stringify(booked_appointments)}
                                 </TableCaption>
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>ID</TableHead>
                                         <TableHead>Time</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead>Participants</TableHead>
-                                        <TableHead>Action</TableHead>
+                                        {isRegistrationOpen && (
+                                            <>
+                                                <TableHead>Status</TableHead>
+                                                <TableHead>Participants</TableHead>
+                                                <TableHead>Action</TableHead>
+                                            </>)}
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {event?.time_schedules.map((sched) => (
                                         <TableRow
-                                            className={`${
-                                                booked_appointments.includes(
-                                                    sched.id
-                                                ) && "bg-sky-200"
-                                            }`}
                                             key={sched.id}
+                                            className={`${isAlreadyBooked(sched.id) && "font-semibold italic text-green-700 dark:text-green-400"}`}
                                         >
                                             <TableCell>{sched.id}</TableCell>
                                             <TableCell>
@@ -170,30 +170,36 @@ export default function EventCardList({ events, booked_appointments }) {
                                                     ).format("hh:mm A")}
                                                 </span>
                                             </TableCell>
-                                            <TableCell>
-                                                <span>
-                                                    {sched?.status.toUpperCase()}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell>
-                                                <span>
-                                                    {sched.donors.length}
-                                                </span>
-                                                {sched?.has_limit && (
-                                                    <span>
-                                                        /{sched?.max_limit}
-                                                    </span>
-                                                )}
-                                            </TableCell>
-                                            <TableCell>
-                                                <BookEventButton
-                                                    event={event}
-                                                    schedule={sched}
-                                                    isDisabled={booked_appointments.includes(
-                                                        sched.id
-                                                    )}
-                                                />
-                                            </TableCell>
+                                            {isRegistrationOpen && (
+                                                <>
+                                                    <TableCell>
+                                                        <span>
+                                                            {sched?.status.toUpperCase()}
+                                                        </span>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <span>
+                                                            {sched.donors.length}
+                                                        </span>
+                                                        {sched?.has_limit && (
+                                                            <span>
+                                                                /{sched?.max_limit}
+                                                            </span>
+                                                        )}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <BookEventButton
+                                                            event={event}
+                                                            schedule={sched}
+                                                            isDisabled={isAlreadyBooked(
+                                                                sched.id
+                                                            )}
+                                                            onLoad={onLoad}
+                                                            onFinish={onFinish}
+                                                        />
+                                                    </TableCell>
+                                                </>
+                                            )}
                                         </TableRow>
                                     ))}
                                 </TableBody>

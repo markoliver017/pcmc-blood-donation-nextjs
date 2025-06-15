@@ -21,6 +21,9 @@ import Link from "next/link";
 import moment from "moment";
 import VerifyEvent from "@components/events/VerifyEvent";
 import RejectEvent from "@components/events/RejectEvent";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { formatFormalName } from "@lib/utils/string.utils";
+import { GiClosedDoors, GiOpenBook } from "react-icons/gi";
 // import parse from "html-react-parser";
 
 export const eventColumns = [
@@ -72,23 +75,6 @@ export const eventColumns = [
         filterFn: "columnFilter",
     },
     {
-        accessorKey: "validator.name",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Verified by" />
-        ),
-        cell: ({ getValue }) => getValue(),
-        filterFn: "columnFilter",
-    },
-    {
-        accessorKey: "editor.name",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Updated by" />
-        ),
-        cell: ({ getValue }) => getValue(),
-        filterFn: "columnFilter",
-    },
-
-    {
         accessorKey: "status",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Status" />
@@ -118,15 +104,57 @@ export const eventColumns = [
             }
         },
     },
+    {
+        accessorKey: "registration_status",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Registration" />
+        ),
+        filterFn: "columnFilter",
+        cell: ({ row }) => {
+            const data = row.original;
 
-    // {
-    //     accessorKey: "description",
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="Description" />
-    //     ),
-    //     cell: ({ getValue }) => parse(getValue()),
-    //     filterFn: "columnFilter",
-    // },
+            let regStatusBadge = (
+                <div className="badge p-2 font-semibold text-xs badge-warning">
+                    <ExclamationTriangleIcon />{" "}
+                    {formatFormalName(data.registration_status)}
+                </div>
+            );
+            if (data.registration_status == "closed") {
+                regStatusBadge = (
+                    <div className="badge p-2 font-semibold text-xs badge-error">
+                        <GiClosedDoors />{" "}
+                        {formatFormalName(data.registration_status)}
+                    </div>
+                );
+            }
+            if (data.registration_status == "ongoing") {
+                regStatusBadge = (
+                    <div className="badge p-2 font-semibold text-xs badge-primary">
+                        <GiOpenBook />{" "}
+                        {formatFormalName(data.registration_status)}
+                    </div>
+                );
+            }
+            return <div className="space-x-2 space-y-1">{regStatusBadge}</div>;
+        },
+    },
+    {
+        accessorKey: "validator.name",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Verified by" />
+        ),
+        cell: ({ getValue }) => getValue(),
+        filterFn: "columnFilter",
+    },
+    {
+        accessorKey: "editor.name",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Updated by" />
+        ),
+        cell: ({ getValue }) => getValue(),
+        filterFn: "columnFilter",
+    },
+
 
     {
         id: "actions",

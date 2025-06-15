@@ -42,6 +42,12 @@ import { BiMaleFemale } from "react-icons/bi";
 import FormLogger from "@lib/utils/FormLogger";
 import { MdPassword } from "react-icons/md";
 
+const notAllowedRoles = [
+    "Agency Administrator",
+    "Donor",
+    "Organizer"
+]
+
 export default function UserCreateForm({ fetchRoles }) {
     const router = useRouter();
     const queryClient = useQueryClient();
@@ -119,7 +125,7 @@ export default function UserCreateForm({ fetchRoles }) {
 
     if (!roles.success) redirect("/users?error=userRoleNotFound");
 
-    const roleOptions = roles.data.map((type) => ({
+    const roleOptions = roles.data.filter((role) => !notAllowedRoles.includes(role.role_name)).map((type) => ({
         value: type.role_name,
         label: type.role_name,
         id: type.id,
@@ -269,7 +275,7 @@ export default function UserCreateForm({ fetchRoles }) {
                         />
                         <div className="w-full sm:min-w-[450px]">
                             <div className="mt-5">
-                                <InlineLabel>Roles: *</InlineLabel>
+                                <InlineLabel>Roles: </InlineLabel>
                                 <fieldset className="fieldset w-full">
                                     <Controller
                                         control={control}
@@ -332,7 +338,7 @@ export default function UserCreateForm({ fetchRoles }) {
                                 render={({ field }) => (
                                     <FormItem>
                                         <InlineLabel>
-                                            Email Address: *
+                                            Email Address:
                                         </InlineLabel>
                                         <label
                                             className={clsx(
@@ -360,7 +366,7 @@ export default function UserCreateForm({ fetchRoles }) {
                                 name="first_name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <InlineLabel>First Name: *</InlineLabel>
+                                        <InlineLabel>First Name: </InlineLabel>
 
                                         <label
                                             className={clsx(
@@ -418,7 +424,7 @@ export default function UserCreateForm({ fetchRoles }) {
                                 name="last_name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <InlineLabel>Last Name: *</InlineLabel>
+                                        <InlineLabel>Last Name: </InlineLabel>
 
                                         <label
                                             className={clsx(
@@ -445,7 +451,7 @@ export default function UserCreateForm({ fetchRoles }) {
                                 name="gender"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <InlineLabel>Gender: *</InlineLabel>
+                                        <InlineLabel>Gender: </InlineLabel>
 
                                         <label
                                             className={clsx(
@@ -482,7 +488,7 @@ export default function UserCreateForm({ fetchRoles }) {
                                 name="password"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <InlineLabel>Password: *</InlineLabel>
+                                        <InlineLabel>Password: </InlineLabel>
 
                                         <label
                                             className={clsx(
@@ -510,7 +516,7 @@ export default function UserCreateForm({ fetchRoles }) {
                                 render={({ field }) => (
                                     <FormItem>
                                         <InlineLabel>
-                                            Confirm Password: *
+                                            Confirm Password:
                                         </InlineLabel>
 
                                         <label
@@ -565,7 +571,7 @@ export default function UserCreateForm({ fetchRoles }) {
                         </div>
                     </form>
                 </Form>
-                <FormLogger watch={watch} errors={errors} data={data} />
+                {/* <FormLogger watch={watch} errors={errors} data={data} /> */}
             </CardContent>
         </Card>
     );

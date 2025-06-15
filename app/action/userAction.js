@@ -20,6 +20,7 @@ export async function getUsers() {
     try {
         const users = await User.findAll({
             attributes: { exclude: ["password", "email_verified"] },
+            order: [["createdAt", "DESC"]],
             include: [
                 {
                     model: Role,

@@ -2,11 +2,14 @@
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { CalendarCheck, CalendarPlus } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function AdminEventClient({ children, approval }) {
     const pathname = usePathname();
+    const session = useSession();
+    console.log(session)
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -32,14 +35,17 @@ export default function AdminEventClient({ children, approval }) {
                         },
                     ]}
                 />
-                <div className="p-5">
-                    <Link
-                        href="/portal/admin/events/create"
-                        className="btn btn-neutral mb-4"
-                    >
-                        <CalendarPlus /> Add New Event{" "}
-                    </Link>
-                </div>
+                {session?.data?.user?.role_name == "Agency Administrator" || session?.data?.user?.role_name == "Organizer" && (
+
+                    <div className="p-5">
+                        <Link
+                            href="/portal/admin/events/create"
+                            className="btn btn-neutral mb-4"
+                        >
+                            <CalendarPlus /> Add New Event{" "}
+                        </Link>
+                    </div>
+                )}
                 <Tabs
                     defaultValue={currentTab}
                     onValueChange={handleTabChange}

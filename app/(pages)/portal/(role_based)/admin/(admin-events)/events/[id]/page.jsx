@@ -3,10 +3,12 @@ import {
     HydrationBoundary,
     QueryClient,
 } from "@tanstack/react-query";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CalendarCheck } from "lucide-react";
 import Link from "next/link";
 import { getEventsById } from "@/action/hostEventAction";
 import ShowEvents from "@components/events/ShowEvents";
+import WrapperHeadMain from "@components/layout/WrapperHeadMain";
+import { IoInformation } from "react-icons/io5";
 
 export default async function Page({ params }) {
     const { id } = await params;
@@ -19,6 +21,22 @@ export default async function Page({ params }) {
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
+            <WrapperHeadMain
+                icon={<CalendarCheck />}
+                pageTitle="Blood Drive Details"
+                breadcrumbs={[
+                    {
+                        path: "/portal/admin/events",
+                        icon: <CalendarCheck className="w-4" />,
+                        title: "Blood Drives",
+                    },
+                    {
+                        path: `/portal/admin/events/${id}`,
+                        icon: <IoInformation className="w-4" />,
+                        title: "Blood Drive Details",
+                    },
+                ]}
+            />
             <div className="w-full h-full md:w-8/10 2xl:w-3/4 mx-auto relative">
                 <Link
                     href="/portal/admin/events"

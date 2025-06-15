@@ -12,15 +12,10 @@ import {
 import { Button } from "@components/ui/button";
 import { Command, Eye, MoreHorizontal, Pencil } from "lucide-react";
 import Link from "next/link";
+import { formatFormalName } from "@lib/utils/string.utils";
 
-const columnFilterFn = (row, id, filterValue) => {
-    if (!filterValue || filterValue.length === 0) return true;
-    const roles = row.getValue(id);
-    const roleNames = roles.map((role) => role.role_name);
-    return filterValue.some((value) => roleNames.includes(value));
-};
 
-export const columns = [
+export const donorAppointmentColumns = [
     {
         accessorKey: "id",
         header: ({ column }) => (
@@ -29,15 +24,15 @@ export const columns = [
         filterFn: "columnFilter",
     },
     {
-        accessorKey: "image",
+        accessorKey: "time_schedule.event.file_url",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Avatar" />
+            <DataTableColumnHeader column={column} title="Event Photo" />
         ),
         cell: ({ row }) => {
             const data = row.original;
             return (
                 <Image
-                    src={data.image || "/default_avatar.png"}
+                    src={data.time_schedule.event.file_url || "/logo-1.png"}
                     className="flex-none rounded-4xl"
                     width={50}
                     height={50}
@@ -47,101 +42,108 @@ export const columns = [
         },
     },
     {
-        accessorKey: "name",
+        accessorKey: "time_schedule.event.title",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Display Name" />
+            <DataTableColumnHeader column={column} title="Event Title" />
         ),
+        cell: ({ getValue }) => <span>{getValue()}</span>,
         filterFn: "columnFilter",
     },
     {
-        // id: "date_reported",
-        accessorKey: "email",
+        accessorKey: "time_schedule.event.date",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Email" />
+            <DataTableColumnHeader column={column} title="Event Date" />
         ),
-        filterFn: "columnFilter",
-        cell: ({ getValue }) => <span className="text-blue-800">{getValue().toLowerCase()}</span>
-    },
-
-
-
-    {
-        accessorKey: "first_name",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="First Name" />
-        ),
+        cell: ({ getValue }) => <span>{getValue()}</span>,
         filterFn: "columnFilter",
     },
     {
-        accessorKey: "middle_name",
+        accessorKey: "time_schedule.formatted_time",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Middle Name" />
+            <DataTableColumnHeader column={column} title="Event Date" />
         ),
+        cell: ({ getValue }) => <span>{getValue()}</span>,
         filterFn: "columnFilter",
     },
     {
-        accessorKey: "last_name",
+        accessorKey: "donor_type",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Last Name" />
+            <DataTableColumnHeader column={column} title="Donor Type" />
         ),
+        cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
         filterFn: "columnFilter",
     },
     {
-        accessorKey: "roles",
+        accessorKey: "donor.blood_type.blood_type",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Role" />
+            <DataTableColumnHeader column={column} title="Blood Type" />
         ),
         cell: ({ getValue }) => {
-            const roles = getValue();
-            if (roles.length == 1) {
-                return <span>{roles[0].role_name}</span>
-            }
-            return (
-                <ul className="flex flex-col list-disc">
-                    {roles.map((role, i) => (
-                        <li key={i}>{role?.role_name}</li>
-                    ))}
-                </ul>
-            );
+            const blood_type = getValue();
+            if (blood_type) return <span>{formatFormalName(blood_type)}</span>
+            return "Not Specified";
         },
-        filterFn: columnFilterFn,
+        filterFn: "columnFilter",
     },
     {
-        accessorKey: "gender",
+        accessorKey: "patient_name",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Sex" />
+            <DataTableColumnHeader column={column} title="Patient Name" />
+        ),
+        cell: ({ getValue }) => <span>{getValue() || "N/A"}</span>,
+        filterFn: "columnFilter",
+    },
+
+    {
+        accessorKey: "collection_method",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Collection Method" />
+        ),
+        cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
+        filterFn: "columnFilter",
+    },
+    {
+        accessorKey: "comments",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Remarks" />
         ),
         filterFn: "columnFilter",
     },
     {
-        accessorKey: "creator.name",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Created by" />
-        ),
-        filterFn: "columnFilter",
-    },
-    {
-        accessorKey: "is_active",
+        accessorKey: "status",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Status" />
         ),
         filterFn: "columnFilter",
         cell: ({ row }) => {
             const data = row.original;
-            const status = data.is_active;
-            if (status) {
+            const status = data.status;
+            if (status == "registered") {
                 return (
-                    <div className="badge p-2 font-semibold text-xs badge-success">
-                        Activated
-                    </div>
-                );
-            } else {
-                return (
-                    <div className="badge p-2 font-semibold text-xs badge-error">
-                        Deactivated
+                    <div className="badge p-2 font-semibold text-xs badge-primary">
+                        {status.toUpperCase()}
                     </div>
                 );
             }
+            if (status == "deferred") {
+                return (
+                    <div className="badge p-2 font-semibold text-xs badge-warning">
+                        {status.toUpperCase()}
+                    </div>
+                );
+            }
+            if (status == "donated") {
+                return (
+                    <div className="badge p-2 font-semibold text-xs badge-success">
+                        {status.toUpperCase()}
+                    </div>
+                );
+            }
+            return (
+                <div className="badge p-2 font-semibold text-xs badge-error">
+                    {status.toUpperCase()}
+                </div>
+            );
         },
     },
     {
@@ -167,18 +169,18 @@ export const columns = [
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
 
-                        <Link href={`/portal/admin/users/${data.id}`}>
+                        <Link href={`/portal/donor/donor-appointments/${data.id}`}>
                             <DropdownMenuItem className="flex items-center space-x-2">
                                 <Eye className="w-4 h-4" />
                                 <span>Show</span>
                             </DropdownMenuItem>
                         </Link>
-                        <Link href={`/portal/admin/users/${data.id}/edit`}>
+                        {/* <Link href={`/portal/admin/users/${data.id}/edit`}>
                             <DropdownMenuItem className="flex items-center space-x-2">
                                 <Pencil className="w-4 h-4" />
                                 <span>Edit</span>
                             </DropdownMenuItem>
-                        </Link>
+                        </Link> */}
                     </DropdownMenuContent>
                 </DropdownMenu>
             );

@@ -15,6 +15,7 @@ import {
     Eye,
     MoreHorizontal,
     Pencil,
+    Users,
 } from "lucide-react";
 import Link from "next/link";
 import moment from "moment";
@@ -47,7 +48,7 @@ export const eventColumns = (setIsLoading) => [
     {
         accessorKey: "date",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Date" />
+            <DataTableColumnHeader column={column} title="Event Date" />
         ),
         cell: ({ getValue }) => moment(getValue()).format("MMM DD, YYYY"),
         filterFn: "columnFilter",
@@ -59,6 +60,44 @@ export const eventColumns = (setIsLoading) => [
             <DataTableColumnHeader column={column} title="Organizer" />
         ),
         cell: ({ getValue }) => getValue(),
+        filterFn: "columnFilter",
+    },
+
+    {
+        accessorKey: "time_schedules",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Participants" />
+        ),
+        filterFn: "columnFilter",
+        size: 50,       // Set column width to 200px
+        minSize: 50,    // Optional: set a minimum width
+        maxSize: 50,
+        cell: ({ getValue }) => {
+            const time_schedules = getValue();
+
+
+            return (
+                <ul className="list text-right max-w-42">
+                    {time_schedules.map((sched) => (
+
+                        <li key={sched.id}>
+                            <span className="italic text-slate-500">{sched.formatted_time}</span>
+                            {" - "}<b>{sched?.donors?.length}</b>
+                        </li>
+
+                    ))}
+                    <li className="font-semibold">Total - {time_schedules.reduce((acc, sched) => acc + sched?.donors?.length, 0)}</li>
+
+                </ul>
+            );
+        },
+    },
+    {
+        accessorKey: "createdAt",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Date Created" />
+        ),
+        cell: ({ getValue }) => moment(getValue()).format("MMM DD, YYYY"),
         filterFn: "columnFilter",
     },
     {
@@ -129,23 +168,6 @@ export const eventColumns = (setIsLoading) => [
             return <div className="space-x-2 space-y-1">{regStatusBadge}</div>;
         },
     },
-    {
-        accessorKey: "createdAt",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Date Created" />
-        ),
-        cell: ({ getValue }) => moment(getValue()).format("MMM DD, YYYY"),
-        filterFn: "columnFilter",
-    },
-
-    // {
-    //     accessorKey: "description",
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="Description" />
-    //     ),
-    //     cell: ({ getValue }) => parse(getValue()),
-    //     filterFn: "columnFilter",
-    // },
 
     {
         id: "actions",
@@ -173,7 +195,13 @@ export const eventColumns = (setIsLoading) => [
                         <Link href={`/portal/hosts/events/${data.id}`}>
                             <DropdownMenuItem className="btn btn-ghost btn-neutral space-x-2">
                                 <Eye className="w-4 h-4" />
-                                <span>Show</span>
+                                <span>View Details</span>
+                            </DropdownMenuItem>
+                        </Link>
+                        <Link href={`/portal/hosts/events/${data.id}/participants`}>
+                            <DropdownMenuItem className="btn btn-ghost btn-neutral space-x-2">
+                                <Users className="w-4 h-4" />
+                                <span>See Donors</span>
                             </DropdownMenuItem>
                         </Link>
                         {data.status == "for approval" ? (

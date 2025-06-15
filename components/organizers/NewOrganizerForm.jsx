@@ -167,16 +167,16 @@ export default function NewOrganizerForm({ role_name }) {
             file: null,
             image: null,
             file_url: null,
-            email: "mark29@email.com",
-            first_name: "Mark",
-            last_name: "Roman",
-            gender: "male",
-            password: "User@1234",
-            password_confirmation: "User@1234",
-            name: "PCMC",
-            contact_number: "+639663603172",
-            organization_type: "government",
-            address: "PCMC Building",
+            email: "",
+            first_name: "",
+            last_name: "",
+            gender: "",
+            password: "",
+            password_confirmation: "",
+            name: "",
+            contact_number: "",
+            organization_type: "",
+            address: "",
             barangay: "",
             city_municipality: "",
             province: "Metro Manila",
@@ -400,11 +400,11 @@ export default function NewOrganizerForm({ role_name }) {
                                 ""
                             )}
 
-                            <FormLogger
+                            {/* <FormLogger
                                 watch={watch}
                                 errors={errors}
                                 data={newAgencyData}
-                            />
+                            /> */}
                         </form>
                     </Form>
                 </CardContent>

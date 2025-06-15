@@ -4,6 +4,9 @@ import { logAuditTrail } from "@lib/audit_trails.utils";
 import { auth } from "@lib/auth";
 import { logErrorToFile } from "@lib/logger.server";
 import {
+    Agency,
+    BloodDonationEvent,
+    BloodType,
     Donor,
     DonorAppointmentInfo,
     EventTimeSchedule,
@@ -136,6 +139,9 @@ export async function getBookedAppointmentsByDonor() {
         const appointments = await DonorAppointmentInfo.findAll({
             where: {
                 donor_id: donor.id,
+                status: {
+                    [Op.not]: "cancelled",
+                },
             },
         });
 
@@ -144,6 +150,73 @@ export async function getBookedAppointmentsByDonor() {
         return { success: true, data: formattedappointments };
     } catch (err) {
         logErrorToFile(err, "getBookedAppointmentsByDonor ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: err || "Unknown error",
+        };
+    }
+}
+
+export async function getAllAppointmentsByDonor() {
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+    const { user } = session;
+    const donor = await Donor.findOne({
+        where: {
+            user_id: user.id,
+            status: "activated",
+        },
+    });
+
+    if (!donor) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+    try {
+        const appointments = await DonorAppointmentInfo.findAll({
+            where: {
+                donor_id: donor.id,
+            },
+            include: [
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedule",
+                    include: {
+                        model: BloodDonationEvent,
+                        as: "event"
+                    }
+                },
+                {
+                    model: Donor,
+                    as: "donor",
+                    include: [
+                        {
+                            model: Agency,
+                            as: "agency"
+                        },
+                        {
+                            model: BloodType,
+                            as: "blood_type",
+                        }
+                    ]
+                }
+            ]
+        });
+
+        const formattedappointments = formatSeqObj(appointments);
+
+        return { success: true, data: formattedappointments };
+    } catch (err) {
+        console.log("err>>>", err)
+        logErrorToFile(err, "getAllAppointmentsByDonor ERROR");
         return {
             success: false,
             type: "server",

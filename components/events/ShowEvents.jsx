@@ -18,7 +18,7 @@ import {
 import { Button } from "@components/ui/button";
 import { Command, Eye, MenuSquare, MoreHorizontal, Pencil } from "lucide-react";
 import { Table, TableBody, TableCell, TableRow } from "@components/ui/table";
-import { calculateAge } from "@lib/utils/string.utils";
+import { calculateAge, formatFormalName } from "@lib/utils/string.utils";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 import parse from "html-react-parser";
@@ -28,6 +28,7 @@ import React, { useState } from "react";
 import EventRegistrationStatus from "@components/organizers/EventRegistrationStatus";
 import LoadingModal from "@components/layout/LoadingModal";
 import Link from "next/link";
+import clsx from "clsx";
 
 export default function ShowEvents({ eventId }) {
     const [isLoading, setIsLoading] = useState(false);
@@ -64,7 +65,7 @@ export default function ShowEvents({ eventId }) {
                     <span>{parse(event?.description)}</span>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost">
+                            <Button>
                                 <span className="sr-only">Open menu</span>
                                 <MenuSquare className="h-4 w-4" />
                                 <span className="hidden md:inline-block">
@@ -229,16 +230,7 @@ export default function ShowEvents({ eventId }) {
                                                     ).format("hh:mm A")}
                                                 </span>
                                             </div>
-                                            <div className="flex justify-between">
-                                                <span className="font-semibold">
-                                                    Has Limit:
-                                                </span>
-                                                <span>
-                                                    {sched?.has_limit
-                                                        ? "Yes"
-                                                        : "No"}
-                                                </span>
-                                            </div>
+
                                             {sched?.has_limit && (
                                                 <div className="flex justify-between">
                                                     <span className="font-semibold">
@@ -249,6 +241,30 @@ export default function ShowEvents({ eventId }) {
                                                     </span>
                                                 </div>
                                             )}
+                                            <div className="flex justify-between" >
+                                                <span className="font-semibold">
+                                                    Status:
+                                                </span>
+                                                <span
+                                                    className={clsx(
+                                                        "flex justify-between badge p-2",
+                                                        sched?.status == "open" ? "badge-success" : "badge-error"
+                                                    )}
+                                                >
+                                                    {formatFormalName(sched?.status)}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between" >
+                                                <span className="font-semibold">
+                                                    Participants:
+                                                </span>
+                                                <span
+                                                    className={clsx("flex justify-between badge p-2")}
+                                                >
+                                                    {sched?.donors.length}
+                                                </span>
+                                            </div>
+
                                         </div>
                                     </TableCell>
                                 </TableRow>

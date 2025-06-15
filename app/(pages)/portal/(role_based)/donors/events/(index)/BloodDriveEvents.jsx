@@ -1,24 +1,25 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import LoadingModal from "@components/layout/LoadingModal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { getApprovedEventsByAgency } from "@/action/donorAction";
 import Skeleton_user from "@components/ui/Skeleton_user";
-import EventCardList from "./EventCardList";
 import AllEventCalendar from "@components/organizers/AllEventCalendar";
 import moment from "moment";
 import { getBookedAppointmentsByDonor } from "@/action/donorAppointmentAction";
+import EventCardList from "@components/events/EventCardList";
 
 export default function BloodDriveEvents() {
     const [isLoading, setIsLoading] = useState(false);
+    const queryClient = useQueryClient();
     const {
         data: events,
         isLoading: eventIsLoading,
         error,
         isError,
     } = useQuery({
-        queryKey: ["blood_drives"],
+        queryKey: ["upcoming_blood_drives"],
         queryFn: async () => {
             const res = await getApprovedEventsByAgency();
 
@@ -52,6 +53,20 @@ export default function BloodDriveEvents() {
         refetchOnMount: true,
     });
 
+    const onLoad = () => {
+        setIsLoading(true)
+    }
+
+    const handleProcessedBooking = () => {
+        setIsLoading(false);
+        queryClient.invalidateQueries({
+            queryKey: ["upcoming_blood_drives"],
+        });
+        queryClient.invalidateQueries({
+            queryKey: ["donor_booked_appointments"],
+        });
+    }
+
     if (isError)
         return (
             <div className="alert alert-error">
@@ -59,7 +74,7 @@ export default function BloodDriveEvents() {
                 <pre>
                     {JSON.stringify(
                         donorBookedAppointmentError?.message ||
-                            donorBookedAppointmentError,
+                        donorBookedAppointmentError,
                         null,
                         2
                     )}
@@ -72,7 +87,7 @@ export default function BloodDriveEvents() {
                 <pre>
                     {JSON.stringify(
                         donorBookedAppointmentError?.message ||
-                            donorBookedAppointmentError,
+                        donorBookedAppointmentError,
                         null,
                         2
                     )}
@@ -118,6 +133,9 @@ export default function BloodDriveEvents() {
                                     (appointnments) =>
                                         appointnments.time_schedule_id
                                 )}
+                                isRegistrationOpen={true}
+                                onLoad={onLoad}
+                                onFinish={handleProcessedBooking}
                             />
                         </div>
                     </div>
@@ -142,7 +160,7 @@ export default function BloodDriveEvents() {
                     <div className="flex flex-col h-full border border-gray-300 rounded-lg p-4 overflow-hidden">
                         <div className="flex flex-wrap gap-2 items-center justify-between">
                             <h2 className="text-2xl font-semibold mb-4">
-                                Available Donation Drives
+                                Upcoming Donation Drives
                             </h2>
                             <span className="font-semibold">
                                 {moment().format("MMMM DD, YYYY")}
@@ -159,6 +177,9 @@ export default function BloodDriveEvents() {
                                     (appointnments) =>
                                         appointnments.time_schedule_id
                                 )}
+                                isRegistrationOpen={false}
+                                onLoad={onLoad}
+                                onFinish={handleProcessedBooking}
                             />
                         </div>
                     </div>

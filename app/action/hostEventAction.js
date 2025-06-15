@@ -6,6 +6,9 @@ import {
     Agency,
     AgencyCoordinator,
     BloodDonationEvent,
+    BloodType,
+    Donor,
+    DonorAppointmentInfo,
     EventTimeSchedule,
     sequelize,
     User,
@@ -108,6 +111,33 @@ export async function getAllEventsByAgency() {
                     as: "requester",
                     attributes: ["id", "name", "email", "image"],
                 },
+                {
+                    model: Agency,
+                    as: "agency",
+                },
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedules",
+                    include: {
+                        model: DonorAppointmentInfo,
+                        as: "donors",
+                        include: {
+                            model: Donor,
+                            as: "donor",
+                            include: [
+                                {
+                                    model: User,
+                                    as: "user",
+                                },
+                                {
+                                    model: BloodType,
+                                    as: "blood_type"
+                                }
+                            ]
+
+                        }
+                    }
+                },
             ],
         });
 
@@ -192,6 +222,25 @@ export async function getEventsById(id) {
                 {
                     model: EventTimeSchedule,
                     as: "time_schedules",
+                    include: {
+                        model: DonorAppointmentInfo,
+                        as: "donors",
+                        include: {
+                            model: Donor,
+                            as: "donor",
+                            include: [
+                                {
+                                    model: User,
+                                    as: "user",
+                                },
+                                {
+                                    model: BloodType,
+                                    as: "blood_type"
+                                }
+                            ]
+
+                        }
+                    }
                 },
             ],
         });
@@ -202,6 +251,86 @@ export async function getEventsById(id) {
     } catch (err) {
         logErrorToFile(err, "getEventsById ERROR");
         throw {
+            success: false,
+            type: "server",
+            message: err || "Unknown error",
+        };
+    }
+}
+
+export async function getEventParticipants(id) {
+
+    if (!id) {
+        return {
+            success: false,
+            message: "Incomplete data: Id is required."
+        }
+    }
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request."
+        }
+    }
+
+
+    try {
+        const events = await BloodDonationEvent.findByPk(id, {
+            include: [
+                {
+                    model: User,
+                    as: "requester",
+                    attributes: ["id", "name", "email", "image"],
+                    include: [
+                        {
+                            model: AgencyCoordinator,
+                            as: "coordinator",
+                            attributes: ["contact_number"],
+                            required: false,
+                        },
+                    ],
+                },
+                {
+                    model: Agency,
+                    as: "agency",
+                },
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedules",
+                    include: {
+                        model: DonorAppointmentInfo,
+                        as: "donors",
+                        include: {
+                            model: Donor,
+                            as: "donor",
+                            include: [
+                                {
+                                    model: User,
+                                    as: "user",
+                                },
+                                {
+                                    model: BloodType,
+                                    as: "blood_type"
+                                }
+                            ]
+
+                        }
+                    }
+                },
+            ],
+        });
+
+        const formattedEvents = formatSeqObj(events);
+        return {
+            success: true,
+            data: formattedEvents
+        }
+
+    } catch (err) {
+        console.log(">>>>>>>>>>>>err", err)
+        logErrorToFile(err, "getEventParticipants ERROR");
+        return {
             success: false,
             type: "server",
             message: err || "Unknown error",

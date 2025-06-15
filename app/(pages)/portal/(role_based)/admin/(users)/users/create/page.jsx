@@ -21,7 +21,7 @@ export default function Page() {
         <Suspense fallback={<Skeleton_user />}>
             <div className="w-full h-full md:w-8/10 2xl:w-3/4 mx-auto relative">
                 <Link
-                    href="/admin/users"
+                    href="/portal/admin/users"
                     className="mb-3 absolute top-5 right-4"
                 >
                     <button
