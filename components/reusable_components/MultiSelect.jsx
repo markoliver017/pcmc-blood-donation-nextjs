@@ -38,8 +38,9 @@ const multiSelectVariants = (variant) => {
             "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         inverted: "inverted",
     };
-    return `m-1 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 ${variants[variant || "default"]
-        }`;
+    return `m-1 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 ${
+        variants[variant || "default"]
+    }`;
 };
 
 const MultiSelect = forwardRef(
@@ -156,9 +157,9 @@ const MultiSelect = forwardRef(
                                                     )}
                                                     {option?.label.length > 15
                                                         ? `${option.label.substring(
-                                                            0,
-                                                            15
-                                                        )}...`
+                                                              0,
+                                                              15
+                                                          )}...`
                                                         : option.label}
                                                     {/* <XCircle
                                                         className="ml-2 h-4 w-4 cursor-pointer"
@@ -190,13 +191,13 @@ const MultiSelect = forwardRef(
                                                     : "",
                                                 multiSelectVariants(variant)
                                             )}
-
                                             style={{
                                                 animationDuration: `${animation}s`,
                                             }}
                                         >
-                                            {`+ ${selectedValues.length - maxCount
-                                                } more`}
+                                            {`+ ${
+                                                selectedValues.length - maxCount
+                                            } more`}
                                             <div
                                                 onClick={(e) => {
                                                     e.stopPropagation();
@@ -296,7 +297,7 @@ const MultiSelect = forwardRef(
                                             )}
                                             <span>{option.label}</span>
                                             {option.number !== undefined && ( // Check if number exists
-                                                <span className="ml-2 text-sm text-gray-500 flex-1 text-right">
+                                                <span className="ml-2 text-sm text-gray-500 flex-1 text-right dark:text-white">
                                                     ({option.number})
                                                 </span> // Display the number
                                             )}

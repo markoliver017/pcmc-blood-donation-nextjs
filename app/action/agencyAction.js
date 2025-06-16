@@ -97,7 +97,6 @@ export async function fetchAgency(id) {
                 },
             ],
         });
-        console.log("agency fetcheddd", agency);
 
         return formatSeqObj(agency);
     } catch (error) {

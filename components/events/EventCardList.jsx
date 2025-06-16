@@ -22,8 +22,15 @@ import {
     TableRow,
 } from "@components/ui/table";
 import BookEventButton from "@components/donors/BookEventButton";
+import clsx from "clsx";
 
-export default function EventCardList({ events, booked_appointments, onLoad, onFinish, isRegistrationOpen = false }) {
+export default function EventCardList({
+    events,
+    booked_appointments,
+    onLoad,
+    onFinish,
+    isRegistrationOpen = false,
+}) {
     if (!events || events.length === 0)
         return (
             <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
@@ -143,16 +150,25 @@ export default function EventCardList({ events, booked_appointments, onLoad, onF
                                         {isRegistrationOpen && (
                                             <>
                                                 <TableHead>Status</TableHead>
-                                                <TableHead>Participants</TableHead>
+                                                <TableHead>
+                                                    Participants
+                                                </TableHead>
                                                 <TableHead>Action</TableHead>
-                                            </>)}
+                                            </>
+                                        )}
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {event?.time_schedules.map((sched) => (
                                         <TableRow
                                             key={sched.id}
-                                            className={`${isAlreadyBooked(sched.id) && "font-semibold italic text-green-700 dark:text-green-400"}`}
+                                            className={clsx(
+                                                "font-semibold text-green-700 dark:text-green-600",
+                                                isAlreadyBooked(sched.id) &&
+                                                    "font-bold italic text-slate-400 dark:text-slate-400",
+                                                sched.status == "closed" &&
+                                                    "font-medium italic text-red-400 dark:text-red-500"
+                                            )}
                                         >
                                             <TableCell>{sched.id}</TableCell>
                                             <TableCell>
@@ -179,11 +195,17 @@ export default function EventCardList({ events, booked_appointments, onLoad, onF
                                                     </TableCell>
                                                     <TableCell>
                                                         <span>
-                                                            {sched.donors.length}
+                                                            {
+                                                                sched.donors
+                                                                    .length
+                                                            }
                                                         </span>
                                                         {sched?.has_limit && (
                                                             <span>
-                                                                /{sched?.max_limit}
+                                                                /
+                                                                {
+                                                                    sched?.max_limit
+                                                                }
                                                             </span>
                                                         )}
                                                     </TableCell>
@@ -191,9 +213,13 @@ export default function EventCardList({ events, booked_appointments, onLoad, onF
                                                         <BookEventButton
                                                             event={event}
                                                             schedule={sched}
-                                                            isDisabled={isAlreadyBooked(
-                                                                sched.id
-                                                            )}
+                                                            isDisabled={
+                                                                isAlreadyBooked(
+                                                                    sched.id
+                                                                ) ||
+                                                                sched.status ==
+                                                                    "closed"
+                                                            }
                                                             onLoad={onLoad}
                                                             onFinish={onFinish}
                                                         />

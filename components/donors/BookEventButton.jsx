@@ -21,8 +21,8 @@ export default function BookEventButton({
     label = "Book",
     className = "btn-neutral",
     formClassName = "",
-    onLoad = () => { },
-    onFinish = () => { }
+    onLoad = () => {},
+    onFinish = () => {},
 }) {
     const queryClient = useQueryClient();
 
@@ -43,20 +43,22 @@ export default function BookEventButton({
             queryClient.invalidateQueries({ queryKey: ["blood_drives"] });
             SweetAlert({
                 title: "Blood Donation Booked",
-                text: `You have successfully booked an appointment for ${event?.title
-                    } on ${moment(schedule?.date).format(
-                        "MMM DD, YYYY"
-                    )} from ${moment(schedule?.time_start, "HH:mm:ss").format(
-                        "hh:mm A"
-                    )} to ${moment(schedule?.time_end, "HH:mm:ss").format(
-                        "hh:mm A"
-                    )}.`,
+                text: `You have successfully booked an appointment for ${
+                    event?.title
+                } on ${moment(schedule?.date).format(
+                    "MMM DD, YYYY"
+                )} from ${moment(schedule?.time_start, "HH:mm:ss").format(
+                    "hh:mm A"
+                )} to ${moment(schedule?.time_end, "HH:mm:ss").format(
+                    "hh:mm A"
+                )}.`,
 
                 icon: "info",
                 confirmButtonText: "Done",
             });
         },
         onError: (error) => {
+            console.log(">>>>>>>>>>>>>>>>>", error);
             notify({ error: true, message: error?.message });
             onFinish();
         },
@@ -91,7 +93,6 @@ export default function BookEventButton({
             showCancelButton: true,
             confirmButtonText: "Proceed",
             onConfirm: () => {
-
                 mutate(data);
             },
         });

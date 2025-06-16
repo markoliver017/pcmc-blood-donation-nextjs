@@ -14,7 +14,6 @@ import { Command, Eye, MoreHorizontal, Pencil } from "lucide-react";
 import Link from "next/link";
 import { formatFormalName } from "@lib/utils/string.utils";
 
-
 export const donorAppointmentColumns = [
     {
         accessorKey: "id",
@@ -60,7 +59,7 @@ export const donorAppointmentColumns = [
     {
         accessorKey: "time_schedule.formatted_time",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Event Date" />
+            <DataTableColumnHeader column={column} title="Time Schedule" />
         ),
         cell: ({ getValue }) => <span>{getValue()}</span>,
         filterFn: "columnFilter",
@@ -80,7 +79,7 @@ export const donorAppointmentColumns = [
         ),
         cell: ({ getValue }) => {
             const blood_type = getValue();
-            if (blood_type) return <span>{formatFormalName(blood_type)}</span>
+            if (blood_type) return <span>{formatFormalName(blood_type)}</span>;
             return "Not Specified";
         },
         filterFn: "columnFilter",
@@ -169,7 +168,9 @@ export const donorAppointmentColumns = [
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
 
-                        <Link href={`/portal/donor/donor-appointments/${data.id}`}>
+                        <Link
+                            href={`/portal/donor/donor-appointments/${data.id}`}
+                        >
                             <DropdownMenuItem className="flex items-center space-x-2">
                                 <Eye className="w-4 h-4" />
                                 <span>Show</span>

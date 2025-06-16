@@ -24,9 +24,10 @@ import RejectEvent from "@components/events/RejectEvent";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { formatFormalName } from "@lib/utils/string.utils";
 import { GiClosedDoors, GiOpenBook } from "react-icons/gi";
+import EventRegistrationStatus from "@components/organizers/EventRegistrationStatus";
 // import parse from "html-react-parser";
 
-export const eventColumns = [
+export const eventColumns = (setIsLoading) => [
     {
         accessorKey: "id",
         header: ({ column }) => (
@@ -52,7 +53,7 @@ export const eventColumns = [
     {
         accessorKey: "date",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Date" />
+            <DataTableColumnHeader column={column} title="Event Date" />
         ),
         cell: ({ getValue }) => moment(getValue()).format("MMM DD, YYYY"),
         filterFn: "columnFilter",
@@ -65,6 +66,40 @@ export const eventColumns = [
         ),
         cell: ({ getValue }) => getValue(),
         filterFn: "columnFilter",
+    },
+    {
+        accessorKey: "time_schedules",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Participants" />
+        ),
+        filterFn: "columnFilter",
+        size: 50, // Set column width to 200px
+        minSize: 50, // Optional: set a minimum width
+        maxSize: 50,
+        cell: ({ getValue }) => {
+            const time_schedules = getValue();
+
+            return (
+                <ul className="list text-right max-w-42">
+                    {time_schedules.map((sched) => (
+                        <li key={sched.id}>
+                            <span className="italic text-slate-500">
+                                {sched.formatted_time}
+                            </span>
+                            {" - "}
+                            <b>{sched?.donors?.length}</b>
+                        </li>
+                    ))}
+                    <li className="font-semibold">
+                        Total -{" "}
+                        {time_schedules.reduce(
+                            (acc, sched) => acc + sched?.donors?.length,
+                            0
+                        )}
+                    </li>
+                </ul>
+            );
+        },
     },
     {
         accessorKey: "createdAt",
@@ -155,7 +190,6 @@ export const eventColumns = [
         filterFn: "columnFilter",
     },
 
-
     {
         id: "actions",
         header: ({ column }) => (
@@ -218,18 +252,26 @@ export const eventColumns = [
                         )}
 
                         {status == "approved" ? (
-                            <DropdownMenuItem className="space-x-2 flex justify-between">
-                                <VerifyEvent
-                                    eventData={{
-                                        id: data.id,
-                                        status: "cancelled",
-                                    }}
-                                    label="Cancel"
-                                    className="btn btn-ghost btn-error"
-                                    formClassName="w-full"
-                                    icon={<XIcon />}
-                                />
-                            </DropdownMenuItem>
+                            <>
+                                <DropdownMenuItem>
+                                    <EventRegistrationStatus
+                                        data={data}
+                                        setIsLoading={setIsLoading}
+                                    />
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="space-x-2 flex justify-between">
+                                    <VerifyEvent
+                                        eventData={{
+                                            id: data.id,
+                                            status: "cancelled",
+                                        }}
+                                        label="Cancel Blood Drive"
+                                        className="btn btn-ghost btn-error w-full"
+                                        formClassName="w-full"
+                                        icon={<XIcon />}
+                                    />
+                                </DropdownMenuItem>
+                            </>
                         ) : (
                             ""
                         )}

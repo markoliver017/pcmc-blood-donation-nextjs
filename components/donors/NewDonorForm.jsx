@@ -21,7 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import SweetAlert from "@components/ui/SweetAlert";
 import notify from "@components/ui/notify";
 import InlineLabel from "@components/form/InlineLabel";
-import { Form, FormField, FormItem } from "@components/ui/form";
+import { Form, FormField, FormItem, FormMessage } from "@components/ui/form";
 
 import { uploadPicture } from "@/action/uploads";
 import FieldError from "@components/form/FieldError";
@@ -43,6 +43,7 @@ import DonorBloodDonationInfoForm from "./DonorBloodDonationInfoForm";
 import ConfirmTable from "./ConfirmTable";
 import { donorRegistrationWithUser } from "@lib/zod/donorSchema";
 import { storeDonor } from "@/action/donorAction";
+import Link from "next/link";
 
 const form_sections = [
     {
@@ -197,6 +198,8 @@ export default function NewDonorForm({ role_name, agency_id }) {
             last_donation_date: "",
             blood_service_facility: "",
             comments: "",
+            readEligibilityReq: true,
+            termsAccepted: false,
         },
     });
 
@@ -398,6 +401,65 @@ export default function NewDonorForm({ role_name, agency_id }) {
                                                     </FormItem>
                                                 )}
                                             />
+                                            <div className="py-3 px-5 flex flex-col justify-center flex-wrap">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="termsAccepted"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <label className="flex-items-center mt-2 text-2xl italic">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="checkbox checkbox-primary border shadow"
+                                                                    {...field}
+                                                                />
+                                                                <span>
+                                                                    I agree to
+                                                                    the{" "}
+                                                                    <Link
+                                                                        className="link link-primary"
+                                                                        href="#"
+                                                                        target="_blank"
+                                                                    >
+                                                                        Terms
+                                                                        and
+                                                                        Condition
+                                                                    </Link>
+                                                                </span>
+                                                            </label>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="readEligibilityReq"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <label className="flex-items-center mt-2 text-2xl italic">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="checkbox checkbox-primary border shadow"
+                                                                    {...field}
+                                                                />
+                                                                <span>
+                                                                    I have read
+                                                                    the{" "}
+                                                                    <Link
+                                                                        className="link link-primary"
+                                                                        href="#"
+                                                                        target="_blank"
+                                                                    >
+                                                                        Eligibility
+                                                                        Requirements
+                                                                    </Link>
+                                                                </span>
+                                                            </label>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
 
                                             <div className="flex justify-between mt-4">
                                                 <button
@@ -438,11 +500,12 @@ export default function NewDonorForm({ role_name, agency_id }) {
                                 ""
                             )}
 
-                            {/* <FormLogger
+                            <FormLogger
                                 watch={watch}
                                 errors={errors}
                                 data={newDonorData}
                             />
+                            {/* 
                             <pre>
                                 <b>User profile File: </b>{" "}
                                 {JSON.stringify(profilePicFile)}

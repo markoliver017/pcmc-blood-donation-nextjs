@@ -12,6 +12,7 @@ import {
     EventTimeSchedule,
     sequelize,
 } from "@lib/models";
+import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import { bookAppointmentSchema } from "@lib/zod/bloodDonationSchema";
 import { Op } from "sequelize";
@@ -78,6 +79,52 @@ export async function bookDonorAppointment(formData) {
             message: `You have already booked an appointment for this event. Kindly go navigate to your "My Appointments" tab.`,
         };
     }
+    const timeSchedule = await EventTimeSchedule.findByPk(
+        data.time_schedule_id,
+        {
+            attributes: {
+                include: [
+                    [
+                        sequelize.fn("COUNT", sequelize.col("donors.id")),
+                        "donorCount",
+                    ],
+                ],
+            },
+            include: [
+                {
+                    model: DonorAppointmentInfo,
+                    as: "donors",
+                    attributes: [], // Don't fetch full donor records
+                    required: false,
+                    where: {
+                        status: {
+                            [Op.not]: "cancelled",
+                        },
+                    },
+                },
+            ],
+            group: ["EventTimeSchedule.id"],
+        }
+    );
+
+    const timeSchedTotalDonors = timeSchedule?.dataValues?.donorCount || 0;
+    if (!timeSchedule)
+        return {
+            success: false,
+            message: "Database Error: Time Schedule not found or not active.",
+        };
+
+    if (
+        timeSchedule?.status !== "open" ||
+        (timeSchedule?.has_limit &&
+            timeSchedule?.max_limit <= timeSchedTotalDonors)
+    ) {
+        return {
+            success: false,
+            message:
+                "This time schedule is either closed, not yet accepting applicants, or has already reached its maximum limit.",
+        };
+    }
 
     const transaction = await sequelize.transaction();
 
@@ -85,6 +132,12 @@ export async function bookDonorAppointment(formData) {
         const newAppointment = await DonorAppointmentInfo.create(data, {
             transaction,
         });
+        if (
+            timeSchedule?.has_limit &&
+            timeSchedule?.max_limit <= timeSchedTotalDonors + 1
+        ) {
+            await timeSchedule.update({ status: "closed" }, { transaction });
+        }
 
         await transaction.commit();
 
@@ -107,7 +160,7 @@ export async function bookDonorAppointment(formData) {
         return {
             success: false,
             type: "server",
-            message: err || "Unknown error",
+            message: extractErrorMessage(err),
         };
     }
 }
@@ -191,8 +244,8 @@ export async function getAllAppointmentsByDonor() {
                     as: "time_schedule",
                     include: {
                         model: BloodDonationEvent,
-                        as: "event"
-                    }
+                        as: "event",
+                    },
                 },
                 {
                     model: Donor,
@@ -200,22 +253,22 @@ export async function getAllAppointmentsByDonor() {
                     include: [
                         {
                             model: Agency,
-                            as: "agency"
+                            as: "agency",
                         },
                         {
                             model: BloodType,
                             as: "blood_type",
-                        }
-                    ]
-                }
-            ]
+                        },
+                    ],
+                },
+            ],
         });
 
         const formattedappointments = formatSeqObj(appointments);
 
         return { success: true, data: formattedappointments };
     } catch (err) {
-        console.log("err>>>", err)
+        console.log("err>>>", err);
         logErrorToFile(err, "getAllAppointmentsByDonor ERROR");
         return {
             success: false,

@@ -13,9 +13,10 @@ import {
     sequelize,
     User,
 } from "@lib/models";
+import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import { bloodDonationEventSchema } from "@lib/zod/bloodDonationSchema";
-import { Op } from "sequelize";
+import { ForeignKeyConstraintError, Op } from "sequelize";
 // import { logAuditTrail } from "@lib/audit_trails.utils";
 
 export async function getAgencyId() {
@@ -131,12 +132,11 @@ export async function getAllEventsByAgency() {
                                 },
                                 {
                                     model: BloodType,
-                                    as: "blood_type"
-                                }
-                            ]
-
-                        }
-                    }
+                                    as: "blood_type",
+                                },
+                            ],
+                        },
+                    },
                 },
             ],
         });
@@ -235,12 +235,11 @@ export async function getEventsById(id) {
                                 },
                                 {
                                     model: BloodType,
-                                    as: "blood_type"
-                                }
-                            ]
-
-                        }
-                    }
+                                    as: "blood_type",
+                                },
+                            ],
+                        },
+                    },
                 },
             ],
         });
@@ -258,82 +257,71 @@ export async function getEventsById(id) {
     }
 }
 
-export async function getEventParticipants(id) {
-
-    if (!id) {
+export async function getEventParticipants(eventId) {
+    if (!eventId) {
         return {
             success: false,
-            message: "Incomplete data: Id is required."
-        }
+            message: "Incomplete data: eventId is required.",
+        };
     }
     const session = await auth();
     if (!session) {
         return {
             success: false,
-            message: "You are not authorized to access this request."
-        }
+            message: "You are not authorized to access this request.",
+        };
+    }
+    const event = await BloodDonationEvent.findByPk(eventId);
+    if (!event) {
+        return {
+            success: false,
+            message: "Event ID was not found or inactive.",
+        };
     }
 
-
     try {
-        const events = await BloodDonationEvent.findByPk(id, {
+        const donors = await DonorAppointmentInfo.findAll({
             include: [
                 {
-                    model: User,
-                    as: "requester",
-                    attributes: ["id", "name", "email", "image"],
+                    model: EventTimeSchedule,
+                    as: "time_schedule",
+                    required: true,
+                    where: {
+                        blood_donation_event_id: eventId, // filter by the event ID
+                    },
+                },
+                {
+                    model: Donor,
+                    as: "donor",
                     include: [
                         {
-                            model: AgencyCoordinator,
-                            as: "coordinator",
-                            attributes: ["contact_number"],
-                            required: false,
+                            model: User,
+                            as: "user",
+                        },
+                        {
+                            model: BloodType,
+                            as: "blood_type",
                         },
                     ],
-                },
-                {
-                    model: Agency,
-                    as: "agency",
-                },
-                {
-                    model: EventTimeSchedule,
-                    as: "time_schedules",
-                    include: {
-                        model: DonorAppointmentInfo,
-                        as: "donors",
-                        include: {
-                            model: Donor,
-                            as: "donor",
-                            include: [
-                                {
-                                    model: User,
-                                    as: "user",
-                                },
-                                {
-                                    model: BloodType,
-                                    as: "blood_type"
-                                }
-                            ]
-
-                        }
-                    }
                 },
             ],
         });
 
-        const formattedEvents = formatSeqObj(events);
+        const formattedDonors = formatSeqObj(donors);
+        const formattedEvent = formatSeqObj(event);
         return {
             success: true,
-            data: formattedEvents
-        }
-
+            data: {
+                event: formattedEvent,
+                donors: formattedDonors,
+            },
+        };
     } catch (err) {
-        console.log(">>>>>>>>>>>>err", err)
         logErrorToFile(err, "getEventParticipants ERROR");
         return {
             success: false,
             type: "server",
-            message: err || "Unknown error",
+            message: extractErrorMessage(err),
         };
     }
 }
@@ -540,10 +528,20 @@ export async function updateEvent(id, formData) {
         logErrorToFile(err, "UPDATE EVENT");
         await transaction.rollback();
 
+        let message = extractErrorMessage(err); // default fallback
+
+        if (
+            err instanceof ForeignKeyConstraintError ||
+            err.original?.errno === 1451
+        ) {
+            message =
+                "Unable to update the event because some time schedules already have donor appointments. Please remove those appointments first.";
+        }
+
         return {
             success: false,
             type: "server",
-            message: err || "Unknown error",
+            message,
         };
     }
 }

@@ -1,11 +1,14 @@
 "use client";
-import { DataTable } from "@components/reusable_components/Datatable";
+
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import React, { useState } from "react";
 import { eventColumns } from "./eventColumns";
 import { getAllEvents } from "@/action/adminEventAction";
+import LoadingModal from "@components/layout/LoadingModal";
+import { DataTable } from "@components/events/Datatable";
 
 export default function ListofEvents() {
+    const [modalIsLoading, setModalIsLoading] = useState(false);
     const {
         data: events,
         isLoading,
@@ -35,9 +38,10 @@ export default function ListofEvents() {
 
     return (
         <div className="w-full p-4">
+            <LoadingModal imgSrc="/loader_3.gif" isLoading={modalIsLoading} />
             <DataTable
                 data={events || []}
-                columns={eventColumns}
+                columns={eventColumns(setModalIsLoading)}
                 isLoading={isLoading}
             />
         </div>

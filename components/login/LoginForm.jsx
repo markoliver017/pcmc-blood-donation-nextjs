@@ -48,14 +48,13 @@ export default function LoginForm() {
             callbackUrl: "/portal", // redirect after login
         });
 
-
         if (res.ok && res.error == undefined) {
             toast.success("You're now signed in.", {
                 position: "bottom-right",
             });
 
             // router.push(res.url);
-            setTimeout(() => window.location.href = res.url, 500)
+            setTimeout(() => (window.location.href = res.url), 500);
         } else {
             setIsLoading(false);
             setError("password", {
@@ -63,8 +62,8 @@ export default function LoginForm() {
                 message: "Invalid email or password!",
             });
         }
-
     };
+    const isAnyLoading = Object.values(isLoading).some((v) => v);
 
     return (
         <>
@@ -106,7 +105,7 @@ export default function LoginForm() {
                                 },
                             })}
                             placeholder="mail@site.com"
-                        // required
+                            // required
                         />
                     </label>
                     <p className="text-red-500 text-sm">
@@ -143,8 +142,9 @@ export default function LoginForm() {
                 </div>
 
                 <button
-                    disabled={isLoading?.credentials}
-                    className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300">
+                    disabled={isAnyLoading}
+                    className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300"
+                >
                     {isLoading?.credentials ? (
                         <>
                             <span className="loading loading-bars loading-xs"></span>
@@ -204,39 +204,60 @@ export default function LoginForm() {
             </div>
             <div className="flex flex-col gap-3 py-5">
                 {/* Google */}
-                <button className="btn bg-white text-black border-[#e5e5e5]">
-                    <svg
-                        aria-label="Google logo"
-                        width="16"
-                        height="16"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 512 512"
-                    >
-                        <g>
-                            <path d="m0 0H512V512H0" fill="#fff"></path>
-                            <path
-                                fill="#34a853"
-                                d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"
-                            ></path>
-                            <path
-                                fill="#4285f4"
-                                d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"
-                            ></path>
-                            <path
-                                fill="#fbbc02"
-                                d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"
-                            ></path>
-                            <path
-                                fill="#ea4335"
-                                d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"
-                            ></path>
-                        </g>
-                    </svg>
-                    Login with Google
+                <button
+                    disabled={isAnyLoading}
+                    className="btn bg-white text-black border-[#e5e5e5]"
+                    onClick={() => {
+                        signIn("google", {
+                            callbackUrl: "/portal",
+                        });
+                        setIsLoading((prev) => ({ ...prev, google: true }));
+                    }}
+                >
+                    {isLoading?.google ? (
+                        <>
+                            <span className="loading loading-bars loading-xs"></span>
+                            Signing In...
+                        </>
+                    ) : (
+                        <>
+                            <svg
+                                aria-label="Google logo"
+                                width="16"
+                                height="16"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 512 512"
+                            >
+                                <g>
+                                    <path d="m0 0H512V512H0" fill="#fff"></path>
+                                    <path
+                                        fill="#34a853"
+                                        d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"
+                                    ></path>
+                                    <path
+                                        fill="#4285f4"
+                                        d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"
+                                    ></path>
+                                    <path
+                                        fill="#fbbc02"
+                                        d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"
+                                    ></path>
+                                    <path
+                                        fill="#ea4335"
+                                        d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"
+                                    ></path>
+                                </g>
+                            </svg>
+                            Login with Google
+                        </>
+                    )}
                 </button>
 
                 {/* Facebook */}
-                <button className="btn bg-[#1A77F2] text-white border-[#005fd8]">
+                <button
+                    disabled={isAnyLoading}
+                    className="btn bg-[#1A77F2] text-white border-[#005fd8]"
+                >
                     <svg
                         aria-label="Facebook logo"
                         width="16"

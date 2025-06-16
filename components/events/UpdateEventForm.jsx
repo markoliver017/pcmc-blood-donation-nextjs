@@ -90,6 +90,9 @@ export default function UpdateEventForm({ eventId }) {
             queryClient.invalidateQueries({
                 queryKey: ["all_event_schedules"],
             });
+            queryClient.invalidateQueries({
+                queryKey: ["all_events"],
+            });
             SweetAlert({
                 title: "Update Blood Donation Event",
                 text: "You have successfully updated the blood donation event.",
@@ -175,7 +178,7 @@ export default function UpdateEventForm({ eventId }) {
     const avatar =
         !errors?.file && uploaded_avatar
             ? URL.createObjectURL(uploaded_avatar)
-            : "/upload-event-photo.png";
+            : event?.file_url || "/upload-event-photo.png";
 
     useEffect(() => {
         if (watch("file_url")) setValue("file_url", null);

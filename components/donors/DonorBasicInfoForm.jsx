@@ -27,9 +27,12 @@ import { IoArrowUndoCircle } from "react-icons/io5";
 import { useQuery } from "@tanstack/react-query";
 import Skeleton_form from "@components/ui/Skeleton_form";
 import FormCardComponent from "@components/form/FormCardComponent";
+import { isOldEnoughToDonate } from "@lib/utils/checkMinAge";
 
 const fetchCountries = async () => {
-    const res = await fetch("https://restcountries.com/v3.1/all");
+    const res = await fetch(
+        "https://restcountries.com/v3.1/all?fields=name,demonyms"
+    );
     if (!res.ok) throw new Error("Failed to fetch countries");
     return res.json();
 };
@@ -41,6 +44,8 @@ export default function DonorBasicInfoForm({ details, onNext }) {
         watch,
         resetField,
         setValue,
+        getValues,
+        setError,
         formState: { errors },
     } = useFormContext();
 
@@ -59,6 +64,19 @@ export default function DonorBasicInfoForm({ details, onNext }) {
             "occupation",
             "file",
         ]);
+
+        const min_age = 17;
+        const isValidAge = isOldEnoughToDonate(
+            getValues("date_of_birth"),
+            min_age
+        );
+        if (!isValidAge) {
+            setError("date_of_birth", {
+                type: "manual",
+                message: `Donor must be at least ${min_age} years old.`,
+            });
+            return;
+        }
         if (valid) {
             onNext(1);
         } else {
@@ -90,7 +108,7 @@ export default function DonorBasicInfoForm({ details, onNext }) {
     }, [uploaded_avatar]);
 
     if (nationalities_loading) return <Skeleton_form />;
-
+    // return;
     return (
         <FormCardComponent details={details}>
             <CardContent className="flex flex-wrap gap-5">
@@ -204,7 +222,7 @@ export default function DonorBasicInfoForm({ details, onNext }) {
                                     >
                                         <option value="">Select here</option>
                                         {nationalities
-                                            .map((country) => {
+                                            ?.map((country) => {
                                                 const name =
                                                     country.name?.common;
                                                 const nationality =

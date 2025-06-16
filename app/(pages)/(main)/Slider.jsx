@@ -53,23 +53,37 @@ export default function MainSlider() {
                             quibusdam!
                         </p>
                     </div>
-                    {/* <div className="h-140 relative">
+                    <div className="h-140 relative">
                         <Image
-                            src="/slide2.jpg"
-                            className="h-full w-full object-fill"
+                            src="/slide-main-1.jpg"
+                            className="h-full w-full object-fit"
                             width={1500}
                             height={1000}
                             alt="Philippine Children's Medical Center"
                             title="Philippine Children's Medical Center"
-                            quality={100}
                         />
-                        <p className="absolute bottom-10 right-20 z-50 bg-white/70 p-4 rounded w-140">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Odit temporibus laborum cum inventore
-                            molestiae nisi tempora nostrum rem praesentium ea
-                            quam dolores aliquam ad, voluptas vel corporis vero
-                        </p>
-                    </div> */}
+                    </div>
+                    <div className="h-140 relative">
+                        <Image
+                            src="/slide-main-3.png"
+                            className="h-full w-full object-fit"
+                            width={1500}
+                            height={1000}
+                            alt="Philippine Children's Medical Center"
+                            title="Philippine Children's Medical Center"
+                        />
+                    </div>
+                    <div className="h-140 relative">
+                        <Image
+                            src="/slide-main-4.png"
+                            className="h-full w-full object-fit"
+                            width={1500}
+                            height={1000}
+                            alt="Philippine Children's Medical Center"
+                            title="Philippine Children's Medical Center"
+                        />
+                    </div>
+
                     <div className="h-140 relative">
                         <Image
                             src="/slide-main-2.png"

@@ -13,6 +13,7 @@ import { Button } from "@components/ui/button";
 import { Command, Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import moment from "moment";
+import { formatFormalName } from "@lib/utils/string.utils";
 
 function calculateAge(dateOfBirth) {
     const today = new Date();
@@ -66,6 +67,7 @@ export const hostsDonorColumns = [
         filterFn: "columnFilter",
     },
     {
+        id: "blood_type",
         accessorKey: "blood_type.blood_type",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Blood Type" />
@@ -106,7 +108,14 @@ export const hostsDonorColumns = [
         },
         filterFn: "columnFilter",
     },
-
+    {
+        accessorKey: "user.gender",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Sex" />
+        ),
+        cell: ({ getValue }) => formatFormalName(getValue()),
+        filterFn: "columnFilter",
+    },
     {
         accessorKey: "status",
         header: ({ column }) => (

@@ -6,6 +6,9 @@ import {
     Agency,
     AgencyCoordinator,
     BloodDonationEvent,
+    BloodType,
+    Donor,
+    DonorAppointmentInfo,
     EventTimeSchedule,
     sequelize,
     User,
@@ -91,6 +94,28 @@ export async function getAllEvents() {
                     model: User,
                     as: "editor",
                     attributes: ["id", "name", "email", "image"],
+                },
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedules",
+                    include: {
+                        model: DonorAppointmentInfo,
+                        as: "donors",
+                        include: {
+                            model: Donor,
+                            as: "donor",
+                            include: [
+                                {
+                                    model: User,
+                                    as: "user",
+                                },
+                                {
+                                    model: BloodType,
+                                    as: "blood_type",
+                                },
+                            ],
+                        },
+                    },
                 },
             ],
         });
@@ -457,7 +482,6 @@ export async function updateEvent(id, formData) {
 }
 
 export async function updateEventStatus(formData) {
-
     const session = await auth();
     if (!session) throw "You are not authorized to access this request.";
 
@@ -527,7 +551,6 @@ export async function updateEventStatus(formData) {
     }
 }
 
-
 export async function updateEventRegistrationStatus(formData) {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const session = await auth();
@@ -581,18 +604,18 @@ export async function updateEventRegistrationStatus(formData) {
         const text = {
             ongoing: "Blood donation event registration is now open.",
             closed: "Blood donation event registration has been closed successfully.",
-            completed: "Blood donation event registration details have been updated successfully.",
+            completed:
+                "Blood donation event registration details have been updated successfully.",
         };
-
 
         return {
             success: true,
             data: updatedEvent.get({ plain: true }),
             title: title[data.registration_status] || "Updated Status",
-            text: text[data.registration_status] || `Blood donation event registration status updated to ${data.registration_status}.`,
+            text:
+                text[data.registration_status] ||
+                `Blood donation event registration status updated to ${data.registration_status}.`,
         };
-
-
     } catch (err) {
         logErrorToFile(err, "UPDATE EVENT STATUS");
         await transaction.rollback();

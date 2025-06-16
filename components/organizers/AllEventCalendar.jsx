@@ -67,8 +67,9 @@ export default function AllEventCalendar() {
                     }
                     eventDisplay="block"
                     eventContent={(eventInfo) => (
-                        <div className="flex justify-center items-center gap-1 rounded-2xl p-2">
-                            <CalendarCheck2 size={20} /> {eventInfo.event.title}
+                        <div className="flex text-left gap-1 rounded-2xl p-2 truncate">
+                            {/* <CalendarCheck2 size={20} /> */}
+                            {eventInfo.event.title}
                         </div>
                     )}
                     headerToolbar={{
@@ -89,9 +90,7 @@ export default function AllEventCalendar() {
                         timeGridDay: { buttonText: "Day" },
                     }}
                     eventClick={(info) =>
-                        alert(
-                            `Event - ${info.event?.title} (${info.event?.start} - ${info.event?.end}) `
-                        )
+                        alert(`Event Title: ${info.event?.title} `)
                     }
                     height="100%"
                     contentHeight="auto"

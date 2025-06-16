@@ -54,8 +54,8 @@ export default function BloodDriveEvents() {
     });
 
     const onLoad = () => {
-        setIsLoading(true)
-    }
+        setIsLoading(true);
+    };
 
     const handleProcessedBooking = () => {
         setIsLoading(false);
@@ -65,7 +65,7 @@ export default function BloodDriveEvents() {
         queryClient.invalidateQueries({
             queryKey: ["donor_booked_appointments"],
         });
-    }
+    };
 
     if (isError)
         return (
@@ -74,7 +74,7 @@ export default function BloodDriveEvents() {
                 <pre>
                     {JSON.stringify(
                         donorBookedAppointmentError?.message ||
-                        donorBookedAppointmentError,
+                            donorBookedAppointmentError,
                         null,
                         2
                     )}
@@ -87,7 +87,7 @@ export default function BloodDriveEvents() {
                 <pre>
                     {JSON.stringify(
                         donorBookedAppointmentError?.message ||
-                        donorBookedAppointmentError,
+                            donorBookedAppointmentError,
                         null,
                         2
                     )}

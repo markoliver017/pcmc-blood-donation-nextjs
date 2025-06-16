@@ -6,7 +6,7 @@ export default function Page() {
         <div className="space-y-10">
             <MainSlider />
             <section className="flex">
-                <div className="flex flex-col justify-between text-justify p-5 text-slate-600">
+                <div className="flex flex-col justify-between text-justify p-5 text-slate-600 dark:text-slate-200">
                     <h2 className="text-4xl font-semibold">Overview</h2>
                     <p>
                         Lorem ipsum dolor sit amet, consectetur adipisicing

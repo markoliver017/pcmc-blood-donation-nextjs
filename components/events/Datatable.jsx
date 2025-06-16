@@ -20,20 +20,12 @@ import {
 } from "@components/ui/table";
 import { DataTablePagination } from "@components/reusable_components/DataTablePagination";
 import { DataTableViewOptions } from "@components/reusable_components/DataTableViewOptions";
-import { Droplet, Filter, User, UserCog2 } from "lucide-react";
+import { Filter } from "lucide-react";
 import MultiSelect from "@components/reusable_components/MultiSelect";
 
 import Skeleton from "@components/ui/skeleton";
-import { useQuery } from "@tanstack/react-query";
-import { getBloodTypes } from "@/action/bloodTypeAction";
-import Skeleton_line from "@components/ui/skeleton_line";
 
 export function DataTable({ columns, data, isLoading }) {
-    const { data: bloodTypes, isLoading: bloodTypesIsLoading } = useQuery({
-        queryKey: ["blood_types"],
-        queryFn: getBloodTypes,
-    });
-
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [globalFilter, setGlobalFilter] = useState([]);
@@ -43,7 +35,6 @@ export function DataTable({ columns, data, isLoading }) {
     });
     const [rowSelection, setRowSelection] = useState({});
 
-    // console.log("rolesssOptions", roleOptions);
     const table = useReactTable({
         data,
         columns,
@@ -117,9 +108,6 @@ export function DataTable({ columns, data, isLoading }) {
     //     () => getVisibleData(data, columns, columnVisibility),
     //     [data, columns, columnVisibility]
     // );
-    if (bloodTypesIsLoading) {
-        return <Skeleton_line />;
-    }
 
     return (
         <div className="p-2">
@@ -142,85 +130,7 @@ export function DataTable({ columns, data, isLoading }) {
                                 <label className="dark:text-slate-400 flex items-center space-x-1">
                                     <Filter className="h-4 w-4" />
                                 </label>
-                                <MultiSelect
-                                    options={
-                                        bloodTypes.map((type) => ({
-                                            label: type.blood_type,
-                                            value: type.blood_type,
-                                            number: data.filter(
-                                                (row) =>
-                                                    row.blood_type_id ==
-                                                    type?.id
-                                            ).length,
-                                        })) || []
-                                    }
-                                    onValueChange={(selectedOptions) => {
-                                        console.log(
-                                            "selectedOptions",
-                                            selectedOptions
-                                        );
 
-                                        table
-                                            .getColumn("blood_type")
-                                            ?.setFilterValue(selectedOptions);
-                                    }}
-                                    value={
-                                        table
-                                            .getColumn("blood_type")
-                                            ?.getFilterValue() ?? []
-                                    }
-                                    placeholder={
-                                        <>
-                                            {<Droplet className="h-3 w-3" />}{" "}
-                                            <span>Blood Type</span>
-                                        </>
-                                    }
-                                    className="text-slate-700 bg-slate-100 hover:bg-white"
-                                    animation={2}
-                                    maxCount={1}
-                                />
-
-                                <MultiSelect
-                                    options={[
-                                        {
-                                            label: "male",
-                                            value: "male",
-                                            number: data.filter(
-                                                (row) =>
-                                                    row?.user?.gender == "male"
-                                            ).length,
-                                        },
-                                        {
-                                            label: "female",
-                                            value: "female",
-                                            number: data.filter(
-                                                (row) =>
-                                                    row?.user?.gender ==
-                                                    "female"
-                                            ).length,
-                                        },
-                                    ]}
-                                    onValueChange={(selectedOptions) => {
-                                        table
-                                            .getColumn("user_gender")
-                                            ?.setFilterValue(selectedOptions);
-                                    }}
-                                    value={
-                                        table
-                                            .getColumn("user_gender")
-                                            ?.getFilterValue() ?? []
-                                    }
-                                    placeholder={
-                                        <>
-                                            {<User className="h-3 w-3" />}{" "}
-                                            <span>Sex</span>
-                                        </>
-                                    }
-                                    variant="inverted"
-                                    className="text-slate-700 bg-slate-100 hover:bg-white"
-                                    animation={2}
-                                    maxCount={1}
-                                />
                                 <DataTableViewOptions table={table} />
                             </div>
                         </div>

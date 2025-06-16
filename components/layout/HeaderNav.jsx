@@ -22,6 +22,7 @@ import {
     File,
     FileSliders,
     Home,
+    HomeIcon,
     LogOut,
     MoreHorizontal,
     Pen,
@@ -310,7 +311,12 @@ const HeaderNav = ({ currentUser }) => {
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
 
-                                {/* <Link href={`/`}> */}
+                                <Link href={`/portal`}>
+                                    <DropdownMenuItem className="flex items-center space-x-2">
+                                        <HomeIcon className="w-4 h-4" />
+                                        <span>Dashboard</span>
+                                    </DropdownMenuItem>
+                                </Link>
                                 <DropdownMenuItem
                                     className="flex items-center space-x-2"
                                     onClick={handleLogOut}
@@ -318,7 +324,6 @@ const HeaderNav = ({ currentUser }) => {
                                     <LogOut className="w-4 h-4" />
                                     <span>Log Out</span>
                                 </DropdownMenuItem>
-                                {/* </Link> */}
                             </DropdownMenuContent>
                         </DropdownMenu>
                     )}
