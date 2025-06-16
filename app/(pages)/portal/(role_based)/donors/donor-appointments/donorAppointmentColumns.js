@@ -13,6 +13,7 @@ import { Button } from "@components/ui/button";
 import { Command, Eye, MoreHorizontal, Pencil } from "lucide-react";
 import Link from "next/link";
 import { formatFormalName } from "@lib/utils/string.utils";
+import moment from "moment";
 
 export const donorAppointmentColumns = [
     {
@@ -27,16 +28,20 @@ export const donorAppointmentColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Event Photo" />
         ),
+        size: 50,
         cell: ({ row }) => {
             const data = row.original;
             return (
-                <Image
-                    src={data.time_schedule.event.file_url || "/logo-1.png"}
-                    className="flex-none rounded-4xl"
-                    width={50}
-                    height={50}
-                    alt="Logo"
-                />
+                <div>
+
+                    <Image
+                        src={data.time_schedule.event.file_url || "/logo-1.png"}
+                        className="flex-none rounded-4xl"
+                        width={50}
+                        height={50}
+                        alt="Logo"
+                    />
+                </div>
             );
         },
     },
@@ -45,7 +50,7 @@ export const donorAppointmentColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Event Title" />
         ),
-        cell: ({ getValue }) => <span>{getValue()}</span>,
+        cell: ({ getValue }) => <span className="italic text-lg">{getValue()}</span>,
         filterFn: "columnFilter",
     },
     {
@@ -53,7 +58,7 @@ export const donorAppointmentColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Event Date" />
         ),
-        cell: ({ getValue }) => <span>{getValue()}</span>,
+        cell: ({ getValue }) => <span className="font-semibold">{moment(getValue()).format("MMM DD, YYYY")}</span>,
         filterFn: "columnFilter",
     },
     {
@@ -64,50 +69,67 @@ export const donorAppointmentColumns = [
         cell: ({ getValue }) => <span>{getValue()}</span>,
         filterFn: "columnFilter",
     },
-    {
-        accessorKey: "donor_type",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Donor Type" />
-        ),
-        cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
-        filterFn: "columnFilter",
-    },
-    {
-        accessorKey: "donor.blood_type.blood_type",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Blood Type" />
-        ),
-        cell: ({ getValue }) => {
-            const blood_type = getValue();
-            if (blood_type) return <span>{formatFormalName(blood_type)}</span>;
-            return "Not Specified";
-        },
-        filterFn: "columnFilter",
-    },
-    {
-        accessorKey: "patient_name",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Patient Name" />
-        ),
-        cell: ({ getValue }) => <span>{getValue() || "N/A"}</span>,
-        filterFn: "columnFilter",
-    },
 
+    // {
+    //     accessorKey: "donor.blood_type.blood_type",
+    //     header: ({ column }) => (
+    //         <DataTableColumnHeader column={column} title="Blood Type" />
+    //     ),
+    //     cell: ({ getValue }) => {
+    //         const blood_type = getValue();
+    //         if (blood_type) return <span>{formatFormalName(blood_type)}</span>;
+    //         return "Not Specified";
+    //     },
+    //     filterFn: "columnFilter",
+    // },
     {
-        accessorKey: "collection_method",
+        accessorKey: "donor.agency.name",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Collection Method" />
+            <DataTableColumnHeader column={column} title="Agency" />
         ),
         cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
         filterFn: "columnFilter",
     },
     {
-        accessorKey: "comments",
+        accessorKey: "donor.agency.agency_address",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Remarks" />
+            <DataTableColumnHeader column={column} title="Address" />
         ),
+        cell: ({ getValue }) => <div title={getValue()} className="max-w-64 truncate">{formatFormalName(getValue())}</div>,
         filterFn: "columnFilter",
     },
+    // {
+    //     accessorKey: "donor_type",
+    //     header: ({ column }) => (
+    //         <DataTableColumnHeader column={column} title="Donor Type" />
+    //     ),
+    //     cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
+    //     filterFn: "columnFilter",
+    // },
+    // {
+    //     accessorKey: "patient_name",
+    //     header: ({ column }) => (
+    //         <DataTableColumnHeader column={column} title="Patient Name" />
+    //     ),
+    //     cell: ({ getValue }) => <span>{getValue() || "N/A"}</span>,
+    //     filterFn: "columnFilter",
+    // },
+
+    // {
+    //     accessorKey: "collection_method",
+    //     header: ({ column }) => (
+    //         <DataTableColumnHeader column={column} title="Collection Method" />
+    //     ),
+    //     cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
+    //     filterFn: "columnFilter",
+    // },
+    // {
+    //     accessorKey: "comments",
+    //     header: ({ column }) => (
+    //         <DataTableColumnHeader column={column} title="Remarks" />
+    //     ),
+    //     filterFn: "columnFilter",
+    // },
     {
         accessorKey: "status",
         header: ({ column }) => (
@@ -169,7 +191,7 @@ export const donorAppointmentColumns = [
                         <DropdownMenuSeparator />
 
                         <Link
-                            href={`/portal/donor/donor-appointments/${data.id}`}
+                            href={`/portal/donors/donor-appointments/${data.id}`}
                         >
                             <DropdownMenuItem className="flex items-center space-x-2">
                                 <Eye className="w-4 h-4" />

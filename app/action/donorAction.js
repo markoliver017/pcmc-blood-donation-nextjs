@@ -95,7 +95,7 @@ export async function getApprovedEventsByAgency() {
                 {
                     model: Agency,
                     as: "agency",
-                    attributes: ["head_id", "name", "contact_number"],
+                    attributes: ["head_id", "name", "contact_number", "address", "barangay", "city_municipality", "province", "agency_address"],
                 },
             ],
         });

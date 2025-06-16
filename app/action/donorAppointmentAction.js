@@ -5,12 +5,14 @@ import { auth } from "@lib/auth";
 import { logErrorToFile } from "@lib/logger.server";
 import {
     Agency,
+    AgencyCoordinator,
     BloodDonationEvent,
     BloodType,
     Donor,
     DonorAppointmentInfo,
     EventTimeSchedule,
     sequelize,
+    User,
 } from "@lib/models";
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
@@ -274,6 +276,84 @@ export async function getAllAppointmentsByDonor() {
             success: false,
             type: "server",
             message: err || "Unknown error",
+        };
+    }
+}
+
+
+export async function getBookedAppointmentById(id) {
+
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+    const { user } = session;
+    const donor = await Donor.findOne({
+        where: {
+            user_id: user.id,
+            status: "activated",
+        },
+    });
+
+    if (!donor) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+
+    try {
+        const event = await BloodDonationEvent.findOne({
+            include: [
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedules",
+                    attributes: [
+                        "id",
+                        "blood_donation_event_id",
+                        "time_start",
+                        "time_end",
+                        "status",
+                        "has_limit",
+                        "max_limit",
+                    ],
+                    include: {
+                        model: DonorAppointmentInfo,
+                        as: "donors",
+                        where: { id: id }
+                    },
+                },
+                {
+                    model: User,
+                    as: "requester",
+                    attributes: ["id", "name", "email", "image"],
+                    include: {
+                        model: AgencyCoordinator,
+                        as: "coordinator",
+                        attributes: ["contact_number"],
+                        required: false,
+                    },
+                },
+                {
+                    model: Agency,
+                    as: "agency",
+                    attributes: ["head_id", "name", "contact_number", "address", "barangay", "city_municipality", "province", "agency_address"],
+                },
+            ],
+        });
+
+        const formattedEvent = formatSeqObj(event);
+
+        return { success: true, data: formattedEvent };
+    } catch (err) {
+        logErrorToFile(err, "getBookedAppointmentById ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
         };
     }
 }
