@@ -7,7 +7,9 @@ import { fetchAgency } from "@/action/agencyAction";
 import ShowAgency from "./ShowAgency";
 
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Building } from "lucide-react";
+import WrapperHeadMain from "@components/layout/WrapperHeadMain";
+import { BiBuildings } from "react-icons/bi";
 
 export default async function Page({ params }) {
     const { id } = await params;
@@ -19,6 +21,22 @@ export default async function Page({ params }) {
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
+            <WrapperHeadMain
+                icon={<BiBuildings />}
+                pageTitle="Agencies Management"
+                breadcrumbs={[
+                    {
+                        path: "/portal/admin/agencies",
+                        icon: <BiBuildings className="w-4" />,
+                        title: "Agencies Management",
+                    },
+                    {
+                        path: `/portal/admin/agencies/${id}`,
+                        icon: <Building className="w-4" />,
+                        title: "Agency Details",
+                    },
+                ]}
+            />
             <div className="w-full h-full md:w-8/10 2xl:w-3/4 mx-auto relative">
                 <Link href="/portal/admin/agencies" className="absolute top-5 right-4">
                     <button

@@ -83,7 +83,7 @@ export default function LoginForm() {
                     <h2 className="text-center font-geist-sans font-semibold text-xl mt-2 leading-tight text-shadow-[_1px_1px_8px_#8b8eee]">
                         PCMC Pediatric Blood Center <br /> Medical Blood
                         Donation <br />
-                        Login
+                        <span className="text-lg">Member Login</span>
                     </h2>
                 </div>
                 <div>
@@ -105,7 +105,7 @@ export default function LoginForm() {
                                 },
                             })}
                             placeholder="mail@site.com"
-                            // required
+                        // required
                         />
                     </label>
                     <p className="text-red-500 text-sm">

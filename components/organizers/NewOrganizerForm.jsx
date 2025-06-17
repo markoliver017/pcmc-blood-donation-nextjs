@@ -169,6 +169,7 @@ export default function NewOrganizerForm({ role_name }) {
             file_url: null,
             email: "",
             first_name: "",
+            middle_name: "",
             last_name: "",
             gender: "",
             password: "",

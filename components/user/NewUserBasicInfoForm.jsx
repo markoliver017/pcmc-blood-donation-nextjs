@@ -34,6 +34,7 @@ export default function NewUserBasicInfoForm({
         "profile_picture",
         "role_ids",
         "first_name",
+        "middle_name",
         "last_name",
         "gender",
     ],
@@ -176,11 +177,38 @@ export default function NewUserBasicInfoForm({
                                     <input
                                         type="text"
                                         tabIndex={2}
-                                        placeholder="Enter user first name"
+                                        placeholder="Enter first name"
                                         {...field}
                                     />
                                 </label>
                                 <FieldError field={errors?.first_name} />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={control}
+                        name="middle_name"
+                        render={({ field }) => (
+                            <FormItem>
+                                <InlineLabel required={false}>Middle Name: </InlineLabel>
+
+                                <label
+                                    className={clsx(
+                                        "input w-full mt-1",
+                                        errors?.middle_name
+                                            ? "input-error"
+                                            : "input-info"
+                                    )}
+                                >
+                                    <Text className="h-3" />
+                                    <input
+                                        type="text"
+                                        tabIndex={3}
+                                        placeholder="Enter middle name"
+                                        {...field}
+                                    />
+                                </label>
+                                <FieldError field={errors?.middle_name} />
                             </FormItem>
                         )}
                     />
@@ -203,7 +231,7 @@ export default function NewUserBasicInfoForm({
                                     <input
                                         type="text"
                                         tabIndex={3}
-                                        placeholder="Enter user last name"
+                                        placeholder="Enter last name"
                                         {...field}
                                     />
                                 </label>

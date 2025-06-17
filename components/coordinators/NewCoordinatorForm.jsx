@@ -158,6 +158,7 @@ export default function NewCoordinatorForm({ role_name, agency_id }) {
             image: null,
             email: "mark29@email.com",
             first_name: "Mark",
+            middle_name: "",
             last_name: "Roman",
             gender: "male",
             contact_number: "+639123456789",

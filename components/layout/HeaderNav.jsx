@@ -12,35 +12,27 @@ import {
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
 import {
-    Building,
     Calendar,
-    CircleEllipsis,
     Command,
-    Database,
     Droplet,
-    Eye,
-    File,
+
     FileSliders,
     Home,
     HomeIcon,
     LogOut,
-    MoreHorizontal,
-    Pen,
     PhoneCall,
     SquareMenu,
     User,
     UserCog2Icon,
+    UserRoundCheck,
     Users,
-    Users2,
     Users2Icon,
 } from "lucide-react";
 import SweetAlert from "@components/ui/SweetAlert";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
-import { GiHamburgerMenu } from "react-icons/gi";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
-import { MdAmpStories, MdTrackChanges } from "react-icons/md";
-import { FaHackerNews } from "react-icons/fa";
+import { MdAmpStories, MdEmail } from "react-icons/md";
 
 const HeaderNav = ({ currentUser }) => {
     let isLoggedIn = false;
@@ -50,6 +42,8 @@ const HeaderNav = ({ currentUser }) => {
         isLoggedIn = true;
         currentUser = data.user;
     }
+
+    console.log("currentUser", currentUser)
 
     const handleLogOut = () => {
         SweetAlert({
@@ -301,13 +295,18 @@ const HeaderNav = ({ currentUser }) => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                                 <DropdownMenuLabel className="flex items-center space-x-2">
-                                    <Command className="w-3 h-3" />
+                                    <UserRoundCheck className="w-3 h-3" />
                                     <div className="flex flex-col">
                                         <span>{currentUser.name}</span>
-                                        <span className="text-xs font-light">
-                                            {currentUser.email}
-                                        </span>
+                                        <span className="text-xs font-light">{currentUser?.role_name}</span>
                                     </div>
+                                </DropdownMenuLabel>
+                                <DropdownMenuLabel className="flex items-center space-x-2">
+                                    <MdEmail className="w-3 h-3" />
+                                    <span className="text-xs font-light">
+                                        {currentUser.email}
+                                    </span>
+
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
 

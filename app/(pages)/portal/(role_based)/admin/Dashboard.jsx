@@ -214,7 +214,7 @@ export default function Dashboard() {
                             <div className="divider" />
                             <div>
                                 <Link
-                                    href="/portal/admin/agencies"
+                                    href="/portal/admin/agencies?tab=for-approval"
                                     className="btn btn-block justify-between text-orange-800 dark:text-orange-400"
                                 >
                                     For Approval - Agencies

@@ -174,6 +174,7 @@ export default function NewDonorForm({ role_name, agency_id }) {
             id_url: null,
             email: "mark29@email.com",
             first_name: "Mark",
+            middle_name: "",
             last_name: "Roman",
             gender: "male",
             password: "User@1234",
@@ -506,11 +507,11 @@ export default function NewDonorForm({ role_name, agency_id }) {
                                 ""
                             )}
 
-                            <FormLogger
+                            {/* <FormLogger
                                 watch={watch}
                                 errors={errors}
                                 data={newDonorData}
-                            />
+                            /> */}
                             {/* 
                             <pre>
                                 <b>User profile File: </b>{" "}

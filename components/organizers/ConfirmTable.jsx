@@ -28,6 +28,10 @@ export default function ConfirmTable({ watch }) {
                     <td>{watch("first_name").toUpperCase()}</td>
                 </tr>
                 <tr className="hover:bg-base-300">
+                    <th width="20%">Middle Name:</th>
+                    <td>{watch("middle_name").toUpperCase()}</td>
+                </tr>
+                <tr className="hover:bg-base-300">
                     <th width="20%">Last Name:</th>
                     <td>{watch("last_name").toUpperCase()}</td>
                 </tr>

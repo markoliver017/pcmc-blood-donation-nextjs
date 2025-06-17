@@ -31,14 +31,14 @@ export default function SelectRegisterDrawer({ open, setOpen }) {
 
                     <div className="flex gap-3">
                         <Link href="/organizers">
-                            <Card className="rounded-sm cursor-pointer hover:ring-1">
+                            <Card className="rounded-sm cursor-pointer hover:ring-1 group">
                                 <CardHeader>
                                     <CardTitle>Blood Donor</CardTitle>
                                 </CardHeader>
-                                <CardContent>
+                                <CardContent className="">
                                     <Image
                                         src="/blood-bg.jpg"
-                                        className="w-40 h-20 object-fill rounded-lg"
+                                        className="w-40 h-20 object-fill rounded-lg transform transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-110"
                                         width={150}
                                         height={150}
                                         alt="Donor"
@@ -48,14 +48,14 @@ export default function SelectRegisterDrawer({ open, setOpen }) {
                             </Card>
                         </Link>
                         <Link href="/organizers/register">
-                            <Card className="rounded-sm cursor-pointer hover:ring-1">
+                            <Card className="rounded-sm cursor-pointer hover:ring-1 group">
                                 <CardHeader>
                                     <CardTitle>Agency</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <Image
                                         src="/agency-reg.jpg"
-                                        className="w-40 h-20 object-fill rounded-lg"
+                                        className="w-40 h-20 object-fill rounded-lg transform transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-110"
                                         width={150}
                                         height={150}
                                         alt="Agency"
@@ -65,14 +65,14 @@ export default function SelectRegisterDrawer({ open, setOpen }) {
                             </Card>
                         </Link>
                         <Link href="/organizers/coordinators">
-                            <Card className="rounded-sm cursor-pointer hover:ring-1">
+                            <Card className="rounded-sm cursor-pointer hover:ring-1 group">
                                 <CardHeader>
                                     <CardTitle>Coordinator</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <Image
                                         src="/coordinator-img.jpeg"
-                                        className="w-40 h-20 object-fill rounded-lg"
+                                        className="w-40 h-20 object-fill rounded-lg transform transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-110"
                                         width={150}
                                         height={150}
                                         alt="Coordinator"

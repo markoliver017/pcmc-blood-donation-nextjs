@@ -5,8 +5,9 @@ import { CalendarCheck, CalendarPlus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { BiBuildings } from "react-icons/bi";
 
-export default function AdminEventClient({ children, approval }) {
+export default function ClientComponent({ children, approval }) {
     const pathname = usePathname();
     const session = useSession();
     console.log(session)
@@ -21,17 +22,17 @@ export default function AdminEventClient({ children, approval }) {
         router.push(`?${params.toString()}`, { scroll: false });
     };
 
-    if (pathname == "/portal/admin/events") {
+    if (pathname == "/portal/admin/agencies") {
         return (
             <>
                 <WrapperHeadMain
-                    icon={<CalendarCheck />}
-                    pageTitle="Blood Drives"
+                    icon={<BiBuildings />}
+                    pageTitle="Agencies Management"
                     breadcrumbs={[
                         {
-                            path: "/portal/admin/events",
-                            icon: <CalendarCheck className="w-4" />,
-                            title: "Blood Drives",
+                            path: "/portal/admin/agencies",
+                            icon: <BiBuildings className="w-4" />,
+                            title: "Agencies Management",
                         },
                     ]}
                 />
@@ -49,7 +50,7 @@ export default function AdminEventClient({ children, approval }) {
                 <Tabs
                     defaultValue={currentTab}
                     onValueChange={handleTabChange}
-                    className="px-1 md:px-5 mt-2"
+                    className="mt-2 px-1 md:px-5"
                 >
                     <TabsList>
                         <TabsTrigger value="all">All</TabsTrigger>
