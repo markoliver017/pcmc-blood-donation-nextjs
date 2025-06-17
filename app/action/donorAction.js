@@ -27,7 +27,7 @@ import moment from "moment";
 import { Op } from "sequelize";
 
 export async function getApprovedEventsByAgency() {
-    // await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     const currentDate = moment().format("YYYY-MM-DD");
     const session = await auth();
     if (!session) {
@@ -95,7 +95,16 @@ export async function getApprovedEventsByAgency() {
                 {
                     model: Agency,
                     as: "agency",
-                    attributes: ["head_id", "name", "contact_number", "address", "barangay", "city_municipality", "province", "agency_address"],
+                    attributes: [
+                        "head_id",
+                        "name",
+                        "contact_number",
+                        "address",
+                        "barangay",
+                        "city_municipality",
+                        "province",
+                        "agency_address",
+                    ],
                 },
             ],
         });
@@ -556,6 +565,121 @@ export async function getDonorProfile() {
     } catch (err) {
         logErrorToFile(err, "getHostCoordinatorsByStatus ERROR");
         throw {
+            success: false,
+            type: "server",
+            message: err.message || "Unknown error",
+        };
+    }
+}
+
+export async function getDonorDashboard() {
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this page.",
+        };
+    }
+
+    const { user } = session;
+
+    try {
+        const donor = await Donor.findOne({
+            where: { user_id: user?.id }, // assuming this association
+            attributes: ["id"],
+            include: {
+                model: BloodType,
+                as: "blood_type",
+                required: false,
+            },
+        });
+
+        if (!donor) {
+            return {
+                success: false,
+                message: "You are not authorized to access this page.",
+            };
+        }
+
+        const appointmentCount = await DonorAppointmentInfo.count({
+            where: {
+                donor_id: donor?.id,
+                status: {
+                    [Op.in]: ["registered", "donated"],
+                },
+            },
+        });
+
+        const latestDonation = await DonorAppointmentInfo.findOne({
+            where: {
+                donor_id: donor.id,
+                status: {
+                    [Op.in]: ["registered", "donated"],
+                },
+            },
+            include: [
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedule",
+                    attributes: ["id"],
+                    include: [
+                        {
+                            model: BloodDonationEvent,
+                            as: "event",
+                            attributes: ["date"],
+                        },
+                    ],
+                },
+            ],
+            order: [
+                [
+                    { model: EventTimeSchedule, as: "time_schedule" },
+                    { model: BloodDonationEvent, as: "event" },
+                    "date",
+                    "DESC",
+                ],
+            ],
+        });
+
+        let nextEligibleDate = null;
+        let daysRemaining = null;
+        let donateNow = false;
+
+        if (latestDonation?.time_schedule?.event?.date) {
+            const lastDate = moment(
+                latestDonation.time_schedule.event.date
+            ).startOf("day");
+
+            // Add 90 days
+            nextEligibleDate = lastDate.clone().add(90, "days");
+
+            // Today at start of day
+            const today = moment().startOf("day");
+
+            // Calculate remaining days
+            daysRemaining = nextEligibleDate.diff(today, "days");
+
+            if (daysRemaining <= 0) {
+                donateNow = true;
+            }
+        }
+
+        return {
+            success: true,
+            data: {
+                blood_type: donor?.blood_type?.blood_type,
+                no_donations: appointmentCount,
+                next_eligible_date: donateNow
+                    ? "Donate now"
+                    : nextEligibleDate
+                    ? moment(nextEligibleDate).format("MMM.DD, YYYY")
+                    : nextEligibleDate,
+                days_remaining: donateNow ? 0 : daysRemaining,
+            },
+        };
+    } catch (err) {
+        logErrorToFile(err, "getHostCoordinatorsByStatus ERROR");
+        return {
             success: false,
             type: "server",
             message: err.message || "Unknown error",

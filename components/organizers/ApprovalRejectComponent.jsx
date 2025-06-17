@@ -1,21 +1,28 @@
+import { formatFormalName } from "@lib/utils/string.utils";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@components/ui/dropdown-menu";
+import { Button } from "@components/ui/button";
+import { CheckIcon, Command, Eye, SquareMenu } from "lucide-react";
+import VerifyAgency from "@components/organizers/VerifyAgency";
+import RejectDialog from "@components/organizers/RejectDialog";
 
-import { formatFormalName } from '@lib/utils/string.utils';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@components/ui/dropdown-menu';
-import { Button } from '@components/ui/button';
-import { CheckIcon, Command, Eye, SquareMenu } from 'lucide-react';
-import VerifyAgency from '@components/organizers/VerifyAgency';
-import RejectDialog from '@components/organizers/RejectDialog';
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-import { useRouter } from 'next/navigation';
-
-export default function ApprovalRejectComponent({ agency }) {
-    const router = useRouter()
+export default function ApprovalRejectComponent({ agency, target = "" }) {
+    const router = useRouter();
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="default" className="h-8 w-min p-0">
                     <span className="sr-only">Open menu</span>
-                    {formatFormalName(agency.status)}
+                    Actions
                     <SquareMenu className="h-4 w-4" />
                 </Button>
             </DropdownMenuTrigger>
@@ -26,18 +33,16 @@ export default function ApprovalRejectComponent({ agency }) {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="space-x-2">
-                    <Button
-                        onClick={() =>
-                            router.push(`/portal/admin/agencies/${agency.id}`)
-                        }
+                    <Link
+                        href={`/portal/admin/agencies/${agency.id}`}
                         variant="secondary"
-                        className=" hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200 btn-block"
+                        className="btn hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200 btn-block"
+                        target={target}
                     >
                         <Eye />
                         Details
-                    </Button>
+                    </Link>
                 </DropdownMenuItem>
-
 
                 <DropdownMenuItem className="space-x-2 flex justify-between">
                     <VerifyAgency
@@ -57,9 +62,7 @@ export default function ApprovalRejectComponent({ agency }) {
                         className="w-full btn-error"
                     />
                 </div>
-
-
             </DropdownMenuContent>
         </DropdownMenu>
-    )
+    );
 }

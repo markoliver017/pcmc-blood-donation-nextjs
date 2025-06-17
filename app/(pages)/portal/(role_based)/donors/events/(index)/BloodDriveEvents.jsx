@@ -9,9 +9,21 @@ import AllEventCalendar from "@components/organizers/AllEventCalendar";
 import moment from "moment";
 import { getBookedAppointmentsByDonor } from "@/action/donorAppointmentAction";
 import EventCardList from "@components/events/EventCardList";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function BloodDriveEvents() {
     const [isLoading, setIsLoading] = useState(false);
+
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const currentTab = searchParams.get("tab") || "ongoing";
+
+    const handleTabChange = (value) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("tab", value);
+        router.push(`?${params.toString()}`, { scroll: false });
+    };
+
     const queryClient = useQueryClient();
     const {
         data: events,
@@ -102,7 +114,11 @@ export default function BloodDriveEvents() {
     return (
         <div>
             <LoadingModal imgSrc="/loader_3.gif" isLoading={isLoading} />
-            <Tabs defaultValue="ongoing" className="w-full">
+            <Tabs
+                defaultValue={currentTab}
+                onValueChange={handleTabChange}
+                className="w-full"
+            >
                 <TabsList>
                     <TabsTrigger value="ongoing">Ongoing</TabsTrigger>
                     <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
@@ -120,7 +136,7 @@ export default function BloodDriveEvents() {
                                 Available Donation Drives
                             </h2>
                             <span className="font-semibold">
-                                {moment().format("MMMM DD, YYYY")}
+                                As of: {moment().format("MMMM DD, YYYY")}
                             </span>
                         </div>
                         <div className="flex-1 overflow-y-auto space-y-4 p-2">

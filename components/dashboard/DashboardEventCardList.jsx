@@ -1,16 +1,11 @@
 "use client";
 
-import EventCard from "./EventCard";
+import DashboardEventCard from "./DashboardEventCard";
 
-export default function EventCardList({
+export default function DashboardEventCardList({
     events,
-    booked_appointments = [],
-    onLoad,
-    onFinish,
     isRegistrationOpen = false,
 }) {
-    const isAlreadyBooked = (id) => booked_appointments.includes(id);
-
     if (!events || events.length === 0)
         return (
             <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
@@ -27,13 +22,10 @@ export default function EventCardList({
     return (
         <>
             {events.map((event) => (
-                <EventCard
+                <DashboardEventCard
                     key={event.id}
                     event={event}
-                    onLoad={onLoad}
-                    onFinish={onFinish}
                     isRegistrationOpen={isRegistrationOpen}
-                    isAlreadyBooked={isAlreadyBooked}
                 />
             ))}
         </>

@@ -12,8 +12,9 @@ import {
 } from "lucide-react";
 import { BiError } from "react-icons/bi";
 import { FaMicrophone } from "react-icons/fa";
-import { GiBlood, GiRamProfile } from "react-icons/gi";
+import { GiRamProfile } from "react-icons/gi";
 import { GrEmergency } from "react-icons/gr";
+import { MdOutlineBloodtype } from "react-icons/md";
 import { create } from "zustand";
 
 export const usePagesStore = create((set) => ({
@@ -191,7 +192,7 @@ export const usePagesStore = create((set) => ({
         {
             title: "Blood Requests",
             path: "/blood-requests",
-            icon: <Droplets />,
+            icon: <MdOutlineBloodtype />,
             roles: ["Donor"],
             is_role_based: true,
             has_child: false,

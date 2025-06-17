@@ -61,8 +61,6 @@ export async function getAgencyId() {
 }
 
 export async function getAllEvents() {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
     try {
         const events = await BloodDonationEvent.findAll({
             where: {
@@ -150,6 +148,39 @@ export async function getAllEventsByAgency() {
             success: false,
             type: "server",
             message: err || "Unknown error",
+        };
+    }
+}
+
+export async function getAllEventsCount() {
+    // await new Promise((resolve) => setTimeout(resolve, 500));
+
+    const agency_id = await getAgencyId();
+
+    if (!agency_id) {
+        return {
+            success: false,
+            message: "Agency not found or inactive!",
+        };
+    }
+
+    try {
+        const events_count = await BloodDonationEvent.count({
+            where: {
+                agency_id,
+                status: {
+                    [Op.not]: "for approval",
+                },
+            },
+        });
+
+        return { success: true, data: events_count };
+    } catch (err) {
+        logErrorToFile(err, "getAllEventsCount ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
         };
     }
 }

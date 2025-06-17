@@ -13,14 +13,76 @@ import {
     sequelize,
     User,
 } from "@lib/models";
+import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import {
     bloodDonationEventSchema,
     eventRegistrationStatusSchema,
     eventStatusSchema,
 } from "@lib/zod/bloodDonationSchema";
+import moment from "moment";
 import { Op } from "sequelize";
-// import { logAuditTrail } from "@lib/audit_trails.utils";
+
+export async function getAdminDashboard() {
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this page.",
+        };
+    }
+
+    try {
+        const donorCount = await Donor.count({
+            where: {
+                status: {
+                    [Op.in]: ["activated"],
+                },
+            },
+        });
+
+        const donationCount = await DonorAppointmentInfo.count({
+            where: {
+                status: {
+                    [Op.in]: ["registered", "donated"],
+                },
+            },
+        });
+
+        const agencyCount = await Agency.count({
+            where: {
+                status: {
+                    [Op.in]: ["activated"],
+                },
+            },
+        });
+
+        const eventCount = await BloodDonationEvent.count({
+            where: {
+                status: {
+                    [Op.in]: ["approved"],
+                },
+            },
+        });
+
+        return {
+            success: true,
+            data: {
+                donorCount,
+                donationCount,
+                agencyCount,
+                eventCount,
+            },
+        };
+    } catch (err) {
+        logErrorToFile(err, "getHostCoordinatorsByStatus ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: err.message || "Unknown error",
+        };
+    }
+}
 
 export async function getAgencyId() {
     const session = await auth();
@@ -621,5 +683,87 @@ export async function updateEventRegistrationStatus(formData) {
         await transaction.rollback();
 
         throw err.message || "Unknown error";
+    }
+}
+
+export async function getForApprovalEvents() {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const currentDate = moment().format("YYYY-MM-DD");
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+
+    try {
+        const events = await BloodDonationEvent.findAll({
+            where: {
+                status: {
+                    [Op.eq]: "approved",
+                },
+                registration_status: "ongoing",
+                date: {
+                    [Op.gte]: currentDate,
+                },
+            },
+            order: [["date", "ASC"]],
+            include: [
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedules",
+                    attributes: [
+                        "id",
+                        "blood_donation_event_id",
+                        "time_start",
+                        "time_end",
+                        "status",
+                        "has_limit",
+                        "max_limit",
+                    ],
+                    include: {
+                        model: DonorAppointmentInfo,
+                        as: "donors",
+                    },
+                },
+                {
+                    model: User,
+                    as: "requester",
+                    attributes: ["id", "name", "email", "image"],
+                    include: {
+                        model: AgencyCoordinator,
+                        as: "coordinator",
+                        attributes: ["contact_number"],
+                        required: false,
+                    },
+                },
+                {
+                    model: Agency,
+                    as: "agency",
+                    attributes: [
+                        "head_id",
+                        "name",
+                        "contact_number",
+                        "address",
+                        "barangay",
+                        "city_municipality",
+                        "province",
+                        "agency_address",
+                    ],
+                },
+            ],
+        });
+
+        const formattedEvents = formatSeqObj(events);
+
+        return { success: true, data: formattedEvents };
+    } catch (err) {
+        logErrorToFile(err, "getAllOngoingEvents ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
+        };
     }
 }

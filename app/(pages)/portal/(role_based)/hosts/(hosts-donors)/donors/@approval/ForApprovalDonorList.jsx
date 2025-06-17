@@ -15,8 +15,9 @@ import { FileClock, MessageCircle } from "lucide-react";
 import { calculateAge } from "@lib/utils/string.utils";
 import ApprovalRejectComponent from "@components/donors/ApprovalRejectComponent";
 import { getHostDonorsByStatus } from "@/action/hostDonorAction";
+import clsx from "clsx";
 
-export default function ForApprovalDonorList() {
+export default function ForApprovalDonorList({ avatarClassName = "" }) {
     const { data: donors, isLoading: donorsIsFetching } = useQuery({
         queryKey: ["donors", "for approval"],
         queryFn: async () => getHostDonorsByStatus("for approval"),
@@ -79,19 +80,24 @@ export default function ForApprovalDonorList() {
                                 avatar={
                                     donor.user?.image || "/default_avatar.png"
                                 }
-                                className="flex-none w-[150px] h-[150px] "
+                                className={clsx(
+                                    "flex-none w-[50px] h-[50px]",
+                                    avatarClassName
+                                )}
                             />
                         </div>
-                        <div className="md:flex-1 flex flex-col gap-2">
-
+                        <div className="md:flex-1 flex flex-col items-center gap-2">
                             <span className="text-blue-700">
                                 {donor.user.email.toLowerCase()}
                             </span>
-                            <span>
-                                {donor.contact_number}
-                            </span>
+                            <span>{donor.contact_number}</span>
                             <span className="flex-items-center gap-1 italic">
-                                <MessageCircle className="h-4" /> {donor.comments}
+                                {donor.comments && (
+                                    <>
+                                        <MessageCircle className="h-4" />
+                                        {donor.comments}
+                                    </>
+                                )}
                             </span>
                         </div>
                     </CardContent>

@@ -14,8 +14,12 @@ import { formatFormalName } from "@lib/utils/string.utils";
 import moment from "moment";
 import ApprovalRejectComponent from "@components/organizers/ApprovalRejectComponent";
 import { FileClock } from "lucide-react";
+import clsx from "clsx";
 
-export default function ForApprovalAgencyList() {
+export default function ForApprovalAgencyList({
+    target = "",
+    avatarClassName = "",
+}) {
     const { data: agencies, isLoading: agencyIsFetching } = useQuery({
         queryKey: ["agencies", "for approval"],
         queryFn: async () => fetchAgencyByStatus("for approval"),
@@ -51,18 +55,21 @@ export default function ForApprovalAgencyList() {
                     <CardHeader>
                         <CardTitle className="flex flex-wrap justify-between">
                             <span className="text-xl">{agency.name}</span>
-                            <span className="text-sm text-slate-600">
+                            <span className="text-sm text-slate-600 dark:text-slate-300">
                                 {moment(agency.createdAt).format(
                                     "MMM DD, YYYY"
                                 )}
                             </span>
                         </CardTitle>
-                        <CardDescription className="flex flex-wrap flex-col gap-1">
+                        <CardDescription className="flex flex-wrap flex-col gap-1 dark:text-slate-300">
                             <div className="flex justify-between">
                                 <span>
                                     {formatFormalName(agency.organization_type)}
                                 </span>
-                                <ApprovalRejectComponent agency={agency} />
+                                <ApprovalRejectComponent
+                                    agency={agency}
+                                    target={target}
+                                />
                             </div>
                             <span>{agency.agency_address}</span>
                         </CardDescription>
@@ -74,17 +81,20 @@ export default function ForApprovalAgencyList() {
                                     agency?.file_url ||
                                     "/default_company_avatar.png"
                                 }
-                                className="flex-none w-[150px] h-[150px] "
+                                className={clsx(
+                                    "flex-none w-[50px] h-[50px]",
+                                    avatarClassName
+                                )}
                             />
                         </div>
                         <div className="md:flex-1 flex flex-col gap-2">
-                            <span className="text-lg text-slate-800 font-semibold">
+                            <span className="text-lg text-slate-800 dark:text-slate-300 font-semibold">
                                 {agency.head.full_name}
                             </span>
                             <span className="text-blue-700 italic">
                                 {agency.head.email.toLowerCase()}
                             </span>
-                            <span className=" text-slate-700 italic">
+                            <span className=" text-slate-700 dark:text-slate-300 italic">
                                 {agency.contact_number}
                             </span>
                         </div>

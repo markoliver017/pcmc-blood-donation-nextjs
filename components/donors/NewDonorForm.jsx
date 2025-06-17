@@ -198,7 +198,7 @@ export default function NewDonorForm({ role_name, agency_id }) {
             last_donation_date: "",
             blood_service_facility: "",
             comments: "",
-            readEligibilityReq: true,
+            readEligibilityReq: false,
             termsAccepted: false,
         },
     });
@@ -412,6 +412,9 @@ export default function NewDonorForm({ role_name, agency_id }) {
                                                                     type="checkbox"
                                                                     className="checkbox checkbox-primary border shadow"
                                                                     {...field}
+                                                                    checked={
+                                                                        field.value
+                                                                    }
                                                                 />
                                                                 <span>
                                                                     I agree to
@@ -441,6 +444,9 @@ export default function NewDonorForm({ role_name, agency_id }) {
                                                                     type="checkbox"
                                                                     className="checkbox checkbox-primary border shadow"
                                                                     {...field}
+                                                                    checked={
+                                                                        field.value
+                                                                    }
                                                                 />
                                                                 <span>
                                                                     I have read

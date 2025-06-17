@@ -241,7 +241,7 @@ export default function ShowEvents({ eventId }) {
                                                     </span>
                                                 </div>
                                             )}
-                                            <div className="flex justify-between" >
+                                            {/* <div className="flex justify-between" >
                                                 <span className="font-semibold">
                                                     Status:
                                                 </span>
@@ -253,18 +253,19 @@ export default function ShowEvents({ eventId }) {
                                                 >
                                                     {formatFormalName(sched?.status)}
                                                 </span>
-                                            </div>
-                                            <div className="flex justify-between" >
+                                            </div> */}
+                                            <div className="flex justify-between">
                                                 <span className="font-semibold">
                                                     Participants:
                                                 </span>
                                                 <span
-                                                    className={clsx("flex justify-between badge p-2")}
+                                                    className={clsx(
+                                                        "flex justify-between badge p-2"
+                                                    )}
                                                 >
                                                     {sched?.donors.length}
                                                 </span>
                                             </div>
-
                                         </div>
                                     </TableCell>
                                 </TableRow>

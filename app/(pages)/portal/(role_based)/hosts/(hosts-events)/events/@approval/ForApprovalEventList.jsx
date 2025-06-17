@@ -17,8 +17,12 @@ import parse from "html-react-parser";
 import { getForApprovalEventsByAgency } from "@/action/hostEventAction";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import clsx from "clsx";
 
-export default function ForApprovalEventList() {
+export default function ForApprovalEventList({
+    avatarClassName = "",
+    editable = true,
+}) {
     const router = useRouter();
     const { data: events, isLoading: eventsIsFetching } = useQuery({
         queryKey: ["agency_events", "for approval"],
@@ -59,20 +63,22 @@ export default function ForApprovalEventList() {
                                             "MMM DD, YYYY"
                                         )}
                                     </span>
-                                    <button
-                                        type="button"
-                                        className="btn btn-xs btn-ghost"
-                                        title="Edit"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            e.preventDefault();
-                                            router.push(
-                                                `/portal/hosts/events/${event.id}/edit`
-                                            );
-                                        }}
-                                    >
-                                        <Pencil className="h-4" />
-                                    </button>
+                                    {editable && (
+                                        <button
+                                            type="button"
+                                            className="btn btn-xs btn-ghost"
+                                            title="Edit"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                e.preventDefault();
+                                                router.push(
+                                                    `/portal/hosts/events/${event.id}/edit`
+                                                );
+                                            }}
+                                        >
+                                            <Pencil className="h-4" />
+                                        </button>
+                                    )}
                                 </div>
                             </CardTitle>
                             <CardDescription className="flex flex-wrap flex-col gap-1 dark:text-slate-300">
@@ -88,7 +94,10 @@ export default function ForApprovalEventList() {
                                         event?.file_url ||
                                         "/upload-event-photo.png"
                                     }
-                                    className="flex-none w-[150px] h-[150px] "
+                                    className={clsx(
+                                        "flex-none w-[50px] h-[50px]",
+                                        avatarClassName
+                                    )}
                                 />
                             </div>
                             <div className="md:flex-1 flex flex-col gap-2">

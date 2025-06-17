@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import React from "react";
 import { BiBuildings } from "react-icons/bi";
 
-export default function AgenciesLayout({ children, approval }) {
+export default async function AgenciesLayout({ children, approval }) {
     return (
         <>
             <WrapperHeadMain

@@ -77,7 +77,6 @@ export async function fetchAgency(id) {
         const agency = await Agency.findOne({
             where: {
                 id: id,
-                status: "activated",
             },
             include: [
                 {

@@ -7,7 +7,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
-import Skeleton_user from "@components/ui/Skeleton_user";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 
@@ -22,7 +21,6 @@ import {
 import parse from "html-react-parser";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { getEventsByStatus } from "@/action/adminEventAction";
 import Skeleton_line from "@components/ui/skeleton_line";
 import {
@@ -37,8 +35,7 @@ import { Button } from "@components/ui/button";
 import VerifyEvent from "@components/events/VerifyEvent";
 import RejectEvent from "@components/events/RejectEvent";
 
-export default function ForApprovalEventList() {
-    const router = useRouter();
+export default function ForApprovalEventList({ target = "" }) {
     const { data: events, isLoading: eventsIsFetching } = useQuery({
         queryKey: ["all_events", "for approval"],
         queryFn: async () => getEventsByStatus("for approval"),
@@ -102,6 +99,7 @@ export default function ForApprovalEventList() {
 
                                         <Link
                                             href={`/portal/admin/events/${event.id}`}
+                                            target={target}
                                         >
                                             <DropdownMenuItem className="space-x-2 btn btn-ghost btn-primary">
                                                 <Eye className="w-4 h-4" />
@@ -110,6 +108,7 @@ export default function ForApprovalEventList() {
                                         </Link>
                                         <Link
                                             href={`/portal/admin/events/${event.id}/edit`}
+                                            target={target}
                                         >
                                             <DropdownMenuItem className="space-x-2 btn btn-ghost btn-warning">
                                                 <Pencil className="w-4 h-4" />
