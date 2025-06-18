@@ -26,7 +26,7 @@ function calculateAge(dateOfBirth) {
     return age;
 }
 
-export const hostsParticipantsColumns = [
+export const appointmentsColumns = [
     {
         accessorKey: "id",
         header: ({ column }) => (
@@ -61,6 +61,38 @@ export const hostsParticipantsColumns = [
         filterFn: "columnFilter",
     },
     {
+        accessorKey: "donor.agency.name",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Agency" />
+        ),
+        cell: ({ getValue }) => <span>{getValue()}</span>,
+        filterFn: "columnFilter",
+    },
+    {
+        accessorKey: "time_schedule.event.title",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Event Title" />
+        ),
+        cell: ({ getValue }) => <span>{getValue()}</span>,
+        filterFn: "columnFilter",
+    },
+    {
+        accessorKey: "time_schedule.event.date",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Date" />
+        ),
+        cell: ({ getValue }) => <span>{getValue()}</span>,
+        filterFn: "columnFilter",
+    },
+    {
+        accessorKey: "time_schedule.formatted_time",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Time Schedule" />
+        ),
+        cell: ({ getValue }) => <span>{getValue()}</span>,
+        filterFn: "columnFilter",
+    },
+    {
         accessorKey: "donor.date_of_birth",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Date of Birth" />
@@ -70,6 +102,7 @@ export const hostsParticipantsColumns = [
         ),
         filterFn: "columnFilter",
     },
+
     {
         id: "age",
         header: ({ column }) => (
@@ -90,14 +123,6 @@ export const hostsParticipantsColumns = [
         cell: ({ getValue }) => <span>{getValue()}</span>,
         filterFn: "columnFilter",
     },
-    {
-        accessorKey: "time_schedule.formatted_time",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Time Schedule" />
-        ),
-        cell: ({ getValue }) => <span>{getValue()}</span>,
-        filterFn: "columnFilter",
-    },
 
     {
         accessorKey: "donor.blood_type.blood_type",
@@ -111,20 +136,20 @@ export const hostsParticipantsColumns = [
         },
         filterFn: "columnFilter",
     },
-    //     {
-    //     accessorKey: "donor_type",
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="Donor Type" />
-    //     ),
-    //     cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
-    //     filterFn: "columnFilter",
-    // },
     // {
     //     accessorKey: "patient_name",
     //     header: ({ column }) => (
     //         <DataTableColumnHeader column={column} title="Patient Name" />
     //     ),
     //     cell: ({ getValue }) => <span>{getValue() || "N/A"}</span>,
+    //     filterFn: "columnFilter",
+    // },
+    //     {
+    //     accessorKey: "donor_type",
+    //     header: ({ column }) => (
+    //         <DataTableColumnHeader column={column} title="Donor Type" />
+    //     ),
+    //     cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
     //     filterFn: "columnFilter",
     // },
 
@@ -180,46 +205,44 @@ export const hostsParticipantsColumns = [
             );
         },
     },
-    // {
-    //     id: "actions",
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="Action" />
-    //     ),
-    //     cell: ({ row }) => {
-    //         const data = row.original;
+    {
+        id: "actions",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Action" />
+        ),
+        cell: ({ row }) => {
+            const data = row.original;
 
-    //         return (
-    //             <DropdownMenu>
-    //                 <DropdownMenuTrigger asChild>
-    //                     <Button variant="ghost" className="h-8 w-8 p-0">
-    //                         <span className="sr-only">Open menu</span>
-    //                         <MoreHorizontal className="h-4 w-4" />
-    //                     </Button>
-    //                 </DropdownMenuTrigger>
-    //                 <DropdownMenuContent align="end">
-    //                     <DropdownMenuLabel className="flex items-center space-x-2">
-    //                         <Command className="w-3 h-3" />
-    //                         <span>Actions</span>
-    //                     </DropdownMenuLabel>
-    //                     <DropdownMenuSeparator />
+            return (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuLabel className="flex items-center space-x-2">
+                            <Command className="w-3 h-3" />
+                            <span>Actions</span>
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator />
 
-    //                     <Link
-    //                         href={`/portal/hosts/donor-appointments/${data.id}`}
-    //                     >
-    //                         <DropdownMenuItem className="flex items-center space-x-2">
-    //                             <Eye className="w-4 h-4" />
-    //                             <span>Show</span>
-    //                         </DropdownMenuItem>
-    //                     </Link>
-    //                     {/* <Link href={`/portal/admin/users/${data.id}/edit`}>
-    //                         <DropdownMenuItem className="flex items-center space-x-2">
-    //                             <Pencil className="w-4 h-4" />
-    //                             <span>Edit</span>
-    //                         </DropdownMenuItem>
-    //                     </Link> */}
-    //                 </DropdownMenuContent>
-    //             </DropdownMenu>
-    //         );
-    //     },
-    // },
+                        <Link href={`/portal/admin/appointments/${data.id}`}>
+                            <DropdownMenuItem className="flex items-center space-x-2">
+                                <Eye className="w-4 h-4" />
+                                <span>Show</span>
+                            </DropdownMenuItem>
+                        </Link>
+                        {/* <Link href={`/portal/admin/users/${data.id}/edit`}>
+                            <DropdownMenuItem className="flex items-center space-x-2">
+                                <Pencil className="w-4 h-4" />
+                                <span>Edit</span>
+                            </DropdownMenuItem>
+                        </Link> */}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            );
+        },
+    },
 ];

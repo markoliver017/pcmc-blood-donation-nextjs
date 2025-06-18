@@ -1,0 +1,24 @@
+import WrapperHeadMain from "@components/layout/WrapperHeadMain";
+import AppointmentList from "./AppointmentList";
+import { Calendar } from "lucide-react";
+
+export default function Page() {
+    return (
+        <>
+            <WrapperHeadMain
+                icon={<Calendar />}
+                pageTitle="List of Appointments"
+                breadcrumbs={[
+                    {
+                        path: "/portal/admin/appointments",
+                        icon: <Calendar className="w-4" />,
+                        title: "Appointments",
+                    },
+                ]}
+            />
+            <div className="w-full h-full 2xl:px-5 mx-auto shadow-lg space-y-3">
+                <AppointmentList />
+            </div>
+        </>
+    );
+}

@@ -26,7 +26,7 @@ function calculateAge(dateOfBirth) {
     return age;
 }
 
-export const hostsParticipantsColumns = [
+export const adminParticipantsColumns = [
     {
         accessorKey: "id",
         header: ({ column }) => (
@@ -70,6 +70,7 @@ export const hostsParticipantsColumns = [
         ),
         filterFn: "columnFilter",
     },
+
     {
         id: "age",
         header: ({ column }) => (
@@ -111,20 +112,20 @@ export const hostsParticipantsColumns = [
         },
         filterFn: "columnFilter",
     },
-    //     {
-    //     accessorKey: "donor_type",
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="Donor Type" />
-    //     ),
-    //     cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
-    //     filterFn: "columnFilter",
-    // },
     // {
     //     accessorKey: "patient_name",
     //     header: ({ column }) => (
     //         <DataTableColumnHeader column={column} title="Patient Name" />
     //     ),
     //     cell: ({ getValue }) => <span>{getValue() || "N/A"}</span>,
+    //     filterFn: "columnFilter",
+    // },
+    //     {
+    //     accessorKey: "donor_type",
+    //     header: ({ column }) => (
+    //         <DataTableColumnHeader column={column} title="Donor Type" />
+    //     ),
+    //     cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
     //     filterFn: "columnFilter",
     // },
 

@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
 import { Card } from "@components/ui/card";
-import { Users } from "lucide-react";
+import { CheckCircle, Users } from "lucide-react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -21,6 +21,8 @@ import Skeleton_form from "@components/ui/Skeleton_form";
 
 import { getBloodTypes } from "@/action/bloodTypeAction";
 import { updateDonorBloodType } from "@/action/donorAction";
+import { MdBloodtype } from "react-icons/md";
+import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 
 export default function BloodTypeTabForm({ donor }) {
     const queryClient = useQueryClient();
@@ -143,7 +145,7 @@ export default function BloodTypeTabForm({ donor }) {
                             name="blood_type_id"
                             render={({ field }) => (
                                 <FormItem className="mt-2">
-                                    <div className="flex flex-wrap items-center gap-2">
+                                    <div className="flex flex-wrap items-center gap-5">
                                         <h1 className="text-xl font-bold">
                                             Blood Type:
                                         </h1>
@@ -156,10 +158,13 @@ export default function BloodTypeTabForm({ donor }) {
                                                     : "input-info"
                                             )}
                                         >
-                                            <Users className="h-3" />
+                                            <MdBloodtype className="h-3" />
                                             <select
-                                                className="w-full text-lg dark:bg-inherit"
+                                                className="w-full text-2xl dark:bg-inherit"
                                                 tabIndex={2}
+                                                disabled={
+                                                    donor?.is_bloodtype_verified
+                                                }
                                                 {...field}
                                             >
                                                 <option value="">
@@ -175,6 +180,17 @@ export default function BloodTypeTabForm({ donor }) {
                                                 ))}
                                             </select>
                                         </label>
+                                        {donor?.is_bloodtype_verified ? (
+                                            <div className="badge badge-success px-2 py-5">
+                                                <CheckCircle />
+                                                Verified
+                                            </div>
+                                        ) : (
+                                            <div className="badge badge-warning px-2 py-5">
+                                                <QuestionMarkCircledIcon /> Not
+                                                Verified
+                                            </div>
+                                        )}
                                     </div>
                                     <FieldError field={errors?.blood_type_id} />
                                 </FormItem>
@@ -182,24 +198,26 @@ export default function BloodTypeTabForm({ donor }) {
                         />
                     </div>
 
-                    <div className="flex justify-end">
-                        <button
-                            disabled={!isDirty || isPending}
-                            className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300"
-                        >
-                            {isPending ? (
-                                <>
-                                    <span className="loading loading-bars loading-xs"></span>
-                                    Submitting ...
-                                </>
-                            ) : (
-                                <>
-                                    <GrUpdate />
-                                    Update
-                                </>
-                            )}
-                        </button>
-                    </div>
+                    {!donor?.is_bloodtype_verified && (
+                        <div className="flex justify-end">
+                            <button
+                                disabled={!isDirty || isPending}
+                                className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300"
+                            >
+                                {isPending ? (
+                                    <>
+                                        <span className="loading loading-bars loading-xs"></span>
+                                        Submitting ...
+                                    </>
+                                ) : (
+                                    <>
+                                        <GrUpdate />
+                                        Update
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    )}
                 </Card>
             </form>
             {/* <FormLogger watch={watch} errors={errors} /> */}

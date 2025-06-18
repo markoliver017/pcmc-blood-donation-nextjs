@@ -30,9 +30,7 @@ import FormCardComponent from "@components/form/FormCardComponent";
 import { isOldEnoughToDonate } from "@lib/utils/checkMinAge";
 
 const fetchCountries = async () => {
-    const res = await fetch(
-        "https://restcountries.com/v3.1/all?fields=name,demonyms"
-    );
+    const res = await fetch(process.env.NEXT_PUBLIC_NATIONALITY_API_URL);
     if (!res.ok) throw new Error("Failed to fetch countries");
     return res.json();
 };

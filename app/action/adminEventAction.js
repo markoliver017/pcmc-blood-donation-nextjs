@@ -195,6 +195,56 @@ export async function getAllEvents() {
     }
 }
 
+export async function getAllEventOptions() {
+    try {
+        const events = await BloodDonationEvent.findAll({
+            attributes: ["id", "title", "date"],
+            where: {
+                status: {
+                    [Op.not]: "for approval",
+                },
+            },
+            order: [["createdAt", "DESC"]],
+        });
+
+        const formattedEvents = formatSeqObj(events);
+
+        return { success: true, data: formattedEvents };
+    } catch (err) {
+        logErrorToFile(err, "getAllEventOptions ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
+        };
+    }
+}
+
+export async function getAllAgencyOptions() {
+    try {
+        const agencies = await Agency.findAll({
+            attributes: ["id", "name"],
+            where: {
+                status: {
+                    [Op.eq]: "activated",
+                },
+            },
+            order: [["createdAt", "DESC"]],
+        });
+
+        const formattedagencies = formatSeqObj(agencies);
+
+        return { success: true, data: formattedagencies };
+    } catch (err) {
+        logErrorToFile(err, "getAllAgencyOptions ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
+        };
+    }
+}
+
 export async function getAllEventsByAgency() {
     // await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -760,6 +810,149 @@ export async function getForApprovalEvents() {
         return { success: true, data: formattedEvents };
     } catch (err) {
         logErrorToFile(err, "getAllOngoingEvents ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
+        };
+    }
+}
+
+export async function getAllAppointments() {
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+
+    try {
+        const appointments = await DonorAppointmentInfo.findAll({
+            include: [
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedule",
+                    required: true,
+                    include: {
+                        model: BloodDonationEvent,
+                        as: "event",
+                        order: [["title", "ASC"]],
+                    },
+                },
+                {
+                    model: Donor,
+                    as: "donor",
+                    include: [
+                        {
+                            model: User,
+                            as: "user",
+                        },
+                        {
+                            model: BloodType,
+                            as: "blood_type",
+                        },
+                        {
+                            model: Agency,
+                            as: "agency",
+                            attributes: ["name"],
+                        },
+                    ],
+                },
+            ],
+        });
+
+        const formattedAppointments = formatSeqObj(appointments);
+        return {
+            success: true,
+            data: formattedAppointments,
+        };
+    } catch (err) {
+        logErrorToFile(err, "getEventParticipants ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
+        };
+    }
+}
+
+export async function getAppointmentById(id) {
+    const session = await auth();
+    if (!session || !id) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+
+    try {
+        const appointment = await DonorAppointmentInfo.findOne({
+            where: { id },
+            include: [
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedule",
+                    required: true,
+                    include: {
+                        model: BloodDonationEvent,
+                        as: "event",
+                        order: [["title", "ASC"]],
+                        include: {
+                            model: User,
+                            as: "requester",
+                            attributes: ["name", "email", "image"],
+                            include: {
+                                model: AgencyCoordinator,
+                                as: "coordinator",
+                                attributes: ["contact_number"],
+                            },
+                        },
+                    },
+                },
+                {
+                    model: Donor,
+                    as: "donor",
+                    attributes: { exclude: ["updated_by"] },
+                    include: [
+                        {
+                            model: User,
+                            as: "user",
+                        },
+                        {
+                            model: BloodType,
+                            as: "blood_type",
+                        },
+                        {
+                            model: Agency,
+                            as: "agency",
+                            attributes: [
+                                "name",
+                                "file_url",
+                                "address",
+                                "barangay",
+                                "city_municipality",
+                                "province",
+                                "agency_address",
+                            ],
+                            include: {
+                                model: User,
+                                as: "head",
+                                attributes: ["name", "email"],
+                            },
+                        },
+                    ],
+                },
+            ],
+        });
+
+        const formattedAppointment = formatSeqObj(appointment);
+        return {
+            success: true,
+            data: formattedAppointment,
+        };
+    } catch (err) {
+        logErrorToFile(err, "getParticipantById ERROR");
         return {
             success: false,
             type: "server",

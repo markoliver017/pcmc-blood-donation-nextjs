@@ -254,6 +254,13 @@ export const eventColumns = (setIsLoading) => [
                         {status == "approved" ? (
                             <>
                                 <DropdownMenuItem>
+                                    <Link
+                                        href={`/portal/admin/events/${data.id}/participants`}
+                                    >
+                                        <span>View Donors</span>
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
                                     <EventRegistrationStatus
                                         data={data}
                                         setIsLoading={setIsLoading}

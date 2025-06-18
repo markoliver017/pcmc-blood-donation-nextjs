@@ -112,6 +112,8 @@ export default function DonorProfilePage({ user }) {
                             donor={{
                                 id: userData?.donor?.id,
                                 blood_type_id: userData?.donor?.blood_type_id,
+                                is_bloodtype_verified:
+                                    userData?.donor?.is_bloodtype_verified,
                             }}
                         />
                     </TabsContent>

@@ -2,9 +2,9 @@ import { CardStackIcon, DashboardIcon } from "@radix-ui/react-icons";
 import {
     Calendar,
     CalendarCheck,
-    Droplets,
     FileQuestion,
     LocateIcon,
+    UserCircle,
     UserPlus2,
     Users,
     Users2,
@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { BiError } from "react-icons/bi";
 import { FaMicrophone } from "react-icons/fa";
-import { GiRamProfile } from "react-icons/gi";
 import { GrEmergency } from "react-icons/gr";
 import { MdOutlineBloodtype } from "react-icons/md";
 import { create } from "zustand";
@@ -116,7 +115,7 @@ export const usePagesStore = create((set) => ({
         {
             title: "Profile",
             path: "/profile",
-            icon: <GiRamProfile />,
+            icon: <UserCircle />,
             roles: [
                 "Admin",
                 "Donor",
@@ -132,6 +131,14 @@ export const usePagesStore = create((set) => ({
             path: "/events",
             icon: <CalendarCheck />,
             roles: ["Admin", "Developer", "Agency Administrator", "Organizer"],
+            is_role_based: true,
+            has_child: false,
+        },
+        {
+            title: "Appointments",
+            path: "/appointments",
+            icon: <Calendar />,
+            roles: ["Admin"],
             is_role_based: true,
             has_child: false,
         },

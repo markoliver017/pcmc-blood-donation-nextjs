@@ -27,7 +27,7 @@ import { uploadPicture } from "@/action/uploads";
 import { GrUpdate } from "react-icons/gr";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import FormLogger from "@lib/utils/FormLogger";
-import { donorSchema } from "@lib/zod/donorSchema";
+import { userWithDonorSchema } from "@lib/zod/donorSchema";
 import { formatFormalName } from "@lib/utils/string.utils";
 import Skeleton_form from "@components/ui/Skeleton_form";
 import Link from "next/link";
@@ -37,6 +37,8 @@ import {
 } from "@/action/locationAction";
 import LocationFields from "@components/organizers/LocationFields";
 import { updateDonor } from "@/action/donorAction";
+import Image from "next/image";
+import { BiMaleFemale } from "react-icons/bi";
 
 const fetchCountries = async () => {
     const res = await fetch(process.env.NEXT_PUBLIC_NATIONALITY_API_URL);
@@ -44,7 +46,9 @@ const fetchCountries = async () => {
     return res.json();
 };
 
-export default function DonorProfileTabForm({ donor }) {
+export default function AppointmentDonorProfileTabForm({ donor }) {
+    const user = donor.user;
+
     const fileInputRef = useRef(null);
 
     const queryClient = useQueryClient();
@@ -116,9 +120,14 @@ export default function DonorProfileTabForm({ donor }) {
 
     const form = useForm({
         mode: "onChange",
-        resolver: zodResolver(donorSchema),
+        resolver: zodResolver(userWithDonorSchema),
         defaultValues: {
             ...donor,
+            user_id: user.id,
+            first_name: user?.first_name,
+            last_name: user?.last_name,
+            middle_name: user?.middle_name || "",
+            gender: user.gender,
             blood_type_id: donor?.blood_type_id
                 ? donor?.blood_type_id.toString()
                 : "",
@@ -126,13 +135,10 @@ export default function DonorProfileTabForm({ donor }) {
     });
 
     const {
-        register,
         watch,
         control,
         handleSubmit,
-        setError,
         setValue,
-        reset,
         resetField,
         formState: { errors, isDirty },
     } = form;
@@ -143,10 +149,6 @@ export default function DonorProfileTabForm({ donor }) {
         !errors?.file && uploaded_avatar
             ? URL.createObjectURL(uploaded_avatar)
             : donor?.id_url || "/default-govt-issued-id.png";
-
-    useEffect(() => {
-        if (watch("id_url")) setValue("id_url", null);
-    }, [uploaded_avatar]);
 
     const onSubmit = async (formData) => {
         SweetAlert({
@@ -227,9 +229,9 @@ export default function DonorProfileTabForm({ donor }) {
         <Form {...form}>
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="space-y-2 flex flex-wrap gap-2 justify-center"
+                className="space-y-2 flex flex-col gap-2 justify-center"
             >
-                <div className="w-full md:w-min">
+                <div className="w-full md:w-min hidden">
                     <FormField
                         control={control}
                         name="file"
@@ -305,6 +307,121 @@ export default function DonorProfileTabForm({ donor }) {
                             name="agency_id"
                             render={({ field }) => (
                                 <input type="hidden" {...field} />
+                            )}
+                        />
+                        <FormField
+                            control={control}
+                            name="first_name"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <InlineLabel>First Name: </InlineLabel>
+
+                                    <label
+                                        className={clsx(
+                                            "input w-full mt-1",
+                                            errors?.first_name
+                                                ? "input-error"
+                                                : "input-info"
+                                        )}
+                                    >
+                                        <Text className="h-3" />
+                                        <input
+                                            type="text"
+                                            tabIndex={2}
+                                            placeholder="Enter first name"
+                                            {...field}
+                                        />
+                                    </label>
+                                    <FieldError field={errors?.first_name} />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={control}
+                            name="middle_name"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <InlineLabel>Middle Name: </InlineLabel>
+
+                                    <label
+                                        className={clsx(
+                                            "input w-full mt-1",
+                                            errors?.middle_name
+                                                ? "input-error"
+                                                : "input-info"
+                                        )}
+                                    >
+                                        <Text className="h-3" />
+                                        <input
+                                            type="text"
+                                            tabIndex={3}
+                                            placeholder="Enter middle name"
+                                            {...field}
+                                        />
+                                    </label>
+                                    <FieldError field={errors?.middle_name} />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={control}
+                            name="last_name"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <InlineLabel>Last Name: </InlineLabel>
+
+                                    <label
+                                        className={clsx(
+                                            "input w-full mt-1",
+                                            errors?.last_name
+                                                ? "input-error"
+                                                : "input-info"
+                                        )}
+                                    >
+                                        <Text className="h-3" />
+                                        <input
+                                            type="text"
+                                            tabIndex={3}
+                                            placeholder="Enter last name"
+                                            {...field}
+                                        />
+                                    </label>
+                                    <FieldError field={errors?.last_name} />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={control}
+                            name="gender"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <InlineLabel>Sex: </InlineLabel>
+
+                                    <label
+                                        className={clsx(
+                                            "input w-full mt-1",
+                                            errors?.gender
+                                                ? "input-error"
+                                                : "input-info"
+                                        )}
+                                    >
+                                        <BiMaleFemale className="h-3" />
+                                        <select
+                                            className="w-full dark:bg-inherit"
+                                            tabIndex={4}
+                                            {...field}
+                                        >
+                                            <option value="">
+                                                Select here
+                                            </option>
+                                            <option value="male">Male</option>
+                                            <option value="female">
+                                                Female
+                                            </option>
+                                        </select>
+                                    </label>
+                                    <FieldError field={errors?.gender} />
+                                </FormItem>
                             )}
                         />
                         <FormField
@@ -489,6 +606,33 @@ export default function DonorProfileTabForm({ donor }) {
                         />
                     </div>
 
+                    <h1 className="text-xl font-bold">
+                        Uploaded Govt Issued ID:
+                    </h1>
+                    <div className="h-50 border relative">
+                        <Image
+                            src={avatar}
+                            alt="Government Issued ID"
+                            fill
+                            className="object-cover rounded"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center z-10">
+                            {donor?.id_url ? (
+                                <Link
+                                    href={donor?.id_url}
+                                    target="_blank"
+                                    className="btn btn-ghost btn-wide bg-white bg-opacity-80"
+                                >
+                                    View
+                                </Link>
+                            ) : (
+                                <div className="btn btn-ghost btn-wide bg-white bg-opacity-80">
+                                    No Uploaded Govt ID
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
                     {city_provinces_status === "success" ? (
                         <>
                             <h1 className="text-xl font-bold">Location:</h1>
@@ -511,10 +655,7 @@ export default function DonorProfileTabForm({ donor }) {
                             <h1 className="text-xl font-semibold ">
                                 Blood Donation History before registration:
                             </h1>
-                            <span className="italic text-warning">
-                                * You are not allowed already to modify this
-                                fields
-                            </span>
+
                             <div className="pl-3 space-y-2 mt-2">
                                 <FormField
                                     control={control}
@@ -539,7 +680,6 @@ export default function DonorProfileTabForm({ donor }) {
                                                     tabIndex={3}
                                                     placeholder="Enter last donation date"
                                                     {...field}
-                                                    readOnly
                                                 />
                                             </label>
                                             <FieldError
@@ -573,7 +713,6 @@ export default function DonorProfileTabForm({ donor }) {
                                                     tabIndex={4}
                                                     placeholder="Enter your answer"
                                                     {...field}
-                                                    readOnly
                                                 />
                                             </label>
                                             <FieldError
@@ -608,10 +747,7 @@ export default function DonorProfileTabForm({ donor }) {
                     </div>
                 </Card>
             </form>
-            {/* <FormLogger watch={watch} errors={errors} />
-            <pre>
-                <b>Govt ID File: </b> {JSON.stringify(govtIdFile)}
-            </pre> */}
+            <FormLogger watch={watch} errors={errors} data={donor} />
         </Form>
     );
 }

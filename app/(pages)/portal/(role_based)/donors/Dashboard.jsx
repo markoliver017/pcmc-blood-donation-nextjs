@@ -7,7 +7,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
-import { CalendarArrowUp, CalendarCheck2 } from "lucide-react";
+import { CalendarArrowUp, CalendarCheck2, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { FaArrowRight } from "react-icons/fa";
@@ -19,6 +19,7 @@ import {
 } from "@/action/donorAction";
 import DashboardEventCardList from "@components/dashboard/DashboardEventCardList";
 import Skeleton_line from "@components/ui/skeleton_line";
+import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 
 export default function Dashboard() {
     const { data: dashboard, isLoading: dashboardIsLoading } = useQuery({
@@ -73,12 +74,24 @@ export default function Dashboard() {
                                 </span>
                             )}
                         </h2>
-                        <Link
+                        {dashboardIsLoading ? (
+                            <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
+                        ) : dashboard?.is_bloodtype_verified ? (
+                            <div className="badge badge-success px-2 py-5">
+                                <CheckCircle />
+                                Verified
+                            </div>
+                        ) : (
+                            <div className="badge badge-warning px-2 py-5">
+                                <QuestionMarkCircledIcon /> Not Verified
+                            </div>
+                        )}
+                        {/* <Link
                             className="btn btn-primary btn-outline"
                             href="/portal/donors/profile"
                         >
                             View Profile
-                        </Link>
+                        </Link> */}
                     </CardContent>
                 </Card>
 
@@ -93,7 +106,7 @@ export default function Dashboard() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="flex flex-col items-center gap-4">
-                        <h2 className="text-4xl font-bold text-red-500 text-shadow-lg/25 text-shadow-red-400">
+                        <h2 className="text-4xl font-bold text-green-500 text-shadow-lg/25 text-shadow-green-400">
                             {dashboardIsLoading ? (
                                 <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
                             ) : (
@@ -118,16 +131,17 @@ export default function Dashboard() {
                         <CardDescription>Days to Go</CardDescription>
                     </CardHeader>
                     <CardContent className="flex flex-col items-center gap-4">
-                        <h2 className="text-4xl font-bold text-red-500 text-shadow-lg/25 text-shadow-red-400">
+                        <h2 className="text-4xl font-bold text-blue-500 text-shadow-lg/25 text-shadow-blue-400">
                             {dashboardIsLoading ? (
                                 <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
                             ) : (
                                 <span>{dashboard?.days_remaining}</span>
                             )}
                         </h2>
-                        <span className="p-2 italic text-link text-blue-700 dark:text-blue-400 hover:ring">
-                            {`${dashboard?.next_eligible_date} onwards` ||
-                                "Donate Now"}
+                        <span className="p-2 italic text-link font-semibold text-lg text-blue-700 dark:text-blue-300 ">
+                            {dashboard?.next_eligible_date
+                                ? `${dashboard?.next_eligible_date}`
+                                : ""}
                         </span>
                     </CardContent>
                 </Card>
@@ -154,7 +168,7 @@ export default function Dashboard() {
                     <Card className="min-h-full">
                         <CardHeader>
                             <CardTitle className="text-xl">
-                                Action Needed
+                                Blood Donation Drives
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-6">

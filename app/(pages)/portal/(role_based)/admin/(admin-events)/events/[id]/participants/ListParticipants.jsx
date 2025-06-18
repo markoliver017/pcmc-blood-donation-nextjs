@@ -1,15 +1,12 @@
 "use client";
 
 import { getEventParticipants } from "@/action/hostEventAction";
-import { DataTable } from "@components/donors/Datatable";
 import { useQuery } from "@tanstack/react-query";
-import { hostsParticipantsColumns } from "./hostsParticipantsColumns";
 import Skeleton_form from "@components/ui/Skeleton_form";
 import { ArrowLeftCircle, CalendarCheck, Users2 } from "lucide-react";
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
-import Link from "next/link";
-import { BiLeftArrow, BiSolidLeftArrow } from "react-icons/bi";
 import { useRouter } from "next/navigation";
+import { adminParticipantsColumns } from "./adminParticipantsColumns";
 import { ParticipantsDatatable } from "@components/donors/ParticipantsDatatable";
 
 export default function ListParticipants({ eventId }) {
@@ -69,7 +66,7 @@ export default function ListParticipants({ eventId }) {
                     Back
                 </button>
                 <ParticipantsDatatable
-                    columns={hostsParticipantsColumns}
+                    columns={adminParticipantsColumns}
                     data={participants}
                     isLoading={isLoading}
                 />

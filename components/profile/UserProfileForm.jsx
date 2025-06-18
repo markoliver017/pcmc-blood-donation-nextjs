@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
@@ -12,7 +12,7 @@ import SweetAlert from "@components/ui/SweetAlert";
 import notify from "@components/ui/notify";
 import InlineLabel from "@components/form/InlineLabel";
 
-import { userBasicInformationSchema } from "@lib/zod/userSchema";
+import { getUserBasicInformationSchema } from "@lib/zod/userSchema";
 import { updateUserBasicInfo } from "@/action/userAction";
 import FieldError from "@components/form/FieldError";
 import clsx from "clsx";
@@ -30,9 +30,22 @@ import { GrUpdate } from "react-icons/gr";
 import { useRouter } from "next/navigation";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import FormLogger from "@lib/utils/FormLogger";
+import { useSession } from "next-auth/react";
 
 export default function UserProfileForm({ userQuery }) {
     const router = useRouter();
+
+    const session = useSession();
+
+    console.log(">>>>>>>", session);
+
+    const isDonor =
+        session?.status === "authenticated" &&
+        session.data?.user?.role_name === "Donor";
+
+    const userBasicInformationSchema = useMemo(() => {
+        return getUserBasicInformationSchema(isDonor);
+    }, [isDonor]);
 
     const fileInputRef = useRef(null);
 
@@ -54,8 +67,8 @@ export default function UserProfileForm({ userQuery }) {
             // Invalidate the posts query to refetch the updated list
             queryClient.invalidateQueries({ queryKey: ["user"] });
             SweetAlert({
-                title: "User Updated",
-                text: "The user information has been updated successfully .",
+                title: "Update Profile",
+                text: "Your user profile information has been updated successfully .",
                 icon: "success",
                 confirmButtonText: "Okay",
             });
@@ -160,7 +173,7 @@ export default function UserProfileForm({ userQuery }) {
     const onSubmit = async (formData) => {
         SweetAlert({
             title: "Confirmation",
-            text: "Update User?",
+            text: "Update your profile?",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Confirm",
@@ -186,6 +199,11 @@ export default function UserProfileForm({ userQuery }) {
             },
         });
     };
+
+    let user = null;
+    if (session.status == "authenticated") {
+        user = session.data.user;
+    }
 
     return (
         <Form {...form}>

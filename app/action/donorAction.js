@@ -355,6 +355,62 @@ export async function updateDonor(formData) {
     }
 }
 
+export async function updateUserAndDonor(formData) {
+    const session = await auth();
+    if (!session) throw "You are not authorized to access this request.";
+    const { user } = session;
+    formData.updated_by = user.id;
+
+    const parsed = donorSchema.safeParse(formData);
+
+    if (!parsed.success) {
+        const fieldErrors = parsed.error.flatten().fieldErrors;
+        return {
+            success: false,
+            type: "validation",
+            message:
+                "Validation Error: Please try again. If the issue persists, contact your administrator for assistance.",
+            errorObj: parsed.error.flatten().fieldErrors,
+            errorArr: Object.values(fieldErrors).flat(),
+        };
+    }
+
+    const { data } = parsed;
+
+    const donor = await Donor.findByPk(data.id);
+
+    if (!donor) {
+        throw new Error("Database Error: Donor ID was not found");
+    }
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        const updatedDonor = await donor.update(data, {
+            transaction,
+        });
+
+        await transaction.commit();
+
+        await logAuditTrail({
+            userId: user.id,
+            controller: "donors",
+            action: "UPDATE DONOR",
+            details: `The Donor's profile has been successfully updated. ID#: ${updatedDonor.id}`,
+        });
+
+        return {
+            success: true,
+            data: updatedDonor.get({ plain: true }),
+        };
+    } catch (err) {
+        logErrorToFile(err, "UPDATE DONOR");
+        await transaction.rollback();
+
+        throw err.message || "Unknown error";
+    }
+}
+
 export async function updateDonorBloodType(formData) {
     const session = await auth();
     if (!session) throw "You are not authorized to access this request.";
@@ -586,7 +642,7 @@ export async function getDonorDashboard() {
     try {
         const donor = await Donor.findOne({
             where: { user_id: user?.id }, // assuming this association
-            attributes: ["id"],
+            attributes: ["id", "is_bloodtype_verified"],
             include: {
                 model: BloodType,
                 as: "blood_type",
@@ -643,7 +699,7 @@ export async function getDonorDashboard() {
 
         let nextEligibleDate = null;
         let daysRemaining = null;
-        let donateNow = false;
+        let donateNow = true;
 
         if (latestDonation?.time_schedule?.event?.date) {
             const lastDate = moment(
@@ -659,8 +715,8 @@ export async function getDonorDashboard() {
             // Calculate remaining days
             daysRemaining = nextEligibleDate.diff(today, "days");
 
-            if (daysRemaining <= 0) {
-                donateNow = true;
+            if (daysRemaining > 0) {
+                donateNow = false;
             }
         }
 
@@ -668,6 +724,7 @@ export async function getDonorDashboard() {
             success: true,
             data: {
                 blood_type: donor?.blood_type?.blood_type,
+                is_bloodtype_verified: donor?.is_bloodtype_verified,
                 no_donations: appointmentCount,
                 next_eligible_date: donateNow
                     ? "Donate now"

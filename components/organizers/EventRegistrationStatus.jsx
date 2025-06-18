@@ -17,29 +17,25 @@ import { GiOpenBook } from "react-icons/gi";
 export default function EventRegistrationStatus({
     data,
     formClassName = "",
-    setIsLoading
+    setIsLoading,
 }) {
     let registration_status = "ongoing";
     let confirmText = `Are you sure you want to <b>OPEN</b> the registration for <b><i>"${data?.title}"</i></b>? All registered donors will be notified.`;
     let label = "Open the Registration";
-    let icon = <GiOpenBook />
+    let icon = <GiOpenBook />;
     let className = "btn btn-ghost btn-success";
 
     if (data?.registration_status == "ongoing") {
         registration_status = "closed";
         confirmText = `Are you sure you want to <b>CLOSE</b> now the registration for <b><i>"${data?.title}"</i></b>?`;
         label = "Close the Registration";
-        icon = <XIcon />
+        icon = <XIcon />;
         className = "btn btn-ghost btn-warning";
     }
 
     const queryClient = useQueryClient();
 
-
-    const {
-        mutate,
-        isPending
-    } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: async (formData) => {
             const res = await updateEventRegistrationStatus(formData);
             if (!res.success) {
@@ -51,6 +47,7 @@ export default function EventRegistrationStatus({
             setIsLoading(false);
             queryClient.invalidateQueries({ queryKey: ["events"] });
             queryClient.invalidateQueries({ queryKey: ["agency_events"] });
+            queryClient.invalidateQueries({ queryKey: ["all_events"] });
 
             SweetAlert({
                 title: data?.title,
@@ -70,14 +67,13 @@ export default function EventRegistrationStatus({
         mode: "onChange",
         defaultValues: {
             id: data.id,
-            registration_status
+            registration_status,
         },
     });
 
     const { handleSubmit, reset } = form;
 
     const onSubmit = async (data) => {
-
         SweetAlert({
             title: "Confirm your action?",
             html: confirmText,
@@ -97,7 +93,6 @@ export default function EventRegistrationStatus({
 
     return (
         <Form {...form}>
-
             <form
                 className={`${formClassName}`}
                 onSubmit={handleSubmit(onSubmit)}
