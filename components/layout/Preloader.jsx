@@ -26,36 +26,44 @@ export default function Preloader() {
                 >
                     {/* Linear Gradient Background */}
                     <div
-                        className="bg-white opacity-95"
+                        className="bg-white"
                         style={{
                             position: "absolute",
                             width: "100%",
                             height: "100%",
                         }}
                     />
-
+                    {/* Website Logo at top-left */}
+                    <motion.div className="absolute top-14 left-4 w-120 h-120 z-10"
+                        initial={{ scale: 1 }}
+                        animate={{ scale: [1, 1.1, 1] }}
+                        transition={{ repeat: Infinity, duration: 1 }}
+                    >
+                        <Image
+                            src="/pcmc_logo.png"
+                            alt="Website Logo"
+                            fill
+                            className="object-contain"
+                        />
+                    </motion.div>
                     {/* Animated Loading Text */}
 
                     <motion.div
-                        className="text-2xl font-semibold text-blue-500 relative"
-                        initial={{ scale: 1 }}
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ repeat: Infinity, duration: 1 }}
+                        className="text-2xl w-full h-full flex justify-center items-center font-semibold text-blue-500 relative"
+                    // initial={{ scale: 1 }}
+                    // animate={{ scale: [1, 1.1, 1] }}
+                    // transition={{ repeat: Infinity, duration: 1 }}
                     >
-                        {/* Loading... */}
+                        Loading...
                         <Image
-                            src="/loader_1.gif"
-                            width={500}
-                            height={500}
+                            src="/loader_main.gif"
+                            // width={2500}
+                            // height={1000}
+                            // className="opacity-50"
                             alt="Logo"
+                            fill
                             priority
                         />
-                        {/* <img
-  src="/loader_1.gif"
-  width={500}
-  height={500}
-  alt="Logo"
-/> */}
                     </motion.div>
                 </motion.div>
             )}

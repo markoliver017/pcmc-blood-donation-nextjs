@@ -16,13 +16,17 @@ import {
     sequelize,
     User,
 } from "@lib/models";
+import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import {
     bloodtypeSchema,
     donorRegistrationWithUser,
     donorSchema,
     donorStatusSchema,
+    donorWithVerifiedSchema,
+    userWithDonorSchema,
 } from "@lib/zod/donorSchema";
+import { donorBasicInformationSchema } from "@lib/zod/userSchema";
 import moment from "moment";
 import { Op } from "sequelize";
 
@@ -355,38 +359,64 @@ export async function updateDonor(formData) {
     }
 }
 
-export async function updateUserAndDonor(formData) {
+export async function updateUserDonor(user_id, formData) {
     const session = await auth();
-    if (!session) throw "You are not authorized to access this request.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request."
+        }
+    }
     const { user } = session;
     formData.updated_by = user.id;
 
-    const parsed = donorSchema.safeParse(formData);
+    const parsedDonor = donorWithVerifiedSchema.safeParse(formData);
+    const parsedUser = donorBasicInformationSchema.safeParse(formData);
 
-    if (!parsed.success) {
-        const fieldErrors = parsed.error.flatten().fieldErrors;
+    if (!parsedDonor.success || !parsedUser.success) {
+        const errorObj = {
+            ...parsedDonor.error?.flatten().fieldErrors,
+            ...parsedUser.error?.flatten().fieldErrors,
+        };
+
         return {
             success: false,
             type: "validation",
             message:
                 "Validation Error: Please try again. If the issue persists, contact your administrator for assistance.",
-            errorObj: parsed.error.flatten().fieldErrors,
-            errorArr: Object.values(fieldErrors).flat(),
+            errorObj,
+            errorArr: Object.values(errorObj).flat(),
         };
     }
 
-    const { data } = parsed;
+    const { data: donorData } = parsedDonor;
+    const { data: userData } = parsedUser;
 
-    const donor = await Donor.findByPk(data.id);
+    const donor = await Donor.findByPk(donorData.id);
+    const userDonor = await User.findByPk(user_id);
 
     if (!donor) {
-        throw new Error("Database Error: Donor ID was not found");
+        return {
+            success: false,
+            message: "Database Error: Donor ID was not found."
+        }
+    }
+
+    if (!userDonor) {
+        return {
+            success: false,
+            message: "Database Error: User ID was not found."
+        }
     }
 
     const transaction = await sequelize.transaction();
 
     try {
-        const updatedDonor = await donor.update(data, {
+        const updatedDonor = await donor.update(donorData, {
+            transaction,
+        });
+
+        await userDonor.update(userData, {
             transaction,
         });
 
@@ -395,8 +425,8 @@ export async function updateUserAndDonor(formData) {
         await logAuditTrail({
             userId: user.id,
             controller: "donors",
-            action: "UPDATE DONOR",
-            details: `The Donor's profile has been successfully updated. ID#: ${updatedDonor.id}`,
+            action: "UPDATE USERDONOR",
+            details: `The Donor's profile has been successfully verified. ID#: ${updatedDonor.id}`,
         });
 
         return {
@@ -404,10 +434,13 @@ export async function updateUserAndDonor(formData) {
             data: updatedDonor.get({ plain: true }),
         };
     } catch (err) {
-        logErrorToFile(err, "UPDATE DONOR");
+        logErrorToFile(err, "UPDATE USERDONOR");
         await transaction.rollback();
 
-        throw err.message || "Unknown error";
+        return {
+            success: false,
+            message: extractErrorMessage(err)
+        }
     }
 }
 
@@ -729,8 +762,8 @@ export async function getDonorDashboard() {
                 next_eligible_date: donateNow
                     ? "Donate now"
                     : nextEligibleDate
-                    ? moment(nextEligibleDate).format("MMM.DD, YYYY")
-                    : nextEligibleDate,
+                        ? moment(nextEligibleDate).format("MMM.DD, YYYY")
+                        : nextEligibleDate,
                 days_remaining: donateNow ? 0 : daysRemaining,
             },
         };

@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
 import { Card } from "@components/ui/card";
-import { Calendar, Eye, Flag, Phone, Text, Upload, Users } from "lucide-react";
+import { Calendar, Eye, Flag, Phone, ShieldCheck, ShieldOff, Text, Upload, Users } from "lucide-react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -36,9 +36,10 @@ import {
     fetchluzonDemographics,
 } from "@/action/locationAction";
 import LocationFields from "@components/organizers/LocationFields";
-import { updateDonor } from "@/action/donorAction";
+import { updateDonor, updateUserDonor } from "@/action/donorAction";
 import Image from "next/image";
 import { BiMaleFemale } from "react-icons/bi";
+import { IoInformationCircle } from "react-icons/io5";
 
 const fetchCountries = async () => {
     const res = await fetch(process.env.NEXT_PUBLIC_NATIONALITY_API_URL);
@@ -61,15 +62,15 @@ export default function AppointmentDonorProfileTabForm({ donor }) {
 
     const { mutate, isPending } = useMutation({
         mutationFn: async (formData) => {
-            const res = await updateDonor(formData);
+            const res = await updateUserDonor(user.id, formData);
             if (!res.success) {
                 throw res;
             }
             return res.data;
         },
-        onSuccess: (data) => {
+        onSuccess: () => {
             // Invalidate the posts query to refetch the updated list
-            queryClient.invalidateQueries({ queryKey: ["user"] });
+            queryClient.invalidateQueries({ queryKey: ["appointment"] });
             SweetAlert({
                 title: "Donor's Profile",
                 text: "The Donor's profile has been updated successfully.",
@@ -152,11 +153,11 @@ export default function AppointmentDonorProfileTabForm({ donor }) {
 
     const onSubmit = async (formData) => {
         SweetAlert({
-            title: "Confirmation",
-            text: "Update Donor's profile?",
-            icon: "question",
+            title: "Update Donor's Profile?",
+            text: "Are you sure you want to save these changes?",
+            icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Confirm",
+            confirmButtonText: "Yes, update it!",
             cancelButtonText: "Cancel",
             onConfirm: async () => {
                 const fileUrl = watch("id_url");
@@ -293,7 +294,23 @@ export default function AppointmentDonorProfileTabForm({ donor }) {
                 </div>
 
                 <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
-                    <h1 className="text-xl font-bold">Basic Information:</h1>
+                    <div className="flex items-center gap-5">
+
+                        <h1 className="text-xl font-bold flex-items-center"><IoInformationCircle /> Basic Information:</h1>
+                        {donor?.is_data_verified ? (
+                            <div className="badge badge-success text-md gap-2 p-4 font-semibold">
+                                <ShieldCheck className="w-4 h-4" />
+                                Verified
+                            </div>
+                        ) : (
+                            <div className="badge badge-warning text-md gap-2 p-4 font-semibold">
+                                <ShieldOff className="w-4 h-4" />
+                                Not Verified
+                            </div>
+                        )}
+
+
+                    </div>
                     <div className="pl-4 space-y-5">
                         <FormField
                             control={control}
@@ -626,7 +643,7 @@ export default function AppointmentDonorProfileTabForm({ donor }) {
                                     View
                                 </Link>
                             ) : (
-                                <div className="btn btn-ghost btn-wide bg-white bg-opacity-80">
+                                <div className="btn btn-ghost btn-wide bg-white text-red-600 bg-opacity-80">
                                     No Uploaded Govt ID
                                 </div>
                             )}
@@ -727,6 +744,33 @@ export default function AppointmentDonorProfileTabForm({ donor }) {
                         </div>
                     )}
 
+                    <FormField
+                        control={control}
+                        name="is_data_verified"
+                        render={({ field }) => (
+                            <FormItem className="pt-10 pl-5 md:pl-15">
+                                <label className="flex items-center gap-4">
+                                    <input
+                                        type="checkbox"
+                                        className="checkbox border-indigo-600 bg-indigo-500 checked:border-green-500 checked:bg-green-400 checked:text-green-800"
+                                        {...field}
+                                        checked={
+                                            field.value
+                                        }
+                                    />
+                                    <span className="flex items-center gap-2 text-xl font-semibold text-gray-800 dark:text-gray-300">
+                                        Verify Donor's Information
+                                        <ShieldCheck className="w-5 h-5 text-primary" />
+                                    </span>
+                                </label>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                                    Mark this checkbox if you’ve confirmed all donor details.
+                                </p>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
                     <div className="flex justify-end">
                         <button
                             disabled={!isDirty || isPending}
@@ -740,14 +784,14 @@ export default function AppointmentDonorProfileTabForm({ donor }) {
                             ) : (
                                 <>
                                     <GrUpdate />
-                                    Update
+                                    Save Changes
                                 </>
                             )}
                         </button>
                     </div>
                 </Card>
             </form>
-            <FormLogger watch={watch} errors={errors} data={donor} />
+            {/* <FormLogger watch={watch} errors={errors} data={donor} /> */}
         </Form>
     );
 }
