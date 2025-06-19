@@ -15,6 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 
 import React from "react";
+import ApprovalRejectComponent from "./ApprovalRejectComponent";
 
 export default function ShowDonor({ donorId }) {
     const { data: donor } = useQuery({
@@ -34,10 +35,14 @@ export default function ShowDonor({ donorId }) {
     }
     // return "";
     return (
-        <Card className="mt-2 p-5 h-full">
+        <Card id="form-modal" className="mt-2 p-5 h-full">
             <CardHeader>
-                <CardTitle className="flex">
+                <CardTitle className="flex justify-between">
                     <div className="text-4xl">{donor.user.full_name}</div>
+                    <ApprovalRejectComponent
+                        data={donor}
+                        callbackUrl={`/portal/hosts/donors/${donorId}`}
+                    />
                 </CardTitle>
                 <CardDescription>Donor Information</CardDescription>
             </CardHeader>

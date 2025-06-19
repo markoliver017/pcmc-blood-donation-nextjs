@@ -19,7 +19,7 @@ export default function SideComponent({ appointment }) {
     const user = donor?.user;
 
     return (
-        <Card className="p-4 flex flex-col gap-4">
+        <Card className="p-4 flex flex-col gap-4 h-max">
             <CardHeader className="border-b">
                 <div className="flex items-center gap-4">
                     <div className="relative w-16 h-16 rounded overflow-hidden border">
@@ -35,8 +35,8 @@ export default function SideComponent({ appointment }) {
                             {event?.title || "Untitled Event"}
                         </CardTitle>
                         <CardDescription className="mt-1 text-sm text-gray-500">
-                            {moment(event?.date).format("MMM DD, YYYY")}{" "}
-                            — {schedule?.formatted_time || "No Time"}
+                            {moment(event?.date).format("MMM DD, YYYY")} —{" "}
+                            {schedule?.formatted_time || "No Time"}
                         </CardDescription>
                     </div>
                 </div>
@@ -44,9 +44,7 @@ export default function SideComponent({ appointment }) {
 
             <CardContent className="text-sm text-gray-700 dark:text-gray-300">
                 {event?.description ? (
-                    <div className="prose">
-                        {parse(event.description)}
-                    </div>
+                    <div className="prose">{parse(event.description)}</div>
                 ) : (
                     <p className="italic text-gray-400">
                         No description provided.
@@ -82,9 +80,7 @@ export default function SideComponent({ appointment }) {
                     <div className="flex items-center gap-3 mt-1">
                         <div className="relative w-12 h-12 rounded-full overflow-hidden border">
                             <Image
-                                src={
-                                    user?.image || "/default_avatar.png"
-                                }
+                                src={user?.image || "/default_avatar.png"}
                                 alt="Avatar"
                                 fill
                                 className="object-cover"
@@ -109,18 +105,14 @@ export default function SideComponent({ appointment }) {
                     <div className="flex items-center gap-3 mt-1">
                         <div className="relative w-12 h-12 rounded-full overflow-hidden border">
                             <Image
-                                src={
-                                    user?.image || "/default_avatar.png"
-                                }
+                                src={user?.image || "/default_avatar.png"}
                                 alt="Avatar"
                                 fill
                                 className="object-cover"
                             />
                         </div>
                         <div className="text-sm">
-                            <div className="font-medium">
-                                {user?.name}
-                            </div>
+                            <div className="font-medium">{user?.name}</div>
                             <div className="text-gray-500 dark:text-gray-400">
                                 {donor?.full_address}
                             </div>
@@ -135,5 +127,5 @@ export default function SideComponent({ appointment }) {
                 </div>
             </CardContent>
         </Card>
-    )
+    );
 }

@@ -31,7 +31,7 @@ export default function ApprovalRejectComponent({ data, callbackUrl }) {
                     <span>Actions</span>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="space-x-2">
+                <DropdownMenuItem className="space-x-2 hidden">
                     <Button
                         onClick={() => router.push(callbackUrl)}
                         variant="secondary"
@@ -54,12 +54,12 @@ export default function ApprovalRejectComponent({ data, callbackUrl }) {
                         icon={<CheckIcon />}
                     />
                 </DropdownMenuItem>
-                <div className="px-2 flex justify-between">
+                <DropdownMenuItem className="space-x-2 flex justify-between">
                     <RejectDonor
                         donorId={data.id}
                         className="w-full btn-error"
                     />
-                </div>
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );

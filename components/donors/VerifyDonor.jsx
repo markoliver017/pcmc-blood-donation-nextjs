@@ -83,17 +83,19 @@ export default function VerifyDonor({
 
     return (
         <Form {...form}>
-            <form
-                className={`${formClassName}`}
-                onSubmit={handleSubmit(onSubmit)}
-            >
+            <form className={`${formClassName}`}>
                 <button
-                    type="submit"
+                    type="button"
                     disabled={isPending}
                     className={clsx(
                         "hover:bg-neutral-800 hover:text-green-300",
                         className
                     )}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleSubmit(onSubmit)();
+                    }}
                 >
                     {isPending ? (
                         <>

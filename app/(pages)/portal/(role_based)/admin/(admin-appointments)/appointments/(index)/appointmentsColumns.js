@@ -10,10 +10,11 @@ import {
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
-import { Command, Eye, MoreHorizontal } from "lucide-react";
+import { Check, Command, Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { formatFormalName } from "@lib/utils/string.utils";
 import moment from "moment";
+import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 
 function calculateAge(dateOfBirth) {
     const today = new Date();
@@ -57,7 +58,24 @@ export const appointmentsColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Name" />
         ),
-        cell: ({ getValue }) => <span>{getValue()}</span>,
+        cell: ({ getValue, row }) => {
+            const data = row.original;
+            const isVerified = data.donor.is_data_verified;
+            return (
+                <>
+                    <span>{getValue()}</span>{" "}
+                    {isVerified ? (
+                        <div className="badge badge-success p-1 rounded-full">
+                            <Check className="h-4 w-4" />
+                        </div>
+                    ) : (
+                        <div className="badge badge-warning p-1 rounded-full">
+                            <QuestionMarkCircledIcon className="h-4 w-4" />
+                        </div>
+                    )}
+                </>
+            );
+        },
         filterFn: "columnFilter",
     },
     {
@@ -129,9 +147,25 @@ export const appointmentsColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Blood Type" />
         ),
-        cell: ({ getValue }) => {
+        cell: ({ getValue, row }) => {
             const blood_type = getValue();
-            if (blood_type) return <span>{formatFormalName(blood_type)}</span>;
+            const data = row.original;
+            const isVerified = data?.donor?.is_bloodtype_verified;
+            if (blood_type) {
+                return (
+                    <>
+                        {isVerified ? (
+                            <div className="badge badge-success p-2 rounded-full">
+                                {formatFormalName(blood_type)}
+                            </div>
+                        ) : (
+                            <div className="badge badge-warning p-2 rounded-full">
+                                {formatFormalName(blood_type)}
+                            </div>
+                        )}
+                    </>
+                );
+            }
             return "Not Specified";
         },
         filterFn: "columnFilter",

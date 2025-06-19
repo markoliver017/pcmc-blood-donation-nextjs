@@ -18,6 +18,8 @@ import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import { bookAppointmentSchema } from "@lib/zod/bloodDonationSchema";
 import { Op } from "sequelize";
+import { getLastDonationDateBooked } from "./donorAction";
+import moment from "moment";
 
 export async function bookDonorAppointment(formData) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -40,6 +42,7 @@ export async function bookDonorAppointment(formData) {
             message: "Database Error: Agency not found or inactive.",
         };
     }
+
     formData.donor_id = donor.id;
 
     const parsed = bookAppointmentSchema.safeParse(formData);
@@ -57,21 +60,54 @@ export async function bookDonorAppointment(formData) {
 
     const { data } = parsed;
 
+    const event = await BloodDonationEvent.findByPk(data?.event_id, {
+        attributes: ["id", "date"],
+    });
+
+    if (!event) {
+        return {
+            success: false,
+            message: "Database Error: Event not found or inactive.",
+        };
+    }
+
+    let latestDonationDate = null;
+
+    const latestDonation = await getLastDonationDateBooked(user?.id);
+    if (latestDonation.success) {
+        latestDonationDate = latestDonation?.data?.last_donation_date;
+    }
+
+    if (latestDonationDate) {
+        console.log("latestDonationDate", latestDonationDate);
+        const lastDate = moment(latestDonationDate).startOf("day");
+        const nextEligibleDate = lastDate.clone().add(90, "days");
+
+        const eventDate = moment(event?.date).startOf("day");
+        console.log(
+            "nextEligibleDate",
+            nextEligibleDate.format("MMM DD, YYYY")
+        );
+        console.log("eventDate", eventDate.format("MMM DD, YYYY"));
+        if (nextEligibleDate.isAfter(eventDate)) {
+            return {
+                success: false,
+                message: `You cannot book an appointment before 90 days from your last donation date (${moment(
+                    latestDonationDate
+                ).format("MMM DD, YYYY")}).`,
+            };
+        }
+    }
+
     const existingAppointment = await DonorAppointmentInfo.findOne({
         attributes: ["id"],
         where: {
             donor_id: donor?.id,
+            event_id: data?.event_id,
             status: {
                 [Op.not]: "cancelled",
             },
             // time_schedule_id: data?.time_schedule_id,
-        },
-        include: {
-            model: EventTimeSchedule,
-            as: "time_schedule",
-            where: {
-                blood_donation_event_id: data?.event_id,
-            },
         },
     });
 
@@ -81,6 +117,7 @@ export async function bookDonorAppointment(formData) {
             message: `You have already booked an appointment for this event. Kindly go navigate to your "My Appointments" tab.`,
         };
     }
+
     const timeSchedule = await EventTimeSchedule.findByPk(
         data.time_schedule_id,
         {
@@ -280,9 +317,7 @@ export async function getAllAppointmentsByDonor() {
     }
 }
 
-
 export async function getBookedAppointmentById(id) {
-
     const session = await auth();
     if (!session) {
         return {
@@ -323,7 +358,7 @@ export async function getBookedAppointmentById(id) {
                     include: {
                         model: DonorAppointmentInfo,
                         as: "donors",
-                        where: { id: id }
+                        where: { id: id },
                     },
                 },
                 {
@@ -340,7 +375,16 @@ export async function getBookedAppointmentById(id) {
                 {
                     model: Agency,
                     as: "agency",
-                    attributes: ["head_id", "name", "contact_number", "address", "barangay", "city_municipality", "province", "agency_address"],
+                    attributes: [
+                        "head_id",
+                        "name",
+                        "contact_number",
+                        "address",
+                        "barangay",
+                        "city_municipality",
+                        "province",
+                        "agency_address",
+                    ],
                 },
             ],
         });

@@ -58,7 +58,7 @@ export default async function RootLayout({ children, organizers }) {
             >
                 <Providers>
                     <ToastContainer />
-                    <Preloader />
+                    {/* <Preloader /> */}
                     <ThemeProvider>
                         <div className="flex dark:bg-black dark:text-slate-100">
                             <Sidebar currentUser={currentUser} />

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function HostDonorsLayout({ children, modal }) {
+export default function AdminDonorsLayout({ children, modal }) {
     return (
         <>
             {modal}

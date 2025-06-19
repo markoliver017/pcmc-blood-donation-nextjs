@@ -11,7 +11,7 @@ import { redirect, usePathname } from "next/navigation";
 
 const Sidebar = ({ currentUser }) => {
     const { status, data } = useSession();
-    // console.log("sidebar session data", data);
+    console.log("sidebar session data", data);
 
     if (status == "authenticated") {
         currentUser = data.user;

@@ -411,7 +411,7 @@ export default function NewDonorForm({ role_name, agency_id }) {
                                                             <label className="flex-items-center mt-2 text-2xl italic">
                                                                 <input
                                                                     type="checkbox"
-                                                                    className="checkbox checkbox-primary border shadow"
+                                                                    className="checkbox border-orange-600 bg-orange-500 checked:border-green-500 checked:bg-green-400 checked:text-green-800"
                                                                     {...field}
                                                                     checked={
                                                                         field.value
@@ -443,7 +443,7 @@ export default function NewDonorForm({ role_name, agency_id }) {
                                                             <label className="flex-items-center mt-2 text-2xl italic">
                                                                 <input
                                                                     type="checkbox"
-                                                                    className="checkbox checkbox-primary border shadow"
+                                                                    className="checkbox border-orange-600 bg-orange-500 checked:border-green-500 checked:bg-green-400 checked:text-green-800"
                                                                     {...field}
                                                                     checked={
                                                                         field.value

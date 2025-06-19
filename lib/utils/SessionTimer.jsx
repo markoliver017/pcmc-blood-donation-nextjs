@@ -8,8 +8,7 @@ import React from "react";
 export default function SessionTimer() {
     const { data: session, status } = useSession();
 
-    if (status === "loading")
-        return <div className="skeleton h-32 w-full"></div>;
+    if (status === "loading") return <div className="skeleton h-12 w-64"></div>;
 
     return (
         <div className="badge p-3 mt-2 badge-warning">

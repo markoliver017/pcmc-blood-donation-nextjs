@@ -92,10 +92,13 @@ export default function RejectDonor({ donorId, className = "btn-error" }) {
         >
             <DialogTrigger
                 className={`btn ${className} hover:btn-neutral hover:text-red-400`}
+                onClick={(e) => {
+                    e.stopPropagation();
+                }}
             >
                 <XIcon /> Reject
             </DialogTrigger>
-            <DialogContentNoX>
+            <DialogContentNoX onClick={(e) => e.stopPropagation()}>
                 <ToastContainer />
                 <DialogHeader>
                     <div

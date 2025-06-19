@@ -24,7 +24,6 @@ import {
     donorSchema,
     donorStatusSchema,
     donorWithVerifiedSchema,
-    userWithDonorSchema,
 } from "@lib/zod/donorSchema";
 import { donorBasicInformationSchema } from "@lib/zod/userSchema";
 import moment from "moment";
@@ -364,8 +363,8 @@ export async function updateUserDonor(user_id, formData) {
     if (!session) {
         return {
             success: false,
-            message: "You are not authorized to access this request."
-        }
+            message: "You are not authorized to access this request.",
+        };
     }
     const { user } = session;
     formData.updated_by = user.id;
@@ -398,15 +397,15 @@ export async function updateUserDonor(user_id, formData) {
     if (!donor) {
         return {
             success: false,
-            message: "Database Error: Donor ID was not found."
-        }
+            message: "Database Error: Donor ID was not found.",
+        };
     }
 
     if (!userDonor) {
         return {
             success: false,
-            message: "Database Error: User ID was not found."
-        }
+            message: "Database Error: User ID was not found.",
+        };
     }
 
     const transaction = await sequelize.transaction();
@@ -439,8 +438,8 @@ export async function updateUserDonor(user_id, formData) {
 
         return {
             success: false,
-            message: extractErrorMessage(err)
-        }
+            message: extractErrorMessage(err),
+        };
     }
 }
 
@@ -699,45 +698,18 @@ export async function getDonorDashboard() {
             },
         });
 
-        const latestDonation = await DonorAppointmentInfo.findOne({
-            where: {
-                donor_id: donor.id,
-                status: {
-                    [Op.in]: ["registered", "donated"],
-                },
-            },
-            include: [
-                {
-                    model: EventTimeSchedule,
-                    as: "time_schedule",
-                    attributes: ["id"],
-                    include: [
-                        {
-                            model: BloodDonationEvent,
-                            as: "event",
-                            attributes: ["date"],
-                        },
-                    ],
-                },
-            ],
-            order: [
-                [
-                    { model: EventTimeSchedule, as: "time_schedule" },
-                    { model: BloodDonationEvent, as: "event" },
-                    "date",
-                    "DESC",
-                ],
-            ],
-        });
-
         let nextEligibleDate = null;
         let daysRemaining = null;
         let donateNow = true;
+        let latestDonationDate = null;
 
-        if (latestDonation?.time_schedule?.event?.date) {
-            const lastDate = moment(
-                latestDonation.time_schedule.event.date
-            ).startOf("day");
+        const latestDonation = await getLastDonationDateBooked(user?.id);
+        if (latestDonation.success) {
+            latestDonationDate = latestDonation?.data?.last_donation_date;
+        }
+
+        if (latestDonationDate) {
+            const lastDate = moment(latestDonationDate).startOf("day");
 
             // Add 90 days
             nextEligibleDate = lastDate.clone().add(90, "days");
@@ -762,9 +734,10 @@ export async function getDonorDashboard() {
                 next_eligible_date: donateNow
                     ? "Donate now"
                     : nextEligibleDate
-                        ? moment(nextEligibleDate).format("MMM.DD, YYYY")
-                        : nextEligibleDate,
+                    ? moment(nextEligibleDate).format("MMM.DD, YYYY")
+                    : null,
                 days_remaining: donateNow ? 0 : daysRemaining,
+                latest_donation_date: latestDonationDate,
             },
         };
     } catch (err) {
@@ -773,6 +746,85 @@ export async function getDonorDashboard() {
             success: false,
             type: "server",
             message: err.message || "Unknown error",
+        };
+    }
+}
+
+export async function getLastDonationDateBooked(user_id) {
+    if (!user_id) {
+        const session = await auth();
+        if (!session) {
+            return {
+                success: false,
+                message: "You are not authorized to access this page.",
+            };
+        }
+
+        const { user } = session;
+        user_id = user?.id;
+    }
+
+    try {
+        // Verify donor exists
+        const donor = await Donor.findOne({
+            where: { user_id },
+            attributes: ["id"],
+        });
+
+        if (!donor) {
+            return {
+                success: false,
+                message: "You are not authorized to access this page.",
+            };
+        }
+
+        // Fetch latest donation date
+        const latestDonation = await DonorAppointmentInfo.findOne({
+            where: {
+                donor_id: donor.id,
+                status: {
+                    [Op.in]: ["registered", "donated"],
+                },
+            },
+            attributes: [], // No direct attributes from DonorAppointmentInfo
+            include: [
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedule",
+                    attributes: [],
+                    include: [
+                        {
+                            model: BloodDonationEvent,
+                            as: "event",
+                            attributes: ["date"],
+                        },
+                    ],
+                },
+            ],
+            order: [
+                [
+                    { model: EventTimeSchedule, as: "time_schedule" },
+                    { model: BloodDonationEvent, as: "event" },
+                    "date",
+                    "DESC",
+                ],
+            ],
+            raw: true, // Optimize by returning plain object
+        });
+
+        return {
+            success: true,
+            data: {
+                last_donation_date:
+                    latestDonation?.["time_schedule.event.date"] || null,
+            },
+        };
+    } catch (err) {
+        logErrorToFile(err, "getLastDonationDateBooked ERROR"); // Your error logging function
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
         };
     }
 }

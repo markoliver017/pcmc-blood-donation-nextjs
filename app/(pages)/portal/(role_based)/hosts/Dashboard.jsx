@@ -141,7 +141,7 @@ export default function Dashboard() {
                                     href="/portal/hosts/events?tab=for-approval"
                                     className="btn btn-block justify-between text-orange-700 dark:text-orange-400"
                                 >
-                                    Events For Approval
+                                    Awaiting Approval
                                     <FaArrowRight />
                                 </Link>
                                 <div className="max-h-60 overflow-y-auto mt-2 space-y-2 p-2">

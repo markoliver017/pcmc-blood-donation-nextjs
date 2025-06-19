@@ -1,18 +1,7 @@
 "use client";
 import React from "react";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "@components/ui/card";
-import {
-    Building,
-    Calendar,
-
-    Droplet,
-    UserCircle,
-} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+import { Building, Calendar, Droplet, UserCircle } from "lucide-react";
 
 import { useQuery } from "@tanstack/react-query";
 
@@ -25,8 +14,12 @@ import { InfoCircledIcon } from "@radix-ui/react-icons";
 import AppointmentDonorProfileTabForm from "@components/admin/AppointmentDonorProfileTabForm";
 import SideComponent from "./SideComponent";
 import { MdOutlineBloodtype } from "react-icons/md";
+import AppointmentBloodTypeTabForm from "@components/admin/AppointmentBloodTypeTabForm";
+import { FaArrowLeft } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 export default function TabsComponent({ appointmentId }) {
+    const router = useRouter();
     const { data: appointment, isLoading } = useQuery({
         queryKey: ["appointment", appointmentId],
         queryFn: async () => {
@@ -38,7 +31,12 @@ export default function TabsComponent({ appointmentId }) {
         },
     });
 
-    if (isLoading) return <Skeleton_user />;
+    if (isLoading)
+        return (
+            <div className="p-5">
+                <Skeleton_user />
+            </div>
+        );
 
     const schedule = appointment?.time_schedule;
     const event = schedule?.event;
@@ -49,8 +47,9 @@ export default function TabsComponent({ appointmentId }) {
         <>
             <WrapperHeadMain
                 icon={<Calendar />}
-                pageTitle={`Appointment Details - ${user?.full_name || user?.name
-                    }`}
+                pageTitle={`Appointment Details - ${
+                    user?.full_name || user?.name
+                }`}
                 breadcrumbs={[
                     {
                         path: "/portal/admin/appointments",
@@ -65,33 +64,29 @@ export default function TabsComponent({ appointmentId }) {
                 ]}
             />
             <div className="w-full h-full md:w-95/100 mx-auto p-2 grid grid-cols-1 md:grid-cols-4 gap-2">
-
                 {/* Side panel: Event Details */}
                 <SideComponent appointment={appointment} />
                 {/* Right Panel: Main Content Area */}
-                <Card className="col-span-1 md:col-span-3 bg-gray-100 p-2">
+                <Card className="col-span-1 md:col-span-3 bg-gray-100 p-2 relative">
                     <CardHeader className="text-2xl font-bold hidden">
                         <CardTitle>Account Information</CardTitle>
                     </CardHeader>
                     <CardContent id="form-modal" className="p-0">
+                        <button
+                            onClick={() => router.back()}
+                            type="button"
+                            className="btn absolute right-5"
+                        >
+                            <FaArrowLeft />{" "}
+                            <span className="hidden md:inline-block">Back</span>
+                        </button>
                         <Tabs defaultValue="donor-profile" className="p-2">
                             <TabsList className="flex flex-wrap">
-                                {/* <TabsTrigger
-                                    value="user-profile"
-                                    title="User Profile"
-                                >
-                                    <User2Icon />
-                                    <span className="hidden md:inline-block">
-                                        User Profile
-                                    </span>
-                                </TabsTrigger> */}
                                 <TabsTrigger
                                     value="donor-profile"
                                     title="Donor's Profile"
-
                                 >
                                     <div className="flex items-center gap-1 px-3 ring-offset-1 rounded-t-lg hover:ring">
-
                                         <UserCircle />
                                         <span className="hidden md:inline-block">
                                             Donor's Profile
@@ -109,32 +104,13 @@ export default function TabsComponent({ appointmentId }) {
                                         </span>
                                     </div>
                                 </TabsTrigger>
-
-
                             </TabsList>
                             <TabsContent className="p-2" value="donor-profile">
                                 <AppointmentDonorProfileTabForm donor={donor} />
                             </TabsContent>
-                            {/* 
-                    <TabsContent className="p-2" value="blood-type">
-                        <BloodTypeTabForm
-                            donor={{
-                                id: userData?.donor?.id,
-                                blood_type_id: userData?.donor?.blood_type_id,
-                                is_bloodtype_verified:
-                                    userData?.donor?.is_bloodtype_verified,
-                            }}
-                        />
-                    </TabsContent>
-                    <TabsContent value="user-credentials">
-                        <UserChangePassword userQuery={userQuery} />
-                    </TabsContent>
-                    <TabsContent value="agency-details">
-                        <UpdateAgencyProfile
-                            agency={agency}
-                            isReadOnly={true}
-                        />
-                    </TabsContent> */}
+                            <TabsContent className="p-2" value="blood-type">
+                                <AppointmentBloodTypeTabForm donor={donor} />
+                            </TabsContent>
                         </Tabs>
                         {/* <div>
                             <h1>Appointment Data</h1>

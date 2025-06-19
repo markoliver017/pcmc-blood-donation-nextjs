@@ -4,7 +4,17 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
 import { Card } from "@components/ui/card";
-import { Calendar, Eye, Flag, Phone, ShieldCheck, ShieldOff, Text, Upload, Users } from "lucide-react";
+import {
+    Calendar,
+    Eye,
+    Flag,
+    Phone,
+    ShieldCheck,
+    ShieldOff,
+    Text,
+    Upload,
+    Users,
+} from "lucide-react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -40,6 +50,7 @@ import { updateDonor, updateUserDonor } from "@/action/donorAction";
 import Image from "next/image";
 import { BiMaleFemale } from "react-icons/bi";
 import { IoInformationCircle } from "react-icons/io5";
+import ImagePreviewComponent from "@components/reusable_components/ImagePreviewComponent";
 
 const fetchCountries = async () => {
     const res = await fetch(process.env.NEXT_PUBLIC_NATIONALITY_API_URL);
@@ -295,8 +306,9 @@ export default function AppointmentDonorProfileTabForm({ donor }) {
 
                 <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
                     <div className="flex items-center gap-5">
-
-                        <h1 className="text-xl font-bold flex-items-center"><IoInformationCircle /> Basic Information:</h1>
+                        <h1 className="text-xl font-bold flex-items-center">
+                            <IoInformationCircle /> Basic Information:
+                        </h1>
                         {donor?.is_data_verified ? (
                             <div className="badge badge-success text-md gap-2 p-4 font-semibold">
                                 <ShieldCheck className="w-4 h-4" />
@@ -308,8 +320,6 @@ export default function AppointmentDonorProfileTabForm({ donor }) {
                                 Not Verified
                             </div>
                         )}
-
-
                     </div>
                     <div className="pl-4 space-y-5">
                         <FormField
@@ -635,13 +645,14 @@ export default function AppointmentDonorProfileTabForm({ donor }) {
                         />
                         <div className="absolute inset-0 flex items-center justify-center z-10">
                             {donor?.id_url ? (
-                                <Link
-                                    href={donor?.id_url}
-                                    target="_blank"
-                                    className="btn btn-ghost btn-wide bg-white bg-opacity-80"
-                                >
-                                    View
-                                </Link>
+                                // <Link
+                                //     href={donor?.id_url}
+                                //     target="_blank"
+                                //     className="btn btn-ghost btn-wide bg-white bg-opacity-80"
+                                // >
+                                //     View
+                                // </Link>
+                                <ImagePreviewComponent imgSrc={donor?.id_url} />
                             ) : (
                                 <div className="btn btn-ghost btn-wide bg-white text-red-600 bg-opacity-80">
                                     No Uploaded Govt ID
@@ -752,11 +763,9 @@ export default function AppointmentDonorProfileTabForm({ donor }) {
                                 <label className="flex items-center gap-4">
                                     <input
                                         type="checkbox"
-                                        className="checkbox border-indigo-600 bg-indigo-500 checked:border-green-500 checked:bg-green-400 checked:text-green-800"
+                                        className="checkbox border-orange-600 bg-orange-500 checked:border-green-500 checked:bg-green-400 checked:text-green-800"
                                         {...field}
-                                        checked={
-                                            field.value
-                                        }
+                                        checked={field.value}
                                     />
                                     <span className="flex items-center gap-2 text-xl font-semibold text-gray-800 dark:text-gray-300">
                                         Verify Donor's Information
@@ -764,7 +773,8 @@ export default function AppointmentDonorProfileTabForm({ donor }) {
                                     </span>
                                 </label>
                                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                                    Mark this checkbox if you’ve confirmed all donor details.
+                                    Mark this checkbox if you’ve confirmed all
+                                    donor details.
                                 </p>
                                 <FormMessage />
                             </FormItem>

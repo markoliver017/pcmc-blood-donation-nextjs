@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
 import { Card } from "@components/ui/card";
-import { CheckCircle, Users } from "lucide-react";
+import { CheckCircle, ShieldCheck, ShieldOff, Users } from "lucide-react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -13,19 +13,17 @@ import notify from "@components/ui/notify";
 
 import FieldError from "@components/form/FieldError";
 import clsx from "clsx";
-import { Form, FormField, FormItem } from "@components/ui/form";
+import { Form, FormField, FormItem, FormMessage } from "@components/ui/form";
 import { GrUpdate } from "react-icons/gr";
 import FormLogger from "@lib/utils/FormLogger";
-import { bloodtypeSchema } from "@lib/zod/donorSchema";
 import Skeleton_form from "@components/ui/Skeleton_form";
 
 import { getBloodTypes } from "@/action/bloodTypeAction";
 import { updateDonorBloodType } from "@/action/donorAction";
 import { MdBloodtype } from "react-icons/md";
-import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
-import { id } from "date-fns/locale";
+import { bloodtypeSchema } from "@lib/zod/donorSchema";
 
-export default function BloodTypeTabForm({ donor }) {
+export default function AppointmentBloodTypeTabForm({ donor }) {
     const queryClient = useQueryClient();
 
     const { data: bloodTypes, isLoading: bloodTypesLoading } = useQuery({
@@ -37,6 +35,7 @@ export default function BloodTypeTabForm({ donor }) {
     const { mutate, isPending } = useMutation({
         mutationFn: async (formData) => {
             const res = await updateDonorBloodType(formData);
+
             if (!res.success) {
                 throw res;
             }
@@ -44,10 +43,10 @@ export default function BloodTypeTabForm({ donor }) {
         },
         onSuccess: (data) => {
             // Invalidate the posts query to refetch the updated list
-            queryClient.invalidateQueries({ queryKey: ["user"] });
+            queryClient.invalidateQueries({ queryKey: ["appointment"] });
             SweetAlert({
                 title: "Donor's Blood Type",
-                text: "Your Blood type has been successfully  updated.",
+                text: "The Donor's Blood type has been successfully  updated.",
                 icon: "success",
                 confirmButtonText: "Okay",
             });
@@ -97,7 +96,7 @@ export default function BloodTypeTabForm({ donor }) {
         mode: "onChange",
         resolver: zodResolver(bloodtypeSchema),
         defaultValues: {
-            id: donor?.id,
+            ...donor,
             blood_type_id: donor?.blood_type_id
                 ? donor?.blood_type_id.toString()
                 : "",
@@ -105,18 +104,17 @@ export default function BloodTypeTabForm({ donor }) {
     });
 
     const {
-        watch,
         control,
+        watch,
         handleSubmit,
-
         formState: { errors, isDirty },
     } = form;
 
     const onSubmit = async (formData) => {
         SweetAlert({
-            title: "Confirmation",
-            text: "Update your Blood type?",
-            icon: "question",
+            title: "Update Blood Type",
+            text: "You're about to update the donor's blood type. Do you want to continue?",
+            icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Confirm",
             cancelButtonText: "Cancel",
@@ -152,7 +150,7 @@ export default function BloodTypeTabForm({ donor }) {
 
                                         <label
                                             className={clsx(
-                                                "input flex-1 w-full min-w-40 mt-1",
+                                                "input flex-1 w-full min-w-40",
                                                 errors?.blood_type_id
                                                     ? "input-error"
                                                     : "input-info"
@@ -182,17 +180,41 @@ export default function BloodTypeTabForm({ donor }) {
                                         </label>
                                         {donor?.is_bloodtype_verified ? (
                                             <div className="badge badge-success px-2 py-5">
-                                                <CheckCircle />
+                                                <ShieldCheck />
                                                 Verified
                                             </div>
                                         ) : (
                                             <div className="badge badge-warning px-2 py-5">
-                                                <QuestionMarkCircledIcon /> Not
-                                                Verified
+                                                <ShieldOff /> Not Verified
                                             </div>
                                         )}
                                     </div>
                                     <FieldError field={errors?.blood_type_id} />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={control}
+                            name="is_bloodtype_verified"
+                            render={({ field }) => (
+                                <FormItem className="pt-10 pl-5 md:pl-15">
+                                    <label className="flex items-center gap-4">
+                                        <input
+                                            type="checkbox"
+                                            className="checkbox border-orange-600 bg-orange-500 checked:border-green-500 checked:bg-green-400 checked:text-green-800"
+                                            {...field}
+                                            checked={field.value}
+                                        />
+                                        <span className="flex items-center gap-2 text-xl font-semibold text-gray-800 dark:text-gray-300">
+                                            Verify Donor's Blood Type
+                                            <ShieldCheck className="w-5 h-5 text-primary" />
+                                        </span>
+                                    </label>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                                        Mark this checkbox if you’ve confirmed
+                                        the blood type of the donor.
+                                    </p>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -212,7 +234,7 @@ export default function BloodTypeTabForm({ donor }) {
                                 ) : (
                                     <>
                                         <GrUpdate />
-                                        Update
+                                        Save Changes
                                     </>
                                 )}
                             </button>

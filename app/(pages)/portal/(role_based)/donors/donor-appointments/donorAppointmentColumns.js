@@ -10,7 +10,7 @@ import {
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
-import { Command, Eye, MoreHorizontal, Pencil } from "lucide-react";
+import { Command, Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { formatFormalName } from "@lib/utils/string.utils";
 import moment from "moment";
@@ -33,7 +33,6 @@ export const donorAppointmentColumns = [
             const data = row.original;
             return (
                 <div>
-
                     <Image
                         src={data.time_schedule.event.file_url || "/logo-1.png"}
                         className="flex-none rounded-4xl"
@@ -50,7 +49,9 @@ export const donorAppointmentColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Event Title" />
         ),
-        cell: ({ getValue }) => <span className="italic text-lg">{getValue()}</span>,
+        cell: ({ getValue }) => (
+            <span className="italic text-lg">{getValue()}</span>
+        ),
         filterFn: "columnFilter",
     },
     {
@@ -58,7 +59,11 @@ export const donorAppointmentColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Event Date" />
         ),
-        cell: ({ getValue }) => <span className="font-semibold">{moment(getValue()).format("MMM DD, YYYY")}</span>,
+        cell: ({ getValue }) => (
+            <span className="font-semibold">
+                {moment(getValue()).format("MMM DD, YYYY")}
+            </span>
+        ),
         filterFn: "columnFilter",
     },
     {
@@ -95,7 +100,11 @@ export const donorAppointmentColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Address" />
         ),
-        cell: ({ getValue }) => <div title={getValue()} className="max-w-64 truncate">{formatFormalName(getValue())}</div>,
+        cell: ({ getValue }) => (
+            <div title={getValue()} className="max-w-64 truncate">
+                {formatFormalName(getValue())}
+            </div>
+        ),
         filterFn: "columnFilter",
     },
     // {
