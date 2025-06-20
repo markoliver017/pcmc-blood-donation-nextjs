@@ -20,6 +20,7 @@ import { bookAppointmentSchema } from "@lib/zod/bloodDonationSchema";
 import { Op } from "sequelize";
 import { getLastDonationDateBooked } from "./donorAction";
 import moment from "moment";
+import { appointmentDetailsSchema } from "@lib/zod/appointmentSchema";
 
 export async function bookDonorAppointment(formData) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -397,6 +398,77 @@ export async function getBookedAppointmentById(id) {
         return {
             success: false,
             type: "server",
+            message: extractErrorMessage(err),
+        };
+    }
+}
+
+export async function updateAppointmentDetails(appointmentId, formData) {
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+    const { user } = session;
+    formData.updated_by = user.id;
+
+    const parsed = appointmentDetailsSchema.safeParse(formData);
+
+    if (!parsed.success) {
+        const errorObj = parsed?.error?.flatten().fieldErrors;
+
+        return {
+            success: false,
+            type: "validation",
+            message:
+                "Validation Error: Please try again. If the issue persists, contact your administrator for assistance.",
+            errorObj,
+            errorArr: Object.values(errorObj).flat(),
+        };
+    }
+
+    // return parsed;
+
+    const { data } = parsed;
+
+    const appointment = await DonorAppointmentInfo.findByPk(appointmentId);
+
+    if (!appointment) {
+        return {
+            success: false,
+            message: "Database Error: Appointment ID was not found.",
+        };
+    }
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        const updatedAppointment = await appointment.update(data, {
+            transaction,
+        });
+
+        await transaction.commit();
+
+        await logAuditTrail({
+            userId: user.id,
+            controller: "donorAppointmentAction",
+            action: "donorAppointmentDetails",
+            details: `The Donor's appointment details has been successfully updated. ID#: ${updatedAppointment.id}`,
+        });
+
+        return {
+            success: true,
+            message:
+                "The Donor's appointment details has been successfully updated.",
+        };
+    } catch (err) {
+        logErrorToFile(err, "donorAppointmentDetails");
+        await transaction.rollback();
+
+        return {
+            success: false,
             message: extractErrorMessage(err),
         };
     }

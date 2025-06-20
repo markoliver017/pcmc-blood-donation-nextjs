@@ -241,7 +241,7 @@ export default function AppointmentDonorProfileTabForm({ donor }) {
         <Form {...form}>
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="space-y-2 flex flex-col gap-2 justify-center"
+                className="flex flex-col gap-2 justify-center"
             >
                 <div className="w-full md:w-min hidden">
                     <FormField

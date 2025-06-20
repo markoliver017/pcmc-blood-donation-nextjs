@@ -9,7 +9,7 @@ import {
     getAllEventOptions,
 } from "@/action/adminEventAction";
 import { appointmentsColumns } from "./appointmentsColumns";
-import { AppointmentDatatable } from "@components/admin/AppointmentDatatable";
+import { AppointmentDatatable } from "@components/admin/appointments/AppointmentDatatable";
 
 export default function AppointmentList() {
     const queryClient = useQueryClient();

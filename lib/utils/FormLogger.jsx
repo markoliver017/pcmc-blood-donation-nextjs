@@ -5,9 +5,16 @@ export default function FormLogger({
     watch = null, //RHF
     errors = null, //RHF
     data = null, //useMutation
+    initialData = null, //useMutation
 }) {
     return (
         <div className="card-body border my-5 dark:text-white">
+            {initialData && (
+                <>
+                    <div className="font-bold">Initial data</div>
+                    <pre>{JSON.stringify(initialData, null, 3)}</pre>
+                </>
+            )}
             {watch && (
                 <>
                     <div className="font-bold">Watch FormData:</div>

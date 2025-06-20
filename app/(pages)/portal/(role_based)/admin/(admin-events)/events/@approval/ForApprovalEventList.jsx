@@ -64,7 +64,7 @@ export default function ForApprovalEventList({ target = "" }) {
     return (
         <>
             {events.map((event) => (
-                <Link href={`/portal/admin/events/${event.id}`}>
+                <Link key={event.id} href={`/portal/admin/events/${event.id}`}>
                     <Card
                         key={event.id}
                         className="hover:ring-2 hover:ring-blue-400 group transition shadow-lg/40"

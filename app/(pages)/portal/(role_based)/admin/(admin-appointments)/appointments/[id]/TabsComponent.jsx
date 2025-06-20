@@ -1,7 +1,14 @@
 "use client";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { Building, Calendar, Droplet, UserCircle } from "lucide-react";
+import {
+    Building,
+    Calendar,
+    Droplet,
+    Text,
+    UserCircle,
+    UserSearch,
+} from "lucide-react";
 
 import { useQuery } from "@tanstack/react-query";
 
@@ -11,12 +18,15 @@ import { getAppointmentById } from "@/action/adminEventAction";
 
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
-import AppointmentDonorProfileTabForm from "@components/admin/AppointmentDonorProfileTabForm";
+import AppointmentDonorProfileTabForm from "@components/admin/appointments/AppointmentDonorProfileTabForm";
+import AppointmentBloodTypeTabForm from "@components/admin/appointments/AppointmentBloodTypeTabForm";
 import SideComponent from "./SideComponent";
-import { MdOutlineBloodtype } from "react-icons/md";
-import AppointmentBloodTypeTabForm from "@components/admin/AppointmentBloodTypeTabForm";
+import { MdDetails, MdOutlineBloodtype } from "react-icons/md";
 import { FaArrowLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import AppointmentStatusTabForm from "@components/admin/appointments/AppointmentStatusTabForm";
+import { IoInformationCircle } from "react-icons/io5";
+import AppointmentPhysicalExamTabForm from "@components/admin/appointments/AppointmentPhysicalExamTabForm";
 
 export default function TabsComponent({ appointmentId }) {
     const router = useRouter();
@@ -80,6 +90,7 @@ export default function TabsComponent({ appointmentId }) {
                             <FaArrowLeft />{" "}
                             <span className="hidden md:inline-block">Back</span>
                         </button>
+
                         <Tabs defaultValue="donor-profile" className="p-2">
                             <TabsList className="flex flex-wrap">
                                 <TabsTrigger
@@ -93,25 +104,116 @@ export default function TabsComponent({ appointmentId }) {
                                         </span>
                                     </div>
                                 </TabsTrigger>
+
                                 <TabsTrigger
-                                    value="blood-type"
-                                    title="Blood Type"
+                                    value="blood-donation-details"
+                                    title="Blood Donation Details"
                                 >
                                     <div className="flex items-center gap-1 px-3 ring-offset-1 rounded-t-lg hover:ring">
-                                        <MdOutlineBloodtype className="h-6 w-6" />
+                                        <Text className="h-6 w-6" />
                                         <span className="hidden md:inline-block">
-                                            Blood Type
+                                            Blood Donation Details
                                         </span>
                                     </div>
                                 </TabsTrigger>
                             </TabsList>
                             <TabsContent className="p-2" value="donor-profile">
-                                <AppointmentDonorProfileTabForm donor={donor} />
+                                <Tabs
+                                    defaultValue="basic-info"
+                                    className="flex gap-4 p-2"
+                                >
+                                    {/* Vertical Tabs List */}
+                                    <TabsList className="flex flex-col w-56 max-h-60 rounded-lg border bg-muted p-2">
+                                        <TabsTrigger
+                                            value="basic-info"
+                                            title="Basic Information"
+                                        >
+                                            <div className="flex items-center justify-center rounded gap-2 p-2 w-full border-b">
+                                                <IoInformationCircle />
+                                                <span className="hidden md:inline-block">
+                                                    User Profile
+                                                </span>
+                                            </div>
+                                        </TabsTrigger>
+                                        <TabsTrigger
+                                            value="blood-type"
+                                            title="Blood Type"
+                                        >
+                                            <div className="flex items-center justify-center rounded gap-2 p-2 w-full border-b">
+                                                <MdOutlineBloodtype className="h-6 w-6" />
+                                                <span className="hidden md:inline-block">
+                                                    Blood Type
+                                                </span>
+                                            </div>
+                                        </TabsTrigger>
+                                    </TabsList>
+
+                                    {/* Tab Panels */}
+                                    <div className="flex-1 border rounded-lg p-2 bg-white shadow-sm">
+                                        <TabsContent value="basic-info">
+                                            <AppointmentDonorProfileTabForm
+                                                donor={donor}
+                                            />
+                                        </TabsContent>
+                                        <TabsContent value="blood-type">
+                                            <AppointmentBloodTypeTabForm
+                                                donor={donor}
+                                            />
+                                        </TabsContent>
+                                    </div>
+                                </Tabs>
                             </TabsContent>
-                            <TabsContent className="p-2" value="blood-type">
-                                <AppointmentBloodTypeTabForm donor={donor} />
+                            <TabsContent
+                                className="py-2"
+                                value="blood-donation-details"
+                            >
+                                <Tabs
+                                    defaultValue="appointment-info"
+                                    className="flex gap-2 p-1"
+                                >
+                                    {/* Vertical Tabs List */}
+                                    <TabsList className="flex flex-col w-56 max-h-60 rounded-lg border bg-muted p-2">
+                                        <TabsTrigger
+                                            value="appointment-info"
+                                            title="Appointment Information"
+                                        >
+                                            <div className="flex items-center justify-center rounded gap-2 p-2 w-full border-b">
+                                                <IoInformationCircle />
+                                                <span className="hidden md:inline-block">
+                                                    Appointment Details
+                                                </span>
+                                            </div>
+                                        </TabsTrigger>
+                                        <TabsTrigger
+                                            value="physical-exam"
+                                            title="Physical Examination"
+                                        >
+                                            <div className="flex items-center justify-center rounded gap-2 p-2 w-full border-b">
+                                                <UserSearch />
+                                                <span className="hidden md:inline-block">
+                                                    Physical Examination
+                                                </span>
+                                            </div>
+                                        </TabsTrigger>
+                                    </TabsList>
+
+                                    {/* Tab Panels */}
+                                    <div className="flex-1 border rounded-lg p-2 bg-white shadow-sm">
+                                        <TabsContent value="appointment-info">
+                                            <AppointmentStatusTabForm
+                                                appointment={appointment}
+                                            />
+                                        </TabsContent>
+                                        <TabsContent value="physical-exam">
+                                            <AppointmentPhysicalExamTabForm
+                                                appointment={appointment}
+                                            />
+                                        </TabsContent>
+                                    </div>
+                                </Tabs>
                             </TabsContent>
                         </Tabs>
+
                         {/* <div>
                             <h1>Appointment Data</h1>
                             <pre>{JSON.stringify(appointment, null, 3)}</pre>
