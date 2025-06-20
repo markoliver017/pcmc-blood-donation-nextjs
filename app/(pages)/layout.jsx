@@ -15,6 +15,7 @@ import { auth } from "@lib/auth";
 import TansactProviders from "@components/layout/TansactProvider";
 import ModalComponent from "./ModalComponent";
 import { headers } from "next/headers";
+import clsx from "clsx";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -35,13 +36,15 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children, organizers }) {
-    const session = await auth();
-    // console.log("Root layout", session);
+    // const session = await auth();
 
+    let className = "";
     const headerList = await headers();
     const pathname = headerList.get("x-current-path");
-    // console.log("Root layout pathname", pathname);
-
+    console.log("Root layout pathname", pathname);
+    if (pathname.startsWith("/portal")) {
+        className = "bg-[url('/change-role-bg.jpg')] bg-cover bg-center bg-no-repeat bg-fixed";
+    }
     let currentUser = {
         name: "Bonnie Green",
         email: "admin@email.com",
@@ -64,13 +67,16 @@ export default async function RootLayout({ children, organizers }) {
                             <Sidebar currentUser={currentUser} />
                             <div
                                 id="main-container"
-                                className="flex flex-col flex-1 h-screen overflow-y-scroll"
+                                className={clsx("flex flex-col flex-1 h-screen overflow-y-scroll",
+                                    className
+                                )}
                             >
+
                                 <HeaderNav currentUser={currentUser} />
                                 {/* <Header /> */}
                                 {/* <WrapperHead /> */}
                                 <TansactProviders>
-                                    <main className="flex-1">
+                                    <main className="flex-1 ">
                                         {/* <ModalComponent>{modal}</ModalComponent> */}
                                         {organizers}
                                         {children}

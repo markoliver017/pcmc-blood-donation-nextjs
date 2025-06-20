@@ -24,18 +24,18 @@ export default function MainSlider() {
     };
     return (
         <>
-            <div className="relative">
+            <div className="relative z-10">
                 <Slider className="h-full" {...settings}>
-                    <div className="h-140 relative">
+                    <div className="h-140 relative group transition-all duration-700 hover:cursor-pointer">
                         <Image
                             src="/slide-main.jpg"
-                            className="h-full w-full object-cover"
+                            className="h-full w-full object-fill rounded-2xl group-hover:scale-105 transition-transform duration-700"
                             width={1500}
                             height={1000}
                             alt="Philippine Children's Medical Center"
                             title="Philippine Children's Medical Center"
                         />
-                        <p className="absolute top-10 left-10 z-50 bg-white/70 p-4 rounded w-120 dark:text-slate-600">
+                        <p className="absolute top-10 left-10 z-50 bg-white/70 p-4 rounded w-120 dark:text-slate-600 transform transition-transform duration-700 group-hover:-translate-x-2 group-hover:scale-[1.01]">
                             Lorem ipsum dolor sit amet consectetur adipisicing
                             elit. Odit temporibus laborum cum inventore
                             molestiae nisi tempora nostrum rem praesentium ea
@@ -53,30 +53,30 @@ export default function MainSlider() {
                             quibusdam!
                         </p>
                     </div>
-                    <div className="h-140 relative">
+                    <div className="h-140 relative group  transition-all duration-700 hover:cursor-pointer">
                         <Image
                             src="/slide-main-1.jpg"
-                            className="h-full w-full object-fit"
+                            className="h-full w-full object-fill rounded-2xl group-hover:scale-105 transition-transform duration-700"
                             width={1500}
                             height={1000}
                             alt="Philippine Children's Medical Center"
                             title="Philippine Children's Medical Center"
                         />
                     </div>
-                    <div className="h-140 relative">
+                    <div className="h-140 relative group  transition-all duration-700 hover:cursor-pointer">
                         <Image
                             src="/slide-main-3.png"
-                            className="h-full w-full object-fit"
+                            className="h-full w-full object-fill rounded-2xl group-hover:scale-105 transition-transform duration-700"
                             width={1500}
                             height={1000}
                             alt="Philippine Children's Medical Center"
                             title="Philippine Children's Medical Center"
                         />
                     </div>
-                    <div className="h-140 relative">
+                    <div className="h-140 relative group  transition-all duration-700 hover:cursor-pointer">
                         <Image
                             src="/slide-main-4.png"
-                            className="h-full w-full object-fit"
+                            className="h-full w-full object-fill rounded-2xl group-hover:scale-105 transition-transform duration-700"
                             width={1500}
                             height={1000}
                             alt="Philippine Children's Medical Center"
@@ -84,10 +84,10 @@ export default function MainSlider() {
                         />
                     </div>
 
-                    <div className="h-140 relative">
+                    <div className="h-140 relative group  transition-all duration-700 hover:cursor-pointer">
                         <Image
                             src="/slide-main-2.png"
-                            className="h-full w-full object-fit"
+                            className="h-full w-full object-fill rounded-2xl group-hover:scale-105 transition-transform duration-700"
                             width={1920}
                             height={654}
                             alt="Philippine Children's Medical Center"

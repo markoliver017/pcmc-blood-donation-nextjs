@@ -35,6 +35,38 @@
     display: none !important;
 }
 
+/* slideer */
+
+.slick-dots li button:before {
+    color: #333 !important;
+    /* for light mode */
+    opacity: 0.75;
+}
+
+.dark .slick-dots li button:before {
+    color: #fff !important;
+    /* for dark mode */
+}
+
+.slick-dots li.slick-active button:before {
+    color: #2563eb !important;
+    /* Tailwind blue-600 */
+    opacity: 1;
+}
+
+.slick-prev:before,
+.slick-next:before {
+    font-size: 30px;
+    color: #333 !important;
+    /* Light mode arrows */
+}
+
+.dark .slick-prev:before,
+.dark .slick-next:before {
+    color: #fff !important;
+    /* Dark mode arrows */
+}
+
 /* @custom-variant dark (&:is(.dark *)); */
 
 @theme inline {

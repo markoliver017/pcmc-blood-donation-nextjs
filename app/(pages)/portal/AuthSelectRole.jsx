@@ -22,10 +22,14 @@ export default function AuthSelectRole({ roles }) {
             </div>
         );
 
+    // min-h-[calc(100vh-255px)]
     return (
         <>
             <LoadingModal imgSrc="/loader_3.gif" isLoading={isLoading} />
-            <div className="flex flex-col items-center justify-center px-4 p-5 ">
+            {/* Page Wrapper with Relative Positioning */}
+            {/* <div className="relative w-full min-h-screen overflow-hidden"> */}
+            <div className="flex flex-col items-center justify-center px-4 p-5  min-h-[calc(100vh-185px)]">
+                {/* <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" /> */}
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-bold mb-2">
                         Select Your Role

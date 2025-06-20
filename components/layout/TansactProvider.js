@@ -14,7 +14,7 @@ export default function TansactProviders({ children }) {
     return (
         <QueryClientProvider client={queryClient}>
             {children}
-            <div className="flex justify-end">
+            <div className="absolute bottom-25 right-5">
                 <button
                     className="btn btn-ghost w-max"
                     onClick={() => setIsOpen(!isOpen)}

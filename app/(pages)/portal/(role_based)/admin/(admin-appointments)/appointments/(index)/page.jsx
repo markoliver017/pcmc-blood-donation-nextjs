@@ -16,7 +16,7 @@ export default function Page() {
                     },
                 ]}
             />
-            <div className="w-full h-full 2xl:px-5 mx-auto shadow-lg space-y-3">
+            <div className="w-full h-full 2xl:px-5 mx-auto shadow-lg mt-5  space-y-3">
                 <AppointmentList />
             </div>
         </>

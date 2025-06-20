@@ -66,7 +66,7 @@ export default function Dashboard() {
             {/* Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card className="w-full">
-                    <CardHeader className="flex flex-col items-center gap-2">
+                    <CardHeader className="flex flex-col items-center gap-2 ">
                         <CardTitle className="text-2xl flex items-center gap-2">
                             <Users className="w-6 h-6" />
                             Registered Donors
