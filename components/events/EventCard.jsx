@@ -22,20 +22,35 @@ import {
 } from "@components/ui/table";
 import BookEventButton from "@components/donors/BookEventButton";
 import clsx from "clsx";
+import CancelEventButton from "@components/donors/CancelEventButton";
 
 export default function EventCard({
     event,
     onLoad = () => { },
     onFinish = () => { },
     isRegistrationOpen = false,
-    isAlreadyBooked = () => true
+    isAlreadyBooked = () => true,
+    appointmentId = null,
 }) {
+
+    let isCancellable = true;
+    const dateNow = moment();
+    const eventDate = moment(event?.date, "YYYY-MM-DD");
+
+    if (eventDate.isSameOrBefore(dateNow, 'day')) {
+        isCancellable = false;
+        console.log("Event is today or has passed");
+    } else {
+        console.log("Event is in the future");
+    }
+
     return (
         <Card
             key={event.id}
             className=" hover:ring-2 hover:ring-blue-400 group transition shadow-lg/40 max-h-max"
         >
             <CardHeader>
+
                 <CardTitle className="flex flex-wrap justify-between">
                     <span className="text-xl">{event.title}</span>
                     <span className="flex-items-center text-sm text-slate-600 dark:text-slate-300">
@@ -151,7 +166,7 @@ export default function EventCard({
                                         "font-semibold text-green-700 dark:text-green-600",
                                         isAlreadyBooked(sched.id) &&
                                         "font-bold italic text-slate-400 dark:text-slate-400",
-                                        sched.status == "closed" &&
+                                        sched.status === "closed" &&
                                         "font-medium italic text-red-400 dark:text-red-500"
                                     )}
                                 >
@@ -194,7 +209,8 @@ export default function EventCard({
                                                     </span>
                                                 )}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="flex-items-center flex-wrap">
+
                                                 <BookEventButton
                                                     event={event}
                                                     schedule={sched}
@@ -208,6 +224,16 @@ export default function EventCard({
                                                     onLoad={onLoad}
                                                     onFinish={onFinish}
                                                 />
+                                                {isCancellable && isAlreadyBooked(sched.id) && (
+
+                                                    <CancelEventButton
+                                                        event={event}
+                                                        schedule={sched}
+                                                        appointmentId={appointmentId}
+                                                        onLoad={onLoad}
+                                                        onFinish={onFinish}
+                                                    />
+                                                )}
                                             </TableCell>
                                         </>
                                     )}

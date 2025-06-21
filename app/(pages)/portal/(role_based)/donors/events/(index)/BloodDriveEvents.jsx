@@ -86,7 +86,7 @@ export default function BloodDriveEvents() {
                 <pre>
                     {JSON.stringify(
                         donorBookedAppointmentError?.message ||
-                            donorBookedAppointmentError,
+                        donorBookedAppointmentError,
                         null,
                         2
                     )}
@@ -99,7 +99,7 @@ export default function BloodDriveEvents() {
                 <pre>
                     {JSON.stringify(
                         donorBookedAppointmentError?.message ||
-                            donorBookedAppointmentError,
+                        donorBookedAppointmentError,
                         null,
                         2
                     )}
@@ -146,12 +146,15 @@ export default function BloodDriveEvents() {
                                         event.registration_status == "ongoing"
                                 )}
                                 booked_appointments={donor_booked_appointments.map(
-                                    (appointnments) =>
-                                        appointnments.time_schedule_id
+                                    (app) => ({
+                                        appointment_id: app.id,
+                                        time_schedule_id: app.time_schedule_id,
+                                        event_id: app.event_id
+                                    })
                                 )}
-                                isRegistrationOpen={true}
                                 onLoad={onLoad}
                                 onFinish={handleProcessedBooking}
+                                isRegistrationOpen={true}
                             />
                         </div>
                     </div>
@@ -193,7 +196,6 @@ export default function BloodDriveEvents() {
                                     (appointnments) =>
                                         appointnments.time_schedule_id
                                 )}
-                                isRegistrationOpen={false}
                                 onLoad={onLoad}
                                 onFinish={handleProcessedBooking}
                             />

@@ -34,7 +34,7 @@ export default function Preloader() {
                         }}
                     />
                     {/* Website Logo at top-left */}
-                    <motion.div className="absolute top-14 left-4 w-120 h-120 z-10"
+                    {/* <motion.div className="absolute top-14 left-4 w-120 h-120 z-10"
                         initial={{ scale: 1 }}
                         animate={{ scale: [1, 1.1, 1] }}
                         transition={{ repeat: Infinity, duration: 1 }}
@@ -45,21 +45,21 @@ export default function Preloader() {
                             fill
                             className="object-contain"
                         />
-                    </motion.div>
+                    </motion.div> */}
                     {/* Animated Loading Text */}
 
                     <motion.div
-                        className="text-2xl w-full h-full flex justify-center items-center font-semibold text-blue-500 relative"
-                    // initial={{ scale: 1 }}
-                    // animate={{ scale: [1, 1.1, 1] }}
-                    // transition={{ repeat: Infinity, duration: 1 }}
+                        className="text-2xl w-96 h-96  flex justify-center items-center font-semibold text-blue-500 relative "
+                        initial={{ scale: 1 }}
+                        animate={{ scale: [1, 1.1, 1] }}
+                        transition={{ repeat: Infinity, duration: 1 }}
                     >
                         Loading...
                         <Image
-                            src="/loader_main.gif"
+                            src="/loader-main.jpg"
                             // width={2500}
                             // height={1000}
-                            // className="opacity-50"
+                            className="object-cover rounded-full shadow-2xl/90 shadow-red-700"
                             alt="Logo"
                             fill
                             priority

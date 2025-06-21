@@ -147,12 +147,13 @@ export async function bookDonorAppointment(formData) {
         }
     );
 
-    const timeSchedTotalDonors = timeSchedule?.dataValues?.donorCount || 0;
     if (!timeSchedule)
         return {
             success: false,
             message: "Database Error: Time Schedule not found or not active.",
         };
+
+    const timeSchedTotalDonors = timeSchedule?.dataValues?.donorCount || 0;
 
     if (
         timeSchedule?.status !== "open" ||
@@ -192,6 +193,109 @@ export async function bookDonorAppointment(formData) {
             success: true,
             data: newAppointment.get({ plain: true }),
         };
+    } catch (err) {
+        console.log(">>>>>>>>>>>>>>>>>>>>>", err);
+        logErrorToFile(err, "BOOK DONOR APPOINTMENT");
+        await transaction.rollback();
+
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
+        };
+    }
+}
+
+export async function cancelDonorAppointment(appointmentId, formData) {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+    const { user } = session;
+
+    const appointment = await DonorAppointmentInfo.findByPk(appointmentId);
+
+    if (!appointment) {
+        return {
+            success: false,
+            message: "Unable to find the appointment. It may be inactive or does not exist.",
+        };
+    }
+    const dateNow = moment().format("YYYY-MM-DD");
+    if (dateNow >= appointment.date) {
+        return {
+            success: false,
+            message: "You cannot cancel an appointment on or after the scheduled event date.",
+        };
+    }
+
+    const timeSchedule = await EventTimeSchedule.findByPk(
+        formData.time_schedule_id,
+        {
+            attributes: {
+                include: [
+                    [
+                        sequelize.fn("COUNT", sequelize.col("donors.id")),
+                        "donorCount",
+                    ],
+                ],
+            },
+            include: [
+                {
+                    model: DonorAppointmentInfo,
+                    as: "donors",
+                    attributes: [], // Don't fetch full donor records
+                    required: false,
+                    where: {
+                        status: {
+                            [Op.not]: "cancelled",
+                        },
+                    },
+                },
+            ],
+            group: ["EventTimeSchedule.id"],
+        }
+    );
+
+    if (!timeSchedule)
+        return {
+            success: false,
+            message: "Database Error: Time Schedule not found or not active.",
+        };
+
+    const timeSchedTotalDonors = timeSchedule?.dataValues?.donorCount || 0;
+
+    const transaction = await sequelize.transaction();
+    console.log("formData", formData)
+    try {
+        const updatedData = await appointment.update(formData, {
+            transaction,
+        });
+        if (
+            timeSchedule?.status == "closed" && timeSchedule?.has_limit &&
+            timeSchedule?.max_limit > timeSchedTotalDonors - 1
+        ) {
+            await timeSchedule.update({ status: "open" }, { transaction });
+        }
+
+        await transaction.commit();
+
+        await logAuditTrail({
+            userId: user.id,
+            controller: "donorAppointmentAction",
+            action: "CANCEL DONOR APPOINTMENT",
+            details: `The donor's appointment has been successfully cancelled. ID#: ${updatedData?.id}`,
+        });
+
+        return {
+            success: true,
+            message: `The donor's appointment has been successfully cancelled. ID#: ${updatedData?.id}`
+        };
+
     } catch (err) {
         console.log(">>>>>>>>>>>>>>>>>>>>>", err);
         logErrorToFile(err, "BOOK DONOR APPOINTMENT");
@@ -342,57 +446,64 @@ export async function getBookedAppointmentById(id) {
     }
 
     try {
-        const event = await BloodDonationEvent.findOne({
+        const appointment = await DonorAppointmentInfo.findByPk(id, {
             include: [
                 {
-                    model: EventTimeSchedule,
-                    as: "time_schedules",
-                    attributes: [
-                        "id",
-                        "blood_donation_event_id",
-                        "time_start",
-                        "time_end",
-                        "status",
-                        "has_limit",
-                        "max_limit",
-                    ],
-                    include: {
-                        model: DonorAppointmentInfo,
-                        as: "donors",
-                        where: { id: id },
-                    },
+                    model: BloodDonationEvent,
+                    as: "event",
+                    include: [
+                        {
+                            model: EventTimeSchedule,
+                            as: "time_schedules",
+                            attributes: [
+                                "id",
+                                "blood_donation_event_id",
+                                "time_start",
+                                "time_end",
+                                "status",
+                                "has_limit",
+                                "max_limit",
+                            ],
+                            include: {
+                                model: DonorAppointmentInfo,
+                                as: "donors",
+                                where: { id: id },
+                            },
+                        },
+                        {
+                            model: User,
+                            as: "requester",
+                            attributes: ["id", "name", "email", "image"],
+                            include: {
+                                model: AgencyCoordinator,
+                                as: "coordinator",
+                                attributes: ["contact_number"],
+                                required: false,
+                            },
+                        },
+                        {
+                            model: Agency,
+                            as: "agency",
+                            attributes: [
+                                "head_id",
+                                "name",
+                                "contact_number",
+                                "address",
+                                "barangay",
+                                "city_municipality",
+                                "province",
+                                "agency_address",
+                            ],
+                        },
+                    ]
                 },
-                {
-                    model: User,
-                    as: "requester",
-                    attributes: ["id", "name", "email", "image"],
-                    include: {
-                        model: AgencyCoordinator,
-                        as: "coordinator",
-                        attributes: ["contact_number"],
-                        required: false,
-                    },
-                },
-                {
-                    model: Agency,
-                    as: "agency",
-                    attributes: [
-                        "head_id",
-                        "name",
-                        "contact_number",
-                        "address",
-                        "barangay",
-                        "city_municipality",
-                        "province",
-                        "agency_address",
-                    ],
-                },
+
             ],
         });
 
-        const formattedEvent = formatSeqObj(event);
+        const formattedData = formatSeqObj(appointment);
 
-        return { success: true, data: formattedEvent };
+        return { success: true, data: formattedData };
     } catch (err) {
         logErrorToFile(err, "getBookedAppointmentById ERROR");
         return {

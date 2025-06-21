@@ -16,6 +16,7 @@ import TansactProviders from "@components/layout/TansactProvider";
 import ModalComponent from "./ModalComponent";
 import { headers } from "next/headers";
 import clsx from "clsx";
+import MainWrapper from "@components/layout/MainWrapper";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -38,13 +39,13 @@ export const metadata = {
 export default async function RootLayout({ children, organizers }) {
     // const session = await auth();
 
-    let className = "";
-    const headerList = await headers();
-    const pathname = headerList.get("x-current-path");
-    console.log("Root layout pathname", pathname);
-    if (pathname.startsWith("/portal")) {
-        className = "bg-[url('/change-role-bg.jpg')] bg-cover bg-center bg-no-repeat bg-fixed";
-    }
+    // let className = "";
+    // const headerList = await headers();
+    // const pathname = headerList.get("x-current-path");
+    // // console.log("Root layout pathname", pathname);
+    // if (pathname.startsWith("/portal/change-role")) {
+    //     className = "bg-[url('/change-role-bg.jpg')] bg-cover bg-center bg-no-repeat bg-fixed";
+    // }
     let currentUser = {
         name: "Bonnie Green",
         email: "admin@email.com",
@@ -61,17 +62,17 @@ export default async function RootLayout({ children, organizers }) {
             >
                 <Providers>
                     <ToastContainer />
-                    {/* <Preloader /> */}
                     <ThemeProvider>
                         <div className="flex dark:bg-black dark:text-slate-100">
                             <Sidebar currentUser={currentUser} />
-                            <div
+                            {/* <div
                                 id="main-container"
                                 className={clsx("flex flex-col flex-1 h-screen overflow-y-scroll",
-                                    className
+                                className
                                 )}
-                            >
-
+                                > */}
+                            <MainWrapper>
+                                <Preloader />
                                 <HeaderNav currentUser={currentUser} />
                                 {/* <Header /> */}
                                 {/* <WrapperHead /> */}
@@ -83,7 +84,10 @@ export default async function RootLayout({ children, organizers }) {
                                     </main>
                                 </TansactProviders>
                                 <Footer />
-                            </div>
+
+                            </MainWrapper>
+
+                            {/* </div> */}
                         </div>
                     </ThemeProvider>
                 </Providers>

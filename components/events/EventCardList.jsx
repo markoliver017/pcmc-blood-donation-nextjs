@@ -9,7 +9,19 @@ export default function EventCardList({
     onFinish,
     isRegistrationOpen = false,
 }) {
-    const isAlreadyBooked = (id) => booked_appointments.includes(id);
+    const isAlreadyBooked = (schedId) => {
+        return booked_appointments.find(
+            (appointment) => appointment.time_schedule_id === schedId
+        );
+    };
+
+    const getAppointmentId = (eventId) => {
+        const data = booked_appointments.find(
+            (appointment) => appointment.event_id === eventId
+        );
+        if (data) return data.appointment_id;
+        return null;
+    };
 
     if (!events || events.length === 0)
         return (
@@ -34,6 +46,7 @@ export default function EventCardList({
                     onFinish={onFinish}
                     isRegistrationOpen={isRegistrationOpen}
                     isAlreadyBooked={isAlreadyBooked}
+                    appointmentId={getAppointmentId(event.id)}
                 />
             ))}
         </>

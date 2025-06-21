@@ -28,13 +28,13 @@ export default function AuthSelectRole({ roles }) {
             <LoadingModal imgSrc="/loader_3.gif" isLoading={isLoading} />
             {/* Page Wrapper with Relative Positioning */}
             {/* <div className="relative w-full min-h-screen overflow-hidden"> */}
-            <div className="flex flex-col items-center justify-center px-4 p-5  min-h-[calc(100vh-185px)]">
+            <div className="flex flex-col items-center justify-center px-4 p-5  min-h-[calc(100vh-185px)] dark:text-black">
                 {/* <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" /> */}
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-bold mb-2">
                         Select Your Role
                     </h1>
-                    <p className="text-gray-500">
+                    <p className="text-gray-500 font-medium">
                         Choose which role you'd like to log in as
                     </p>
                     <SessionTimer />
@@ -50,9 +50,9 @@ export default function AuthSelectRole({ roles }) {
                             }}
                             className="w-full"
                         >
-                            <Card className="hover:shadow-lg border border-gray-200 hover:border-blue-500 transition-all duration-300">
+                            <Card className="hover:shadow-lg border border-gray-200 hover:border-blue-500 transition-all duration-300 bg-white/65 dark:bg-black/65 ">
                                 <CardHeader className="text-center">
-                                    <CardTitle className="flex flex-col items-center justify-center gap-3 text-xl font-semibold text-gray-700">
+                                    <CardTitle className="flex flex-col items-center justify-center gap-3 text-xl font-semibold text-gray-700 dark:text-slate-200">
                                         <span className="text-blue-500 text-4xl">
                                             {React.createElement(
                                                 reactIconsFa[role.icon]

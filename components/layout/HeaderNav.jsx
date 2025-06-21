@@ -43,7 +43,7 @@ const HeaderNav = ({ currentUser }) => {
         currentUser = data.user;
     }
 
-    console.log("currentUser", currentUser)
+    // console.log("currentUser", currentUser)
 
     const handleLogOut = () => {
         SweetAlert({
@@ -205,7 +205,7 @@ const HeaderNav = ({ currentUser }) => {
                             </li>
                         </ul>
                     </nav>
-                    <div className="">
+                    <div className="hidden">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button
@@ -242,15 +242,18 @@ const HeaderNav = ({ currentUser }) => {
                                         Profile
                                     </Link>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    <Link
-                                        href="/portal/change-role"
-                                        className="w-full hover:ring rounded flex-items-center "
-                                    >
-                                        <FileSliders className="h-4" />
-                                        Change Role
-                                    </Link>
-                                </DropdownMenuItem>
+                                {currentUser?.roles && currentUser?.roles?.length > 1 && (
+                                    <DropdownMenuItem>
+                                        <Link
+                                            href="/portal/change-role"
+                                            className="w-full hover:ring rounded flex-items-center "
+                                        >
+                                            <FileSliders className="h-4" />
+                                            Change Role
+                                        </Link>
+                                    </DropdownMenuItem>
+
+                                )}
                                 <DropdownMenuItem>
                                     <Link
                                         href="/portal/admin/users"
@@ -276,7 +279,7 @@ const HeaderNav = ({ currentUser }) => {
                     {!isLoggedIn ? (
                         <LoginDrawer />
                     ) : (
-                        <DropdownMenu>
+                        <DropdownMenu className="text-xl">
                             <DropdownMenuTrigger asChild>
                                 <Button
                                     variant="ghost"
@@ -299,21 +302,24 @@ const HeaderNav = ({ currentUser }) => {
                                     <div className="flex flex-col">
                                         <span>{currentUser.name}</span>
                                         <span className="text-xs font-light">{currentUser?.role_name}</span>
+                                        <span className="text-xs font-light">
+                                            {currentUser.email}
+                                        </span>
                                     </div>
                                 </DropdownMenuLabel>
-                                <DropdownMenuLabel className="flex items-center space-x-2">
-                                    <MdEmail className="w-3 h-3" />
-                                    <span className="text-xs font-light">
-                                        {currentUser.email}
-                                    </span>
 
-                                </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
 
                                 <Link href={`/portal`}>
                                     <DropdownMenuItem className="flex items-center space-x-2">
                                         <HomeIcon className="w-4 h-4" />
                                         <span>Dashboard</span>
+                                    </DropdownMenuItem>
+                                </Link>
+                                <Link href="/portal/change-role">
+                                    <DropdownMenuItem className="flex items-center space-x-2">
+                                        <FileSliders className="w-4 h-4" />
+                                        <span>Change Role</span>
                                     </DropdownMenuItem>
                                 </Link>
                                 <DropdownMenuItem
@@ -327,7 +333,7 @@ const HeaderNav = ({ currentUser }) => {
                         </DropdownMenu>
                     )}
                 </div>
-            </header>
+            </header >
         </>
     );
 };

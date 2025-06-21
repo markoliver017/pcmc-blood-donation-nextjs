@@ -81,7 +81,7 @@ export default function ConfirmTable({ watch }) {
 
                 <tr className="hover:bg-base-300">
                     <th width="20%">Civil Status:</th>
-                    <td>{watch("civil_status")}</td>
+                    <td>{formatFormalName(watch("civil_status") || "Single")}</td>
                 </tr>
 
                 <tr className="hover:bg-base-300">
