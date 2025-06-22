@@ -112,7 +112,7 @@ export default function Dashboard() {
                         </h2>
                         <Link
                             className="btn btn-primary btn-outline"
-                            href="/portal/admin/events"
+                            href="/portal/admin/blood-donations"
                         >
                             View List
                         </Link>

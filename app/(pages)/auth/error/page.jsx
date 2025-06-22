@@ -4,8 +4,10 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from 'next/navigation';
 import AuthErrorClient from "./AuthErrorClient";
 
+import { Suspense } from 'react'
 
-export default function AuthErrorPage() {
+
+function Search() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -29,4 +31,13 @@ export default function AuthErrorPage() {
     }
 
     return <AuthErrorClient message={error} />
+}
+
+
+export default function AuthErrorPage() {
+    return (
+        <Suspense>
+            <Search />
+        </Suspense>
+    )
 }

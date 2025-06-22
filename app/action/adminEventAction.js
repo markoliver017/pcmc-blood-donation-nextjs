@@ -5,11 +5,13 @@ import { logErrorToFile } from "@lib/logger.server";
 import {
     Agency,
     AgencyCoordinator,
+    BloodDonationCollection,
     BloodDonationEvent,
     BloodType,
     Donor,
     DonorAppointmentInfo,
     EventTimeSchedule,
+    PhysicalExamination,
     sequelize,
     User,
 } from "@lib/models";
@@ -41,13 +43,7 @@ export async function getAdminDashboard() {
             },
         });
 
-        const donationCount = await DonorAppointmentInfo.count({
-            where: {
-                status: {
-                    [Op.in]: ["registered", "donated"],
-                },
-            },
-        });
+        const donationCount = await BloodDonationCollection.count();
 
         const agencyCount = await Agency.count({
             where: {
@@ -890,6 +886,7 @@ export async function getAppointmentById(id) {
         const appointment = await DonorAppointmentInfo.findOne({
             where: { id },
             include: [
+
                 {
                     model: EventTimeSchedule,
                     as: "time_schedule",
@@ -942,6 +939,16 @@ export async function getAppointmentById(id) {
                             },
                         },
                     ],
+                },
+                {
+                    model: PhysicalExamination,
+                    as: "physical_exam",
+                    required: false,
+                },
+                {
+                    model: BloodDonationCollection,
+                    as: "blood_collection",
+                    required: false,
                 },
             ],
         });

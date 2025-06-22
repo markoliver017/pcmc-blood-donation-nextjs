@@ -9,12 +9,12 @@ export default function AuthErrorClient({ error = "Authentication Error", messag
 
     return (
         <>
-            <div className=" flex justify-center items-center bg-gray-200 dark:bg-gray-900 px-4 bg-[url('/401-error.png')] bg-no-repeat bg-center bg-cover">
-                {/* <div
+            <div className=" flex justify-center min-h-[calc(100vh-185px)] items-center bg-gray-200 dark:bg-gray-900 px-4 bg-[url('/401-error.png')] bg-no-repeat bg-center bg-cover">
+                <div
                     className="absolute inset-0 bg-[url('/401-error.png')] bg-no-repeat bg-center bg-cover pointer-events-none z-0 shadow-2xl rounded"
                     aria-hidden="true"
-                /> */}
-                <Card className="w-full max-w-lg shadow-2xl border border-red-300 dark:border-red-200 my-10 opacity-85">
+                />
+                <Card className="w-full max-w-lg shadow-2xl border border-red-300 dark:border-red-200 my-10 z-1">
                     <CardHeader className="text-center">
                         <CardTitle className="flex items-center justify-center text-red-600 dark:text-red-400 text-xl gap-2">
                             <AlertCircle className="h-6 w-6" />

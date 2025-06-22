@@ -9,12 +9,7 @@ export default function FormLogger({
 }) {
     return (
         <div className="card-body border my-5 dark:text-white">
-            {initialData && (
-                <>
-                    <div className="font-bold">Initial data</div>
-                    <pre>{JSON.stringify(initialData, null, 3)}</pre>
-                </>
-            )}
+
             {watch && (
                 <>
                     <div className="font-bold">Watch FormData:</div>
@@ -26,6 +21,12 @@ export default function FormLogger({
                 <>
                     <div className="font-bold text-red-500">Form Errors: </div>
                     <pre>{JSON.stringify(errors, null, 3)}</pre>
+                </>
+            )}
+            {initialData && (
+                <>
+                    <div className="font-bold">Initial data</div>
+                    <pre>{JSON.stringify(initialData, null, 3)}</pre>
                 </>
             )}
 

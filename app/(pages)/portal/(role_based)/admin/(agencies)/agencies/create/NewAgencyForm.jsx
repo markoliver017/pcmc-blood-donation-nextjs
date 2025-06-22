@@ -46,6 +46,7 @@ import { agencySchema } from "@lib/zod/agencySchema";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import ImagePreviewComponent from "@components/reusable_components/ImagePreviewComponent";
 
 export default function NewAgencyForm({
     title = "Create New Agency",
@@ -306,14 +307,17 @@ export default function NewAgencyForm({
                                             Agency Avatar
                                         </label>
                                         {uploaded_avatar && (
-                                            <button
-                                                onClick={() =>
-                                                    resetField("file")
-                                                }
-                                                className="btn btn-ghost"
-                                            >
-                                                Clear
-                                            </button>
+                                            <div className="flex-items-center">
+                                                <ImagePreviewComponent imgSrc={avatar} />
+                                                <button
+                                                    onClick={() =>
+                                                        resetField("file")
+                                                    }
+                                                    className="btn btn-ghost"
+                                                >
+                                                    Clear
+                                                </button>
+                                            </div>
                                         )}
                                         <FormMessage />
                                     </FormItem>

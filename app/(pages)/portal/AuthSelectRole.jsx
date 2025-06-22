@@ -40,7 +40,7 @@ export default function AuthSelectRole({ roles }) {
                     <SessionTimer />
                 </div>
 
-                <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl w-full">
+                <div className="flex flex-wrap justify-center gap-6 max-w-5xl w-full mx-auto">
                     {roles.map((role, i) => (
                         <motion.div
                             key={i}
@@ -48,7 +48,7 @@ export default function AuthSelectRole({ roles }) {
                                 scale: 1.03,
                                 transition: { duration: 0.3 },
                             }}
-                            className="w-full"
+                            className="w-full md:max-w-96"
                         >
                             <Card className="hover:shadow-lg border border-gray-200 hover:border-blue-500 transition-all duration-300 bg-white/65 dark:bg-black/65 ">
                                 <CardHeader className="text-center">

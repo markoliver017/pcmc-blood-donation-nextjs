@@ -10,7 +10,8 @@ import { fetchluzonDemographics } from "@/action/locationAction";
 import { fetchAgency } from "@/action/agencyAction";
 
 import InterceptModal from "@components/layout/InterceptModal";
-import AgencyUpdateForm from "../../../../agencies/[id]/edit/AgencyUpdateForm";
+import AgencyUpdateForm from "@components/organizers/AgencyUpdateForm";
+
 
 export default async function Page({ params }) {
     const { id: agency_id } = await params;

@@ -198,7 +198,11 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
 
     const { data } = parsed;
 
+    console.log("formData", formData)
+    console.log("parsed data", data)
+
     const appointment = await DonorAppointmentInfo.findByPk(appointmentId);
+
     if (!appointment) {
         return {
             success: false,
@@ -213,9 +217,15 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
             where: { appointment_id: appointmentId },
         });
 
+
         if (!exam) {
+            data.appointment_id = appointment?.id
+            data.donor_id = appointment.donor_id
+            data.event_id = appointment.event_id
+            data.examiner_id = user.id;
             await PhysicalExamination.create(data, { transaction });
         } else {
+            data.updated_by = user.id;
             await exam.update(data, { transaction });
         }
 
@@ -228,11 +238,14 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
             details: `The Donor's physical examination has been successfully submitted. With appointment ID#: ${appointmentId}.`,
         });
 
+
+
         return {
             success: true,
-            message: "Physical Exam has been successfully updated.",
-            data: updatedExam.get({ plain: true }),
+            message: `The Donor's physical examination has been successfully submitted.`,
+            data: data,
         };
+
     } catch (err) {
         logErrorToFile(err, "updatePhysicalExam");
         await transaction.rollback();

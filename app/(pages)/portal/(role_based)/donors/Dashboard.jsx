@@ -126,7 +126,7 @@ export default function Dashboard() {
                     <CardHeader className="flex flex-col items-center gap-2">
                         <CardTitle className="text-2xl flex items-center gap-2">
                             <CalendarArrowUp className="w-6 h-6" />
-                            Next Eligible Donations
+                            Next Eligible Donation
                         </CardTitle>
                         <CardDescription>Days to Go</CardDescription>
                     </CardHeader>

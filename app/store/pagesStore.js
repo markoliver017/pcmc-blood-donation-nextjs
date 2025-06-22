@@ -13,7 +13,7 @@ import {
 import { BiError } from "react-icons/bi";
 import { FaMicrophone } from "react-icons/fa";
 import { GrEmergency } from "react-icons/gr";
-import { MdOutlineBloodtype } from "react-icons/md";
+import { MdBloodtype, MdOutlineBloodtype } from "react-icons/md";
 import { create } from "zustand";
 
 export const usePagesStore = create((set) => ({
@@ -131,6 +131,14 @@ export const usePagesStore = create((set) => ({
             path: "/events",
             icon: <CalendarCheck />,
             roles: ["Admin", "Developer", "Agency Administrator", "Organizer"],
+            is_role_based: true,
+            has_child: false,
+        },
+        {
+            title: "Blood Donations",
+            path: "/blood-donations",
+            icon: <MdBloodtype />,
+            roles: ["Admin"],
             is_role_based: true,
             has_child: false,
         },

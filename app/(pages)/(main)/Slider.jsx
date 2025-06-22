@@ -16,11 +16,11 @@ export default function MainSlider() {
     var settings = {
         dots: true,
         infinite: true,
-        speed: 1000,
+        speed: 5000,
         slidesToShow: 1,
         slidesToScroll: 1,
         autoplay: true, // Add this line
-        autoplaySpeed: 15000,
+        autoplaySpeed: 30000,
     };
     return (
         <>

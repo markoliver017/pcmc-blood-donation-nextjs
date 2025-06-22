@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-query";
 
 import { fetchluzonDemographics } from "@/action/locationAction";
-import AgencyUpdateForm from "./AgencyUpdateForm";
+import AgencyUpdateForm from "../../../../../../../../../components/organizers/AgencyUpdateForm";
 import { fetchAgency } from "@/action/agencyAction";
 
 import Link from "next/link";

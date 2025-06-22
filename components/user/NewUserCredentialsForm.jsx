@@ -1,12 +1,12 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 
 import {
     CardContent,
 
 } from "@components/ui/card";
 
-import { Mail } from "lucide-react";
+import { Eye, EyeClosed, Mail } from "lucide-react";
 import notify from "@components/ui/notify";
 import InlineLabel from "@components/form/InlineLabel";
 // import { useTheme } from "next-themes";
@@ -20,8 +20,10 @@ import { useFormContext } from "react-hook-form";
 import { IoArrowUndoCircle } from "react-icons/io5";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import FormCardComponent from "@components/form/FormCardComponent";
+import { GiSemiClosedEye } from "react-icons/gi";
 
 export default function NewUserCredentialsForm({ details, onNext }) {
+    const [showPassword, setShowPassword] = useState(false);
     const {
         trigger,
         control,
@@ -110,11 +112,25 @@ export default function NewUserCredentialsForm({ details, onNext }) {
                                 >
                                     <MdPassword className="h-3" />
                                     <input
-                                        type="password"
+                                        type={showPassword ? "text" : "password"}
                                         tabIndex={2}
                                         placeholder="Enter your password"
                                         {...field}
                                     />
+                                    <button
+                                        type="button"
+                                        className="btn btn-ghost rounded-full"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setShowPassword(!showPassword)
+                                        }}>
+                                        {showPassword ? (
+                                            <EyeClosed className="cursor-pointer text-slate-700" />
+
+                                        ) : (
+                                            <Eye className="cursor-pointer text-slate-700" />
+                                        )}
+                                    </button>
                                 </label>
                                 <FieldError field={errors?.password} />
                             </FormItem>
@@ -139,11 +155,25 @@ export default function NewUserCredentialsForm({ details, onNext }) {
                                 >
                                     <MdPassword className="h-3" />
                                     <input
-                                        type="password"
+                                        type={showPassword ? "text" : "password"}
                                         tabIndex={3}
                                         placeholder="Re-type your password"
                                         {...field}
                                     />
+                                    <button
+                                        type="button"
+                                        className="btn btn-ghost rounded-full"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setShowPassword(!showPassword)
+                                        }}>
+                                        {showPassword ? (
+                                            <EyeClosed className="cursor-pointer text-slate-700" />
+
+                                        ) : (
+                                            <Eye className="cursor-pointer text-slate-700" />
+                                        )}
+                                    </button>
                                 </label>
                                 <FieldError
                                     field={errors?.password_confirmation}

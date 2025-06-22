@@ -43,7 +43,7 @@ const HeaderNav = ({ currentUser }) => {
         currentUser = data.user;
     }
 
-    // console.log("currentUser", currentUser)
+    console.log("currentUser length", currentUser?.roles?.length)
 
     const handleLogOut = () => {
         SweetAlert({
@@ -316,12 +316,14 @@ const HeaderNav = ({ currentUser }) => {
                                         <span>Dashboard</span>
                                     </DropdownMenuItem>
                                 </Link>
-                                <Link href="/portal/change-role">
-                                    <DropdownMenuItem className="flex items-center space-x-2">
-                                        <FileSliders className="w-4 h-4" />
-                                        <span>Change Role</span>
-                                    </DropdownMenuItem>
-                                </Link>
+                                {currentUser?.roles && currentUser?.roles?.length > 1 && (
+                                    <Link href="/portal/change-role">
+                                        <DropdownMenuItem className="flex items-center space-x-2">
+                                            <FileSliders className="w-4 h-4" />
+                                            <span>Change Role</span>
+                                        </DropdownMenuItem>
+                                    </Link>
+                                )}
                                 <DropdownMenuItem
                                     className="flex items-center space-x-2"
                                     onClick={handleLogOut}

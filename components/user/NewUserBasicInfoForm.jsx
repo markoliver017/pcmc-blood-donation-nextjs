@@ -27,6 +27,7 @@ import { useRouter } from "next/navigation";
 import { GiCancel } from "react-icons/gi";
 import { useFormContext } from "react-hook-form";
 import FormCardComponent from "@components/form/FormCardComponent";
+import ImagePreviewComponent from "@components/reusable_components/ImagePreviewComponent";
 
 export default function NewUserBasicInfoForm({
     children,
@@ -110,14 +111,18 @@ export default function NewUserBasicInfoForm({
                                     className="w-[150px] h-[150px] sm:w-[250px] sm:h-[250px] lg:w-[350px] lg:h-[350px]"
                                 />
                                 {uploaded_avatar ? (
-                                    <button
-                                        onClick={() =>
-                                            resetField("profile_picture")
-                                        }
-                                        className="btn btn-ghost"
-                                    >
-                                        Clear
-                                    </button>
+                                    <div className="flex-items-center justify-center">
+                                        <ImagePreviewComponent imgSrc={avatar} />
+                                        <button
+                                            onClick={() =>
+                                                resetField("profile_picture")
+                                            }
+                                            className="btn btn-ghost"
+                                        >
+                                            Clear
+                                        </button>
+                                    </div>
+
                                 ) : (
                                     <label className="text-center font-semibold italic text-slate-500">
                                         Profile Picture

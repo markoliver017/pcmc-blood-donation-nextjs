@@ -40,6 +40,9 @@ import { PiStool } from "react-icons/pi";
 import { getSingleStyle } from "@/styles/select-styles";
 import { useTheme } from "next-themes";
 import { FaTemperatureHigh } from "react-icons/fa";
+import { physicalExaminationSchema } from "@lib/zod/physicalExaminationSchema";
+import { z } from "zod";
+import { storeUpdatePhysicalExam } from "@/action/physicalExamAction";
 
 export default function AppointmentPhysicalExamTabForm({ appointment }) {
     const { resolvedTheme } = useTheme();
@@ -47,18 +50,18 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
 
     const { data, mutate, isPending } = useMutation({
         mutationFn: async (formData) => {
-            const res = await updateUserDonor(user.id, formData);
+            const res = await storeUpdatePhysicalExam(appointment?.id, formData);
             if (!res.success) {
                 throw res;
             }
-            return res.data;
+            return res;
         },
-        onSuccess: () => {
+        onSuccess: (res) => {
             // Invalidate the posts query to refetch the updated list
             queryClient.invalidateQueries({ queryKey: ["appointment"] });
             SweetAlert({
-                title: "Physical Exam",
-                text: "The Donor's physical exam has been submitted successfully.",
+                title: "Physical Examination",
+                text: res?.message || "Submission successful!",
                 icon: "success",
                 confirmButtonText: "Okay",
             });
@@ -77,10 +80,22 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
         },
     });
 
+    const physicalExam = appointment?.physical_exam;
+
     const form = useForm({
         mode: "onChange",
-        resolver: zodResolver(userWithDonorSchema),
-        defaultValues: appointment,
+        resolver: zodResolver(physicalExaminationSchema),
+        defaultValues: {
+            blood_pressure: physicalExam?.blood_pressure || "",
+            pulse_rate: physicalExam?.pulse_rate || "",
+            hemoglobin_level: physicalExam?.hemoglobin_level || "",
+            weight: physicalExam?.weight || "",
+            temperature: physicalExam?.temperature || "",
+            eligibility_status: physicalExam?.eligibility_status || "",
+            deferral_reason: physicalExam?.deferral_reason || "",
+            remarks: physicalExam?.remarks || "",
+
+        },
     });
 
     const {
@@ -115,6 +130,17 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
             setValue("deferral_reason", "");
         }
     }, [eligibilityStatus]);
+
+    if (!appointment) return <div className="alert alert-error">No appointment found! Please refresh your browser and try again!</div>
+    // const hemoglobinRegex = /^\d+(?:\.\d+)?\/\d+(?:\.\d+)?$/;
+    // const schema = z.object({
+    //     hemoglobin_level: z.string().regex(hemoglobinRegex, {
+    //         message: "Hemoglobin level must be in the format '##.#/##.#'",
+    //     }),
+    // });
+
+    // const result = schema.safeParse({ hemoglobin_level: "135/175" });
+    // console.log("schema.safeParse", result);
 
     return (
         <Form {...form}>
@@ -164,7 +190,7 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                             render={({ field }) => (
                                 <FormItem>
                                     <InlineLabel>
-                                        Pulse Rate: (bpm){" "}
+                                        Pulse Rate: <span className="text-xs text-slate-600">(bpm)</span>{" "}
                                     </InlineLabel>
 
                                     <label
@@ -193,7 +219,7 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                             render={({ field }) => (
                                 <FormItem>
                                     <InlineLabel>
-                                        Hemoglobin Level: (g/dl){" "}
+                                        Hemoglobin Level: <span className="text-xs text-slate-600">(g/dl)</span>{" "}
                                     </InlineLabel>
 
                                     <label
@@ -206,7 +232,7 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                                     >
                                         <ScanHeart className="h-3" />
                                         <input
-                                            type="number"
+                                            type="text"
                                             tabIndex={3}
                                             placeholder="Enter hemoglobin level"
                                             {...field}
@@ -223,7 +249,7 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                             name="weight"
                             render={({ field }) => (
                                 <FormItem>
-                                    <InlineLabel>Weight: (kg) </InlineLabel>
+                                    <InlineLabel>Weight: <span className="text-xs text-slate-600">(kg)</span> </InlineLabel>
 
                                     <label
                                         className={clsx(
@@ -366,7 +392,7 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                                         {...field}
                                     />
                                     <FieldError
-                                        field={errors?.deferral_reason}
+                                        field={errors?.remarks}
                                     />
                                 </FormItem>
                             )}
@@ -393,12 +419,12 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                     </div>
                 </Card>
             </form>
-            <FormLogger
+            {/* <FormLogger
                 watch={watch}
                 errors={errors}
                 initialData={appointment}
                 data={data}
-            />
+            /> */}
         </Form>
     );
 }

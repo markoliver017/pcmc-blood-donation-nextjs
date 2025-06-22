@@ -27,6 +27,7 @@ import {
     CardTitle,
 } from "@components/ui/card";
 import Preloader3 from "@components/layout/Preloader3";
+import ImagePreviewComponent from "@components/reusable_components/ImagePreviewComponent";
 
 export default function AgencyDetailsForm({ details, onNext }) {
     const {
@@ -63,8 +64,8 @@ export default function AgencyDetailsForm({ details, onNext }) {
         !errors?.file && uploaded_avatar
             ? URL.createObjectURL(uploaded_avatar)
             : errors?.file
-            ? "/invalid-file.png"
-            : "/default-agency-logo.png";
+                ? "/invalid-file.png"
+                : "/default-agency-logo.png";
 
     useEffect(() => {
         if (watch("file_url")) setValue("file_url", null);
@@ -104,12 +105,18 @@ export default function AgencyDetailsForm({ details, onNext }) {
                                     </div>
 
                                     {uploaded_avatar ? (
-                                        <button
-                                            onClick={() => resetField("file")}
-                                            className="btn btn-ghost"
-                                        >
-                                            Clear
-                                        </button>
+
+                                        <div className="flex-items-center justify-center">
+                                            <ImagePreviewComponent imgSrc={avatar} />
+                                            <button
+                                                onClick={() =>
+                                                    resetField("file")
+                                                }
+                                                className="btn btn-ghost"
+                                            >
+                                                Clear
+                                            </button>
+                                        </div>
                                     ) : (
                                         <label className="text-center font-semibold italic text-slate-500">
                                             Logo
