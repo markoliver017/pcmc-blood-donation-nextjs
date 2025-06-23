@@ -7,27 +7,13 @@ import {
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
-import {
-    CalendarArrowUp,
-    CalendarCheck2,
-    HandCoins,
-    Users,
-} from "lucide-react";
+import { Calendar, HandCoins, Users } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { FaArrowRight } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
-import { MdBloodtype } from "react-icons/md";
-import {
-    getApprovedEventsByAgency,
-    getDonorDashboard,
-} from "@/action/donorAction";
-import DashboardEventCardList from "@components/dashboard/DashboardEventCardList";
-import Skeleton_line from "@components/ui/skeleton_line";
-import {
-    getAdminDashboard,
-    getForApprovalEvents,
-} from "@/action/adminEventAction";
+
+import { getAdminDashboard } from "@/action/adminEventAction";
 import { BiBuildings } from "react-icons/bi";
 import ForApprovalEventList from "./(admin-events)/events/@approval/ForApprovalEventList";
 import ForApprovalAgencyList from "./(agencies)/agencies/@approval/ForApprovalAgencyList";
@@ -39,23 +25,6 @@ export default function Dashboard() {
             const res = await getAdminDashboard();
             if (!res.success) {
                 throw res;
-            }
-            return res.data;
-        },
-    });
-
-    const {
-        data: events,
-        isLoading: eventIsLoading,
-        error,
-        isError,
-    } = useQuery({
-        queryKey: ["for-approval-blood-drives"],
-        queryFn: async () => {
-            const res = await getForApprovalEvents();
-
-            if (!res.success) {
-                throw res?.message || "unknown error";
             }
             return res.data;
         },
@@ -122,7 +91,7 @@ export default function Dashboard() {
                 <Card className="w-full">
                     <CardHeader className="flex flex-col items-center gap-2">
                         <CardTitle className="text-2xl flex items-center gap-2">
-                            <HandCoins className="w-6 h-6" />
+                            <Calendar className="w-6 h-6" />
                             Blood Drives
                         </CardTitle>
                         <CardDescription>
@@ -224,30 +193,6 @@ export default function Dashboard() {
                                     <ForApprovalAgencyList target="_blank" />
                                 </div>
                             </div>
-                            {/* <div className="divider" />
-                            <div>
-                                <Link
-                                    href="/portal/admin/events?tab=for-approval"
-                                    className="btn btn-block justify-between text-orange-800 dark:text-orange-400"
-                                >
-                                    For Approval - Blood Drives (
-                                    {events?.length})
-                                    <FaArrowRight />
-                                </Link>
-                                <div className="max-h-60 overflow-y-auto mt-2 space-y-2 p-2">
-                                    {eventIsLoading ? (
-                                        <Skeleton_line />
-                                    ) : !isError ? (
-                                        <DashboardEventCardList
-                                            events={events}
-                                        />
-                                    ) : (
-                                        <div className="alert alert-error">
-                                            {JSON.stringify(error)}
-                                        </div>
-                                    )}
-                                </div>
-                            </div> */}
                         </CardContent>
                     </Card>
                 </div>

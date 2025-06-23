@@ -95,10 +95,16 @@ export default function RejectDialog({ agencyId, className = "btn-error" }) {
         >
             <DialogTrigger
                 className={`btn ${className} hover:btn-neutral hover:text-red-400`}
+                onClick={(e) => {
+                    e.stopPropagation();
+                }}
             >
                 <XIcon /> Reject
             </DialogTrigger>
-            <DialogContentNoX className="dark:text-white">
+            <DialogContentNoX
+                className="dark:text-white"
+                onClick={(e) => e.stopPropagation()}
+            >
                 <ToastContainer />
                 <DialogHeader>
                     <div

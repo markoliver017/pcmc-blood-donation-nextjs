@@ -26,18 +26,17 @@ import CancelEventButton from "@components/donors/CancelEventButton";
 
 export default function EventCard({
     event,
-    onLoad = () => { },
-    onFinish = () => { },
+    onLoad = () => {},
+    onFinish = () => {},
     isRegistrationOpen = false,
     isAlreadyBooked = () => true,
     appointmentId = null,
 }) {
-
     let isCancellable = true;
     const dateNow = moment();
     const eventDate = moment(event?.date, "YYYY-MM-DD");
 
-    if (eventDate.isSameOrBefore(dateNow, 'day')) {
+    if (eventDate.isSameOrBefore(dateNow, "day")) {
         isCancellable = false;
         console.log("Event is today or has passed");
     } else {
@@ -50,21 +49,15 @@ export default function EventCard({
             className=" hover:ring-2 hover:ring-blue-400 group transition shadow-lg/40 max-h-max"
         >
             <CardHeader>
-
                 <CardTitle className="flex flex-wrap justify-between">
                     <span className="text-xl">{event.title}</span>
                     <span className="flex-items-center text-sm text-slate-600 dark:text-slate-300">
-                        Posted:{" "}
-                        {moment(event.createdAt).format("MMM DD, YYYY")}
+                        Posted: {moment(event.createdAt).format("MMM DD, YYYY")}
                     </span>
                 </CardTitle>
                 <CardDescription className="flex flex-wrap flex-col gap-1 dark:text-slate-300">
-                    <span>
-                        Description: {parse(event?.description)}
-                    </span>
-                    <span>
-                        Address: {event?.agency?.agency_address}
-                    </span>
+                    <span>Description: {parse(event?.description)}</span>
+                    <span>Address: {event?.agency?.agency_address}</span>
                 </CardDescription>
             </CardHeader>
             <CardContent className=" px-2 md:px-15">
@@ -82,23 +75,18 @@ export default function EventCard({
                                     Event Date:
                                 </label>
                                 <span className="text-lg text-slate-800 dark:text-slate-300 font-semibold">
-                                    {moment(event?.date).format(
-                                        "MMM DD, YYYY"
-                                    )}
+                                    {moment(event?.date).format("MMM DD, YYYY")}
                                 </span>
                             </div>
                         </div>
                         <div>
                             <div>
-                                <label className="text-xs">
-                                    Organizer:
-                                </label>
+                                <label className="text-xs">Organizer:</label>
                                 <div className="flex flex-wrap items-center justify-center md:justify-start  gap-2 md:gap-5 py-2">
                                     <div className="relative w-12 h-12 border rounded-full">
                                         <Image
                                             src={
-                                                event?.requester
-                                                    ?.image ||
+                                                event?.requester?.image ||
                                                 "/default_avatar.png"
                                             }
                                             alt="Avatar"
@@ -114,20 +102,13 @@ export default function EventCard({
                                                 {event?.requester?.name}
                                             </span>
                                             <span className="text-blue-800 dark:text-blue-300 font-semibold">
-                                                (
-                                                {
-                                                    event?.requester
-                                                        ?.email
-                                                }
-                                                )
+                                                ({event?.requester?.email})
                                             </span>
                                         </div>
                                         <span className="block text-lg text-slate-800 dark:text-slate-300 font-semibold">
-                                            {event?.requester
-                                                ?.coordinator
+                                            {event?.requester?.coordinator
                                                 ?.contact_number ||
-                                                event?.agency
-                                                    ?.contact_number}
+                                                event?.agency?.contact_number}
                                         </span>
                                     </div>
                                 </div>
@@ -140,19 +121,15 @@ export default function EventCard({
                         Time Schedule(s)
                     </h2>
                     <Table>
-                        <TableCaption>
-                            Available time schedules.
-                        </TableCaption>
+                        <TableCaption>Available time schedules.</TableCaption>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>ID</TableHead>
+                                {/* <TableHead>ID</TableHead> */}
                                 <TableHead>Time</TableHead>
                                 {isRegistrationOpen && (
                                     <>
                                         <TableHead>Status</TableHead>
-                                        <TableHead>
-                                            Participants
-                                        </TableHead>
+                                        <TableHead>Participants</TableHead>
                                         <TableHead>Action</TableHead>
                                     </>
                                 )}
@@ -165,12 +142,12 @@ export default function EventCard({
                                     className={clsx(
                                         "font-semibold text-green-700 dark:text-green-600",
                                         isAlreadyBooked(sched.id) &&
-                                        "font-bold italic text-slate-400 dark:text-slate-400",
+                                            "font-bold italic text-slate-400 dark:text-slate-400",
                                         sched.status === "closed" &&
-                                        "font-medium italic text-red-400 dark:text-red-500"
+                                            "font-medium italic text-red-400 dark:text-red-500"
                                     )}
                                 >
-                                    <TableCell>{sched.id}</TableCell>
+                                    {/* <TableCell>{sched.id}</TableCell> */}
                                     <TableCell>
                                         <span>
                                             {moment(
@@ -195,22 +172,15 @@ export default function EventCard({
                                             </TableCell>
                                             <TableCell>
                                                 <span>
-                                                    {
-                                                        sched.donors
-                                                            .length
-                                                    }
+                                                    {sched.donors.length}
                                                 </span>
                                                 {sched?.has_limit && (
                                                     <span>
-                                                        /
-                                                        {
-                                                            sched?.max_limit
-                                                        }
+                                                        /{sched?.max_limit}
                                                     </span>
                                                 )}
                                             </TableCell>
                                             <TableCell className="flex-items-center flex-wrap">
-
                                                 <BookEventButton
                                                     event={event}
                                                     schedule={sched}
@@ -218,22 +188,25 @@ export default function EventCard({
                                                         isAlreadyBooked(
                                                             sched.id
                                                         ) ||
-                                                        sched.status ==
-                                                        "closed"
+                                                        sched.status == "closed"
                                                     }
                                                     onLoad={onLoad}
                                                     onFinish={onFinish}
                                                 />
-                                                {isCancellable && isAlreadyBooked(sched.id) && (
-
-                                                    <CancelEventButton
-                                                        event={event}
-                                                        schedule={sched}
-                                                        appointmentId={appointmentId}
-                                                        onLoad={onLoad}
-                                                        onFinish={onFinish}
-                                                    />
-                                                )}
+                                                {isCancellable &&
+                                                    isAlreadyBooked(
+                                                        sched.id
+                                                    ) && (
+                                                        <CancelEventButton
+                                                            event={event}
+                                                            schedule={sched}
+                                                            appointmentId={
+                                                                appointmentId
+                                                            }
+                                                            onLoad={onLoad}
+                                                            onFinish={onFinish}
+                                                        />
+                                                    )}
                                             </TableCell>
                                         </>
                                     )}
@@ -244,5 +217,5 @@ export default function EventCard({
                 </div>
             </CardContent>
         </Card>
-    )
+    );
 }

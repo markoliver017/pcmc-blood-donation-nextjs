@@ -427,7 +427,9 @@ export async function storeEvent(formData) {
     });
 
     if (existingEvent) {
-        throw "Event date conflict: Another event is already scheduled for this date.";
+        throw new Error(
+            "Event date conflict: Another event is already scheduled for this date."
+        );
     }
 
     const transaction = await sequelize.transaction();

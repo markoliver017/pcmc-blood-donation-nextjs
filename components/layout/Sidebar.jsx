@@ -57,11 +57,7 @@ const Sidebar = ({ currentUser }) => {
         menu.roles.includes(currentRole.role_name)
     );
 
-    const currentUserAvatar =
-        currentUser?.image ||
-        (currentUser?.gender == "female"
-            ? "https://avatar.iran.liara.run/public/girl"
-            : "https://avatar.iran.liara.run/public/boy");
+    const currentUserAvatar = currentUser?.image || "/default_avatar.png";
 
     const handleToggleSidebar = () => {
         setIsCollapsed(!isCollapsed);

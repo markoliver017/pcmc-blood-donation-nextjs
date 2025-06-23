@@ -7,11 +7,13 @@ import { logErrorToFile } from "@lib/logger.server";
 import {
     Agency,
     AgencyCoordinator,
+    BloodDonationCollection,
     BloodDonationEvent,
     BloodType,
     Donor,
     DonorAppointmentInfo,
     EventTimeSchedule,
+    PhysicalExamination,
     Role,
     sequelize,
     User,
@@ -151,7 +153,10 @@ export async function storeDonor(formData) {
         where: { email: data.email },
     });
     if (existingUser) {
-        throw `The email is already associated with an existing account in the system.`;
+        return {
+            success: false,
+            message: `The email is already associated with an existing account in the system.`,
+        };
     }
 
     const roles = await Role.findAll({
@@ -164,7 +169,10 @@ export async function storeDonor(formData) {
     });
 
     if (roles.length !== data.role_ids.length) {
-        throw "Database Error: One or more roles not found.";
+        return {
+            success: false,
+            message: "Database Error: One or more roles not found.",
+        };
     }
 
     const transaction = await sequelize.transaction();
@@ -172,7 +180,11 @@ export async function storeDonor(formData) {
     try {
         const newUser = await User.create(data, { transaction });
         if (!newUser) {
-            throw "Registration Failed: There was an error while trying to register a new user account!";
+            return {
+                success: false,
+                message:
+                    "Registration Failed: There was an error while trying to register a new user account!",
+            };
         }
 
         await newUser.addRoles(data.role_ids, { transaction });
@@ -195,7 +207,7 @@ export async function storeDonor(formData) {
         logErrorToFile(err, "CREATE DONOR");
         await transaction.rollback();
 
-        throw err.message || "Unknown error";
+        return { success: false, message: extractErrorMessage(err) };
     }
 }
 
@@ -228,10 +240,10 @@ export async function getVerifiedDonors() {
         return formatSeqObj(donors);
     } catch (err) {
         logErrorToFile(err, "getVerifiedDonors ERROR");
-        throw {
+        return {
             success: false,
             type: "server",
-            message: err.message || "Unknown error",
+            message: extractErrorMessage(err),
         };
     }
 }
@@ -261,17 +273,22 @@ export async function getDonorsByStatus(status) {
         return formatSeqObj(donors);
     } catch (err) {
         logErrorToFile(err, "getCoordinatorsByStatus ERROR");
-        throw {
+        return {
             success: false,
             type: "server",
-            message: err.message || "Unknown error",
+            message: extractErrorMessage(err),
         };
     }
 }
 export async function getDonorById(id) {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    if (!id) throw "Invalid Donor Id provided!";
+    if (!id) {
+        return {
+            success: false,
+            message: "Invalid Donor Id provided!",
+        };
+    }
 
     try {
         const donor = await Donor.findByPk(id, {
@@ -294,17 +311,23 @@ export async function getDonorById(id) {
         return formatSeqObj(donor);
     } catch (err) {
         logErrorToFile(err, "getDonorById ERROR");
-        throw {
+        return {
             success: false,
             type: "server",
-            message: err.message || "Unknown error",
+            message: extractErrorMessage(err),
         };
     }
 }
 
 export async function updateDonor(formData) {
     const session = await auth();
-    if (!session) throw "You are not authorized to access this request.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+
     const { user } = session;
     formData.updated_by = user.id;
 
@@ -327,7 +350,10 @@ export async function updateDonor(formData) {
     const donor = await Donor.findByPk(data.id);
 
     if (!donor) {
-        throw new Error("Database Error: Donor ID was not found");
+        return {
+            success: false,
+            message: "Database Error: Donor ID was not found",
+        };
     }
 
     const transaction = await sequelize.transaction();
@@ -354,7 +380,7 @@ export async function updateDonor(formData) {
         logErrorToFile(err, "UPDATE DONOR");
         await transaction.rollback();
 
-        throw err.message || "Unknown error";
+        return { success: false, message: extractErrorMessage(err) };
     }
 }
 
@@ -445,7 +471,12 @@ export async function updateUserDonor(user_id, formData) {
 
 export async function updateDonorBloodType(formData) {
     const session = await auth();
-    if (!session) throw "You are not authorized to access this request.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
 
     const { user } = session;
     formData.updated_by = user.id;
@@ -469,7 +500,10 @@ export async function updateDonorBloodType(formData) {
     const donor = await Donor.findByPk(data.id);
 
     if (!donor) {
-        throw new Error("Database Error: Donor ID was not found");
+        return {
+            success: false,
+            message: "Database Error: Donor ID was not found",
+        };
     }
 
     const transaction = await sequelize.transaction();
@@ -496,13 +530,21 @@ export async function updateDonorBloodType(formData) {
         logErrorToFile(err, "UPDATE DONOR");
         await transaction.rollback();
 
-        throw err.message || "Unknown error";
+        return {
+            success: false,
+            message: extractErrorMessage(err),
+        };
     }
 }
 
 export async function updateDonorStatus(formData) {
     const session = await auth();
-    if (!session) throw "You are not authorized to access this request.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
     console.log("updateDonorStatus", formData);
     const { user } = session;
     formData.verified_by = user.id;
@@ -526,7 +568,10 @@ export async function updateDonorStatus(formData) {
     const donor = await Donor.findByPk(data.id);
 
     if (!donor) {
-        throw new Error("Database Error: Donor ID was not found");
+        return {
+            success: false,
+            message: "Database Error: Donor ID was not found",
+        };
     }
 
     const user_donor = await User.findByPk(donor.user_id, {
@@ -546,7 +591,10 @@ export async function updateDonorStatus(formData) {
     });
 
     if (!user_donor) {
-        throw new Error("Database Error: User with role donor was not found!");
+        return {
+            success: false,
+            message: "Database Error: User with role donor was not found!",
+        };
     }
 
     const donor_role = user_donor?.roles[0].role;
@@ -598,13 +646,21 @@ export async function updateDonorStatus(formData) {
         logErrorToFile(err, "UPDATE DONOR STATUS");
         await transaction.rollback();
 
-        throw err.message || "Unknown error";
+        return {
+            success: false,
+            message: extractErrorMessage(err),
+        };
     }
 }
 
 export async function getDonorProfile() {
     const session = await auth();
-    if (!session) throw "You are not authorized to access this page.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this page.",
+        };
+    }
 
     const { user } = session;
 
@@ -646,16 +702,19 @@ export async function getDonorProfile() {
         });
 
         if (!profile) {
-            throw "User not found or not activated.";
+            return {
+                success: false,
+                message: "User not found or not activated.",
+            };
         }
 
         return formatSeqObj(profile);
     } catch (err) {
         logErrorToFile(err, "getHostCoordinatorsByStatus ERROR");
-        throw {
+        return {
             success: false,
             type: "server",
-            message: err.message || "Unknown error",
+            message: extractErrorMessage(err),
         };
     }
 }
@@ -689,12 +748,9 @@ export async function getDonorDashboard() {
             };
         }
 
-        const appointmentCount = await DonorAppointmentInfo.count({
+        const donationCount = await BloodDonationCollection.count({
             where: {
                 donor_id: donor?.id,
-                status: {
-                    [Op.in]: ["registered", "donated"],
-                },
             },
         });
 
@@ -703,7 +759,7 @@ export async function getDonorDashboard() {
         let donateNow = true;
         let latestDonationDate = null;
 
-        const latestDonation = await getLastDonationDateBooked(user?.id);
+        const latestDonation = await getLastDonationDateDonated(user?.id);
         if (latestDonation.success) {
             latestDonationDate = latestDonation?.data?.last_donation_date;
         }
@@ -730,7 +786,7 @@ export async function getDonorDashboard() {
             data: {
                 blood_type: donor?.blood_type?.blood_type,
                 is_bloodtype_verified: donor?.is_bloodtype_verified,
-                no_donations: appointmentCount,
+                no_donations: donationCount,
                 next_eligible_date: donateNow
                     ? "Donate now"
                     : nextEligibleDate
@@ -783,7 +839,7 @@ export async function getLastDonationDateBooked(user_id) {
             where: {
                 donor_id: donor.id,
                 status: {
-                    [Op.in]: ["registered", "donated"],
+                    [Op.in]: ["registered"],
                 },
             },
             attributes: [], // No direct attributes from DonorAppointmentInfo
@@ -821,6 +877,93 @@ export async function getLastDonationDateBooked(user_id) {
         };
     } catch (err) {
         logErrorToFile(err, "getLastDonationDateBooked ERROR"); // Your error logging function
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
+        };
+    }
+}
+
+export async function getLastDonationDateDonated(user_id) {
+    if (!user_id) {
+        const session = await auth();
+        if (!session) {
+            return {
+                success: false,
+                message: "You are not authorized to access this page.",
+            };
+        }
+
+        const { user } = session;
+        user_id = user?.id;
+    }
+
+    try {
+        // Verify donor exists
+        const donor = await Donor.findOne({
+            where: { user_id },
+            attributes: ["id"],
+        });
+
+        if (!donor) {
+            return {
+                success: false,
+                message: "You are not authorized to access this page.",
+            };
+        }
+
+        // Fetch latest donation date
+        const latestDonation = await DonorAppointmentInfo.findOne({
+            where: {
+                donor_id: donor.id,
+                status: {
+                    [Op.in]: ["registered"],
+                },
+            },
+            attributes: ["id"],
+            include: [
+                {
+                    model: PhysicalExamination,
+                    as: "physical_exam",
+                    where: { eligibility_status: "ACCEPTED" },
+                    attributes: ["id", "eligibility_status"],
+                    required: true,
+                    include: [
+                        {
+                            model: BloodDonationEvent,
+                            as: "event",
+                            attributes: ["date"],
+                        },
+                        {
+                            model: BloodDonationCollection,
+                            as: "blood_collection",
+                            required: true,
+                        },
+                    ],
+                },
+            ],
+            order: [
+                [
+                    { model: PhysicalExamination, as: "physical_exam" },
+                    { model: BloodDonationEvent, as: "event" },
+                    "date",
+                    "DESC",
+                ],
+            ],
+            raw: true, // Optimize by returning plain object
+        });
+
+        return {
+            success: true,
+            data: {
+                last_donation_date:
+                    latestDonation?.["physical_exam.event.date"] || null,
+                donation_date: formatSeqObj(latestDonation),
+            },
+        };
+    } catch (err) {
+        logErrorToFile(err, "getLastDonationDateDonated ERROR"); // Your error logging function
         return {
             success: false,
             type: "server",

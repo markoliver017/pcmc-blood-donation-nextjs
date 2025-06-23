@@ -22,17 +22,17 @@ const Header = () => {
                         // className="flex-none w-24 sm:w-32 md:w-48 lg:w-64"
                         width={80}
                         height={80}
-                        alt="Integrated National Medication Reporting System"
-                        title="Integrated National Medication Reporting System"
+                        alt="PCMC Pediatric Blood Center - Mobile Blood Donation Portal"
+                        title="PCMC Pediatric Blood Center - Mobile Blood Donation Portal"
                     />
                     <h1
                         className="inline-block md:hidden text-2xl md:text-3xl text-blue-900 text-shadow-lg/30 text-shadow-white font-extrabold italic"
-                        title="PCMC Pediatric Blood Center - Medical Blood Donation Portal"
+                        title="PCMC Pediatric Blood Center - Mobile Blood Donation Portal"
                     >
                         PCMC PedBC - MBD Portal
                     </h1>
                     <h1 className="hidden md:inline-block text-lg md:text-3xl text-blue-900 text-shadow-lg/30 text-shadow-white font-extrabold italic">
-                        PCMC Pediatric Blood Center - Medical Blood Donation
+                        PCMC Pediatric Blood Center - Mobile Blood Donation
                         Portal
                     </h1>
                 </Link>
@@ -81,17 +81,17 @@ const Header = () => {
                     className="flex-none w-24 sm:w-32 md:w-48 lg:w-64"
                     width={150}
                     height={150}
-                    alt="Integrated National Medication Reporting System"
-                    title="Integrated National Medication Reporting System"
+                    alt="PCMC Pediatric Blood Center - Mobile Blood Donation Portal"
+                    title="PCMC Pediatric Blood Center - Mobile Blood Donation Portal"
                 />
                 <h1
                     className="inline-block md:hidden text-2xl md:text-3xl text-blue-900 text-shadow-lg/30 text-shadow-white font-extrabold italic"
-                    title="PCMC Pediatric Blood Center - Medical Blood Donation Portal"
+                    title="PCMC Pediatric Blood Center - Mobile Blood Donation Portal"
                 >
                     PCMC PedBC - MBD Portal
                 </h1>
                 <h1 className="hidden md:inline-block text-lg md:text-3xl text-blue-900 text-shadow-lg/30 text-shadow-white font-extrabold italic">
-                    PCMC Pediatric Blood Center - Medical Blood Donation Portal
+                    PCMC Pediatric Blood Center - Mobile Blood Donation Portal
                 </h1>
             </Link>
             <div className="hidden md:flex z-1">

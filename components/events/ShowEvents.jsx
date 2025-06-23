@@ -119,12 +119,12 @@ export default function ShowEvents({ eventId }) {
                 <div className="w-full sm:min-w-sm">
                     <Table className="w-full sm:min-w-sm">
                         <TableBody>
-                            <TableRow>
+                            {/* <TableRow>
                                 <TableCell className="font-semibold">
                                     ID
                                 </TableCell>
                                 <TableCell>{event?.id}</TableCell>
-                            </TableRow>
+                            </TableRow> */}
                             <TableRow>
                                 <TableCell className="font-semibold">
                                     Status

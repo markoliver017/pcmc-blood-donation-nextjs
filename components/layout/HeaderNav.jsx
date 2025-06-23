@@ -15,13 +15,13 @@ import {
     Calendar,
     Command,
     Droplet,
-
     FileSliders,
     Home,
     HomeIcon,
     LogOut,
     PhoneCall,
     SquareMenu,
+    Text,
     User,
     UserCog2Icon,
     UserRoundCheck,
@@ -43,7 +43,7 @@ const HeaderNav = ({ currentUser }) => {
         currentUser = data.user;
     }
 
-    console.log("currentUser length", currentUser?.roles?.length)
+    console.log("currentUser length", currentUser?.roles?.length);
 
     const handleLogOut = () => {
         SweetAlert({
@@ -68,17 +68,17 @@ const HeaderNav = ({ currentUser }) => {
                             // className="flex-none w-24 sm:w-32 md:w-48 lg:w-64"
                             width={80}
                             height={80}
-                            alt="Integrated National Medication Reporting System"
-                            title="Integrated National Medication Reporting System"
+                            alt="PCMC Pediatric Blood Center - Mobile Blood Donation Portal"
+                            title="PCMC Pediatric Blood Center - Mobile Blood Donation Portal"
                         />
                         <h1
                             className="inline-block md:hidden text-lg md:text-base font-extrabold italic"
-                            title="PCMC Pediatric Blood Center - Medical Blood Donation Portal"
+                            title="PCMC Pediatric Blood Center - Mobile Blood Donation Portal"
                         >
                             PCMC PedBC - MBD Portal
                         </h1>
                         <h1 className="hidden md:inline-block text-lg md:text-base font-extrabold italic">
-                            PCMC Pediatric Blood Center <br /> Medical Blood
+                            PCMC Pediatric Blood Center <br /> Mobile Blood
                             Donation Portal
                         </h1>
                     </Link>
@@ -107,8 +107,8 @@ const HeaderNav = ({ currentUser }) => {
                                     href="#"
                                     className="p-3 hover:ring rounded-xl flex-items-center"
                                 >
-                                    <Calendar className="h-4" />
-                                    Upcoming Events
+                                    <Text className="h-4" />
+                                    Eligibility Requirements
                                 </Link>
                             </li>
                             <li className="hidden xl:block">
@@ -242,18 +242,18 @@ const HeaderNav = ({ currentUser }) => {
                                         Profile
                                     </Link>
                                 </DropdownMenuItem>
-                                {currentUser?.roles && currentUser?.roles?.length > 1 && (
-                                    <DropdownMenuItem>
-                                        <Link
-                                            href="/portal/change-role"
-                                            className="w-full hover:ring rounded flex-items-center "
-                                        >
-                                            <FileSliders className="h-4" />
-                                            Change Role
-                                        </Link>
-                                    </DropdownMenuItem>
-
-                                )}
+                                {currentUser?.roles &&
+                                    currentUser?.roles?.length > 1 && (
+                                        <DropdownMenuItem>
+                                            <Link
+                                                href="/portal/change-role"
+                                                className="w-full hover:ring rounded flex-items-center "
+                                            >
+                                                <FileSliders className="h-4" />
+                                                Change Role
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    )}
                                 <DropdownMenuItem>
                                     <Link
                                         href="/portal/admin/users"
@@ -301,7 +301,9 @@ const HeaderNav = ({ currentUser }) => {
                                     <UserRoundCheck className="w-3 h-3" />
                                     <div className="flex flex-col">
                                         <span>{currentUser.name}</span>
-                                        <span className="text-xs font-light">{currentUser?.role_name}</span>
+                                        <span className="text-xs font-light">
+                                            {currentUser?.role_name}
+                                        </span>
                                         <span className="text-xs font-light">
                                             {currentUser.email}
                                         </span>
@@ -316,14 +318,15 @@ const HeaderNav = ({ currentUser }) => {
                                         <span>Dashboard</span>
                                     </DropdownMenuItem>
                                 </Link>
-                                {currentUser?.roles && currentUser?.roles?.length > 1 && (
-                                    <Link href="/portal/change-role">
-                                        <DropdownMenuItem className="flex items-center space-x-2">
-                                            <FileSliders className="w-4 h-4" />
-                                            <span>Change Role</span>
-                                        </DropdownMenuItem>
-                                    </Link>
-                                )}
+                                {currentUser?.roles &&
+                                    currentUser?.roles?.length > 1 && (
+                                        <Link href="/portal/change-role">
+                                            <DropdownMenuItem className="flex items-center space-x-2">
+                                                <FileSliders className="w-4 h-4" />
+                                                <span>Change Role</span>
+                                            </DropdownMenuItem>
+                                        </Link>
+                                    )}
                                 <DropdownMenuItem
                                     className="flex items-center space-x-2"
                                     onClick={handleLogOut}
@@ -335,7 +338,7 @@ const HeaderNav = ({ currentUser }) => {
                         </DropdownMenu>
                     )}
                 </div>
-            </header >
+            </header>
         </>
     );
 };

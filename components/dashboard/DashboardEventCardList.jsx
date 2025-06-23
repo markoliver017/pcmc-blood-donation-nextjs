@@ -1,6 +1,8 @@
 "use client";
 
+import { Card } from "@components/ui/card";
 import DashboardEventCard from "./DashboardEventCard";
+import { FileClock } from "lucide-react";
 
 export default function DashboardEventCardList({
     events,

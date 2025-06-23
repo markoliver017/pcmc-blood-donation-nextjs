@@ -1,6 +1,8 @@
 "use client";
 
+import { Card } from "@components/ui/card";
 import EventCard from "./EventCard";
+import { FileClock } from "lucide-react";
 
 export default function EventCardList({
     events,

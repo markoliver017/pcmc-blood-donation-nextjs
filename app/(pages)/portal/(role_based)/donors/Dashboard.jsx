@@ -16,6 +16,7 @@ import { MdBloodtype } from "react-icons/md";
 import {
     getApprovedEventsByAgency,
     getDonorDashboard,
+    getLastDonationDateDonated,
 } from "@/action/donorAction";
 import DashboardEventCardList from "@components/dashboard/DashboardEventCardList";
 import Skeleton_line from "@components/ui/skeleton_line";
@@ -26,6 +27,17 @@ export default function Dashboard() {
         queryKey: ["donor-dashboard"],
         queryFn: async () => {
             const res = await getDonorDashboard();
+            if (!res.success) {
+                throw res;
+            }
+            return res.data;
+        },
+    });
+
+    const { data: lastDonation } = useQuery({
+        queryKey: ["last-donation"],
+        queryFn: async () => {
+            const res = await getLastDonationDateDonated();
             if (!res.success) {
                 throw res;
             }

@@ -3,13 +3,12 @@ import { logAuditTrail } from "@lib/audit_trails.utils";
 import { auth } from "@lib/auth";
 import { logErrorToFile } from "@lib/logger.server";
 import { Agency, AgencyCoordinator, Role, sequelize, User } from "@lib/models";
+import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import { agencyStatusSchema } from "@lib/zod/agencySchema";
 import { Op } from "sequelize";
 
 export async function getVerifiedCoordinators() {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
     try {
         const users = await AgencyCoordinator.findAll({
             where: {
@@ -32,7 +31,7 @@ export async function getVerifiedCoordinators() {
         return formatSeqObj(users);
     } catch (err) {
         logErrorToFile(err, "getVerifiedCoordinators ERROR");
-        throw {
+        return {
             success: false,
             type: "server",
             message: err.message || "Unknown error",
@@ -43,7 +42,12 @@ export async function getVerifiedCoordinators() {
 export async function getCoordinatorById(id) {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    if (!id) throw "Invalid Id provided!";
+    if (!id) {
+        return {
+            success: false,
+            message: "Invalid Id provided!",
+        };
+    }
 
     try {
         const coordinator = await AgencyCoordinator.findByPk(id, {
@@ -62,10 +66,10 @@ export async function getCoordinatorById(id) {
         return formatSeqObj(coordinator);
     } catch (err) {
         logErrorToFile(err, "getCoordinatorById ERROR");
-        throw {
+        return {
             success: false,
             type: "server",
-            message: err.message || "Unknown error",
+            message: extractErrorMessage(err),
         };
     }
 }
@@ -91,17 +95,22 @@ export async function getCoordinatorsByStatus(status) {
         return formatSeqObj(users);
     } catch (err) {
         logErrorToFile(err, "getCoordinatorsByStatus ERROR");
-        throw {
+        return {
             success: false,
             type: "server",
-            message: err.message || "Unknown error",
+            message: extractErrorMessage(err),
         };
     }
 }
 
 export async function updateCoordinatorStatus(formData) {
     const session = await auth();
-    if (!session) throw "You are not authorized to access this request.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
     console.log("updateCoordinatorStatus", formData);
     const { user } = session;
     formData.verified_by = user.id;
@@ -125,7 +134,10 @@ export async function updateCoordinatorStatus(formData) {
     const agencyCoordinator = await AgencyCoordinator.findByPk(data.id);
 
     if (!agencyCoordinator) {
-        throw new Error("Database Error: Agency coordinator ID was not found");
+        return {
+            success: false,
+            message: "Database Error: Agency coordinator ID was not found",
+        };
     }
 
     const coordinator = await User.findByPk(agencyCoordinator.user_id, {
@@ -145,7 +157,10 @@ export async function updateCoordinatorStatus(formData) {
     });
 
     if (!coordinator) {
-        throw new Error("Database Error: Agency Head was Not found");
+        return {
+            success: false,
+            message: "Database Error: Agency Head was Not found",
+        };
     }
 
     const coordinator_role = coordinator?.roles[0].role;
@@ -198,6 +213,9 @@ export async function updateCoordinatorStatus(formData) {
         logErrorToFile(err, "UPDATE COORDINATOR STATUS");
         await transaction.rollback();
 
-        throw err.message || "Unknown error";
+        return {
+            success: false,
+            message: extractErrorMessage(err),
+        };
     }
 }

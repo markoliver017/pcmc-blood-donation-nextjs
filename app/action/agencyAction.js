@@ -6,6 +6,7 @@ import { logAuditTrail } from "@lib/audit_trails.utils";
 import { auth } from "@lib/auth";
 import { logErrorToFile } from "@lib/logger.server";
 import { Agency, AgencyCoordinator, Role, sequelize, User } from "@lib/models";
+import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import {
     agencyRegistrationWithUser,
@@ -38,7 +39,7 @@ export async function fetchAgencies() {
         return JSON.parse(JSON.stringify(agencies));
     } catch (error) {
         console.error(error);
-        throw error;
+        return extractErrorMessage(error);
     }
 }
 
@@ -68,7 +69,7 @@ export async function fetchVerifiedAgencies() {
         return JSON.parse(JSON.stringify(agencies));
     } catch (error) {
         console.error(error);
-        throw error;
+        return extractErrorMessage(error);
     }
 }
 
@@ -100,7 +101,7 @@ export async function fetchAgency(id) {
         return formatSeqObj(agency);
     } catch (error) {
         console.error(error);
-        throw error;
+        return extractErrorMessage(error);
     }
 }
 
@@ -142,7 +143,7 @@ export async function fetchActiveAgency() {
         return formatSeqObj(agencies);
     } catch (error) {
         console.error(error);
-        throw error;
+        return extractErrorMessage(error);
     }
 }
 
@@ -181,7 +182,7 @@ export async function fetchAgencyByStatus(status) {
         return formatSeqObj(agencies);
     } catch (error) {
         console.error(error);
-        throw error;
+        return extractErrorMessage(error);
     }
 }
 
@@ -221,7 +222,7 @@ export async function fetchAgencyByName(agencyName) {
         });
 
         if (!agencies) {
-            throw "Agency not found";
+            return extractErrorMessage(error);
         }
 
         return { success: true, data: formatSeqObj(agencies) };
@@ -233,9 +234,13 @@ export async function fetchAgencyByName(agencyName) {
 
 /* For admin registration */
 export async function createAgency(formData) {
-    // await new Promise((resolve) => setTimeout(resolve, 500));
     const session = await auth();
-    if (!session) throw "You are not authorized to access this request.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
 
     const { user } = session;
 
@@ -245,7 +250,11 @@ export async function createAgency(formData) {
     });
 
     if (!role) {
-        throw "Database Error: Agency Administrator role is not set on the system.";
+        return {
+            success: false,
+            message:
+                "Database Error: Agency Administrator role is not set on the system.",
+        };
     }
 
     formData.head_id = user.id;
@@ -283,11 +292,17 @@ export async function createAgency(formData) {
     });
 
     if (!userData) {
-        throw `User session expired: The user's session might have timed out or been invalidated.`;
+        return {
+            success: false,
+            message: `User session expired: The user's session might have timed out or been invalidated.`,
+        };
     }
 
     if (userData.headedAgency) {
-        throw `Your account is currently linked to partner agency "${userData.headedAgency.name}".`;
+        return {
+            success: false,
+            message: `Your account is currently linked to partner agency "${userData.headedAgency.name}".`,
+        };
     }
 
     const existingRoles = userData?.roles.map((role) => role.id) || [];
@@ -323,7 +338,10 @@ export async function createAgency(formData) {
         logErrorToFile(err, "CREATE AGENCY");
         await transaction.rollback();
 
-        throw err.message || "Unknown error";
+        return {
+            success: false,
+            message: extractErrorMessage(err),
+        };
     }
 }
 
@@ -350,7 +368,10 @@ export async function storeAgency(formData) {
         where: { email: data.email },
     });
     if (existingUser) {
-        throw `The email is already associated with an existing account in the system.`;
+        return {
+            success: false,
+            message: `The email is already associated with an existing account in the system.`,
+        };
     }
 
     const roles = await Role.findAll({
@@ -363,7 +384,10 @@ export async function storeAgency(formData) {
     });
 
     if (roles.length !== data.role_ids.length) {
-        throw "Database Error: One or more roles not found.";
+        return {
+            success: false,
+            message: "Database Error: One or more roles not found.",
+        };
     }
 
     const transaction = await sequelize.transaction();
@@ -371,7 +395,11 @@ export async function storeAgency(formData) {
     try {
         const newUser = await User.create(data, { transaction });
         if (!newUser) {
-            throw "Registration Failed: There was an error while trying to register a new user account!";
+            return {
+                success: false,
+                message:
+                    "Registration Failed: There was an error while trying to register a new user account!",
+            };
         }
 
         await newUser.addRoles(data.role_ids, { transaction });
@@ -395,7 +423,7 @@ export async function storeAgency(formData) {
         logErrorToFile(err, "CREATE AGENCY");
         await transaction.rollback();
 
-        throw err.message || "Unknown error";
+        return { success: false, message: extractErrorMessage(err) };
     }
 }
 
@@ -403,12 +431,20 @@ export async function updateAgency(formData) {
     // await new Promise((resolve) => setTimeout(resolve, 500));
     console.log("formData received on server", formData);
     const session = await auth();
-    if (!session) throw "You are not authorized to access this request.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
     console.log("updateAgency session", session);
     const { user } = session;
 
     if (user.role_name !== "Agency Administrator") {
-        throw "You are not authorized to update agency information.";
+        return {
+            success: false,
+            message: "You are not authorized to update agency information.",
+        };
     }
     formData.updated_by = user.id;
 
@@ -435,7 +471,10 @@ export async function updateAgency(formData) {
         });
 
         if (!agency) {
-            throw new Error("Database Error: Agency ID Not found");
+            return {
+                success: false,
+                message: "Database Error: Agency ID Not found",
+            };
         }
 
         const updatedAgency = await agency.update(data, { transaction });
@@ -455,13 +494,18 @@ export async function updateAgency(formData) {
 
         await transaction.rollback();
 
-        throw err.message || "Unknown error";
+        return { success: true, message: extractErrorMessage(err) };
     }
 }
 
 export async function updateAgencyStatus(formData) {
     const session = await auth();
-    if (!session) throw "You are not authorized to access this request.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
     console.log("updateAgencyStatus", formData);
     const { user } = session;
     formData.verified_by = user.id;
@@ -485,7 +529,10 @@ export async function updateAgencyStatus(formData) {
     const agency = await Agency.findByPk(data.id);
 
     if (!agency) {
-        throw new Error("Database Error: Agency ID was not found");
+        return {
+            success: false,
+            message: "Database Error: Agency ID was not found.",
+        };
     }
 
     const agency_head = await User.findByPk(agency.head_id, {
@@ -505,7 +552,10 @@ export async function updateAgencyStatus(formData) {
     });
 
     if (!agency_head) {
-        throw new Error("Database Error: Agency Head was Not found");
+        return {
+            success: false,
+            message: "Database Error: Agency Head was Not found",
+        };
     }
 
     const agency_head_role = agency_head?.roles[0].role;
@@ -555,7 +605,7 @@ export async function updateAgencyStatus(formData) {
         logErrorToFile(err, "UPDATE AGENCY STATUS");
         await transaction.rollback();
 
-        throw err.message || "Unknown error";
+        return { success: false, message: extractErrorMessage(err) };
     }
 }
 
@@ -583,7 +633,10 @@ export async function storeCoordinator(formData) {
         where: { email: data.email },
     });
     if (existingUser) {
-        throw `The email is already associated with an existing account in the system.`;
+        return {
+            success: false,
+            message: `The email is already associated with an existing account in the system.`,
+        };
     }
 
     const roles = await Role.findAll({
@@ -596,7 +649,10 @@ export async function storeCoordinator(formData) {
     });
 
     if (roles.length !== data.role_ids.length) {
-        throw "Database Error: One or more roles not found.";
+        return {
+            success: false,
+            message: "Database Error: One or more roles not found.",
+        };
     }
 
     const transaction = await sequelize.transaction();
@@ -604,7 +660,11 @@ export async function storeCoordinator(formData) {
     try {
         const newUser = await User.create(data, { transaction });
         if (!newUser) {
-            throw "Registration Failed: There was an error while trying to register a new user account!";
+            return {
+                success: false,
+                message:
+                    "Registration Failed: There was an error while trying to register a new user account!",
+            };
         }
 
         await newUser.addRoles(data.role_ids, { transaction });
@@ -629,7 +689,7 @@ export async function storeCoordinator(formData) {
         logErrorToFile(err, "storeCoordinator");
         await transaction.rollback();
 
-        throw err.message || "Unknown error";
+        return { success: false, message: extractErrorMessage(err) };
     }
 }
 
@@ -660,7 +720,10 @@ export async function updateCoordinator(formData) {
         });
 
         if (!coordinator) {
-            throw "Database Error: Coordinator ID Not found";
+            return {
+                success: false,
+                message: "Database Error: Coordinator ID Not found",
+            };
         }
 
         const updatedCoordinator = await coordinator.update(data, {
@@ -681,6 +744,6 @@ export async function updateCoordinator(formData) {
         logErrorToFile(err, "updateCoordinator");
         await transaction.rollback();
 
-        throw err.message || "Unknown error";
+        return { success: false, message: extractErrorMessage(err) };
     }
 }

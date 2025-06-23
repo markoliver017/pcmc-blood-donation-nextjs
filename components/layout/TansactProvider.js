@@ -14,14 +14,16 @@ export default function TansactProviders({ children }) {
     return (
         <QueryClientProvider client={queryClient}>
             {children}
-            <div className="absolute bottom-25 right-5">
-                <button
-                    className="btn btn-ghost w-max"
-                    onClick={() => setIsOpen(!isOpen)}
-                >
-                    {isOpen ? <GrPowerShutdown /> : <GiOpenBook />} Devtools
-                </button>
-            </div>
+            {process.env.NODE_ENV === "development" && (
+                <div className="absolute bottom-25 right-5">
+                    <button
+                        className="btn btn-ghost w-max"
+                        onClick={() => setIsOpen(!isOpen)}
+                    >
+                        {isOpen ? <GrPowerShutdown /> : <GiOpenBook />} Devtools
+                    </button>
+                </div>
+            )}
             {isOpen && <ReactQueryDevtools initialIsOpen={false} />}
         </QueryClientProvider>
     );

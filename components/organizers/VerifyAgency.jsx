@@ -81,7 +81,7 @@ export default function VerifyAgency({
         <Form {...form}>
             <form
                 className={`${formClassName}`}
-                onSubmit={handleSubmit(onSubmit)}
+                // onSubmit={handleSubmit(onSubmit)}
             >
                 <button
                     type="submit"
@@ -90,6 +90,11 @@ export default function VerifyAgency({
                         "hover:bg-neutral-800 hover:text-green-300",
                         className
                     )}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleSubmit(onSubmit)();
+                    }}
                 >
                     {isPending ? (
                         <>

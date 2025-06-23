@@ -58,8 +58,9 @@ export default function TabsComponent({ appointmentId }) {
         <>
             <WrapperHeadMain
                 icon={<Calendar />}
-                pageTitle={`Appointment Details - ${user?.full_name || user?.name
-                    }`}
+                pageTitle={`Appointment Details - ${
+                    user?.full_name || user?.name
+                }`}
                 breadcrumbs={[
                     {
                         path: "/portal/admin/appointments",
@@ -123,7 +124,7 @@ export default function TabsComponent({ appointmentId }) {
                                     className="flex gap-4 p-2"
                                 >
                                     {/* Vertical Tabs List */}
-                                    <TabsList className="flex flex-col w-56 max-h-60 rounded-lg border bg-muted p-2">
+                                    <TabsList className="flex flex-col w-56 max-h-60 rounded-lg border p-2">
                                         <TabsTrigger
                                             value="basic-info"
                                             title="Basic Information"
@@ -149,7 +150,7 @@ export default function TabsComponent({ appointmentId }) {
                                     </TabsList>
 
                                     {/* Tab Panels */}
-                                    <div className="flex-1 border rounded-lg p-2 bg-white shadow-sm">
+                                    <div className="flex-1 border rounded-lg p-2  shadow-sm">
                                         <TabsContent value="basic-info">
                                             <AppointmentDonorProfileTabForm
                                                 donor={donor}
@@ -197,7 +198,11 @@ export default function TabsComponent({ appointmentId }) {
                                         </TabsTrigger>
                                         <TabsTrigger
                                             value="blood-collection"
-                                            disabled={appointment?.physical_exam?.eligibility_status !== "ACCEPTED" || false}
+                                            disabled={
+                                                appointment?.physical_exam
+                                                    ?.eligibility_status !==
+                                                    "ACCEPTED" || false
+                                            }
                                             title="Blood Collection"
                                         >
                                             <div className="flex items-center rounded gap-2 p-2 w-full border-b">

@@ -1,9 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 
-import {
-    CardContent,
-} from "@components/ui/card";
+import { CardContent } from "@components/ui/card";
 
 import { Calendar, Text, Users } from "lucide-react";
 import notify from "@components/ui/notify";
@@ -75,6 +73,7 @@ export default function DonorBloodDonationInfoForm({ details, onNext }) {
     useEffect(() => {
         if (isRegular) return;
         resetField("blood_type_id");
+        setValue("blood_type_label", "");
         resetField("last_donation_date");
         resetField("blood_service_facility");
     }, [isRegular]);
@@ -154,8 +153,7 @@ export default function DonorBloodDonationInfoForm({ details, onNext }) {
                                         <span
                                             className={clsx(
                                                 "label-text mr-2",
-                                                !isRegular &&
-                                                "font-semibold"
+                                                !isRegular && "font-semibold"
                                             )}
                                         >
                                             No
@@ -163,9 +161,7 @@ export default function DonorBloodDonationInfoForm({ details, onNext }) {
                                     </label>
                                 </div>
 
-                                <FieldError
-                                    field={errors?.is_regular_donor}
-                                />
+                                <FieldError field={errors?.is_regular_donor} />
                             </FormItem>
                         )}
                     />
@@ -287,9 +283,7 @@ export default function DonorBloodDonationInfoForm({ details, onNext }) {
                             tabIndex={-1}
                         >
                             <IoArrowUndoCircle />{" "}
-                            <span className="hidden sm:inline-block">
-                                Back
-                            </span>
+                            <span className="hidden sm:inline-block">Back</span>
                         </button>
                         <button
                             type="button"
@@ -298,14 +292,11 @@ export default function DonorBloodDonationInfoForm({ details, onNext }) {
                             tabIndex="5"
                         >
                             <MdNextPlan />{" "}
-                            <span className="hidden sm:inline-block">
-                                Next
-                            </span>
+                            <span className="hidden sm:inline-block">Next</span>
                         </button>
                     </div>
                 </div>
             </CardContent>
         </FormCardComponent>
-
     );
 }

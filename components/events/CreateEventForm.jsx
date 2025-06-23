@@ -55,6 +55,7 @@ import { uploadPicture } from "@/action/uploads";
 import AllEventCalendar from "@components/organizers/AllEventCalendar";
 import DrawerComponent from "@components/reusable_components/DrawerComponent";
 import { DrawerTrigger } from "@components/ui/drawer";
+import ImagePreviewComponent from "@components/reusable_components/ImagePreviewComponent";
 // import DrawerComponent from "@components/reusable_components/Drawer";
 
 export default function CreateEventForm({ agency }) {
@@ -245,15 +246,28 @@ export default function CreateEventForm({ agency }) {
                                             className="w-[150px] h-[150px] sm:w-[250px] sm:h-[250px] lg:w-[350px] lg:h-[350px]"
                                         />
                                         {uploaded_avatar ? (
-                                            <button
-                                                onClick={() =>
-                                                    resetField("file")
-                                                }
-                                                className="btn btn-ghost"
-                                            >
-                                                Clear
-                                            </button>
+                                            <div className="flex-items-center justify-center">
+                                                <ImagePreviewComponent
+                                                    imgSrc={avatar}
+                                                />
+                                                <button
+                                                    onClick={() =>
+                                                        resetField("file")
+                                                    }
+                                                    className="btn btn-ghost"
+                                                >
+                                                    Clear
+                                                </button>
+                                            </div>
                                         ) : (
+                                            // <button
+                                            //     onClick={() =>
+                                            //         resetField("file")
+                                            //     }
+                                            //     className="btn btn-ghost"
+                                            // >
+                                            //     Clear
+                                            // </button>
                                             <label className="text-center font-semibold italic text-slate-500">
                                                 Event Photo
                                             </label>

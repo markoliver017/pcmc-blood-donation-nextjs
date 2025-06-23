@@ -19,8 +19,6 @@ import { updateCoordinator } from "@/action/agencyAction";
 import { toastError } from "@lib/utils/toastError.utils";
 
 export default function ProfileContactForm({ coordinator }) {
-
-
     const queryClient = useQueryClient();
 
     const { mutate, isPending } = useMutation({
@@ -60,7 +58,7 @@ export default function ProfileContactForm({ coordinator }) {
         defaultValues: {
             id: coordinator.id,
             agency_id: coordinator.agency_id,
-            contact_number: coordinator.contact_number
+            contact_number: coordinator.contact_number,
         },
     });
 
@@ -69,9 +67,6 @@ export default function ProfileContactForm({ coordinator }) {
         handleSubmit,
         formState: { errors, isDirty },
     } = form;
-
-
-
 
     const onSubmit = async (formData) => {
         SweetAlert({
@@ -82,7 +77,6 @@ export default function ProfileContactForm({ coordinator }) {
             confirmButtonText: "Confirm",
             cancelButtonText: "Cancel",
             onConfirm: async () => {
-
                 mutate(formData);
             },
         });
@@ -90,7 +84,10 @@ export default function ProfileContactForm({ coordinator }) {
 
     return (
         <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="p-5 shadow border rounded-2xl">
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="p-5 shadow border rounded-2xl"
+            >
                 <FormField
                     control={form.control}
                     name="contact_number"
@@ -114,9 +111,7 @@ export default function ProfileContactForm({ coordinator }) {
                                 />
                             </label>
 
-                            <FieldError
-                                field={errors?.contact_number}
-                            />
+                            <FieldError field={errors?.contact_number} />
                         </FormItem>
                     )}
                 />
@@ -141,7 +136,7 @@ export default function ProfileContactForm({ coordinator }) {
                     </button>
                 </div>
             </form>
-            <FormLogger watch={watch} errors={errors} />
+            {/* <FormLogger watch={watch} errors={errors} /> */}
         </Form>
     );
 }

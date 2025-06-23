@@ -1,31 +1,31 @@
 // import { Checkbox } from "@components/ui/checkbox";
 import DataTableColumnHeader from "@components/reusable_components/DataTableColumnHeader";
 import Image from "next/image";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@components/ui/dropdown-menu";
-import { Button } from "@components/ui/button";
-import { Check, Command, Eye, MoreHorizontal } from "lucide-react";
-import Link from "next/link";
+// import {
+//     DropdownMenu,
+//     DropdownMenuContent,
+//     DropdownMenuItem,
+//     DropdownMenuLabel,
+//     DropdownMenuSeparator,
+//     DropdownMenuTrigger,
+// } from "@components/ui/dropdown-menu";
+// import { Button } from "@components/ui/button";
+// import { Check, Command, Eye, MoreHorizontal } from "lucide-react";
+// import Link from "next/link";
 import { formatFormalName } from "@lib/utils/string.utils";
 import moment from "moment";
-import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+// import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 
-function calculateAge(dateOfBirth) {
-    const today = new Date();
-    const birthDate = new Date(dateOfBirth);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-    }
-    return age;
-}
+// function calculateAge(dateOfBirth) {
+//     const today = new Date();
+//     const birthDate = new Date(dateOfBirth);
+//     let age = today.getFullYear() - birthDate.getFullYear();
+//     const m = today.getMonth() - birthDate.getMonth();
+//     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+//         age--;
+//     }
+//     return age;
+// }
 
 export const bloodCollectionColumns = [
     {
@@ -58,8 +58,7 @@ export const bloodCollectionColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Name" />
         ),
-        cell: ({ getValue, row }) => {
-            const data = row.original;
+        cell: ({ getValue }) => {
             return (
                 <>
                     <span>{getValue()}</span>{" "}
@@ -103,7 +102,9 @@ export const bloodCollectionColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Date" />
         ),
-        cell: ({ getValue }) => <span>{moment(getValue()).format("MMM DD, YYYY")}</span>,
+        cell: ({ getValue }) => (
+            <span>{moment(getValue()).format("MMM DD, YYYY")}</span>
+        ),
         filterFn: "columnFilter",
     },
     {
