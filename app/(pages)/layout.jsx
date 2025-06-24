@@ -58,12 +58,12 @@ export default async function RootLayout({ children, organizers }) {
                 <link rel="icon" href="/favicon.ico" sizes="any" />
             </head>
             <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+                className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-y-hidden`}
             >
                 <Providers>
                     <ToastContainer />
                     <ThemeProvider>
-                        <div className="flex dark:bg-black dark:text-slate-100">
+                        <div className="flex dark:bg-black dark:text-slate-100 border-5">
                             <Sidebar currentUser={currentUser} />
                             {/* <div
                                 id="main-container"
@@ -84,7 +84,6 @@ export default async function RootLayout({ children, organizers }) {
                                     </main>
                                 </TansactProviders>
                                 <Footer />
-
                             </MainWrapper>
 
                             {/* </div> */}

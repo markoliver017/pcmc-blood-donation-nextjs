@@ -50,7 +50,7 @@ export default function SelectRegisterDrawer({ open, setOpen }) {
                         <Link href="/organizers/register">
                             <Card className="rounded-sm cursor-pointer hover:ring-1 group">
                                 <CardHeader>
-                                    <CardTitle>Agency</CardTitle>
+                                    <CardTitle>Partner Agency</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <Image

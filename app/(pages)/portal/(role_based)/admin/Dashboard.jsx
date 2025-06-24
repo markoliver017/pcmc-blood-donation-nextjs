@@ -16,7 +16,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getAdminDashboard } from "@/action/adminEventAction";
 import { BiBuildings } from "react-icons/bi";
 import ForApprovalEventList from "./(admin-events)/events/@approval/ForApprovalEventList";
-import ForApprovalAgencyList from "./(agencies)/agencies/@approval/ForApprovalAgencyList";
+import ForApprovalAgencyList from "./(agencies)/agencies/(index)/ForApprovalAgencyList";
+import { fetchAgencyByStatus } from "@/action/agencyAction";
 
 export default function Dashboard() {
     const { data: dashboard, isLoading: dashboardIsLoading } = useQuery({
@@ -28,6 +29,18 @@ export default function Dashboard() {
             }
             return res.data;
         },
+        staleTime: 5 * 60 * 1000,
+        cacheTime: 5 * 60 * 1000,
+    });
+
+    const {
+        data: forApprovalAgencies,
+        isLoading: forApprovalAgencyIsFetching,
+    } = useQuery({
+        queryKey: ["agencies", "for approval"],
+        queryFn: async () => fetchAgencyByStatus("for approval"),
+        staleTime: 5 * 60 * 1000,
+        cacheTime: 5 * 60 * 1000,
     });
 
     return (
@@ -147,7 +160,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Calendar */}
                 <div className="lg:col-span-2">
-                    <Card className="w-full h-full">
+                    <Card className="w-full">
                         <CardHeader>
                             <CardTitle className="text-xl">
                                 Event Calendar
@@ -161,7 +174,7 @@ export default function Dashboard() {
 
                 {/* Action Panel */}
                 <div className="w-full">
-                    <Card className="min-h-full">
+                    <Card>
                         <CardHeader>
                             <CardTitle className="text-xl">
                                 Action Needed
@@ -190,7 +203,11 @@ export default function Dashboard() {
                                     <FaArrowRight />
                                 </Link>
                                 <div className="max-h-72 overflow-y-auto mt-2 space-y-2 p-2">
-                                    <ForApprovalAgencyList target="_blank" />
+                                    <ForApprovalAgencyList
+                                        agencies={forApprovalAgencies}
+                                        isFetching={forApprovalAgencyIsFetching}
+                                        target="_blank"
+                                    />
                                 </div>
                             </div>
                         </CardContent>

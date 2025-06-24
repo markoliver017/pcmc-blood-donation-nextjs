@@ -44,7 +44,10 @@ export default function ApprovalRejectComponent({ agency, target = "" }) {
                     </Link>
                 </DropdownMenuItem>
 
-                <DropdownMenuItem className="space-x-2 flex justify-between">
+                <DropdownMenuItem
+                    className="space-x-2 flex justify-between"
+                    onClick={(e) => e.stopPropagation()}
+                >
                     <VerifyAgency
                         agencyData={{
                             id: agency.id,
@@ -56,7 +59,10 @@ export default function ApprovalRejectComponent({ agency, target = "" }) {
                         icon={<CheckIcon />}
                     />
                 </DropdownMenuItem>
-                <div className="px-2 flex justify-between">
+                <div
+                    className="px-2 flex justify-between"
+                    onClick={(e) => e.stopPropagation()}
+                >
                     <RejectDialog
                         agencyId={agency.id}
                         className="w-full btn-error"

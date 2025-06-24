@@ -44,6 +44,7 @@ export default function AgencyDetailsForm({ details, onNext }) {
             "name",
             "contact_number",
             "organization_type",
+            "other_organization_type",
             "file",
         ]);
         if (valid) {
@@ -64,8 +65,10 @@ export default function AgencyDetailsForm({ details, onNext }) {
         !errors?.file && uploaded_avatar
             ? URL.createObjectURL(uploaded_avatar)
             : errors?.file
-                ? "/invalid-file.png"
-                : "/default-agency-logo.png";
+            ? "/invalid-file.png"
+            : "/default-agency-logo.png";
+
+    const orgtype = watch("organization_type");
 
     useEffect(() => {
         if (watch("file_url")) setValue("file_url", null);
@@ -105,9 +108,10 @@ export default function AgencyDetailsForm({ details, onNext }) {
                                     </div>
 
                                     {uploaded_avatar ? (
-
                                         <div className="flex-items-center justify-center">
-                                            <ImagePreviewComponent imgSrc={avatar} />
+                                            <ImagePreviewComponent
+                                                imgSrc={avatar}
+                                            />
                                             <button
                                                 onClick={() =>
                                                     resetField("file")
@@ -142,7 +146,7 @@ export default function AgencyDetailsForm({ details, onNext }) {
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <InlineLabel>Agency Name: *</InlineLabel>
+                                    <InlineLabel>Agency Name: </InlineLabel>
                                     <label
                                         className={clsx(
                                             "input w-full mt-1",
@@ -169,7 +173,7 @@ export default function AgencyDetailsForm({ details, onNext }) {
                             name="contact_number"
                             render={({ field }) => (
                                 <FormItem>
-                                    <InlineLabel>Contact Number: *</InlineLabel>
+                                    <InlineLabel>Contact Number: </InlineLabel>
                                     <label
                                         className={clsx(
                                             "input w-full mt-1",
@@ -179,11 +183,12 @@ export default function AgencyDetailsForm({ details, onNext }) {
                                         )}
                                     >
                                         <Phone className="h-3" />
+                                        <span>+63</span>
                                         <input
                                             type="text"
                                             tabIndex={2}
                                             {...field}
-                                            placeholder="+63#########"
+                                            placeholder="Enter a valid mobile (9123456789) or landline (21234567 or 3456789) number"
                                         />
                                     </label>
 
@@ -200,7 +205,7 @@ export default function AgencyDetailsForm({ details, onNext }) {
                             render={({ field }) => (
                                 <FormItem>
                                     <InlineLabel>
-                                        Organization Type: *
+                                        Organization Type:
                                     </InlineLabel>
 
                                     <label
@@ -227,6 +232,7 @@ export default function AgencyDetailsForm({ details, onNext }) {
                                                 "church",
                                                 "education",
                                                 "healthcare",
+                                                "others",
                                             ].map((org, i) => (
                                                 <option key={i} value={org}>
                                                     {formatFormalName(org)}
@@ -240,6 +246,41 @@ export default function AgencyDetailsForm({ details, onNext }) {
                                 </FormItem>
                             )}
                         />
+                        {orgtype === "others" && (
+                            <FormField
+                                control={control}
+                                name="other_organization_type"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <InlineLabel>
+                                            Specify Organization Type:{" "}
+                                        </InlineLabel>
+                                        <label
+                                            className={clsx(
+                                                "input w-full mt-1",
+                                                errors?.other_organization_type
+                                                    ? "input-error"
+                                                    : "input-info"
+                                            )}
+                                        >
+                                            <Building className="h-3" />
+                                            <input
+                                                type="text"
+                                                tabIndex={4}
+                                                {...field}
+                                                placeholder="Your agency organization type .."
+                                            />
+                                        </label>
+
+                                        <FieldError
+                                            field={
+                                                errors?.other_organization_type
+                                            }
+                                        />
+                                    </FormItem>
+                                )}
+                            />
+                        )}
                         <div className="flex-none card-actions justify-between mt-5">
                             <button
                                 onClick={() => onNext(-1)}
@@ -255,7 +296,7 @@ export default function AgencyDetailsForm({ details, onNext }) {
                                 type="button"
                                 className="btn btn-primary"
                                 onClick={onSubmitNext}
-                                tabIndex="4"
+                                tabIndex="5"
                             >
                                 <MdNextPlan />{" "}
                                 <span className="hidden sm:inline-block">

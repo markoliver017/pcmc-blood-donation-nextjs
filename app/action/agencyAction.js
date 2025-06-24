@@ -4,8 +4,20 @@
 
 import { logAuditTrail } from "@lib/audit_trails.utils";
 import { auth } from "@lib/auth";
+import {
+    getEmailToAgencyHead,
+    getEmailToMBDT,
+} from "@lib/email-html-template/getNewAgencyRegistrationEmailTemplate";
 import { logErrorToFile } from "@lib/logger.server";
-import { Agency, AgencyCoordinator, Role, sequelize, User } from "@lib/models";
+import { send_mail } from "@lib/mail.utils";
+import {
+    Agency,
+    AgencyCoordinator,
+    Notification,
+    Role,
+    sequelize,
+    User,
+} from "@lib/models";
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import {
@@ -94,6 +106,22 @@ export async function fetchAgency(id) {
                             "updated_by",
                         ],
                     },
+                },
+                {
+                    model: User,
+                    as: "coordinators",
+                    attributes: {
+                        exclude: [
+                            "password",
+                            "email_verified",
+                            "prefix",
+                            "suffix",
+                            "createdAt",
+                            "updatedAt",
+                            "updated_by",
+                        ],
+                    },
+                    through: { attributes: ["contact_number"] },
                 },
             ],
         });
@@ -345,10 +373,24 @@ export async function createAgency(formData) {
     }
 }
 
+export async function sendEmail(data) {
+    const { email } = data;
+    data.agency_address = "Example address, Philippines";
+    const subject =
+        "🩸 Thank You for Registering – Your Agency Application is Pending Approval";
+    console.log("email data", data);
+    const html = getEmailToMBDT(data);
+    const emailStatus = await send_mail({
+        to: email,
+        subject,
+        html,
+    });
+    console.log("email status", emailStatus);
+}
+
 /* For client user registration */
 export async function storeAgency(formData) {
-    // await new Promise((resolve) => setTimeout(resolve, 5000));
-    console.log("formData received on server", formData);
+    console.log("formData received on storeAgebcy", formData);
     const parsed = agencyRegistrationWithUser.safeParse(formData);
 
     if (!parsed.success) {
@@ -405,11 +447,39 @@ export async function storeAgency(formData) {
         await newUser.addRoles(data.role_ids, { transaction });
 
         data.head_id = newUser.id;
-        console.log("data.head_id >>", data);
 
         const newAgency = await Agency.create(data, { transaction });
 
         await transaction.commit();
+
+        data.agency_address = newAgency.agency_address;
+
+        const { email } = data;
+
+        await send_mail({
+            to: email,
+            subject:
+                "🩸 Thank You for Registering - Your Agency Application is Pending Approval",
+            html: getEmailToAgencyHead(data),
+            user_id: newUser.id,
+        });
+
+        await send_mail({
+            to: process.env.NEXT_PUBLIC_MBDT_EMAIL,
+            subject: "📥 New Agency Registration Request – Action Required",
+            html: getEmailToMBDT(data),
+            user_id: newUser.id,
+        });
+
+        await Notification.create({
+            user_id: newUser.id,
+            subject: "New Agency Registration",
+            type: "agency_for_approval",
+            reference_id: newAgency.id,
+            created_by: newUser.id,
+        });
+
+        // const adminSubject = ;
 
         await logAuditTrail({
             userId: newUser.id,
@@ -418,7 +488,7 @@ export async function storeAgency(formData) {
             details: `A new agency has been successfully created. Agency ID#: ${newAgency.id} with User account: ${newUser.id}`,
         });
 
-        return { success: true, data: newAgency.get({ plain: true }) };
+        return { success: true, data };
     } catch (err) {
         logErrorToFile(err, "CREATE AGENCY");
         await transaction.rollback();
@@ -651,7 +721,7 @@ export async function storeCoordinator(formData) {
     if (roles.length !== data.role_ids.length) {
         return {
             success: false,
-            message: "Database Error: One or more roles not found.",
+            message: "Database Error: The role was not found.",
         };
     }
 

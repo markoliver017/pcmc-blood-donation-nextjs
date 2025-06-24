@@ -7,9 +7,9 @@ import {
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
-import { fetchAgencyByStatus } from "@/action/agencyAction";
 import Skeleton_user from "@components/ui/Skeleton_user";
-import { useQuery } from "@tanstack/react-query";
+// import { fetchAgencyByStatus } from "@/action/agencyAction";
+// import { useQuery } from "@tanstack/react-query";
 import { formatFormalName } from "@lib/utils/string.utils";
 import moment from "moment";
 import ApprovalRejectComponent from "@components/organizers/ApprovalRejectComponent";
@@ -20,15 +20,17 @@ import Link from "next/link";
 export default function ForApprovalAgencyList({
     target = "",
     avatarClassName = "",
+    agencies = [],
+    isFetching = true,
 }) {
-    const { data: agencies, isLoading: agencyIsFetching } = useQuery({
-        queryKey: ["agencies", "for approval"],
-        queryFn: async () => fetchAgencyByStatus("for approval"),
-        staleTime: 0,
-        cacheTime: 0,
-    });
+    // const { data: agencies, isLoading: agencyIsFetching } = useQuery({
+    //     queryKey: ["agencies", "for approval"],
+    //     queryFn: async () => fetchAgencyByStatus("for approval"),
+    //     staleTime: 0,
+    //     cacheTime: 0,
+    // });
 
-    if (agencyIsFetching)
+    if (isFetching)
         return (
             <>
                 <Skeleton_user />
@@ -68,11 +70,20 @@ export default function ForApprovalAgencyList({
                             </CardTitle>
                             <CardDescription className="flex flex-wrap flex-col gap-1 dark:text-slate-300">
                                 <div className="flex justify-between">
-                                    <span>
-                                        {formatFormalName(
-                                            agency.organization_type
+                                    <div>
+                                        <span>
+                                            {formatFormalName(
+                                                agency.organization_type
+                                            )}
+                                        </span>
+                                        {agency.other_organization_type && (
+                                            <span>
+                                                &nbsp;(
+                                                {agency.other_organization_type}
+                                                )
+                                            </span>
                                         )}
-                                    </span>
+                                    </div>
                                     <ApprovalRejectComponent
                                         agency={agency}
                                         target={target}

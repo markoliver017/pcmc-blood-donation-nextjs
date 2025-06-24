@@ -300,7 +300,9 @@ export default function AgencyUpdateForm({ agency_id }) {
                             <DropdownMenuItem className="space-x-2">
                                 <Button
                                     onClick={() =>
-                                        router.push(`/portal/admin/agencies/${agency.id}`)
+                                        router.push(
+                                            `/portal/admin/agencies/${agency.id}`
+                                        )
                                     }
                                     variant="secondary"
                                     className=" hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200 btn-block"
@@ -810,7 +812,7 @@ export default function AgencyUpdateForm({ agency_id }) {
                                         >
                                             <Building2Icon className="h-3" />
                                             <select
-                                                className="w-full"
+                                                className="w-full dark:bg-inherit"
                                                 {...field}
                                             >
                                                 <option value="">
@@ -823,6 +825,7 @@ export default function AgencyUpdateForm({ agency_id }) {
                                                     "church",
                                                     "education",
                                                     "healthcare",
+                                                    "others",
                                                 ].map((org, i) => (
                                                     <option key={i} value={org}>
                                                         {formatFormalName(org)}

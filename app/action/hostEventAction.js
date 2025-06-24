@@ -21,7 +21,12 @@ import { ForeignKeyConstraintError, Op } from "sequelize";
 
 export async function getAgencyId() {
     const session = await auth();
-    if (!session) throw "You are not authorized to access this request.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
 
     const { user } = session;
     if (user?.role_name === "Agency Administrator") {
@@ -75,10 +80,10 @@ export async function getAllEvents() {
         return formattedEvents;
     } catch (err) {
         logErrorToFile(err, "getAllEvents ERROR");
-        throw {
+        return {
             success: false,
             type: "server",
-            message: err || "Unknown error",
+            message: extractErrorMessage(err),
         };
     }
 }
@@ -190,7 +195,11 @@ export async function getForApprovalEventsByAgency(status) {
     const agency_id = await getAgencyId();
 
     if (!agency_id) {
-        throw "Unauthorized access: You are not allowed to access this resources.";
+        return {
+            success: false,
+            message:
+                "Unauthorized access: You are not allowed to access this resources.",
+        };
     }
 
     try {
@@ -215,7 +224,7 @@ export async function getForApprovalEventsByAgency(status) {
         return formattedEvents;
     } catch (err) {
         logErrorToFile(err, "getForApprovalEventsByAgency ERROR");
-        throw {
+        return {
             success: false,
             type: "server",
             message: err || "Unknown error",
@@ -225,10 +234,17 @@ export async function getForApprovalEventsByAgency(status) {
 
 export async function getEventsById(id) {
     if (!id) {
-        throw "Incomplete data: Id is required.";
+        return {
+            success: false,
+            message: "Incomplete data: Id is required.",
+        };
     }
     const session = await auth();
-    if (!session) throw "You are not authorized to access this request.";
+    if (!session)
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
 
     try {
         const events = await BloodDonationEvent.findByPk(id, {
@@ -280,7 +296,7 @@ export async function getEventsById(id) {
         return formattedEvents;
     } catch (err) {
         logErrorToFile(err, "getEventsById ERROR");
-        throw {
+        return {
             success: false,
             type: "server",
             message: err || "Unknown error",
@@ -360,7 +376,12 @@ export async function getEventParticipants(eventId) {
 export async function storeEvent(formData) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     const session = await auth();
-    if (!session) throw "You are not authorized to access this request.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
     const { user } = session;
     formData.requester_id = user.id;
 
@@ -386,7 +407,10 @@ export async function storeEvent(formData) {
     });
 
     if (!agency) {
-        throw "Database Error: Agency not found or inactive.";
+        return {
+            success: false,
+            message: "Database Error: Agency not found or inactive.",
+        };
     }
 
     const existingEvent = await BloodDonationEvent.findOne({
@@ -427,9 +451,11 @@ export async function storeEvent(formData) {
     });
 
     if (existingEvent) {
-        throw new Error(
-            "Event date conflict: Another event is already scheduled for this date."
-        );
+        return {
+            success: false,
+            message:
+                "Event date conflict: Another event is already scheduled for this date.",
+        };
     }
 
     const transaction = await sequelize.transaction();
@@ -477,7 +503,12 @@ export async function storeEvent(formData) {
 export async function updateEvent(id, formData) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     const session = await auth();
-    if (!session) throw "You are not authorized to access this request.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
     const { user } = session;
 
     const parsed = bloodDonationEventSchema.safeParse(formData);
@@ -500,13 +531,19 @@ export async function updateEvent(id, formData) {
     });
 
     if (!agency) {
-        throw "Database Error: Agency not found or inactive.";
+        return {
+            success: false,
+            message: "Database Error: Agency not found or inactive.",
+        };
     }
 
     const existingEvent = await BloodDonationEvent.findByPk(id);
 
     if (!existingEvent) {
-        throw "Event not found.";
+        return {
+            success: false,
+            message: "Event not found.",
+        };
     }
 
     const conflictingEvent = await BloodDonationEvent.findOne({
@@ -522,7 +559,11 @@ export async function updateEvent(id, formData) {
     });
 
     if (conflictingEvent) {
-        throw "Event date conflict: Another event is already scheduled for this date.";
+        return {
+            successs: false,
+            message:
+                "Event date conflict: Another event is already scheduled for this date.",
+        };
     }
 
     const transaction = await sequelize.transaction();

@@ -1,5 +1,6 @@
 "use server";
 import { Role } from "@lib/models";
+import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 
 export async function getRoles() {
@@ -8,13 +9,21 @@ export async function getRoles() {
             attributes: { exclude: ["createdAt", "updatedAt"] },
         });
 
-        if (!roles)
-            throw "Database Error: Please contact your administrator! Code:roleAction/getRoles";
+        if (!roles) {
+            return {
+                success: false,
+                message:
+                    "Database Error: Please contact your administrator! Code:roleAction/getRoles",
+            };
+        }
 
         return formatSeqObj(roles);
     } catch (error) {
         console.error(error);
-        throw error;
+        return {
+            success: false,
+            message: extractErrorMessage(error),
+        };
     }
 }
 

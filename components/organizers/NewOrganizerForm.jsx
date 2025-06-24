@@ -1,5 +1,5 @@
 "use client";
-import { storeAgency } from "@/action/agencyAction";
+import { sendEmail, storeAgency } from "@/action/agencyAction";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -44,6 +44,7 @@ import Preloader3 from "@components/layout/Preloader3";
 import LoadingModal from "@components/layout/LoadingModal";
 import { FaHornbill } from "react-icons/fa";
 import { GiHornInternal } from "react-icons/gi";
+import { toastError } from "@lib/utils/toastError.utils";
 
 const form_sections = [
     {
@@ -119,34 +120,7 @@ export default function NewOrganizerForm({ role_name }) {
         },
         onError: (error) => {
             if (error?.type === "validation" && error?.errorArr.length) {
-                let detailContent = "";
-                const { errorArr: details, message } = error;
-
-                detailContent = (
-                    <ul className="list-disc list-inside">
-                        {details.map((err, index) => (
-                            <li key={index}>{err}</li>
-                        ))}
-                    </ul>
-                );
-                notify({
-                    error: true,
-                    message: (
-                        <div tabIndex={0} className="collapse">
-                            <input type="checkbox" />
-                            <div className="collapse-title font-semibold">
-                                {message}
-                                <br />
-                                <small className="link link-warning">
-                                    See details
-                                </small>
-                            </div>
-                            <div className="collapse-content text-sm">
-                                {detailContent}
-                            </div>
-                        </div>
-                    ),
-                });
+                toastError(error);
             } else {
                 // Handle server errors
                 notify({
@@ -157,7 +131,6 @@ export default function NewOrganizerForm({ role_name }) {
         },
     });
 
-    // console.log("agencyRegistrationSchema", z.object(userSchema.shape))
     const form = useForm({
         mode: "onChange",
         resolver: zodResolver(agencyRegistrationWithUser),
@@ -167,16 +140,17 @@ export default function NewOrganizerForm({ role_name }) {
             file: null,
             image: null,
             file_url: null,
-            email: "",
-            first_name: "",
+            email: "markoliver01728@gmail.com",
+            first_name: "Mark",
             middle_name: "",
-            last_name: "",
+            last_name: "Roman",
             gender: "",
-            password: "",
+            password: "User@1234",
             password_confirmation: "",
-            name: "",
+            name: "Agency One",
             contact_number: "",
             organization_type: "",
+            other_organization_type: "",
             address: "",
             barangay: "",
             city_municipality: "",
@@ -271,6 +245,13 @@ export default function NewOrganizerForm({ role_name }) {
                     </CardDescription>
                 </CardHeader>
                 <CardContent id="form-modal">
+                    <button
+                        type="button"
+                        className="btn"
+                        onClick={async () => sendEmail(form.getValues())}
+                    >
+                        Send Email
+                    </button>
                     <Form {...form}>
                         {isError && (
                             <div className="alert alert-error text-gray-700 mb-5">

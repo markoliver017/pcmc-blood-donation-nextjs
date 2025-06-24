@@ -261,11 +261,12 @@ export default function DonorBasicInfoForm({ details, onNext }) {
                                     )}
                                 >
                                     <Phone className="h-3" />
+                                    <span>+63</span>
                                     <input
                                         type="text"
                                         tabIndex={4}
                                         {...field}
-                                        placeholder="+63#########"
+                                        placeholder="Enter a valid mobile (9123456789) or landline (21234567 or 3456789) number"
                                     />
                                 </label>
 

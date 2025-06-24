@@ -1,0 +1,142 @@
+[2025-06-24T00:20:58.243Z] ❌ ERROR (CREATE AGENCY): SequelizeValidationError: Validation error: Invalid organization type.
+    at InstanceValidator._validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7264:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async InstanceValidator._validateAndRunHooks (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7274:13)
+    at async InstanceValidator.validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7268:16)
+    at async model.save (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:10529:13)
+    at async Agency.create (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9376:16)
+    at async storeAgency (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_a32a921f._.js:1093:27)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:438:2357
+    at async handleAction (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:437:23434)
+    at async renderToHTMLOrFlightImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:443:26714)
+    at async doRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1650:34)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1915:28)
+    at async DevServer.renderPageComponent (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2393:24)
+    at async DevServer.renderToResponseImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2430:32)
+    at async DevServer.pipeImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1003:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\next-server.js:304:17)
+    at async DevServer.handleRequestImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:895:17)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:371:20
+    at async Span.traceAsyncFn (C:\nextJs\blood-bank-portal\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:368:24)
+    at async invokeRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:235:21)
+    at async handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:426:24)
+    at async requestHandlerImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:450:13)
+    at async Server.requestListener (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\start-server.js:158:13)
+[2025-06-24T00:22:16.532Z] ❌ ERROR (CREATE AGENCY): SequelizeValidationError: Validation error: Invalid organization type.
+    at InstanceValidator._validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7264:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async InstanceValidator._validateAndRunHooks (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7274:13)
+    at async InstanceValidator.validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7268:16)
+    at async model.save (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:10529:13)
+    at async Agency.create (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9376:16)
+    at async storeAgency (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_a32a921f._.js:1093:27)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:438:2357
+    at async handleAction (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:437:23434)
+    at async renderToHTMLOrFlightImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:443:26714)
+    at async doRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1650:34)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1915:28)
+    at async DevServer.renderPageComponent (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2393:24)
+    at async DevServer.renderToResponseImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2430:32)
+    at async DevServer.pipeImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1003:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\next-server.js:304:17)
+    at async DevServer.handleRequestImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:895:17)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:371:20
+    at async Span.traceAsyncFn (C:\nextJs\blood-bank-portal\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:368:24)
+    at async invokeRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:235:21)
+    at async handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:426:24)
+    at async requestHandlerImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:450:13)
+    at async Server.requestListener (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\start-server.js:158:13)
+[2025-06-24T00:23:37.819Z] ❌ ERROR (CREATE AGENCY): SequelizeValidationError: Validation error: Invalid organization type.
+    at InstanceValidator._validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7264:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async InstanceValidator._validateAndRunHooks (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7274:13)
+    at async InstanceValidator.validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7268:16)
+    at async model.save (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:10529:13)
+    at async Agency.create (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9376:16)
+    at async storeAgency (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_a32a921f._.js:1093:27)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:438:2357
+    at async handleAction (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:437:23434)
+    at async renderToHTMLOrFlightImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:443:26714)
+    at async doRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1650:34)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1915:28)
+    at async DevServer.renderPageComponent (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2393:24)
+    at async DevServer.renderToResponseImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2430:32)
+    at async DevServer.pipeImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1003:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\next-server.js:304:17)
+    at async DevServer.handleRequestImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:895:17)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:371:20
+    at async Span.traceAsyncFn (C:\nextJs\blood-bank-portal\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:368:24)
+    at async invokeRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:235:21)
+    at async handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:426:24)
+    at async requestHandlerImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:450:13)
+    at async Server.requestListener (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\start-server.js:158:13)
+[2025-06-24T00:24:11.052Z] ❌ ERROR (CREATE AGENCY): SequelizeValidationError: Validation error: Invalid organization type.
+    at InstanceValidator._validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7264:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async InstanceValidator._validateAndRunHooks (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7274:13)
+    at async InstanceValidator.validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7268:16)
+    at async model.save (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:10529:13)
+    at async Agency.create (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9376:16)
+    at async storeAgency (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_a32a921f._.js:1093:27)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:438:2357
+    at async handleAction (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:437:23434)
+    at async renderToHTMLOrFlightImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:443:26714)
+    at async doRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1650:34)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1915:28)
+    at async DevServer.renderPageComponent (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2393:24)
+    at async DevServer.renderToResponseImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2430:32)
+    at async DevServer.pipeImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1003:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\next-server.js:304:17)
+    at async DevServer.handleRequestImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:895:17)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:371:20
+    at async Span.traceAsyncFn (C:\nextJs\blood-bank-portal\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:368:24)
+    at async invokeRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:235:21)
+    at async handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:426:24)
+    at async requestHandlerImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:450:13)
+    at async Server.requestListener (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\start-server.js:158:13)
+[2025-06-24T01:15:30.189Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <45edb079-ec01-b184-a258-6ef0d68ee987@pcmc.gov.ph>
+[2025-06-24T01:19:20.550Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <40566a04-2bc1-518c-0545-227b938dd27d@pcmc.gov.ph>
+[2025-06-24T01:23:21.704Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <8658d2ca-e555-11b3-0ae2-77147582ba45@pcmc.gov.ph>
+[2025-06-24T01:24:09.103Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <55a00b31-e142-58ed-b7b8-d5ce2b82b7f8@pcmc.gov.ph>
+[2025-06-24T01:40:17.461Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <bd93ac44-9067-e37c-3f2e-f31093a8e3a7@pcmc.gov.ph>
+[2025-06-24T01:46:22.244Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <ce1369c9-b358-5a9b-a92c-25abc1d1a7f9@pcmc.gov.ph>
+[2025-06-24T01:47:22.188Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <a32c3301-e858-9784-e733-a1ff1e88a77e@pcmc.gov.ph>
+[2025-06-24T01:52:29.301Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <7ec75522-cf5a-f4f4-507d-ca8a6accf7c2@pcmc.gov.ph>
+[2025-06-24T02:26:27.535Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <6506a71f-91bb-707b-f499-026a230803df@pcmc.gov.ph>
+[2025-06-24T02:26:59.869Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com,mark.roman@pcmc.gov.ph with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <68e8ef80-9c57-b91d-a4be-b52923fe795a@pcmc.gov.ph>
+[2025-06-24T02:27:42.855Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com,mark.roman@pcmc.gov.ph with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <a58ab540-194d-6440-6d8b-c6ef580f1e32@pcmc.gov.ph>
+[2025-06-24T02:40:51.755Z] ❌ ERROR (send-email): SequelizeValidationError: notNull Violation: EmailNotification.created_by cannot be null
+    at InstanceValidator._validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7264:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async InstanceValidator._validateAndRunHooks (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7274:13)
+    at async InstanceValidator.validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7268:16)
+    at async model.save (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:10529:13)
+    at async EmailNotification.create (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9376:16)
+    at async send_mail (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\[root of the server]__76aff05f._.js:299:9)
+    at async sendEmail (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\[root of the server]__76aff05f._.js:1270:25)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:438:2357
+    at async handleAction (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:437:23434)
+    at async renderToHTMLOrFlightImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:443:26714)
+    at async doRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1650:34)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1915:28)
+    at async DevServer.renderPageComponent (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2393:24)
+    at async DevServer.renderToResponseImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2430:32)
+    at async DevServer.pipeImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1003:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\next-server.js:304:17)
+    at async DevServer.handleRequestImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:895:17)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:371:20
+    at async Span.traceAsyncFn (C:\nextJs\blood-bank-portal\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:368:24)
+    at async invokeRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:235:21)
+    at async handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:426:24)
+    at async requestHandlerImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:450:13)
+    at async Server.requestListener (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\start-server.js:158:13)
+[2025-06-24T02:56:49.963Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <aa4faa62-1f1c-4798-2d17-5670189601b0@pcmc.gov.ph>
+[2025-06-24T02:58:10.663Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <e80e0d0f-fb36-251c-b86f-a3c32434dae3@pcmc.gov.ph>
+[2025-06-24T03:07:49.956Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <63a25c31-40e1-ad18-b95a-f4c36f146764@pcmc.gov.ph>
+[2025-06-24T05:20:21.512Z] ✅ SUCCESS (send-email): Email sent to mark.roman@pcmc.gov.ph with subject "🩸 Thank You for Registering - Your Agency Application is Pending Approval". Message ID: <858b3b54-fa56-8b11-b4f7-c05482a8c734@pcmc.gov.ph>
+[2025-06-24T05:20:23.310Z] ✅ SUCCESS (send-email): Email sent to mark.roman@pcmc.gov.ph with subject "📥 New Agency Registration Request – Action Required". Message ID: <2d802aa6-19e1-a2ce-5488-bcf2a1632b3a@pcmc.gov.ph>

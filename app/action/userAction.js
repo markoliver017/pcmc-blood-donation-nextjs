@@ -13,6 +13,7 @@ import { logAuditTrail } from "@lib/audit_trails.utils";
 import { logErrorToFile } from "@lib/logger.server";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import { Op } from "sequelize";
+import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 // import { formatPersonName } from "@lib/utils/string.utils";
 
 export async function getUsers() {
@@ -35,12 +36,14 @@ export async function getUsers() {
                 },
             ],
         });
-        // if (users.length === 0) throw "No Users Found";
 
         return JSON.parse(JSON.stringify(users));
     } catch (error) {
         console.error(error);
-        throw error;
+        return {
+            success: false,
+            message: extractErrorMessage(error),
+        };
     }
 }
 
@@ -77,7 +80,7 @@ export async function createUser(formData) {
     });
 
     if (roles.length !== data.role_ids.length) {
-        throw {
+        return {
             success: false,
             message: "Database Error: One or more roles not found.",
         };
@@ -93,7 +96,7 @@ export async function createUser(formData) {
 
         if (existingUser) {
             console.log("Existing User");
-            throw {
+            return {
                 success: false,
                 message: `The email is already associated with an existing account in the system. Please login then proceed to registration.`,
             };
@@ -132,14 +135,22 @@ export async function createUser(formData) {
         logErrorToFile(err, "CREATE USER");
         await transaction.rollback();
 
-        throw err.message || "Unknown error";
+        return {
+            success: false,
+            message: extractErrorMessage(err),
+        };
     }
 }
 
 export async function updateUser(formData) {
     console.log("updateUser!! formData", formData);
     const session = await auth();
-    if (!session) throw "You are not authorized to access this request.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
 
     const { user } = session;
     formData.updated_by = user.id;
@@ -171,7 +182,7 @@ export async function updateUser(formData) {
     });
 
     if (roles.length !== data.role_ids.length) {
-        throw {
+        return {
             success: false,
             message: "Database Error: One or more roles not found.",
         };
@@ -185,7 +196,10 @@ export async function updateUser(formData) {
         });
 
         if (!user) {
-            throw new Error("User Not Found");
+            return {
+                success: false,
+                message: "User Not Found",
+            };
         }
         console.log("Validated data for update", data);
 
@@ -221,7 +235,12 @@ export async function updateUser(formData) {
 export async function updateUserBasicInfo(formData) {
     console.log("updateUserBasicInfo formData", formData);
     const session = await auth();
-    if (!session) throw "You are not authorized to access this request.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
 
     const { user } = session;
     formData.updated_by = user.id;
@@ -249,7 +268,10 @@ export async function updateUserBasicInfo(formData) {
         });
 
         if (!user) {
-            throw new Error("User Not Found");
+            return {
+                success: false,
+                message: "User Not Found",
+            };
         }
 
         const updatedUser = await user.update(data, { transaction });
@@ -279,7 +301,12 @@ export async function updateUserBasicInfo(formData) {
 export async function updateUserCredentials(formData) {
     console.log("updateUserCredentials formData", formData);
     const session = await auth();
-    if (!session) throw "You are not authorized to access this request.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
 
     const { user } = session;
     formData.updated_by = user.id;
@@ -307,7 +334,10 @@ export async function updateUserCredentials(formData) {
         });
 
         if (!user) {
-            throw new Error("User Not Found");
+            return {
+                success: false,
+                message: "User Not Found",
+            };
         }
 
         const updatedUser = await user.update(data, { transaction });
@@ -352,7 +382,12 @@ export async function updateUserStatus(formData) {
     console.log("updateUserStatus formData", formData);
     const session = await auth();
     console.log("session", session);
-    if (!session) throw "You are not authorized to access this request.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
 
     const { user } = session;
     formData.updated_by = user.id;
@@ -380,7 +415,10 @@ export async function updateUserStatus(formData) {
         });
 
         if (!user) {
-            throw new Error("User Not Found");
+            return {
+                success: false,
+                message: "User not found.",
+            };
         }
         console.log("Validated data for update", data);
         const updatedUser = await user.update(data, { transaction });
@@ -440,7 +478,7 @@ export async function getUser(id) {
         return { success: true, data: user.get({ plain: true }) };
     } catch (err) {
         logErrorToFile(err, "GET USER ERROR");
-        throw {
+        return {
             success: false,
             type: "server",
             message: err.message || "Unknown error",

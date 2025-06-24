@@ -9,7 +9,12 @@ import { Op } from "sequelize";
 export async function getVerifiedDonorsByAgency() {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const session = await auth();
-    if (!session) throw "You are not authorized to access this page.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
 
     const { user } = session;
 
@@ -35,7 +40,10 @@ export async function getVerifiedDonorsByAgency() {
         }
 
         if (!agency) {
-            throw "Agency not found or not activated.";
+            return {
+                success: false,
+                message: "Agency not found or not activated.",
+            };
         }
 
         const donors = await Donor.findAll({
@@ -134,7 +142,12 @@ export async function getVerifiedDonorsCount() {
 export async function getHostDonorsByStatus(status) {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const session = await auth();
-    if (!session) throw "You are not authorized to access this page.";
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
 
     const { user } = session;
 
@@ -160,7 +173,10 @@ export async function getHostDonorsByStatus(status) {
         }
 
         if (!agency) {
-            throw "Agency not found or not activated.";
+            return {
+                success: false,
+                message: "Agency not found or not activated.",
+            };
         }
 
         const donors = await Donor.findAll({
@@ -185,10 +201,10 @@ export async function getHostDonorsByStatus(status) {
         return formatSeqObj(donors);
     } catch (err) {
         logErrorToFile(err, "getHostDonorsByStatus ERROR");
-        throw {
+        return {
             success: false,
             type: "server",
-            message: err.message || "Unknown error",
+            message: extractErrorMessage(err),
         };
     }
 }

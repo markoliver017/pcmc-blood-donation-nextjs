@@ -308,7 +308,9 @@ export default function NewAgencyForm({
                                         </label>
                                         {uploaded_avatar && (
                                             <div className="flex-items-center">
-                                                <ImagePreviewComponent imgSrc={avatar} />
+                                                <ImagePreviewComponent
+                                                    imgSrc={avatar}
+                                                />
                                                 <button
                                                     onClick={() =>
                                                         resetField("file")
@@ -370,10 +372,11 @@ export default function NewAgencyForm({
                                             )}
                                         >
                                             <Phone className="h-3" />
+                                            <span>+63</span>
                                             <input
                                                 type="text"
                                                 {...field}
-                                                placeholder="+63#########"
+                                                placeholder="Enter a valid mobile (9123456789) or landline (21234567 or 3456789) number"
                                             />
                                         </label>
 

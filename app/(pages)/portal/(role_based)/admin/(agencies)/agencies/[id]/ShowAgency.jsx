@@ -52,7 +52,7 @@ export default function ShowAgency({ agencyId }) {
                     <Button
                         onClick={() => router.push(`./${agency.id}/edit`)}
                         variant="secondary"
-                        className=" hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200"
+                        className="hidden hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200"
                     >
                         <Pencil />
                     </Button>
@@ -107,6 +107,26 @@ export default function ShowAgency({ agencyId }) {
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">
+                                Contact Number
+                            </TableCell>
+                            <TableCell>
+                                <span>+63{agency.contact_number}</span>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className="font-semibold">
+                                Organization Type
+                            </TableCell>
+                            <TableCell>
+                                {formatFormalName(agency.organization_type)}
+                                &nbsp;
+                                {agency.other_organization_type && (
+                                    <>({agency.other_organization_type})</>
+                                )}
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className="font-semibold">
                                 Address
                             </TableCell>
                             <TableCell>{agency.address}</TableCell>
@@ -140,6 +160,70 @@ export default function ShowAgency({ agencyId }) {
                                 Remarks
                             </TableCell>
                             <TableCell>{agency.remarks}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell colSpan={2} className="pt-6">
+                                <div className="bg-gray-100 dark:bg-slate-800 p-4 rounded-lg shadow-sm">
+                                    <h3 className="text-sm font-semibold mb-3 text-slate-700 dark:text-slate-200">
+                                        Coordinators
+                                    </h3>
+
+                                    <div className="overflow-x-auto">
+                                        <Table className="w-full text-sm">
+                                            <TableHeader>
+                                                <TableRow className="bg-slate-200 dark:bg-slate-700">
+                                                    <TableHead className="font-semibold text-slate-700 dark:text-slate-100">
+                                                        Name
+                                                    </TableHead>
+                                                    <TableHead className="font-semibold text-slate-700 dark:text-slate-100">
+                                                        Email
+                                                    </TableHead>
+                                                    <TableHead className="font-semibold text-slate-700 dark:text-slate-100">
+                                                        Contact Number
+                                                    </TableHead>
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {agency?.coordinators?.length >
+                                                0 ? (
+                                                    agency.coordinators.map(
+                                                        (coor, index) => (
+                                                            <TableRow
+                                                                key={index}
+                                                                className="text-slate-700 dark:text-slate-200"
+                                                            >
+                                                                <TableCell>
+                                                                    {coor.full_name ||
+                                                                        coor.name}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    {coor.email ||
+                                                                        "N/A"}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    {coor?.AgencyCoordinator
+                                                                        ? `+63${coor.AgencyCoordinator?.contact_number}`
+                                                                        : "N/A"}
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        )
+                                                    )
+                                                ) : (
+                                                    <TableRow>
+                                                        <TableCell
+                                                            colSpan={3}
+                                                            className="text-center text-slate-500"
+                                                        >
+                                                            No coordinators
+                                                            listed.
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )}
+                                            </TableBody>
+                                        </Table>
+                                    </div>
+                                </div>
+                            </TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>

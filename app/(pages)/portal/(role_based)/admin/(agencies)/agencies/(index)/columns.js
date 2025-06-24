@@ -120,7 +120,15 @@ export const columns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Org. Type" />
         ),
-        cell: ({ getValue }) => <>{formatFormalName(getValue())}</>,
+        cell: ({ getValue, row }) => {
+            const data = row.original;
+            return (
+                <>
+                    {formatFormalName(getValue())} &nbsp;{" "}
+                    {data.other_organization_type}
+                </>
+            );
+        },
         filterFn: "columnFilter",
     },
     {

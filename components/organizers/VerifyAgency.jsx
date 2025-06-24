@@ -84,15 +84,15 @@ export default function VerifyAgency({
                 // onSubmit={handleSubmit(onSubmit)}
             >
                 <button
-                    type="submit"
+                    type="button"
                     disabled={isPending}
                     className={clsx(
-                        "hover:bg-neutral-800 hover:text-green-300",
+                        "hover:bg-neutral-800 hover:text-green-300 z-10",
                         className
                     )}
                     onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
+                        // e.preventDefault();
+                        // e.stopPropagation();
                         handleSubmit(onSubmit)();
                     }}
                 >
