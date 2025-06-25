@@ -18,11 +18,8 @@ import {
 import {
     CalendarIcon,
     CalendarPlus2,
-    Maximize,
-    Plus,
     Save,
     Text,
-    Timer,
     X,
 } from "lucide-react";
 import notify from "@components/ui/notify";
@@ -41,26 +38,20 @@ import { Input } from "@components/ui/input";
 
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 
-// import { GitHubLogoIcon } from "@radix-ui/react-icons";
-import { BiMaleFemale, BiTime } from "react-icons/bi";
 
 import { useRouter } from "next/navigation";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import SweetAlert from "@components/ui/SweetAlert";
 import { toastError } from "@lib/utils/toastError.utils";
-import FormCardSingleForm from "@components/form/FormCardSingleForm";
 import Tiptap from "@components/reusable_components/Tiptap";
 import FormLogger from "@lib/utils/FormLogger";
-import { MdDeleteForever } from "react-icons/md";
-import ToggleAny from "@components/reusable_components/ToggleAny";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+
 import { bloodDonationEventSchema } from "@lib/zod/bloodDonationSchema";
 import {
     getAllEvents,
     getEventsById,
-    storeEvent,
     updateEvent,
 } from "@/action/hostEventAction";
 import { uploadPicture } from "@/action/uploads";
@@ -74,12 +65,14 @@ import { Button } from "@components/ui/button";
 import { cn } from "@lib/utils";
 import { format } from "date-fns";
 import { PiCalendarCheckFill } from "react-icons/pi";
-// import DrawerComponent from "@components/reusable_components/Drawer";
+import { debounce } from "lodash";
+import TimeScheduleUpdateForm from "./TimeScheduleUpdateForm";
+import { FaArrowLeft } from "react-icons/fa";
 
 export default function UpdateEventForm({ eventId }) {
     const router = useRouter();
-
     const queryClient = useQueryClient();
+
 
     const { data: bookedEvents, bookedEventsIsLoading } = useQuery({
         queryKey: ["all_event_schedules"],
@@ -95,6 +88,7 @@ export default function UpdateEventForm({ eventId }) {
     const [calendarMonth, setCalendarMonth] = useState(
         event?.date ? new Date(event.date) : new Date()
     );
+    const [isUploading, setIsUploading] = useState(false)
 
     const { data, mutate, isPending, isError, error } = useMutation({
         mutationFn: async (formData) => {
@@ -114,16 +108,19 @@ export default function UpdateEventForm({ eventId }) {
             queryClient.invalidateQueries({
                 queryKey: ["all_events"],
             });
-            SweetAlert({
-                title: "Update Blood Donation Event",
-                text: "You have successfully updated the blood donation event.",
-                icon: "success",
-                confirmButtonText: "Okay",
-                onConfirm: () => {
-                    reset();
-                    router.back();
-                },
+            queryClient.invalidateQueries({
+                queryKey: ["agency_events"],
             });
+            // SweetAlert({
+            //     title: "Update Blood Donation Event",
+            //     text: "You have successfully updated the blood donation event.",
+            //     icon: "success",
+            //     confirmButtonText: "Okay",
+            //     onConfirm: () => {
+            //         reset();
+            //         router.back();
+            //     },
+            // });
         },
         onError: (error) => {
             // Handle validation errors
@@ -142,7 +139,7 @@ export default function UpdateEventForm({ eventId }) {
     });
 
     const form = useForm({
-        mode: "onChange",
+        mode: "onBlur",
         resolver: zodResolver(bloodDonationEventSchema),
         defaultValues: {
             ...event,
@@ -162,14 +159,22 @@ export default function UpdateEventForm({ eventId }) {
         resetField,
         reset,
         setValue,
+        trigger,
+        getValues,
         handleSubmit,
         formState: { errors, isDirty },
     } = form;
 
-    const { fields, append, remove } = useFieldArray({
-        control,
-        name: "time_schedules",
-    });
+
+
+    const debouncedUpdate = debounce(async (value, name, trigger, getValues, mutate) => {
+        console.log(value)
+        const isValid = await trigger(name);
+        if (isValid) {
+            const formData = getValues();
+            mutate(formData);
+        }
+    }, 1000);
 
     const onSubmit = async (formData) => {
         SweetAlert({
@@ -211,8 +216,8 @@ export default function UpdateEventForm({ eventId }) {
 
     const bookedEventsExceptEventDate = Array.isArray(bookedEvents)
         ? bookedEvents
-              ?.filter((ev) => ev.date !== event.date)
-              .map((ev) => new Date(ev.date))
+            ?.filter((ev) => ev.date !== event.date)
+            .map((ev) => new Date(ev.date))
         : [];
 
     return (
@@ -224,8 +229,14 @@ export default function UpdateEventForm({ eventId }) {
                 <Card className="md:p-4 bg-slate-100 p-3">
                     <CardHeader className="text-2xl font-bold">
                         <CardTitle className="flex justify-between">
-                            <div className="text-2xl">
-                                Update Blood Donation Event
+                            <div className="text-2xl flex items-center gap-5">
+                                <span>Update Blood Donation Event</span>
+                                {isPending && (
+                                    <span className="flex-items-center text-blue-500">
+                                        <span className="loading loading-bars loading-xs"></span>
+                                        <span className="italic  text-md">Updating ...</span>
+                                    </span>
+                                )}
                             </div>
                             <div className="flex justify-end">
                                 <DrawerComponent
@@ -263,6 +274,40 @@ export default function UpdateEventForm({ eventId }) {
                                         fileInputRef.current.click(); // Trigger the file input click
                                     }
                                 };
+                                const handleFileChange = async (e) => {
+                                    const file = e.target.files[0];
+                                    if (file) {
+                                        onChange(file); // Update RHF form state
+
+                                        // Optional: clear file_url before upload to show "uploading" state
+                                        setValue("file_url", null);
+                                        setIsUploading(true)
+                                        const result = await uploadPicture(file);
+                                        if (!result.success) {
+                                            console.error(result.message)
+                                            notify({
+                                                error: true,
+                                                message: "Upload failed: Please re-upload and try again!",
+                                            });
+                                            setIsUploading(false);
+                                            resetField("file");
+                                            return;
+                                        }
+
+                                        const file_url = result.file_data?.url || null;
+                                        setValue("file_url", file_url);
+
+                                        // Optional: revalidate + auto-save
+                                        const isValid = await trigger(["file", "file_url"]);
+                                        if (isValid) {
+                                            const formData = getValues();
+                                            mutate(formData);
+                                        }
+                                        setIsUploading(false)
+
+                                    }
+                                };
+
                                 return (
                                     <FormItem className="flex-none text-center w-full md:w-max">
                                         <div className="hidden">
@@ -270,11 +315,7 @@ export default function UpdateEventForm({ eventId }) {
                                                 <Input
                                                     type="file"
                                                     tabIndex={-1}
-                                                    onChange={(e) =>
-                                                        onChange(
-                                                            e.target.files[0]
-                                                        )
-                                                    }
+                                                    onChange={handleFileChange}
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -284,6 +325,12 @@ export default function UpdateEventForm({ eventId }) {
                                             whenClick={handleImageClick}
                                             className="w-[150px] h-[150px] sm:w-[250px] sm:h-[250px] lg:w-[350px] lg:h-[350px]"
                                         />
+                                        {isUploading && (
+                                            <span className="flex-items-center justify-center text-blue-500">
+                                                <span className="loading loading-bars loading-xs"></span>
+                                                <span className="italic  text-md">Uploading ...</span>
+                                            </span>
+                                        )}
                                         {uploaded_avatar ? (
                                             // <button
                                             //     onClick={() =>
@@ -311,6 +358,7 @@ export default function UpdateEventForm({ eventId }) {
                                                 Event Photo
                                             </label>
                                         )}
+
                                         <FormMessage />
                                     </FormItem>
                                 );
@@ -332,7 +380,7 @@ export default function UpdateEventForm({ eventId }) {
 
                                         <label
                                             className={clsx(
-                                                "input w-full mt-1",
+                                                "input w-full mt-1 text-xl",
                                                 errors?.title
                                                     ? "input-error"
                                                     : "input-info"
@@ -344,6 +392,13 @@ export default function UpdateEventForm({ eventId }) {
                                                 tabIndex={1}
                                                 placeholder="Enter event title"
                                                 {...field}
+                                                // onBlur={handleSubmit((data) => {
+                                                //     if (isDirty) mutate(data);
+                                                // })}
+                                                onChange={(e) => {
+                                                    field.onChange(e); // make sure RHF still receives the change
+                                                    debouncedUpdate(e.target.value, "title", trigger, getValues, mutate);
+                                                }}
                                             />
                                         </label>
                                         <FieldError field={errors?.title} />
@@ -364,7 +419,7 @@ export default function UpdateEventForm({ eventId }) {
                                                         className={cn(
                                                             "pl-3 text-left font-normal mt-1 text-xl dark:!bg-[#181717] hover:text-slate-400",
                                                             !field.value &&
-                                                                "text-muted-foreground"
+                                                            "text-muted-foreground"
                                                         )}
                                                         tabIndex={2}
                                                     >
@@ -392,8 +447,8 @@ export default function UpdateEventForm({ eventId }) {
                                                     selected={
                                                         field.value
                                                             ? new Date(
-                                                                  field.value
-                                                              )
+                                                                field.value
+                                                            )
                                                             : undefined
                                                     }
                                                     month={calendarMonth}
@@ -410,6 +465,9 @@ export default function UpdateEventForm({ eventId }) {
                                                                     "yyyy-MM-dd"
                                                                 )
                                                             );
+                                                            handleSubmit((data) => {
+                                                                if (isDirty) mutate(data);
+                                                            })()
                                                         } else {
                                                             field.onChange("");
                                                         }
@@ -463,7 +521,10 @@ export default function UpdateEventForm({ eventId }) {
                                         >
                                             <Tiptap
                                                 content={value}
-                                                onContentChange={onChange}
+                                                onContentChange={(newValue) => {
+                                                    onChange(newValue); // update RHF
+                                                    debouncedUpdate(newValue, "description", trigger, getValues, mutate); // validate + auto-save
+                                                }}
                                             />
                                         </span>
                                         <FieldError
@@ -473,240 +534,7 @@ export default function UpdateEventForm({ eventId }) {
                                 )}
                             />
 
-                            <Card className="mt-5 bg-inherit">
-                                <CardTitle className="p-5 pb-2">
-                                    Time Schedule Details
-                                </CardTitle>
-                                <CardDescription className="px-10 pb-2">
-                                    <FieldError
-                                        field={errors?.time_schedules?.root}
-                                    />
-                                </CardDescription>
-
-                                <CardContent>
-                                    <div className="flex gap-3 flex-col px-2">
-                                        {fields.map((item, index) => (
-                                            <Card
-                                                key={item.id}
-                                                className=" p-5 flex-1 mb-2 bg-inherit border-l-5 border-l-blue-900 dark:border-l-blue-600"
-                                            >
-                                                <CardTitle>
-                                                    <div className="flex justify-between">
-                                                        <p className="flex items-center text-2xl gap-1">
-                                                            <BiTime /> Time
-                                                            Schedule {index + 1}
-                                                        </p>
-                                                        <div className="flex justify-end">
-                                                            <FormField
-                                                                control={
-                                                                    control
-                                                                }
-                                                                name={`time_schedules.${index}.has_limit`}
-                                                                render={({
-                                                                    field: {
-                                                                        value,
-                                                                        onChange,
-                                                                    },
-                                                                }) => (
-                                                                    <FormItem className=" flex items-center gap-2 font-semibold">
-                                                                        <span
-                                                                            className={clsx(
-                                                                                "text-sm font-semibold",
-                                                                                value
-                                                                                    ? "text-green-600"
-                                                                                    : "text-warning"
-                                                                            )}
-                                                                        >
-                                                                            {value
-                                                                                ? "Has Limit"
-                                                                                : "No Limit"}
-                                                                        </span>
-                                                                        <ToggleAny
-                                                                            value={
-                                                                                value
-                                                                            }
-                                                                            onChange={() =>
-                                                                                onChange(
-                                                                                    !value
-                                                                                )
-                                                                            }
-                                                                        ></ToggleAny>
-                                                                    </FormItem>
-                                                                )}
-                                                            />
-                                                            <button
-                                                                type="button"
-                                                                disabled={
-                                                                    index == 0
-                                                                }
-                                                                onClick={() =>
-                                                                    remove(
-                                                                        index
-                                                                    )
-                                                                }
-                                                                className="btn btn-error btn-sm btn-outline hidden"
-                                                            >
-                                                                <MdDeleteForever />
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </CardTitle>
-                                                <CardContent className="py-2">
-                                                    <FormField
-                                                        control={control}
-                                                        name={`time_schedules.${index}.time_start`}
-                                                        render={({ field }) => (
-                                                            <FormItem>
-                                                                <div className="flex flex-wrap">
-                                                                    <InlineLabel>
-                                                                        Time
-                                                                        Start:{" "}
-                                                                    </InlineLabel>
-
-                                                                    <label
-                                                                        className={clsx(
-                                                                            "input mt-1",
-                                                                            errors
-                                                                                ?.time_schedules?.[
-                                                                                index
-                                                                            ]
-                                                                                ?.time_start
-                                                                                ? "input-error"
-                                                                                : "input-info"
-                                                                        )}
-                                                                    >
-                                                                        <Timer className="h-3" />
-                                                                        <input
-                                                                            type="time"
-                                                                            tabIndex={
-                                                                                4
-                                                                            }
-                                                                            placeholder="Enter start time"
-                                                                            {...field}
-                                                                        />
-                                                                    </label>
-                                                                </div>
-                                                                <div className="flex md:justify-center">
-                                                                    <FormMessage />
-                                                                </div>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                    <FormField
-                                                        control={control}
-                                                        name={`time_schedules.${index}.time_end`}
-                                                        render={({ field }) => (
-                                                            <FormItem>
-                                                                <div className="flex flex-wrap">
-                                                                    <InlineLabel>
-                                                                        Time
-                                                                        End:{" "}
-                                                                    </InlineLabel>
-
-                                                                    <label
-                                                                        className={clsx(
-                                                                            "input mt-1",
-                                                                            errors
-                                                                                ?.time_schedules?.[
-                                                                                index
-                                                                            ]
-                                                                                ?.time_end
-                                                                                ? "input-error"
-                                                                                : "input-info"
-                                                                        )}
-                                                                    >
-                                                                        <Timer className="h-3" />
-                                                                        <input
-                                                                            type="time"
-                                                                            tabIndex={
-                                                                                4
-                                                                            }
-                                                                            placeholder="Enter time end"
-                                                                            {...field}
-                                                                        />
-                                                                    </label>
-                                                                </div>
-                                                                <div className="flex md:justify-center">
-                                                                    <FormMessage />
-                                                                </div>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-
-                                                    {watch(
-                                                        `time_schedules.${index}.has_limit`
-                                                    ) ? (
-                                                        <FormField
-                                                            control={control}
-                                                            name={`time_schedules.${index}.max_limit`}
-                                                            render={({
-                                                                field,
-                                                            }) => (
-                                                                <FormItem>
-                                                                    <div className="flex flex-wrap items-center">
-                                                                        <InlineLabel>
-                                                                            Max
-                                                                            Limit:{" "}
-                                                                        </InlineLabel>
-
-                                                                        <label
-                                                                            className={clsx(
-                                                                                "input",
-                                                                                errors
-                                                                                    ?.time_schedules?.[
-                                                                                    index
-                                                                                ]
-                                                                                    ?.max_limit
-                                                                                    ? "input-error"
-                                                                                    : "input-info"
-                                                                            )}
-                                                                        >
-                                                                            <ExclamationTriangleIcon className="h-3" />
-                                                                            <input
-                                                                                type="number"
-                                                                                min={
-                                                                                    0
-                                                                                }
-                                                                                tabIndex={
-                                                                                    4
-                                                                                }
-                                                                                placeholder="Enter max limit"
-                                                                                {...field}
-                                                                            />
-                                                                        </label>
-                                                                    </div>
-                                                                    <FormMessage />
-                                                                </FormItem>
-                                                            )}
-                                                        />
-                                                    ) : (
-                                                        ""
-                                                    )}
-                                                </CardContent>
-                                            </Card>
-                                        ))}
-                                        <div className="hidden p-2">
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    append({
-                                                        time_start: "",
-                                                        time_end: "",
-                                                        has_limit: false,
-                                                        max_limit: 0,
-                                                    })
-                                                }
-                                                className="h-full p-5 flex border rounded-2xl btn btn-dash btn-primary"
-                                            >
-                                                <Plus />{" "}
-                                                <span className="hidden sm:inline-block">
-                                                    Add time schedule
-                                                </span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                            <TimeScheduleUpdateForm form={form} />
 
                             <div
                                 className="space-y-2 mt-4 relative"
@@ -714,7 +542,7 @@ export default function UpdateEventForm({ eventId }) {
                             >
                                 <button
                                     disabled={!isDirty || isPending}
-                                    className="py-5 flex rounded-2xl text-2xl btn btn-block btn-primary ring-offset-2 ring-offset-blue-500 hover:ring-2 "
+                                    className="py-5 hidden rounded-2xl text-2xl btn btn-block btn-primary ring-offset-2 ring-offset-blue-500 hover:ring-2 "
                                 >
                                     {isPending ? (
                                         <>
@@ -731,16 +559,16 @@ export default function UpdateEventForm({ eventId }) {
                                 <button
                                     onClick={() => router.back()}
                                     type="button"
-                                    className="p-5 flex rounded-2xl text-2xl btn btn-outline btn-block btn-error ring-offset-2 ring-offset-red-500 hover:ring-2"
+                                    className="p-5 flex rounded-2xl text-2xl btn btn-outline btn-block btn-warning ring-offset-2 ring-offset-red-500 hover:ring-2"
                                 >
-                                    <X /> Cancel
+                                    <FaArrowLeft /> Go Back and Save
                                 </button>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
             </form>
-            {/* <FormLogger watch={watch} errors={errors} data={event} /> */}
+            <FormLogger watch={watch} errors={errors} data={event} />
         </Form>
     );
 }

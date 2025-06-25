@@ -63,7 +63,7 @@ export default async function RootLayout({ children, organizers }) {
                 <Providers>
                     <ToastContainer />
                     <ThemeProvider>
-                        <div className="flex dark:bg-black dark:text-slate-100 border-5">
+                        <div className="flex dark:bg-black dark:text-slate-100">
                             <Sidebar currentUser={currentUser} />
                             {/* <div
                                 id="main-container"

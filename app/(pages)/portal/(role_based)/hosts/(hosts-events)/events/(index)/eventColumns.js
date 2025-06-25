@@ -180,7 +180,7 @@ export const eventColumns = (setIsLoading) => [
             }
             if (data.registration_status == "ongoing") {
                 regStatusBadge = (
-                    <div className="badge p-2 font-semibold text-xs badge-primary">
+                    <div className="badge p-2 font-semibold text-xs badge-secondary">
                         <GiOpenBook />{" "}
                         {formatFormalName(data.registration_status)}
                     </div>

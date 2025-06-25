@@ -15,7 +15,7 @@ import {
 } from "@lib/models";
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
-import { bloodDonationEventSchema } from "@lib/zod/bloodDonationSchema";
+import { bloodDonationEventSchema, timeScheduleSchema } from "@lib/zod/bloodDonationSchema";
 import { addDays, format, subDays } from "date-fns";
 import { ForeignKeyConstraintError, Op } from "sequelize";
 // import { logAuditTrail } from "@lib/audit_trails.utils";
@@ -468,12 +468,11 @@ export async function storeEvent(formData) {
     if (overlappingEvent) {
         return {
             success: false,
-            message: `Event date conflict: Another event ("${
-                overlappingEvent?.title
-            }") dated ${format(
-                overlappingEvent?.date,
-                "PP"
-            )} is scheduled within 90 days of your selected date. Please choose a different date.`,
+            message: `Event date conflict: Another event ("${overlappingEvent?.title
+                }") dated ${format(
+                    overlappingEvent?.date,
+                    "PP"
+                )} is scheduled within 90 days of your selected date. Please choose a different date.`,
         };
     }
 
@@ -592,70 +591,6 @@ export async function updateEvent(id, formData) {
         data.updated_by = user.id;
         await existingEvent.update(data, { transaction });
 
-        // 1. Get all existing schedules for this event
-        const existingSchedules = await EventTimeSchedule.findAll({
-            where: { blood_donation_event_id: id },
-            transaction,
-        });
-        // 2. Map for quick lookup
-        const existingMap = new Map(
-            existingSchedules.map((s) => [s.id.toString(), s])
-        );
-        // 3. Prepare new data
-        const newSchedules = data.time_schedules;
-        // 4. Track IDs to keep
-        const keepIds = [];
-        // 5. Update or create
-        for (const sched of newSchedules) {
-            if (sched.id && existingMap.has(sched.id.toString())) {
-                // Update existing
-                await EventTimeSchedule.update(
-                    {
-                        ...sched,
-                        blood_donation_event_id: id,
-                    },
-                    {
-                        where: { id: sched.id },
-                        transaction,
-                    }
-                );
-                keepIds.push(sched.id);
-            } else {
-                // Create new
-                const created = await EventTimeSchedule.create(
-                    {
-                        ...sched,
-                        blood_donation_event_id: id,
-                    },
-                    { transaction }
-                );
-                keepIds.push(created.id);
-            }
-        }
-        // 6. Delete schedules not in keepIds
-        const toDelete = existingSchedules
-            .filter((s) => !keepIds.includes(s.id))
-            .map((s) => s.id);
-
-        if (toDelete.length > 0) {
-            await EventTimeSchedule.destroy({
-                where: { id: toDelete },
-                transaction,
-            });
-        }
-
-        // await EventTimeSchedule.destroy({
-        //     where: { blood_donation_event_id: id },
-        //     transaction,
-        // });
-
-        // await EventTimeSchedule.bulkCreate(
-        //     data.time_schedules.map((row) => ({
-        //         blood_donation_event_id: id,
-        //         ...row,
-        //     })),
-        //     { transaction }
-        // );
 
         await transaction.commit();
 
@@ -692,3 +627,151 @@ export async function updateEvent(id, formData) {
         };
     }
 }
+
+export async function updateEventTimeSchedule(id, formData) {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+    const { user } = session;
+    console.log(id, formData)
+    const parsed = timeScheduleSchema.safeParse(formData);
+
+    if (!parsed.success) {
+        const fieldErrors = parsed.error.flatten().fieldErrors;
+        return {
+            success: false,
+            type: "validation",
+            message: "Please check your input and try again.",
+            errorObj: parsed.error.flatten().fieldErrors,
+            errorArr: Object.values(fieldErrors).flat(),
+        };
+    }
+
+    const { data } = parsed;
+
+    console.log("parsed data", data);
+
+    const timeSchedule = await EventTimeSchedule.findByPk(id);
+
+
+    if (!timeSchedule) {
+        return {
+            success: false,
+            message: "Database Error: Time schedule not found.",
+        };
+    }
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        data.updated_by = user.id;
+        await timeSchedule.update(data, {
+            transaction,
+        });
+
+        await transaction.commit();
+
+        await logAuditTrail({
+            userId: user.id,
+            controller: "events",
+            action: "UPDATE EVENT TIME SCHEDULE",
+            details: `Blood donation time schedule has been successfully updated. ID#: ${id}`,
+        });
+
+        return {
+            success: true,
+            data: timeSchedule.get({ plain: true }),
+        };
+    } catch (err) {
+        console.log(err);
+        logErrorToFile(err, "UPDATE EVENT TIME SCHEDULE");
+        await transaction.rollback();
+
+        let message = extractErrorMessage(err); // default fallback
+
+        if (
+            err instanceof ForeignKeyConstraintError ||
+            err.original?.errno === 1451
+        ) {
+            message =
+                "Unable to update the event because some time schedules already have donor appointments. Please remove those appointments first.";
+        }
+
+        return {
+            success: false,
+            type: "server",
+            message,
+        };
+    }
+}
+
+
+// 1. Get all existing schedules for this event
+// const existingSchedules = await EventTimeSchedule.findAll({
+//     where: { blood_donation_event_id: id },
+//     transaction,
+// });
+// // 2. Map for quick lookup
+// const existingMap = new Map(
+//     existingSchedules.map((s) => [s.id.toString(), s])
+// );
+// // 3. Prepare new data
+// const newSchedules = data.time_schedules;
+// // 4. Track IDs to keep
+// const keepIds = [];
+// // 5. Update or create
+// for (const sched of newSchedules) {
+//     if (sched.id && existingMap.has(sched.id.toString())) {
+//         // Update existing
+//         await EventTimeSchedule.update(
+//             {
+//                 ...sched,
+//                 blood_donation_event_id: id,
+//             },
+//             {
+//                 where: { id: sched.id },
+//                 transaction,
+//             }
+//         );
+//         keepIds.push(sched.id);
+//     } else {
+//         // Create new
+//         const created = await EventTimeSchedule.create(
+//             {
+//                 ...sched,
+//                 blood_donation_event_id: id,
+//             },
+//             { transaction }
+//         );
+//         keepIds.push(created.id);
+//     }
+// }
+// // 6. Delete schedules not in keepIds
+// const toDelete = existingSchedules
+//     .filter((s) => !keepIds.includes(s.id))
+//     .map((s) => s.id);
+
+// if (toDelete.length > 0) {
+//     await EventTimeSchedule.destroy({
+//         where: { id: toDelete },
+//         transaction,
+//     });
+// }
+
+// await EventTimeSchedule.destroy({
+//     where: { blood_donation_event_id: id },
+//     transaction,
+// });
+
+// await EventTimeSchedule.bulkCreate(
+//     data.time_schedules.map((row) => ({
+//         blood_donation_event_id: id,
+//         ...row,
+//     })),
+//     { transaction }
+// );

@@ -5,7 +5,7 @@ import MainSlider from "./Slider";
 
 export default function Page() {
     return (
-        <div className="space-y-20 px-4 sm:px-10 py-10 bg-gradient-to-b from-gray-800 to-gray-200">
+        <div className="space-y-20 px-4 sm:px-10 py-10 bg-gradient-to-r from-gray-300 to-gray-200">
             {/* Hero Section / Slider */}
             <MainSlider />
 

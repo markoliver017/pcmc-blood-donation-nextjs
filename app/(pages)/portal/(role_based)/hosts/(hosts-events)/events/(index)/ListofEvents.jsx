@@ -7,7 +7,7 @@ import {
     getAllEventsByAgency,
     getForApprovalEventsByAgency,
 } from "@/action/hostEventAction";
-import { CalendarCheck, CalendarPlus } from "lucide-react";
+import { CalendarCheck, CalendarPlus, Check } from "lucide-react";
 import Link from "next/link";
 import LoadingModal from "@components/layout/LoadingModal";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -15,6 +15,8 @@ import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import ForApprovalEventList from "./ForApprovalEventList";
 import Skeleton from "@components/ui/skeleton";
+import { ExclamationTriangleIcon, QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+import { MdBloodtype } from "react-icons/md";
 
 export default function ListofEvents() {
     const router = useRouter();
@@ -89,54 +91,69 @@ export default function ListofEvents() {
             <Tabs
                 defaultValue={currentTab}
                 onValueChange={handleTabChange}
-                className="px-1 md:px-5 mt-5"
-                position="end"
+                className="mt-5 px-2 sm:px-5 relative"
             >
-                <div className="flex flex-wrap justify-between px-2">
-                    <Link
-                        href="/portal/hosts/events/create"
-                        className="btn btn-neutral mb-4 btn-block sm:btn-wide"
+                <Link
+                    href="/portal/hosts/events/create"
+                    className="btn absolute right-5 bg-gradient-to-b from-red-700 to-red-500 text-white text-2xl font-bold px-4 py-6 rounded-md shadow-[7px_10px_2px_0px_rgba(0,_0,_0,_0.3)] hover:from-pink-500 hover:to-purple-400 hover:ring transition duration-300"
+                >
+                    <MdBloodtype className="h-6 w-6" />
+                    <span className="hidden sm:inline-block">Create New Blood Drive</span>
+                </Link>
+
+                <TabsList className="mt-4 bg-muted p-1 rounded-md w-max">
+
+                    <TabsTrigger
+                        value="approved"
+                        className="data-[state=active]:bg-green-100 data-[state=active]:text-green-700 data-[state=active]:font-bold px-4 py-2 rounded-md"
                     >
-                        <CalendarPlus />
-                        <span>Add New Event</span>
-                    </Link>
-                    <TabsList>
-                        <TabsTrigger value="approved">
-                            <span className="text-green-600 text-lg font-semibold ">
-                                Approved ({approvedEvents?.length || 0})
-                            </span>
-                        </TabsTrigger>
-                        <TabsTrigger value="for-approval">
-                            <span className="text-warning text-lg font-semibold ">
-                                For Approval ({eventsForApproval?.length || 0})
-                            </span>
-                        </TabsTrigger>
-                        <TabsTrigger value="others">
-                            <span className="text-lg font-semibold px-5">
-                                Others ({otherEvents?.length || 0})
-                            </span>
-                        </TabsTrigger>
-                    </TabsList>
-                </div>
-                <TabsContent value="approved">
+                        <div className="flex-items-center">
+                            <Check className="h-4 w-4" /> Approved ({approvedEvents?.length || 0})
+                        </div>
+                    </TabsTrigger>
+                    <TabsTrigger
+                        value="for-approval"
+                        className="data-[state=active]:bg-yellow-100 data-[state=active]:text-yellow-700 data-[state=active]:font-bold px-4 py-2 rounded-md"
+                    >
+                        <div className="flex-items-center">
+
+                            <QuestionMarkCircledIcon /> For Approval ({eventsForApproval?.length || 0})
+                        </div>
+                    </TabsTrigger>
+                    <TabsTrigger
+                        value="others"
+                        className="data-[state=active]:bg-gray-200 data-[state=active]:text-gray-800 data-[state=active]:font-bold px-4 py-2 rounded-md"
+                    >
+                        <div className="flex-items-center">
+
+                            <ExclamationTriangleIcon /> Others ({otherEvents?.length || 0})
+                        </div>
+                    </TabsTrigger>
+
+
+                </TabsList>
+
+                <TabsContent value="approved" className="mt-4">
                     <DataTable
                         data={approvedEvents}
                         columns={columns}
                         isLoading={eventIsLoading}
                     />
                 </TabsContent>
-                <TabsContent value="others">
+
+                <TabsContent value="others" className="mt-4">
                     <DataTable
                         data={otherEvents}
                         columns={columns}
                         isLoading={eventIsLoading}
                     />
                 </TabsContent>
-                <TabsContent value="for-approval">
-                    <h1 className="text-2xl font-bold">
+
+                <TabsContent value="for-approval" className="mt-4">
+                    <h1 className="text-xl font-semibold mb-4">
                         For Approval ({eventsForApproval?.length || 0})
                     </h1>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 p-3 w-full">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
                         <ForApprovalEventList
                             events={eventsForApproval}
                             isFetching={eventsIsFetching}
@@ -145,6 +162,7 @@ export default function ListofEvents() {
                     </div>
                 </TabsContent>
             </Tabs>
-        </div>
+
+        </div >
     );
 }

@@ -15,9 +15,9 @@ export default function TansactProviders({ children }) {
         <QueryClientProvider client={queryClient}>
             {children}
             {process.env.NODE_ENV === "development" && (
-                <div className="absolute bottom-25 right-5">
+                <div className="absolute bottom-5 left-15">
                     <button
-                        className="btn btn-ghost w-max"
+                        className="btn btn-ghost w-max text-red-500"
                         onClick={() => setIsOpen(!isOpen)}
                     >
                         {isOpen ? <GrPowerShutdown /> : <GiOpenBook />} Devtools

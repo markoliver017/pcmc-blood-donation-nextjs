@@ -18,7 +18,7 @@ export default async function Page({ params }) {
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <div className="w-full p-5 h-full md:w-8/10 2xl:w-3/4 mx-auto relative">
+            <div className="w-full p-5 h-full md:w-9/10 2xl:w-3/4 mx-auto relative">
                 <UpdateEventForm eventId={id} />
             </div>
         </HydrationBoundary>

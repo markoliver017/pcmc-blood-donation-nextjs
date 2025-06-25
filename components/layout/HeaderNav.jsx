@@ -43,8 +43,6 @@ const HeaderNav = ({ currentUser }) => {
         currentUser = data.user;
     }
 
-    console.log("currentUser length", currentUser?.roles?.length);
-
     const handleLogOut = () => {
         SweetAlert({
             title: "Logged out?",
