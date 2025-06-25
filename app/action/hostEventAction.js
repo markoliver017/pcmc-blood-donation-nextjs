@@ -16,6 +16,7 @@ import {
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import { bloodDonationEventSchema } from "@lib/zod/bloodDonationSchema";
+import { addDays, format, subDays } from "date-fns";
 import { ForeignKeyConstraintError, Op } from "sequelize";
 // import { logAuditTrail } from "@lib/audit_trails.utils";
 
@@ -65,6 +66,7 @@ export async function getAgencyId() {
     return null;
 }
 
+/** AllEventCalendar , CreateEventForm */
 export async function getAllEvents() {
     try {
         const events = await BloodDonationEvent.findAll({
@@ -72,6 +74,11 @@ export async function getAllEvents() {
                 status: {
                     [Op.in]: ["for approval", "approved"],
                 },
+            },
+            include: {
+                model: Agency,
+                as: "agency",
+                attributes: ["id", "name", "file_url"],
             },
         });
 
@@ -374,7 +381,7 @@ export async function getEventParticipants(eventId) {
 }
 
 export async function storeEvent(formData) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     const session = await auth();
     if (!session) {
         return {
@@ -421,40 +428,52 @@ export async function storeEvent(formData) {
             date: {
                 [Op.eq]: data.date,
             },
-            // [Op.or]: [
-            //     {
-            //         from_date: {
-            //             [Op.between]: [data.from_date, data.to_date],
-            //         },
-            //     },
-            //     {
-            //         to_date: {
-            //             [Op.between]: [data.from_date, data.to_date],
-            //         },
-            //     },
-            //     {
-            //         [Op.and]: [
-            //             {
-            //                 from_date: {
-            //                     [Op.lte]: data.from_date,
-            //                 },
-            //             },
-            //             {
-            //                 to_date: {
-            //                     [Op.gte]: data.to_date,
-            //                 },
-            //             },
-            //         ],
-            //     },
-            // ],
         },
     });
 
     if (existingEvent) {
         return {
             success: false,
-            message:
-                "Event date conflict: Another event is already scheduled for this date.",
+            message: `Event date conflict: Another event (${existingEvent?.title}) is already scheduled for this date.`,
+        };
+    }
+
+    // Calculate the 90-day window
+    const eventDate = new Date(data.date);
+    const currentDate = new Date(data.date);
+
+    if (currentDate < new Date()) {
+        return {
+            success: false,
+            message: "You cannot book a donation in the past ☺.",
+        };
+    }
+
+    const start = subDays(eventDate, 90);
+    const end = addDays(eventDate, 89);
+
+    // Query for any event whose date is between start and end
+    const overlappingEvent = await BloodDonationEvent.findOne({
+        where: {
+            agency_id: data.agency_id,
+            status: {
+                [Op.in]: ["approved", "for approval"],
+            },
+            date: {
+                [Op.between]: [start, end],
+            },
+        },
+    });
+
+    if (overlappingEvent) {
+        return {
+            success: false,
+            message: `Event date conflict: Another event ("${
+                overlappingEvent?.title
+            }") dated ${format(
+                overlappingEvent?.date,
+                "PP"
+            )} is scheduled within 90 days of your selected date. Please choose a different date.`,
         };
     }
 
@@ -501,7 +520,7 @@ export async function storeEvent(formData) {
 }
 
 export async function updateEvent(id, formData) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     const session = await auth();
     if (!session) {
         return {
@@ -525,6 +544,8 @@ export async function updateEvent(id, formData) {
     }
 
     const { data } = parsed;
+
+    console.log("parsed data", data);
 
     const agency = await Agency.findByPk(data?.agency_id, {
         where: { status: "activated" },
@@ -561,8 +582,7 @@ export async function updateEvent(id, formData) {
     if (conflictingEvent) {
         return {
             successs: false,
-            message:
-                "Event date conflict: Another event is already scheduled for this date.",
+            message: `Event date conflict: Another event (${conflictingEvent?.title}) is already scheduled for this date.`,
         };
     }
 
@@ -572,18 +592,70 @@ export async function updateEvent(id, formData) {
         data.updated_by = user.id;
         await existingEvent.update(data, { transaction });
 
-        await EventTimeSchedule.destroy({
+        // 1. Get all existing schedules for this event
+        const existingSchedules = await EventTimeSchedule.findAll({
             where: { blood_donation_event_id: id },
             transaction,
         });
-
-        await EventTimeSchedule.bulkCreate(
-            data.time_schedules.map((row) => ({
-                blood_donation_event_id: id,
-                ...row,
-            })),
-            { transaction }
+        // 2. Map for quick lookup
+        const existingMap = new Map(
+            existingSchedules.map((s) => [s.id.toString(), s])
         );
+        // 3. Prepare new data
+        const newSchedules = data.time_schedules;
+        // 4. Track IDs to keep
+        const keepIds = [];
+        // 5. Update or create
+        for (const sched of newSchedules) {
+            if (sched.id && existingMap.has(sched.id.toString())) {
+                // Update existing
+                await EventTimeSchedule.update(
+                    {
+                        ...sched,
+                        blood_donation_event_id: id,
+                    },
+                    {
+                        where: { id: sched.id },
+                        transaction,
+                    }
+                );
+                keepIds.push(sched.id);
+            } else {
+                // Create new
+                const created = await EventTimeSchedule.create(
+                    {
+                        ...sched,
+                        blood_donation_event_id: id,
+                    },
+                    { transaction }
+                );
+                keepIds.push(created.id);
+            }
+        }
+        // 6. Delete schedules not in keepIds
+        const toDelete = existingSchedules
+            .filter((s) => !keepIds.includes(s.id))
+            .map((s) => s.id);
+
+        if (toDelete.length > 0) {
+            await EventTimeSchedule.destroy({
+                where: { id: toDelete },
+                transaction,
+            });
+        }
+
+        // await EventTimeSchedule.destroy({
+        //     where: { blood_donation_event_id: id },
+        //     transaction,
+        // });
+
+        // await EventTimeSchedule.bulkCreate(
+        //     data.time_schedules.map((row) => ({
+        //         blood_donation_event_id: id,
+        //         ...row,
+        //     })),
+        //     { transaction }
+        // );
 
         await transaction.commit();
 
@@ -599,6 +671,7 @@ export async function updateEvent(id, formData) {
             data: existingEvent.get({ plain: true }),
         };
     } catch (err) {
+        console.log(err);
         logErrorToFile(err, "UPDATE EVENT");
         await transaction.rollback();
 

@@ -66,29 +66,50 @@ export const eventColumns = (setIsLoading) => [
     {
         accessorKey: "time_schedules",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Participants" />
+            <DataTableColumnHeader column={column} title="Time Schedule" />
         ),
         filterFn: "columnFilter",
-        size: 50,       // Set column width to 200px
-        minSize: 50,    // Optional: set a minimum width
-        maxSize: 50,
         cell: ({ getValue }) => {
             const time_schedules = getValue();
 
+            return (
+                <ul className="list max-w-42">
+                    {time_schedules.map((sched) => (
+                        <li key={sched.id}>
+                            <span className="italic text-slate-500">
+                                {sched.formatted_time}
+                            </span>
+                            <b className="hidden">{sched?.donors?.length}</b>
+                        </li>
+                    ))}
+                    <li className="font-semibold hidden">
+                        Total -{" "}
+                        {time_schedules.reduce(
+                            (acc, sched) => acc + sched?.donors?.length,
+                            0
+                        )}
+                    </li>
+                </ul>
+            );
+        },
+    },
+    {
+        id: "participants",
+        accessorKey: "time_schedules",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="No of Participants" />
+        ),
+        filterFn: "columnFilter",
+        cell: ({ getValue }) => {
+            const time_schedules = getValue();
 
             return (
-                <ul className="list text-right max-w-42">
-                    {time_schedules.map((sched) => (
-
-                        <li key={sched.id}>
-                            <span className="italic text-slate-500">{sched.formatted_time}</span>
-                            {" - "}<b>{sched?.donors?.length}</b>
-                        </li>
-
-                    ))}
-                    <li className="font-semibold">Total - {time_schedules.reduce((acc, sched) => acc + sched?.donors?.length, 0)}</li>
-
-                </ul>
+                <div className="font-semibold text-xl max-w-12 text-center">
+                    {time_schedules.reduce(
+                        (acc, sched) => acc + sched?.donors?.length,
+                        0
+                    )}
+                </div>
             );
         },
     },
@@ -198,7 +219,9 @@ export const eventColumns = (setIsLoading) => [
                                 <span>View Details</span>
                             </DropdownMenuItem>
                         </Link>
-                        <Link href={`/portal/hosts/events/${data.id}/participants`}>
+                        <Link
+                            href={`/portal/hosts/events/${data.id}/participants`}
+                        >
                             <DropdownMenuItem className="btn btn-ghost btn-neutral space-x-2">
                                 <Users className="w-4 h-4" />
                                 <span>See Donors</span>

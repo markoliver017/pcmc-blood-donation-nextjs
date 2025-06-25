@@ -10,7 +10,14 @@ import {
 } from "@components/ui/card";
 
 import {
-    Calendar,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@components/ui/popover";
+
+import {
+    CalendarCog,
+    CalendarIcon,
     CalendarPlus2,
     Maximize,
     Plus,
@@ -26,8 +33,10 @@ import clsx from "clsx";
 import {
     Form,
     FormControl,
+    FormDescription,
     FormField,
     FormItem,
+    FormLabel,
     FormMessage,
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
@@ -40,7 +49,7 @@ import { BiMaleFemale, BiTime } from "react-icons/bi";
 import { useRouter } from "next/navigation";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import SweetAlert from "@components/ui/SweetAlert";
 import { toastError } from "@lib/utils/toastError.utils";
 import FormCardSingleForm from "@components/form/FormCardSingleForm";
@@ -50,19 +59,31 @@ import { MdDeleteForever } from "react-icons/md";
 import ToggleAny from "@components/reusable_components/ToggleAny";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { bloodDonationEventSchema } from "@lib/zod/bloodDonationSchema";
-import { storeEvent } from "@/action/hostEventAction";
+import { getAllEvents, storeEvent } from "@/action/hostEventAction";
 import { uploadPicture } from "@/action/uploads";
 import AllEventCalendar from "@components/organizers/AllEventCalendar";
 import DrawerComponent from "@components/reusable_components/DrawerComponent";
 import { DrawerTrigger } from "@components/ui/drawer";
 import ImagePreviewComponent from "@components/reusable_components/ImagePreviewComponent";
+import { Button } from "@components/ui/button";
+import { addDays, format } from "date-fns";
+import { Calendar } from "@components/ui/calendar";
+import { cn } from "@lib/utils";
+import { PiCalendarCheckFill } from "react-icons/pi";
+import LoadingModal from "@components/layout/LoadingModal";
+import Skeleton_form from "@components/ui/Skeleton_form";
+
 // import DrawerComponent from "@components/reusable_components/Drawer";
 
 export default function CreateEventForm({ agency }) {
     const router = useRouter();
+    const [calendarMonth, setCalendarMonth] = useState(new Date());
 
     const queryClient = useQueryClient();
-
+    const { data: bookedEvents, bookedEventsIsLoading } = useQuery({
+        queryKey: ["all_event_schedules"],
+        queryFn: getAllEvents,
+    });
     const { data, mutate, isPending, isError, error } = useMutation({
         mutationFn: async (formData) => {
             const res = await storeEvent(formData);
@@ -78,6 +99,9 @@ export default function CreateEventForm({ agency }) {
             queryClient.invalidateQueries({
                 queryKey: ["all_event_schedules"],
             });
+            queryClient.invalidateQueries({
+                queryKey: ["agency_events"],
+            });
             SweetAlert({
                 title: "New Blood Donation Event",
                 text: "You have successfully created a new blood donation event.",
@@ -85,7 +109,7 @@ export default function CreateEventForm({ agency }) {
                 confirmButtonText: "Okay",
                 onConfirm: () => {
                     reset();
-                    router.back();
+                    router.replace("/portal/hosts/events?tab=for-approval");
                 },
             });
         },
@@ -113,7 +137,7 @@ export default function CreateEventForm({ agency }) {
             title: "Sample Title ",
             description:
                 '<p><span style="font-size: 24px"><em>This is a sample description</em></span></p>',
-            date: "2025-07-01",
+            date: format(addDays(new Date(), 1), "yyyy-MM-dd"),
             file: null,
             file_url: null,
             time_schedules: [
@@ -176,8 +200,13 @@ export default function CreateEventForm({ agency }) {
         if (watch("file_url")) setValue("file_url", null);
     }, [uploaded_avatar]);
 
+    if (bookedEventsIsLoading) {
+        return <Skeleton_form />;
+    }
+
     return (
         <Form {...form}>
+            <LoadingModal imgSrc="/loader_2.gif" isLoading={isPending} />
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="p-5 shadow border rounded-2xl"
@@ -293,7 +322,7 @@ export default function CreateEventForm({ agency }) {
 
                                         <label
                                             className={clsx(
-                                                "input w-full mt-1",
+                                                "input w-full mt-1 text-xl",
                                                 errors?.title
                                                     ? "input-error"
                                                     : "input-info"
@@ -315,25 +344,108 @@ export default function CreateEventForm({ agency }) {
                                 control={control}
                                 name="date"
                                 render={({ field }) => (
-                                    <FormItem>
+                                    <FormItem className="flex flex-col">
                                         <InlineLabel>Event Date: </InlineLabel>
-                                        <label
-                                            className={clsx(
-                                                "input w-full mt-1",
-                                                errors?.date
-                                                    ? "input-error"
-                                                    : "input-info"
-                                            )}
-                                        >
-                                            <Calendar className="h-3" />
-                                            <input
-                                                type="date"
-                                                tabIndex={2}
-                                                placeholder="Enter event date"
-                                                {...field}
-                                            />
-                                        </label>
-                                        <FieldError field={errors?.date} />
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button
+                                                        variant={"outline"}
+                                                        className={cn(
+                                                            "pl-3 text-left font-normal mt-1 text-xl dark:!bg-[#181717]",
+                                                            !field.value &&
+                                                                "text-muted-foreground"
+                                                        )}
+                                                        tabIndex={2}
+                                                    >
+                                                        <PiCalendarCheckFill className="mr-2 h-4 w-4" />
+                                                        {field.value ? (
+                                                            format(
+                                                                field.value,
+                                                                "PPP"
+                                                            )
+                                                        ) : (
+                                                            <span>
+                                                                Pick a date
+                                                            </span>
+                                                        )}
+                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent
+                                                className="w-auto p-0"
+                                                align="start"
+                                            >
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={
+                                                        field.value
+                                                            ? new Date(
+                                                                  field.value
+                                                              )
+                                                            : undefined
+                                                    }
+                                                    month={calendarMonth}
+                                                    onMonthChange={
+                                                        setCalendarMonth
+                                                    }
+                                                    className="bg-transparent p-5 [--cell-size:--spacing(10.5)]"
+                                                    onSelect={(date) => {
+                                                        if (date) {
+                                                            // Format as "yyyy-MM-dd"
+                                                            field.onChange(
+                                                                format(
+                                                                    date,
+                                                                    "yyyy-MM-dd"
+                                                                )
+                                                            );
+                                                        } else {
+                                                            field.onChange("");
+                                                        }
+                                                    }}
+                                                    disabled={[
+                                                        {
+                                                            dayOfWeek: [0, 6],
+                                                        },
+                                                        (date) =>
+                                                            date < new Date(),
+                                                        ...(Array.isArray(
+                                                            bookedEvents
+                                                        )
+                                                            ? bookedEvents?.map(
+                                                                  (event) =>
+                                                                      new Date(
+                                                                          event.date
+                                                                      )
+                                                              )
+                                                            : []),
+                                                        // (date) => isWithin90DaysOfBooked(date, bookedEvents),
+                                                    ]}
+                                                    modifiers={{
+                                                        booked: Array.isArray(
+                                                            bookedEvents
+                                                        )
+                                                            ? bookedEvents?.map(
+                                                                  (event) =>
+                                                                      new Date(
+                                                                          event.date
+                                                                      )
+                                                              )
+                                                            : [],
+                                                    }}
+                                                    modifiersClassNames={{
+                                                        booked: "[&>button]:line-through font-bold bg-red-500 dark:bg-red-900 text-white  bg-opacity-50  rounded",
+                                                    }}
+                                                    captionLayout="dropdown"
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                        {/* <FormDescription className="pl-5 dark:text-slate-300">
+                                            * Dates filled with red are not
+                                            available for booking.
+                                        </FormDescription> */}
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
@@ -380,20 +492,57 @@ export default function CreateEventForm({ agency }) {
                                     />
                                 </CardDescription>
 
-                                <CardContent id="form-modal">
-                                    <div className="flex gap-3 flex-wrap px-2">
+                                <CardContent>
+                                    <div className="flex gap-3 flex-col px-2">
                                         {fields.map((item, index) => (
                                             <Card
                                                 key={item.id}
                                                 className=" p-5 flex-1 mb-2 bg-inherit border-l-5 border-l-blue-900 dark:border-l-blue-600"
                                             >
                                                 <CardTitle>
-                                                    <div className="flex justify-between underline">
-                                                        <p className="flex items-center gap-1">
+                                                    <div className="flex justify-between ">
+                                                        <p className="flex items-center text-2xl gap-1">
                                                             <BiTime /> Time
                                                             Schedule {index + 1}
                                                         </p>
                                                         <div className="flex justify-end">
+                                                            <FormField
+                                                                control={
+                                                                    control
+                                                                }
+                                                                name={`time_schedules.${index}.has_limit`}
+                                                                render={({
+                                                                    field: {
+                                                                        value,
+                                                                        onChange,
+                                                                    },
+                                                                }) => (
+                                                                    <FormItem className=" flex items-center gap-2 font-semibold py-1">
+                                                                        <span
+                                                                            className={clsx(
+                                                                                "text-sm font-semibold",
+                                                                                value
+                                                                                    ? "text-green-600"
+                                                                                    : "text-warning"
+                                                                            )}
+                                                                        >
+                                                                            {value
+                                                                                ? "Has Limit"
+                                                                                : "No Limit"}
+                                                                        </span>
+                                                                        <ToggleAny
+                                                                            value={
+                                                                                value
+                                                                            }
+                                                                            onChange={() =>
+                                                                                onChange(
+                                                                                    !value
+                                                                                )
+                                                                            }
+                                                                        ></ToggleAny>
+                                                                    </FormItem>
+                                                                )}
+                                                            />
                                                             <button
                                                                 type="button"
                                                                 disabled={
@@ -404,7 +553,7 @@ export default function CreateEventForm({ agency }) {
                                                                         index
                                                                     )
                                                                 }
-                                                                className="btn btn-error btn-sm btn-outline"
+                                                                className="btn btn-error btn-sm btn-outline hidden"
                                                             >
                                                                 <MdDeleteForever />
                                                             </button>
@@ -492,42 +641,7 @@ export default function CreateEventForm({ agency }) {
                                                             </FormItem>
                                                         )}
                                                     />
-                                                    <FormField
-                                                        control={control}
-                                                        name={`time_schedules.${index}.has_limit`}
-                                                        render={({
-                                                            field: {
-                                                                value,
-                                                                onChange,
-                                                            },
-                                                        }) => (
-                                                            <FormItem className=" flex font-semibold py-1">
-                                                                <ToggleAny
-                                                                    value={
-                                                                        value
-                                                                    }
-                                                                    onChange={() =>
-                                                                        onChange(
-                                                                            !value
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <span
-                                                                        className={clsx(
-                                                                            "text-sm font-semibold",
-                                                                            value
-                                                                                ? "text-green-600"
-                                                                                : "text-warning"
-                                                                        )}
-                                                                    >
-                                                                        {value
-                                                                            ? "Has Limit"
-                                                                            : "No Limit"}
-                                                                    </span>
-                                                                </ToggleAny>
-                                                            </FormItem>
-                                                        )}
-                                                    />
+
                                                     {watch(
                                                         `time_schedules.${index}.has_limit`
                                                     ) ? (
@@ -580,7 +694,8 @@ export default function CreateEventForm({ agency }) {
                                                 </CardContent>
                                             </Card>
                                         ))}
-                                        <div className="flex p-2">
+
+                                        <div className="hidden p-2 ">
                                             <button
                                                 type="button"
                                                 onClick={() =>
@@ -591,7 +706,7 @@ export default function CreateEventForm({ agency }) {
                                                         max_limit: 0,
                                                     })
                                                 }
-                                                className="h-full p-5 flex border rounded-2xl btn btn-dash btn-primary"
+                                                className="h-full p-5 flex border rounded-2xl btn btn-dash btn-block btn-primary"
                                             >
                                                 <Plus />{" "}
                                                 <span className="hidden sm:inline-block">
@@ -603,17 +718,13 @@ export default function CreateEventForm({ agency }) {
                                 </CardContent>
                             </Card>
 
-                            <div className="flex justify-end gap-2 mt-4">
-                                <button
-                                    onClick={() => router.back()}
-                                    type="button"
-                                    className="btn btn-error"
-                                >
-                                    <X /> Cancel
-                                </button>
+                            <div
+                                className="space-y-2 mt-4 relative"
+                                id="form-modal"
+                            >
                                 <button
                                     disabled={!isDirty || isPending}
-                                    className="btn btn-neutral hover:bg-neutral-800 hover:text-green-300"
+                                    className="py-5 flex rounded-2xl text-2xl btn btn-block btn-primary ring-offset-2 ring-offset-blue-500 hover:ring-2 "
                                 >
                                     {isPending ? (
                                         <>
@@ -626,6 +737,13 @@ export default function CreateEventForm({ agency }) {
                                             Add Event
                                         </>
                                     )}
+                                </button>
+                                <button
+                                    onClick={() => router.back()}
+                                    type="button"
+                                    className="p-5 flex rounded-2xl text-2xl btn btn-outline btn-block btn-error ring-offset-2 ring-offset-red-500 hover:ring-2"
+                                >
+                                    <X /> Cancel
                                 </button>
                             </div>
                         </div>

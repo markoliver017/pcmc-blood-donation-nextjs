@@ -5,14 +5,12 @@ import MainSlider from "./Slider";
 
 export default function Page() {
     return (
-        <div className="space-y-20 px-4 sm:px-10 py-10">
+        <div className="space-y-20 px-4 sm:px-10 py-10 bg-gradient-to-b from-gray-800 to-gray-200">
             {/* Hero Section / Slider */}
             <MainSlider />
 
             {/* Overview Section */}
-            <motion.section
-                className="flex flex-col lg:flex-row gap-10 items-center shadow p-2 rounded"
-            >
+            <motion.section className="flex flex-col lg:flex-row gap-10 items-center shadow p-2 rounded">
                 <motion.div
                     initial={{ opacity: 0, x: -60 }}
                     whileInView={{ opacity: 1, x: 0 }}
@@ -24,16 +22,23 @@ export default function Page() {
                         Overview
                     </h2>
                     <p>
-                        Blood donation is a vital community service, enabling medical treatments for millions. Our blood center ensures every donation is processed and delivered to those who need it most.
+                        Blood donation is a vital community service, enabling
+                        medical treatments for millions. Our blood center
+                        ensures every donation is processed and delivered to
+                        those who need it most.
                     </p>
                     <p>
-                        Join thousands of generous individuals who help save lives every day through simple yet impactful donations.
+                        Join thousands of generous individuals who help save
+                        lives every day through simple yet impactful donations.
                     </p>
                     <p>
-                        Your contribution goes beyond the moment—it can give someone a second chance at life.
+                        Your contribution goes beyond the moment—it can give
+                        someone a second chance at life.
                     </p>
                     <div className="text-right">
-                        <button className="btn btn-primary">Read More ...</button>
+                        <button className="btn btn-primary">
+                            Read More ...
+                        </button>
                     </div>
                 </motion.div>
 
@@ -66,7 +71,15 @@ export default function Page() {
                 </h2>
 
                 <p className="text-center max-w-7xl mx-auto text-slate-600 dark:text-slate-300">
-                    To provide a safe, accessible, and reliable blood supply through community outreach, innovation, and donor-centered services. Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro officiis cum quam maxime similique veritatis adipisci fuga asperiores natus exercitationem atque vel fugiat, in quisquam quas dignissimos rerum cumque deleniti ipsam. Architecto quis cupiditate minima voluptate ratione, quia nobis eligendi. Ipsa voluptatibus soluta distinctio cum nam. Quidem ipsum nesciunt nisi?
+                    To provide a safe, accessible, and reliable blood supply
+                    through community outreach, innovation, and donor-centered
+                    services. Lorem ipsum dolor sit amet consectetur adipisicing
+                    elit. Porro officiis cum quam maxime similique veritatis
+                    adipisci fuga asperiores natus exercitationem atque vel
+                    fugiat, in quisquam quas dignissimos rerum cumque deleniti
+                    ipsam. Architecto quis cupiditate minima voluptate ratione,
+                    quia nobis eligendi. Ipsa voluptatibus soluta distinctio cum
+                    nam. Quidem ipsum nesciunt nisi?
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
@@ -127,7 +140,12 @@ export default function Page() {
                 <p className="text-center max-w-7xl mx-auto text-slate-700 dark:text-slate-300">
                     📢 We’re launching new community blood drives this month
                     across several cities. Check your Blood Donor App for
-                    schedules and locations near you! Lorem ipsum dolor sit, amet consectetur adipisicing elit. Esse quis ratione laborum dolor, architecto praesentium. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fugit deserunt asperiores impedit, rerum eveniet a? Natus ratione asperiores repudiandae deleniti!
+                    schedules and locations near you! Lorem ipsum dolor sit,
+                    amet consectetur adipisicing elit. Esse quis ratione laborum
+                    dolor, architecto praesentium. Lorem ipsum dolor, sit amet
+                    consectetur adipisicing elit. Fugit deserunt asperiores
+                    impedit, rerum eveniet a? Natus ratione asperiores
+                    repudiandae deleniti!
                 </p>
             </motion.section>
         </div>

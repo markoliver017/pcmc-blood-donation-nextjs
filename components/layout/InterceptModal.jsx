@@ -24,7 +24,6 @@ export default function InterceptModal({ children, className = "" }) {
             onOpenChange={handleOpenChange}
             modal={true}
         >
-            {/* <DialogOverlay> */}
             <ToastContainer />
             <DialogContent
                 onInteractOutside={(event) => event.preventDefault()}
@@ -36,7 +35,6 @@ export default function InterceptModal({ children, className = "" }) {
                 </DialogHeader>
                 {children}
             </DialogContent>
-            {/* </DialogOverlay> */}
         </Dialog>
     );
 }

@@ -93,7 +93,7 @@ export default function AgencyList() {
                     </TabsTrigger>
                     <TabsTrigger value="for-approval">
                         <span className="text-warning text-lg font-semibold px-5">
-                            For Approval ({forApprovalAgencies.length})
+                            For Approval ({forApprovalAgencies?.length || 0})
                         </span>
                     </TabsTrigger>
                     <TabsTrigger value="rejected">

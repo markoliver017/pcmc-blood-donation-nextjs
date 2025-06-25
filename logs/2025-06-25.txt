@@ -1,0 +1,112 @@
+[2025-06-25T07:56:13.620Z] ❌ ERROR (UPDATE EVENT): SequelizeValidationError: Validation error: Cannot read properties of undefined (reading 'undefined'),
+Validation error: Cannot read properties of undefined (reading 'undefined'),
+Validation error: Expected a string but received a Col,
+Validation error: Validation min on max_limit failed
+    at InstanceValidator._validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7264:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async InstanceValidator._validateAndRunHooks (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7274:13)
+    at async InstanceValidator.validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7268:16)
+    at async model.save (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:10529:13)
+    at async EventTimeSchedule.create (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9376:16)
+    at async updateEvent (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_1175b0cf._.js:949:33)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:438:2357
+    at async handleAction (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:437:23434)
+    at async renderToHTMLOrFlightImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:443:26714)
+    at async doRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1650:34)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1915:28)
+    at async DevServer.renderPageComponent (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2393:24)
+    at async DevServer.renderToResponseImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2430:32)
+    at async DevServer.pipeImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1003:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\next-server.js:304:17)
+    at async DevServer.handleRequestImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:895:17)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:371:20
+    at async Span.traceAsyncFn (C:\nextJs\blood-bank-portal\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:368:24)
+    at async invokeRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:235:21)
+    at async handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:426:24)
+    at async requestHandlerImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:450:13)
+    at async Server.requestListener (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\start-server.js:158:13)
+[2025-06-25T07:56:56.533Z] ❌ ERROR (UPDATE EVENT): SequelizeValidationError: Validation error: Cannot read properties of undefined (reading 'undefined'),
+Validation error: Cannot read properties of undefined (reading 'undefined'),
+Validation error: Expected a string but received a Col,
+Validation error: Validation min on max_limit failed
+    at InstanceValidator._validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7264:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async InstanceValidator._validateAndRunHooks (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7274:13)
+    at async InstanceValidator.validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7268:16)
+    at async model.save (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:10529:13)
+    at async EventTimeSchedule.create (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9376:16)
+    at async updateEvent (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_1175b0cf._.js:949:33)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:438:2357
+    at async handleAction (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:437:23434)
+    at async renderToHTMLOrFlightImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:443:26714)
+    at async doRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1650:34)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1915:28)
+    at async DevServer.renderPageComponent (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2393:24)
+    at async DevServer.renderToResponseImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2430:32)
+    at async DevServer.pipeImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1003:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\next-server.js:304:17)
+    at async DevServer.handleRequestImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:895:17)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:371:20
+    at async Span.traceAsyncFn (C:\nextJs\blood-bank-portal\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:368:24)
+    at async invokeRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:235:21)
+    at async handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:426:24)
+    at async requestHandlerImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:450:13)
+    at async Server.requestListener (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\start-server.js:158:13)
+[2025-06-25T07:57:21.820Z] ❌ ERROR (UPDATE EVENT): SequelizeValidationError: Validation error: Cannot read properties of undefined (reading 'undefined'),
+Validation error: Cannot read properties of undefined (reading 'undefined'),
+Validation error: Expected a string but received a Col,
+Validation error: Validation min on max_limit failed
+    at InstanceValidator._validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7264:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async InstanceValidator._validateAndRunHooks (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7274:13)
+    at async InstanceValidator.validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7268:16)
+    at async model.save (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:10529:13)
+    at async EventTimeSchedule.create (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9376:16)
+    at async updateEvent (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_1175b0cf._.js:949:33)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:438:2357
+    at async handleAction (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:437:23434)
+    at async renderToHTMLOrFlightImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:443:26714)
+    at async doRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1650:34)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1915:28)
+    at async DevServer.renderPageComponent (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2393:24)
+    at async DevServer.renderToResponseImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2430:32)
+    at async DevServer.pipeImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1003:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\next-server.js:304:17)
+    at async DevServer.handleRequestImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:895:17)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:371:20
+    at async Span.traceAsyncFn (C:\nextJs\blood-bank-portal\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:368:24)
+    at async invokeRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:235:21)
+    at async handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:426:24)
+    at async requestHandlerImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:450:13)
+    at async Server.requestListener (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\start-server.js:158:13)
+[2025-06-25T07:58:18.958Z] ❌ ERROR (UPDATE EVENT): SequelizeValidationError: Validation error: Cannot read properties of undefined (reading 'undefined'),
+Validation error: Cannot read properties of undefined (reading 'undefined'),
+Validation error: Expected a string but received a Col,
+Validation error: Validation min on max_limit failed
+    at InstanceValidator._validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7264:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async InstanceValidator._validateAndRunHooks (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7274:13)
+    at async InstanceValidator.validate (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:7268:16)
+    at async model.save (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:10529:13)
+    at async EventTimeSchedule.create (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9376:16)
+    at async updateEvent (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_1175b0cf._.js:950:33)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:438:2357
+    at async handleAction (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:437:23434)
+    at async renderToHTMLOrFlightImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:443:26714)
+    at async doRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1650:34)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1915:28)
+    at async DevServer.renderPageComponent (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2393:24)
+    at async DevServer.renderToResponseImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2430:32)
+    at async DevServer.pipeImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1003:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\next-server.js:304:17)
+    at async DevServer.handleRequestImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:895:17)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:371:20
+    at async Span.traceAsyncFn (C:\nextJs\blood-bank-portal\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:368:24)
+    at async invokeRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:235:21)
+    at async handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:426:24)
+    at async requestHandlerImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:450:13)
+    at async Server.requestListener (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\start-server.js:158:13)

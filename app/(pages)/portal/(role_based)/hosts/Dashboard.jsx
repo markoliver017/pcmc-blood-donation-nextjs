@@ -12,7 +12,7 @@ import Link from "next/link";
 import React from "react";
 import ForApprovalDonorList from "./(hosts-donors)/donors/@approval/ForApprovalDonorList";
 import { FaArrowRight } from "react-icons/fa";
-import ForApprovalEventList from "./(hosts-events)/events/@approval/ForApprovalEventList";
+import ForApprovalEventList from "./(hosts-events)/events/(index)/ForApprovalEventList";
 import { useQuery } from "@tanstack/react-query";
 import { getVerifiedDonorsCount } from "@/action/hostDonorAction";
 import { getAllEventsCount } from "@/action/hostEventAction";

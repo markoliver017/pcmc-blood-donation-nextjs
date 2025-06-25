@@ -22,16 +22,12 @@ import clsx from "clsx";
 export default function ForApprovalEventList({
     avatarClassName = "",
     editable = true,
+    events = [],
+    isFetching = true,
 }) {
     const router = useRouter();
-    const { data: events, isLoading: eventsIsFetching } = useQuery({
-        queryKey: ["agency_events", "for approval"],
-        queryFn: async () => getForApprovalEventsByAgency("for approval"),
-        staleTime: 0,
-        cacheTime: 0,
-    });
 
-    if (eventsIsFetching)
+    if (isFetching)
         return (
             <>
                 <Skeleton_user />

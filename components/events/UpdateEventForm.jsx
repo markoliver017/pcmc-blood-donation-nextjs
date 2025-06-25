@@ -10,7 +10,13 @@ import {
 } from "@components/ui/card";
 
 import {
-    Calendar,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@components/ui/popover";
+
+import {
+    CalendarIcon,
     CalendarPlus2,
     Maximize,
     Plus,
@@ -52,6 +58,7 @@ import ToggleAny from "@components/reusable_components/ToggleAny";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { bloodDonationEventSchema } from "@lib/zod/bloodDonationSchema";
 import {
+    getAllEvents,
     getEventsById,
     storeEvent,
     updateEvent,
@@ -62,6 +69,11 @@ import DrawerComponent from "@components/reusable_components/DrawerComponent";
 import { DrawerTrigger } from "@components/ui/drawer";
 import moment from "moment";
 import ImagePreviewComponent from "@components/reusable_components/ImagePreviewComponent";
+import { Calendar } from "@components/ui/calendar";
+import { Button } from "@components/ui/button";
+import { cn } from "@lib/utils";
+import { format } from "date-fns";
+import { PiCalendarCheckFill } from "react-icons/pi";
 // import DrawerComponent from "@components/reusable_components/Drawer";
 
 export default function UpdateEventForm({ eventId }) {
@@ -69,12 +81,20 @@ export default function UpdateEventForm({ eventId }) {
 
     const queryClient = useQueryClient();
 
+    const { data: bookedEvents, bookedEventsIsLoading } = useQuery({
+        queryKey: ["all_event_schedules"],
+        queryFn: getAllEvents,
+    });
     const { data: event } = useQuery({
         queryKey: ["agency_events", eventId],
         queryFn: async () => await getEventsById(eventId),
         enabled: !!eventId,
         staleTime: 0,
     });
+
+    const [calendarMonth, setCalendarMonth] = useState(
+        event?.date ? new Date(event.date) : new Date()
+    );
 
     const { data, mutate, isPending, isError, error } = useMutation({
         mutationFn: async (formData) => {
@@ -184,6 +204,16 @@ export default function UpdateEventForm({ eventId }) {
     useEffect(() => {
         if (watch("file_url")) setValue("file_url", null);
     }, [uploaded_avatar]);
+
+    if (bookedEventsIsLoading) {
+        return <Skeleton_form />;
+    }
+
+    const bookedEventsExceptEventDate = Array.isArray(bookedEvents)
+        ? bookedEvents
+              ?.filter((ev) => ev.date !== event.date)
+              .map((ev) => new Date(ev.date))
+        : [];
 
     return (
         <Form {...form}>
@@ -324,25 +354,89 @@ export default function UpdateEventForm({ eventId }) {
                                 control={control}
                                 name="date"
                                 render={({ field }) => (
-                                    <FormItem>
+                                    <FormItem className="flex flex-col">
                                         <InlineLabel>Event Date: </InlineLabel>
-                                        <label
-                                            className={clsx(
-                                                "input w-full mt-1",
-                                                errors?.date
-                                                    ? "input-error"
-                                                    : "input-info"
-                                            )}
-                                        >
-                                            <Calendar className="h-3" />
-                                            <input
-                                                type="date"
-                                                tabIndex={2}
-                                                placeholder="Enter start date"
-                                                {...field}
-                                            />
-                                        </label>
-                                        <FieldError field={errors?.date} />
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button
+                                                        variant={"outline"}
+                                                        className={cn(
+                                                            "pl-3 text-left font-normal mt-1 text-xl dark:!bg-[#181717] hover:text-slate-400",
+                                                            !field.value &&
+                                                                "text-muted-foreground"
+                                                        )}
+                                                        tabIndex={2}
+                                                    >
+                                                        <PiCalendarCheckFill className="mr-2 h-4 w-4" />
+                                                        {field.value ? (
+                                                            format(
+                                                                field.value,
+                                                                "PPP"
+                                                            )
+                                                        ) : (
+                                                            <span>
+                                                                Pick a date
+                                                            </span>
+                                                        )}
+                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent
+                                                className="w-auto p-0"
+                                                align="start"
+                                            >
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={
+                                                        field.value
+                                                            ? new Date(
+                                                                  field.value
+                                                              )
+                                                            : undefined
+                                                    }
+                                                    month={calendarMonth}
+                                                    onMonthChange={
+                                                        setCalendarMonth
+                                                    }
+                                                    className="bg-transparent p-5 [--cell-size:--spacing(10.5)]"
+                                                    onSelect={(date) => {
+                                                        if (date) {
+                                                            // Format as "yyyy-MM-dd"
+                                                            field.onChange(
+                                                                format(
+                                                                    date,
+                                                                    "yyyy-MM-dd"
+                                                                )
+                                                            );
+                                                        } else {
+                                                            field.onChange("");
+                                                        }
+                                                    }}
+                                                    disabled={[
+                                                        {
+                                                            dayOfWeek: [0, 6],
+                                                        },
+                                                        (date) =>
+                                                            date < new Date(),
+                                                        ...bookedEventsExceptEventDate,
+                                                    ]}
+                                                    modifiers={{
+                                                        booked: bookedEventsExceptEventDate,
+                                                    }}
+                                                    modifiersClassNames={{
+                                                        booked: "[&>button]:line-through font-bold bg-red-500 dark:bg-red-900 text-white  bg-opacity-50  rounded",
+                                                    }}
+                                                    captionLayout="dropdown"
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                        {/* <FormDescription className="pl-5 dark:text-slate-300">
+                                                                        * Dates filled with red are not
+                                                                        available for booking.
+                                                                    </FormDescription> */}
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
@@ -389,20 +483,57 @@ export default function UpdateEventForm({ eventId }) {
                                     />
                                 </CardDescription>
 
-                                <CardContent id="form-modal">
-                                    <div className="flex gap-3 flex-wrap px-2">
+                                <CardContent>
+                                    <div className="flex gap-3 flex-col px-2">
                                         {fields.map((item, index) => (
                                             <Card
                                                 key={item.id}
                                                 className=" p-5 flex-1 mb-2 bg-inherit border-l-5 border-l-blue-900 dark:border-l-blue-600"
                                             >
                                                 <CardTitle>
-                                                    <div className="flex justify-between underline">
-                                                        <p className="flex items-center gap-1">
+                                                    <div className="flex justify-between">
+                                                        <p className="flex items-center text-2xl gap-1">
                                                             <BiTime /> Time
                                                             Schedule {index + 1}
                                                         </p>
                                                         <div className="flex justify-end">
+                                                            <FormField
+                                                                control={
+                                                                    control
+                                                                }
+                                                                name={`time_schedules.${index}.has_limit`}
+                                                                render={({
+                                                                    field: {
+                                                                        value,
+                                                                        onChange,
+                                                                    },
+                                                                }) => (
+                                                                    <FormItem className=" flex items-center gap-2 font-semibold">
+                                                                        <span
+                                                                            className={clsx(
+                                                                                "text-sm font-semibold",
+                                                                                value
+                                                                                    ? "text-green-600"
+                                                                                    : "text-warning"
+                                                                            )}
+                                                                        >
+                                                                            {value
+                                                                                ? "Has Limit"
+                                                                                : "No Limit"}
+                                                                        </span>
+                                                                        <ToggleAny
+                                                                            value={
+                                                                                value
+                                                                            }
+                                                                            onChange={() =>
+                                                                                onChange(
+                                                                                    !value
+                                                                                )
+                                                                            }
+                                                                        ></ToggleAny>
+                                                                    </FormItem>
+                                                                )}
+                                                            />
                                                             <button
                                                                 type="button"
                                                                 disabled={
@@ -413,7 +544,7 @@ export default function UpdateEventForm({ eventId }) {
                                                                         index
                                                                     )
                                                                 }
-                                                                className="btn btn-error btn-sm btn-outline"
+                                                                className="btn btn-error btn-sm btn-outline hidden"
                                                             >
                                                                 <MdDeleteForever />
                                                             </button>
@@ -501,42 +632,7 @@ export default function UpdateEventForm({ eventId }) {
                                                             </FormItem>
                                                         )}
                                                     />
-                                                    <FormField
-                                                        control={control}
-                                                        name={`time_schedules.${index}.has_limit`}
-                                                        render={({
-                                                            field: {
-                                                                value,
-                                                                onChange,
-                                                            },
-                                                        }) => (
-                                                            <FormItem className=" flex font-semibold py-1">
-                                                                <ToggleAny
-                                                                    value={
-                                                                        value
-                                                                    }
-                                                                    onChange={() =>
-                                                                        onChange(
-                                                                            !value
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <span
-                                                                        className={clsx(
-                                                                            "text-sm font-semibold",
-                                                                            value
-                                                                                ? "text-green-600"
-                                                                                : "text-warning"
-                                                                        )}
-                                                                    >
-                                                                        {value
-                                                                            ? "Has Limit"
-                                                                            : "No Limit"}
-                                                                    </span>
-                                                                </ToggleAny>
-                                                            </FormItem>
-                                                        )}
-                                                    />
+
                                                     {watch(
                                                         `time_schedules.${index}.has_limit`
                                                     ) ? (
@@ -589,7 +685,7 @@ export default function UpdateEventForm({ eventId }) {
                                                 </CardContent>
                                             </Card>
                                         ))}
-                                        <div className="flex p-2">
+                                        <div className="hidden p-2">
                                             <button
                                                 type="button"
                                                 onClick={() =>
@@ -612,17 +708,13 @@ export default function UpdateEventForm({ eventId }) {
                                 </CardContent>
                             </Card>
 
-                            <div className="flex justify-end gap-2 mt-4">
-                                <button
-                                    onClick={() => router.back()}
-                                    type="button"
-                                    className="btn btn-error"
-                                >
-                                    <X /> Cancel
-                                </button>
+                            <div
+                                className="space-y-2 mt-4 relative"
+                                id="form-modal"
+                            >
                                 <button
                                     disabled={!isDirty || isPending}
-                                    className="btn btn-neutral hover:bg-neutral-800 hover:text-green-300"
+                                    className="py-5 flex rounded-2xl text-2xl btn btn-block btn-primary ring-offset-2 ring-offset-blue-500 hover:ring-2 "
                                 >
                                     {isPending ? (
                                         <>
@@ -635,6 +727,13 @@ export default function UpdateEventForm({ eventId }) {
                                             Update Event
                                         </>
                                     )}
+                                </button>
+                                <button
+                                    onClick={() => router.back()}
+                                    type="button"
+                                    className="p-5 flex rounded-2xl text-2xl btn btn-outline btn-block btn-error ring-offset-2 ring-offset-red-500 hover:ring-2"
+                                >
+                                    <X /> Cancel
                                 </button>
                             </div>
                         </div>

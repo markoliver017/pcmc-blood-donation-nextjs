@@ -9,6 +9,7 @@ import parse from "html-react-parser";
 import { CalendarCheck2 } from "lucide-react";
 import Skeleton_line from "@components/ui/skeleton_line";
 import notify from "@components/ui/notify";
+import Image from "next/image";
 
 export default function AllEventCalendar() {
     const { data: events, isLoading } = useQuery({
@@ -62,14 +63,33 @@ export default function AllEventCalendar() {
                                 isCurrentAgency: agency_id == event?.agency_id,
                                 status: event?.status,
                                 description: event?.description,
+                                agency_name: event?.agency.name,
+                                agency_avatar:
+                                    event?.agency?.file_url ||
+                                    "/default_company_avatar.png",
                             },
                         })) || []
                     }
                     eventDisplay="block"
                     eventContent={(eventInfo) => (
-                        <div className="flex text-left gap-1 rounded-2xl p-2 truncate">
+                        <div className="flex text-left gap-1 pt-5 rounded-2xl p-2 truncate relative cursor-pointer">
                             {/* <CalendarCheck2 size={20} /> */}
                             {eventInfo.event.title}
+                            {eventInfo.event.extendedProps.isCurrentAgency && (
+                                <Image
+                                    src={
+                                        eventInfo.event.extendedProps
+                                            .agency_avatar
+                                    }
+                                    alt={
+                                        eventInfo.event.extendedProps
+                                            .agency_name
+                                    }
+                                    width={50}
+                                    height={50}
+                                    className="absolute top-0 right-0 rounded-full max-w-6 max-h-6"
+                                />
+                            )}
                         </div>
                     )}
                     headerToolbar={{

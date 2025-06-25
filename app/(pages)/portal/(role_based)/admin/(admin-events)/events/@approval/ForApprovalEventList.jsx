@@ -71,7 +71,9 @@ export default function ForApprovalEventList({ target = "" }) {
                     >
                         <CardHeader>
                             <CardTitle className="flex flex-wrap justify-between">
-                                <span className="text-xl">{event?.title}</span>
+                                <span className="text-xl">
+                                    {event?.agency?.name}
+                                </span>
 
                                 <span className="text-sm text-slate-600 dark:text-slate-300">
                                     {moment(event?.createdAt).format(
@@ -80,6 +82,12 @@ export default function ForApprovalEventList({ target = "" }) {
                                 </span>
                             </CardTitle>
                             <CardDescription className="flex flex-wrap justify-between gap-1 dark:text-slate-200">
+                                <span>
+                                    <span>Title:</span> &nbsp;
+                                    <div className="text-lg pl-2 text-black dark:text-white">
+                                        {parse(event?.title)}
+                                    </div>
+                                </span>
                                 <span>
                                     Description:
                                     <br /> {parse(event?.description)}

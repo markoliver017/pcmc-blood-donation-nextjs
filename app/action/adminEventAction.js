@@ -289,8 +289,6 @@ export async function getAllEventsByAgency() {
 }
 
 export async function getEventsByStatus(status) {
-    // await new Promise((resolve) => setTimeout(resolve, 500));
-
     try {
         const events = await BloodDonationEvent.findAll({
             where: {
@@ -299,6 +297,11 @@ export async function getEventsByStatus(status) {
                 },
             },
             include: [
+                {
+                    model: Agency,
+                    as: "agency",
+                    attributes: ["id", "name"],
+                },
                 {
                     model: User,
                     as: "requester",
