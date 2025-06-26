@@ -1,7 +1,7 @@
 "use client";
 import { DataTable } from "@components/reusable_components/Datatable";
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { eventColumns } from "./eventColumns";
 import {
     getAllEventsByAgency,
@@ -22,6 +22,9 @@ import {
 import { MdBloodtype } from "react-icons/md";
 import { Card } from "@components/ui/card";
 import clsx from "clsx";
+import { toast } from "react-toastify";
+import { notifyRegistrationOpen } from "@/action/donorAction";
+import { NotifyEventRegistration } from "@components/events/NotifyEventRegistration";
 
 export default function ListofEvents() {
     const router = useRouter();
@@ -92,6 +95,7 @@ export default function ListofEvents() {
                 ]}
             />
             <LoadingModal imgSrc="/loader_3.gif" isLoading={isLoading} />
+            <NotifyEventRegistration />
 
             <Tabs
                 defaultValue={currentTab}

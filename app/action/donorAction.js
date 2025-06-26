@@ -790,8 +790,8 @@ export async function getDonorDashboard() {
                 next_eligible_date: donateNow
                     ? "Donate now"
                     : nextEligibleDate
-                    ? moment(nextEligibleDate).format("MMM.DD, YYYY")
-                    : null,
+                        ? moment(nextEligibleDate).format("MMM.DD, YYYY")
+                        : null,
                 days_remaining: donateNow ? 0 : daysRemaining,
                 latest_donation_date: latestDonationDate,
             },
@@ -979,4 +979,21 @@ export async function getLastDonationDateDonated(user_id) {
             message: extractErrorMessage(err),
         };
     }
+}
+
+
+export async function notifyRegistrationOpen(donor) {
+    console.log(donor)
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (donor == "oliver") {
+        return {
+            success: false,
+            message: "Send Successfully to :" + donor,
+        };
+    }
+
+    return {
+        success: true,
+        message: "Send Successfully to :" + donor,
+    };
 }
