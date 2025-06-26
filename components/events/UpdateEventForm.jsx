@@ -15,13 +15,7 @@ import {
     PopoverTrigger,
 } from "@components/ui/popover";
 
-import {
-    CalendarIcon,
-    CalendarPlus2,
-    Save,
-    Text,
-    X,
-} from "lucide-react";
+import { CalendarIcon, CalendarPlus2, Save, Text, X } from "lucide-react";
 import notify from "@components/ui/notify";
 import InlineLabel from "@components/form/InlineLabel";
 // import { useTheme } from "next-themes";
@@ -37,7 +31,6 @@ import {
 import { Input } from "@components/ui/input";
 
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
-
 
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -73,7 +66,6 @@ export default function UpdateEventForm({ eventId }) {
     const router = useRouter();
     const queryClient = useQueryClient();
 
-
     const { data: bookedEvents, bookedEventsIsLoading } = useQuery({
         queryKey: ["all_event_schedules"],
         queryFn: getAllEvents,
@@ -88,7 +80,7 @@ export default function UpdateEventForm({ eventId }) {
     const [calendarMonth, setCalendarMonth] = useState(
         event?.date ? new Date(event.date) : new Date()
     );
-    const [isUploading, setIsUploading] = useState(false)
+    const [isUploading, setIsUploading] = useState(false);
 
     const { data, mutate, isPending, isError, error } = useMutation({
         mutationFn: async (formData) => {
@@ -127,6 +119,18 @@ export default function UpdateEventForm({ eventId }) {
             console.log("mutate error", error);
             if (error?.type === "validation" && error?.errorArr.length) {
                 toastError(error);
+            } else if (
+                error?.type === "field_errors" &&
+                error?.errors &&
+                typeof error?.errors == "object"
+            ) {
+                const dataErrors = error.errors;
+
+                Object.keys(dataErrors).forEach((fieldName) => {
+                    setError(fieldName, {
+                        message: dataErrors[fieldName],
+                    });
+                });
             } else {
                 // Handle server errors
 
@@ -159,22 +163,24 @@ export default function UpdateEventForm({ eventId }) {
         resetField,
         reset,
         setValue,
+        setError,
         trigger,
         getValues,
         handleSubmit,
         formState: { errors, isDirty },
     } = form;
 
-
-
-    const debouncedUpdate = debounce(async (value, name, trigger, getValues, mutate) => {
-        console.log(value)
-        const isValid = await trigger(name);
-        if (isValid) {
-            const formData = getValues();
-            mutate(formData);
-        }
-    }, 1000);
+    const debouncedUpdate = debounce(
+        async (value, name, trigger, getValues, mutate) => {
+            console.log(value);
+            const isValid = await trigger(name);
+            if (isValid) {
+                const formData = getValues();
+                mutate(formData);
+            }
+        },
+        1000
+    );
 
     const onSubmit = async (formData) => {
         SweetAlert({
@@ -216,8 +222,8 @@ export default function UpdateEventForm({ eventId }) {
 
     const bookedEventsExceptEventDate = Array.isArray(bookedEvents)
         ? bookedEvents
-            ?.filter((ev) => ev.date !== event.date)
-            .map((ev) => new Date(ev.date))
+              ?.filter((ev) => ev.date !== event.date)
+              .map((ev) => new Date(ev.date))
         : [];
 
     return (
@@ -234,7 +240,9 @@ export default function UpdateEventForm({ eventId }) {
                                 {isPending && (
                                     <span className="flex-items-center text-blue-500">
                                         <span className="loading loading-bars loading-xs"></span>
-                                        <span className="italic  text-md">Updating ...</span>
+                                        <span className="italic  text-md">
+                                            Updating ...
+                                        </span>
                                     </span>
                                 )}
                             </div>
@@ -281,30 +289,36 @@ export default function UpdateEventForm({ eventId }) {
 
                                         // Optional: clear file_url before upload to show "uploading" state
                                         setValue("file_url", null);
-                                        setIsUploading(true)
-                                        const result = await uploadPicture(file);
+                                        setIsUploading(true);
+                                        const result = await uploadPicture(
+                                            file
+                                        );
                                         if (!result.success) {
-                                            console.error(result.message)
+                                            console.error(result.message);
                                             notify({
                                                 error: true,
-                                                message: "Upload failed: Please re-upload and try again!",
+                                                message:
+                                                    "Upload failed: Please re-upload and try again!",
                                             });
                                             setIsUploading(false);
                                             resetField("file");
                                             return;
                                         }
 
-                                        const file_url = result.file_data?.url || null;
+                                        const file_url =
+                                            result.file_data?.url || null;
                                         setValue("file_url", file_url);
 
                                         // Optional: revalidate + auto-save
-                                        const isValid = await trigger(["file", "file_url"]);
+                                        const isValid = await trigger([
+                                            "file",
+                                            "file_url",
+                                        ]);
                                         if (isValid) {
                                             const formData = getValues();
                                             mutate(formData);
                                         }
-                                        setIsUploading(false)
-
+                                        setIsUploading(false);
                                     }
                                 };
 
@@ -328,7 +342,9 @@ export default function UpdateEventForm({ eventId }) {
                                         {isUploading && (
                                             <span className="flex-items-center justify-center text-blue-500">
                                                 <span className="loading loading-bars loading-xs"></span>
-                                                <span className="italic  text-md">Uploading ...</span>
+                                                <span className="italic  text-md">
+                                                    Uploading ...
+                                                </span>
                                             </span>
                                         )}
                                         {uploaded_avatar ? (
@@ -397,7 +413,13 @@ export default function UpdateEventForm({ eventId }) {
                                                 // })}
                                                 onChange={(e) => {
                                                     field.onChange(e); // make sure RHF still receives the change
-                                                    debouncedUpdate(e.target.value, "title", trigger, getValues, mutate);
+                                                    debouncedUpdate(
+                                                        e.target.value,
+                                                        "title",
+                                                        trigger,
+                                                        getValues,
+                                                        mutate
+                                                    );
                                                 }}
                                             />
                                         </label>
@@ -419,7 +441,7 @@ export default function UpdateEventForm({ eventId }) {
                                                         className={cn(
                                                             "pl-3 text-left font-normal mt-1 text-xl dark:!bg-[#181717] hover:text-slate-400",
                                                             !field.value &&
-                                                            "text-muted-foreground"
+                                                                "text-muted-foreground"
                                                         )}
                                                         tabIndex={2}
                                                     >
@@ -447,8 +469,8 @@ export default function UpdateEventForm({ eventId }) {
                                                     selected={
                                                         field.value
                                                             ? new Date(
-                                                                field.value
-                                                            )
+                                                                  field.value
+                                                              )
                                                             : undefined
                                                     }
                                                     month={calendarMonth}
@@ -465,9 +487,14 @@ export default function UpdateEventForm({ eventId }) {
                                                                     "yyyy-MM-dd"
                                                                 )
                                                             );
-                                                            handleSubmit((data) => {
-                                                                if (isDirty) mutate(data);
-                                                            })()
+                                                            handleSubmit(
+                                                                (data) => {
+                                                                    if (isDirty)
+                                                                        mutate(
+                                                                            data
+                                                                        );
+                                                                }
+                                                            )();
                                                         } else {
                                                             field.onChange("");
                                                         }
@@ -523,7 +550,13 @@ export default function UpdateEventForm({ eventId }) {
                                                 content={value}
                                                 onContentChange={(newValue) => {
                                                     onChange(newValue); // update RHF
-                                                    debouncedUpdate(newValue, "description", trigger, getValues, mutate); // validate + auto-save
+                                                    debouncedUpdate(
+                                                        newValue,
+                                                        "description",
+                                                        trigger,
+                                                        getValues,
+                                                        mutate
+                                                    ); // validate + auto-save
                                                 }}
                                             />
                                         </span>
@@ -568,7 +601,7 @@ export default function UpdateEventForm({ eventId }) {
                     </CardContent>
                 </Card>
             </form>
-            <FormLogger watch={watch} errors={errors} data={event} />
+            {/* <FormLogger watch={watch} errors={errors} data={event} /> */}
         </Form>
     );
 }

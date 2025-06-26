@@ -29,8 +29,11 @@ import EventRegistrationStatus from "@components/organizers/EventRegistrationSta
 import LoadingModal from "@components/layout/LoadingModal";
 import Link from "next/link";
 import clsx from "clsx";
+import { useSession } from "next-auth/react";
+import Skeleton_line from "@components/ui/skeleton_line";
 
 export default function ShowEvents({ eventId }) {
+    const session = useSession();
     const [isLoading, setIsLoading] = useState(false);
     const { data: event } = useQuery({
         queryKey: ["agency_events", eventId],
@@ -54,7 +57,10 @@ export default function ShowEvents({ eventId }) {
     } else if (registration_status == "not started") {
         regStatusClass = "badge-warning";
     }
-    // return "";
+
+    if (session.status === "loading") return <Skeleton_line />;
+    const currentRole = session?.data?.user?.role_name;
+
     return (
         <Card className="mt-2 p-5 h-full">
             <CardHeader>
@@ -63,48 +69,52 @@ export default function ShowEvents({ eventId }) {
                 </CardTitle>
                 <CardDescription className="flex justify-between">
                     <span>{parse(event?.description)}</span>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button>
-                                <span className="sr-only">Open menu</span>
-                                <MenuSquare className="h-4 w-4" />
-                                <span className="hidden md:inline-block">
-                                    Action
-                                </span>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel className="flex items-center space-x-2">
-                                <Command className="w-3 h-3" />
-                                <span>Actions</span>
-                            </DropdownMenuLabel>
-                            <DropdownMenuSeparator />
 
-                            {event.status == "for approval" ? (
-                                <Link
-                                    href={`/portal/hosts/events/${event.id}/edit`}
-                                >
-                                    <DropdownMenuItem className="flex items-center space-x-2">
-                                        <Pencil className="w-4 h-4" />
-                                        <span>Edit</span>
+                    {(currentRole == "Organizer" ||
+                        currentRole == "Agency Administrator") && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button>
+                                    <span className="sr-only">Open menu</span>
+                                    <MenuSquare className="h-4 w-4" />
+                                    <span className="hidden md:inline-block">
+                                        Action
+                                    </span>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuLabel className="flex items-center space-x-2">
+                                    <Command className="w-3 h-3" />
+                                    <span>Actions</span>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+
+                                {event.status == "for approval" ? (
+                                    <Link
+                                        href={`/portal/hosts/events/${event.id}/edit`}
+                                    >
+                                        <DropdownMenuItem className="flex items-center space-x-2">
+                                            <Pencil className="w-4 h-4" />
+                                            <span>Edit</span>
+                                        </DropdownMenuItem>
+                                    </Link>
+                                ) : (
+                                    ""
+                                )}
+
+                                {event.status == "approved" ? (
+                                    <DropdownMenuItem>
+                                        <EventRegistrationStatus
+                                            data={event}
+                                            setIsLoading={setIsLoading}
+                                        />
                                     </DropdownMenuItem>
-                                </Link>
-                            ) : (
-                                ""
-                            )}
-
-                            {event.status == "approved" ? (
-                                <DropdownMenuItem>
-                                    <EventRegistrationStatus
-                                        data={event}
-                                        setIsLoading={setIsLoading}
-                                    />
-                                </DropdownMenuItem>
-                            ) : (
-                                ""
-                            )}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                                ) : (
+                                    ""
+                                )}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
                 </CardDescription>
             </CardHeader>
             <CardContent
@@ -172,6 +182,7 @@ export default function ShowEvents({ eventId }) {
                                     Contact Number
                                 </TableCell>
                                 <TableCell>
+                                    +63
                                     {event?.requester?.coordinator
                                         ?.contact_number ||
                                         event?.agency?.contact_number}

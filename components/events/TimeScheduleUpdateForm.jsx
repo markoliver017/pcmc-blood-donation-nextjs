@@ -5,26 +5,16 @@ import {
     Card,
     CardContent,
     CardDescription,
-
     CardTitle,
 } from "@components/ui/card";
 
-
-import {
-    Plus,
-    Timer,
-
-} from "lucide-react";
+import { Plus, Timer } from "lucide-react";
 import notify from "@components/ui/notify";
 import InlineLabel from "@components/form/InlineLabel";
 // import { useTheme } from "next-themes";
 import FieldError from "@components/form/FieldError";
 import clsx from "clsx";
-import {
-    FormField,
-    FormItem,
-    FormMessage,
-} from "@components/ui/form";
+import { FormField, FormItem, FormMessage } from "@components/ui/form";
 
 // import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { BiTime } from "react-icons/bi";
@@ -39,7 +29,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toastError } from "@lib/utils/toastError.utils";
 
 export default function TimeScheduleUpdateForm({ form }) {
-
     const queryClient = useQueryClient();
     const {
         control,
@@ -56,7 +45,7 @@ export default function TimeScheduleUpdateForm({ form }) {
 
     const { mutate: updateSchedule, isPending } = useMutation({
         mutationFn: async ({ id, data }) => {
-            console.log("id>>>>>>>>>>>", id)
+            console.log("id>>>>>>>>>>>", id);
             const res = await updateEventTimeSchedule(id, data);
             if (!res.success) {
                 throw res;
@@ -76,13 +65,11 @@ export default function TimeScheduleUpdateForm({ form }) {
             queryClient.invalidateQueries({
                 queryKey: ["agency_events"],
             });
-
         },
         onError: (error) => {
             if (error?.type === "validation" && error?.errorArr.length) {
                 toastError(error);
             } else {
-
                 notify({
                     error: true,
                     message: error?.message,
@@ -92,8 +79,9 @@ export default function TimeScheduleUpdateForm({ form }) {
     });
 
     const debouncedUpdateSchedule = debounce(
-        async (index, scheduleId, trigger, getValues, updateSchedule) => {
+        async (index, trigger, getValues, updateSchedule) => {
             const isValid = await trigger(`time_schedules.${index}`);
+            console.log("updating", index);
             if (isValid && isDirty) {
                 const values = getValues(`time_schedules.${index}`);
                 updateSchedule({ id: values.id, data: values });
@@ -114,9 +102,7 @@ export default function TimeScheduleUpdateForm({ form }) {
                 )}
             </CardTitle>
             <CardDescription className="px-10 pb-2">
-                <FieldError
-                    field={errors?.time_schedules?.root}
-                />
+                <FieldError field={errors?.time_schedules?.root} />
             </CardDescription>
 
             <CardContent>
@@ -129,20 +115,14 @@ export default function TimeScheduleUpdateForm({ form }) {
                             <CardTitle>
                                 <div className="flex justify-between">
                                     <p className="flex items-center text-2xl gap-1">
-                                        <BiTime /> Time
-                                        Schedule {index + 1}
+                                        <BiTime /> Time Schedule {index + 1}
                                     </p>
                                     <div className="flex justify-end">
                                         <FormField
-                                            control={
-                                                control
-                                            }
+                                            control={control}
                                             name={`time_schedules.${index}.has_limit`}
                                             render={({
-                                                field: {
-                                                    value,
-                                                    onChange,
-                                                },
+                                                field: { value, onChange },
                                             }) => (
                                                 <FormItem className=" flex items-center gap-2 font-semibold">
                                                     <span
@@ -158,30 +138,24 @@ export default function TimeScheduleUpdateForm({ form }) {
                                                             : "No Limit"}
                                                     </span>
                                                     <ToggleAny
-                                                        value={
-                                                            value
-                                                        }
+                                                        value={value}
                                                         onChange={() => {
-                                                            onChange(
-                                                                !value
-                                                            )
-                                                            debouncedUpdateSchedule(index, fields[index].id, trigger, getValues, updateSchedule)
+                                                            onChange(!value);
+                                                            debouncedUpdateSchedule(
+                                                                index,
+                                                                trigger,
+                                                                getValues,
+                                                                updateSchedule
+                                                            );
                                                         }}
-
                                                     ></ToggleAny>
                                                 </FormItem>
                                             )}
                                         />
                                         <button
                                             type="button"
-                                            disabled={
-                                                index == 0
-                                            }
-                                            onClick={() =>
-                                                remove(
-                                                    index
-                                                )
-                                            }
+                                            disabled={index == 0}
+                                            onClick={() => remove(index)}
                                             className="btn btn-error btn-sm btn-outline hidden"
                                         >
                                             <MdDeleteForever />
@@ -197,8 +171,7 @@ export default function TimeScheduleUpdateForm({ form }) {
                                         <FormItem>
                                             <div className="flex flex-wrap">
                                                 <InlineLabel>
-                                                    Time
-                                                    Start:{" "}
+                                                    Time Start:{" "}
                                                 </InlineLabel>
 
                                                 <label
@@ -207,8 +180,7 @@ export default function TimeScheduleUpdateForm({ form }) {
                                                         errors
                                                             ?.time_schedules?.[
                                                             index
-                                                        ]
-                                                            ?.time_start
+                                                        ]?.time_start
                                                             ? "input-error"
                                                             : "input-info"
                                                     )}
@@ -216,14 +188,18 @@ export default function TimeScheduleUpdateForm({ form }) {
                                                     <Timer className="h-3" />
                                                     <input
                                                         type="time"
-                                                        tabIndex={
-                                                            4
-                                                        }
+                                                        tabIndex={4}
                                                         placeholder="Enter start time"
                                                         {...field}
-                                                        onBlur={() =>
-                                                            debouncedUpdateSchedule(index, fields[index].id, trigger, getValues, updateSchedule)
-                                                        }
+                                                        onChange={(e) => {
+                                                            field.onChange(e);
+                                                            debouncedUpdateSchedule(
+                                                                index,
+                                                                trigger,
+                                                                getValues,
+                                                                updateSchedule
+                                                            );
+                                                        }}
                                                     />
                                                 </label>
                                             </div>
@@ -240,8 +216,7 @@ export default function TimeScheduleUpdateForm({ form }) {
                                         <FormItem>
                                             <div className="flex flex-wrap">
                                                 <InlineLabel>
-                                                    Time
-                                                    End:{" "}
+                                                    Time End:{" "}
                                                 </InlineLabel>
 
                                                 <label
@@ -250,8 +225,7 @@ export default function TimeScheduleUpdateForm({ form }) {
                                                         errors
                                                             ?.time_schedules?.[
                                                             index
-                                                        ]
-                                                            ?.time_end
+                                                        ]?.time_end
                                                             ? "input-error"
                                                             : "input-info"
                                                     )}
@@ -259,14 +233,26 @@ export default function TimeScheduleUpdateForm({ form }) {
                                                     <Timer className="h-3" />
                                                     <input
                                                         type="time"
-                                                        tabIndex={
-                                                            4
-                                                        }
+                                                        tabIndex={4}
                                                         placeholder="Enter time end"
                                                         {...field}
-                                                        onBlur={() =>
-                                                            debouncedUpdateSchedule(index, fields[index].id, trigger, getValues, updateSchedule)
-                                                        }
+                                                        // onBlur={() =>
+                                                        //     debouncedUpdateSchedule(
+                                                        //         index,
+                                                        //         trigger,
+                                                        //         getValues,
+                                                        //         updateSchedule
+                                                        //     )
+                                                        // }
+                                                        onChange={(e) => {
+                                                            field.onChange(e);
+                                                            debouncedUpdateSchedule(
+                                                                index,
+                                                                trigger,
+                                                                getValues,
+                                                                updateSchedule
+                                                            );
+                                                        }}
                                                     />
                                                 </label>
                                             </div>
@@ -277,20 +263,15 @@ export default function TimeScheduleUpdateForm({ form }) {
                                     )}
                                 />
 
-                                {watch(
-                                    `time_schedules.${index}.has_limit`
-                                ) ? (
+                                {watch(`time_schedules.${index}.has_limit`) ? (
                                     <FormField
                                         control={control}
                                         name={`time_schedules.${index}.max_limit`}
-                                        render={({
-                                            field,
-                                        }) => (
+                                        render={({ field }) => (
                                             <FormItem>
                                                 <div className="flex flex-wrap items-center">
                                                     <InlineLabel>
-                                                        Max
-                                                        Limit:{" "}
+                                                        Max Limit:{" "}
                                                     </InlineLabel>
 
                                                     <label
@@ -299,8 +280,7 @@ export default function TimeScheduleUpdateForm({ form }) {
                                                             errors
                                                                 ?.time_schedules?.[
                                                                 index
-                                                            ]
-                                                                ?.max_limit
+                                                            ]?.max_limit
                                                                 ? "input-error"
                                                                 : "input-info"
                                                         )}
@@ -308,17 +288,29 @@ export default function TimeScheduleUpdateForm({ form }) {
                                                         <ExclamationTriangleIcon className="h-3" />
                                                         <input
                                                             type="number"
-                                                            min={
-                                                                0
-                                                            }
-                                                            tabIndex={
-                                                                4
-                                                            }
+                                                            min={0}
+                                                            tabIndex={4}
                                                             placeholder="Enter max limit"
                                                             {...field}
-                                                            onBlur={() =>
-                                                                debouncedUpdateSchedule(index, fields[index].id, trigger, getValues, updateSchedule)
-                                                            }
+                                                            // onBlur={() =>
+                                                            //     debouncedUpdateSchedule(
+                                                            //         index,
+                                                            //         trigger,
+                                                            //         getValues,
+                                                            //         updateSchedule
+                                                            //     )
+                                                            // }
+                                                            onChange={(e) => {
+                                                                field.onChange(
+                                                                    e
+                                                                );
+                                                                debouncedUpdateSchedule(
+                                                                    index,
+                                                                    trigger,
+                                                                    getValues,
+                                                                    updateSchedule
+                                                                );
+                                                            }}
                                                         />
                                                     </label>
                                                 </div>
@@ -354,5 +346,5 @@ export default function TimeScheduleUpdateForm({ form }) {
                 </div>
             </CardContent>
         </Card>
-    )
+    );
 }

@@ -41,7 +41,7 @@ export default function Dashboard() {
             if (!res.success) {
                 throw res;
             }
-            return res.data;
+            return res;
         },
     });
 

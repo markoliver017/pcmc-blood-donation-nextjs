@@ -100,7 +100,7 @@ export default function RejectEvent({ eventId, className = "btn-error" }) {
             >
                 <XIcon /> Reject
             </DialogTrigger>
-            <DialogContent>
+            <DialogContentNoX>
                 <ToastContainer />
                 <DialogHeader>
                     <div
@@ -119,54 +119,53 @@ export default function RejectEvent({ eventId, className = "btn-error" }) {
                     <DialogDescription className="dark:text-slate-200">
                         This action cannot be undone.
                     </DialogDescription>
-                    <Form {...form}>
-                        <form
-                            // onSubmit={handleSubmit(onSubmit)}
-                            className="space-y-2"
-                        >
-                            <FormField
-                                control={form.control}
-                                name="remarks"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <label className="block mb-5">
-                                            Please provide reason for rejection:{" "}
-                                        </label>
-
-                                        <textarea
-                                            className="textarea dark:text-white textarea-info h-24 w-full border"
-                                            placeholder="Your reason"
-                                            {...field}
-                                        />
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <div className="flex justify-end">
-
-                                <button
-                                    type="button"
-                                    onClick={() => handleSubmit(onSubmit)()}
-                                    disabled={!isDirty || isPending}
-                                    className="btn btn-neutral mt-4 space-x-2 hover:bg-neutral-800 hover:text-red-300"
-                                >
-                                    {isPending ? (
-                                        <>
-                                            <span className="loading loading-bars loading-xs"></span>
-                                            Submitting ...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Save />
-                                            Reject
-                                        </>
-                                    )}
-                                </button>
-                            </div>
-                        </form>
-                    </Form>
                 </DialogHeader>
-            </DialogContent>
+                <Form {...form}>
+                    <form
+                        // onSubmit={handleSubmit(onSubmit)}
+                        className="space-y-2"
+                    >
+                        <FormField
+                            control={form.control}
+                            name="remarks"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <label className="block mb-5">
+                                        Please provide reason for rejection:{" "}
+                                    </label>
+
+                                    <textarea
+                                        className="textarea dark:text-white textarea-info h-24 w-full border"
+                                        placeholder="Your reason"
+                                        {...field}
+                                    />
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <div className="flex justify-end">
+                            <button
+                                type="button"
+                                onClick={() => handleSubmit(onSubmit)()}
+                                disabled={!isDirty || isPending}
+                                className="btn btn-neutral mt-4 space-x-2 hover:bg-neutral-800 hover:text-red-300"
+                            >
+                                {isPending ? (
+                                    <>
+                                        <span className="loading loading-bars loading-xs"></span>
+                                        Submitting ...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Save />
+                                        Reject
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </form>
+                </Form>
+            </DialogContentNoX>
         </Dialog>
     );
 }

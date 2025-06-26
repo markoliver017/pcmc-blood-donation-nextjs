@@ -14,7 +14,7 @@ import {
     Command,
     Eye,
     MoreHorizontal,
-    Pencil,
+    Users,
     XIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -70,27 +70,23 @@ export const eventColumns = (setIsLoading) => [
     {
         accessorKey: "time_schedules",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Participants" />
+            <DataTableColumnHeader column={column} title="Time Schedule" />
         ),
         filterFn: "columnFilter",
-        size: 50, // Set column width to 200px
-        minSize: 50, // Optional: set a minimum width
-        maxSize: 50,
         cell: ({ getValue }) => {
             const time_schedules = getValue();
 
             return (
-                <ul className="list text-right max-w-42">
+                <ul className="list max-w-42">
                     {time_schedules.map((sched) => (
                         <li key={sched.id}>
                             <span className="italic text-slate-500">
                                 {sched.formatted_time}
                             </span>
-                            {" - "}
-                            <b>{sched?.donors?.length}</b>
+                            <b className="hidden">{sched?.donors?.length}</b>
                         </li>
                     ))}
-                    <li className="font-semibold">
+                    <li className="font-semibold hidden">
                         Total -{" "}
                         {time_schedules.reduce(
                             (acc, sched) => acc + sched?.donors?.length,
@@ -101,6 +97,58 @@ export const eventColumns = (setIsLoading) => [
             );
         },
     },
+    {
+        id: "participants",
+        accessorKey: "time_schedules",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="No of Participants" />
+        ),
+        filterFn: "columnFilter",
+        cell: ({ getValue }) => {
+            const time_schedules = getValue();
+
+            return (
+                <div className="font-semibold text-xl max-w-12 text-center">
+                    {time_schedules.reduce(
+                        (acc, sched) => acc + sched?.donors?.length,
+                        0
+                    )}
+                </div>
+            );
+        },
+    },
+    // {
+    //     accessorKey: "time_schedules",
+    //     header: ({ column }) => (
+    //         <DataTableColumnHeader column={column} title="Participants" />
+    //     ),
+    //     filterFn: "columnFilter",
+
+    //     cell: ({ getValue }) => {
+    //         const time_schedules = getValue();
+
+    //         return (
+    //             <ul className="list text-right max-w-42">
+    //                 {time_schedules.map((sched) => (
+    //                     <li key={sched.id}>
+    //                         <span className="italic text-slate-500">
+    //                             {sched.formatted_time}
+    //                         </span>
+    //                         {" - "}
+    //                         <b>{sched?.donors?.length}</b>
+    //                     </li>
+    //                 ))}
+    //                 <li className="font-semibold">
+    //                     Total -{" "}
+    //                     {time_schedules.reduce(
+    //                         (acc, sched) => acc + sched?.donors?.length,
+    //                         0
+    //                     )}
+    //                 </li>
+    //             </ul>
+    //         );
+    //     },
+    // },
     {
         accessorKey: "createdAt",
         header: ({ column }) => (
@@ -220,12 +268,12 @@ export const eventColumns = (setIsLoading) => [
                                 <span>Show</span>
                             </DropdownMenuItem>
                         </Link>
-                        <Link href={`/portal/admin/events/${data.id}/edit`}>
+                        {/* <Link href={`/portal/admin/events/${data.id}/edit`}>
                             <DropdownMenuItem className="space-x-2 btn btn-ghost btn-warning">
                                 <Pencil className="w-4 h-4" />
                                 <span>Edit</span>
                             </DropdownMenuItem>
-                        </Link>
+                        </Link> */}
                         {status == "for approval" ? (
                             <>
                                 <DropdownMenuItem className="space-x-2 flex justify-between">
@@ -256,7 +304,9 @@ export const eventColumns = (setIsLoading) => [
                                 <DropdownMenuItem>
                                     <Link
                                         href={`/portal/admin/events/${data.id}/participants`}
+                                        className="btn btn-block space-x-2 flex justify-center"
                                     >
+                                        <Users />
                                         <span>View Donors</span>
                                     </Link>
                                 </DropdownMenuItem>

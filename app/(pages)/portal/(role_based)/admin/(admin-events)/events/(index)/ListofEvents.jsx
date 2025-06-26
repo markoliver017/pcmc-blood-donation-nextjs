@@ -6,8 +6,26 @@ import { eventColumns } from "./eventColumns";
 import { getAllEvents } from "@/action/adminEventAction";
 import LoadingModal from "@components/layout/LoadingModal";
 import { DataTable } from "@components/events/Datatable";
+import { useSession } from "next-auth/react";
+
+import { useRouter, useSearchParams } from "next/navigation";
+import WrapperHeadMain from "@components/layout/WrapperHeadMain";
+import { CalendarCheck } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
+import ForApprovalEventList from "./ForApprovalEventList";
 
 export default function ListofEvents() {
+    const session = useSession();
+
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const currentTab = searchParams.get("tab") || "all";
+
+    const handleTabChange = (value) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("tab", value);
+        router.push(`?${params.toString()}`, { scroll: false });
+    };
     const [modalIsLoading, setModalIsLoading] = useState(false);
     const {
         data: events,
@@ -37,13 +55,41 @@ export default function ListofEvents() {
         );
 
     return (
-        <div className="w-full p-4">
-            <LoadingModal imgSrc="/loader_3.gif" isLoading={modalIsLoading} />
-            <DataTable
-                data={events || []}
-                columns={eventColumns(setModalIsLoading)}
-                isLoading={isLoading}
+        <>
+            <WrapperHeadMain
+                icon={<CalendarCheck />}
+                pageTitle="Blood Drives"
+                breadcrumbs={[
+                    {
+                        path: "/portal/admin/events",
+                        icon: <CalendarCheck className="w-4" />,
+                        title: "Blood Drives",
+                    },
+                ]}
             />
-        </div>
+            <LoadingModal imgSrc="/loader_3.gif" isLoading={modalIsLoading} />
+            <Tabs
+                defaultValue={currentTab}
+                onValueChange={handleTabChange}
+                className="px-1 md:px-5 mt-2"
+            >
+                <TabsList>
+                    <TabsTrigger value="all">All</TabsTrigger>
+                    <TabsTrigger value="for-approval">For Approval</TabsTrigger>
+                </TabsList>
+                <TabsContent value="all">
+                    <DataTable
+                        data={events || []}
+                        columns={eventColumns(setModalIsLoading)}
+                        isLoading={isLoading}
+                    />
+                </TabsContent>
+                <TabsContent value="for-approval">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 p-3 w-full">
+                        <ForApprovalEventList />
+                    </div>
+                </TabsContent>
+            </Tabs>
+        </>
     );
 }

@@ -63,7 +63,7 @@ function Calendar({
                     defaultClassNames.button_next
                 ),
                 month_caption: cn(
-                    "flex items-center justify-center h-(--cell-size) w-full px-(--cell-size)",
+                    "flex items-center justify-center h-(--cell-size) w-full px-(--cell-size) ",
                     defaultClassNames.month_caption
                 ),
                 dropdowns: cn(
@@ -75,7 +75,7 @@ function Calendar({
                     defaultClassNames.dropdown_root
                 ),
                 dropdown: cn(
-                    "absolute inset-0 opacity-0",
+                    "absolute inset-0 opacity-0 dark:!bg-black",
                     defaultClassNames.dropdown
                 ),
                 caption_label: cn(

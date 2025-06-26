@@ -15,7 +15,10 @@ import { FaArrowRight } from "react-icons/fa";
 import ForApprovalEventList from "./(hosts-events)/events/(index)/ForApprovalEventList";
 import { useQuery } from "@tanstack/react-query";
 import { getVerifiedDonorsCount } from "@/action/hostDonorAction";
-import { getAllEventsCount } from "@/action/hostEventAction";
+import {
+    getAllEventsCount,
+    getForApprovalEventsByAgency,
+} from "@/action/hostEventAction";
 
 export default function Dashboard() {
     const { data: donors_count, isLoading: donorsCountIsLoading } = useQuery({
@@ -37,6 +40,12 @@ export default function Dashboard() {
             }
             return res.data;
         },
+    });
+    const { data: eventsForApproval, isLoading: eventsIsFetching } = useQuery({
+        queryKey: ["agency_events", "for approval"],
+        queryFn: async () => getForApprovalEventsByAgency("for approval"),
+        staleTime: 0,
+        cacheTime: 0,
     });
 
     return (
@@ -141,11 +150,18 @@ export default function Dashboard() {
                                     href="/portal/hosts/events?tab=for-approval"
                                     className="btn btn-block justify-between text-orange-700 dark:text-orange-400"
                                 >
-                                    Donation Drives Awaiting Approval
+                                    <span>
+                                        Donation Drives Awaiting Approval (
+                                        {eventsForApproval?.length || 0})
+                                    </span>
                                     <FaArrowRight />
                                 </Link>
-                                <div className="max-h-60 overflow-y-auto mt-2 space-y-2 p-2">
-                                    <ForApprovalEventList editable={false} />
+                                <div className="max-h-64 overflow-y-auto mt-2 flex flex-col gap-4 p-2">
+                                    <ForApprovalEventList
+                                        events={eventsForApproval}
+                                        isFetching={eventsIsFetching}
+                                        editable={false}
+                                    />
                                 </div>
                             </div>
                         </CardContent>

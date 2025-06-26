@@ -22,6 +22,7 @@ export async function uploadPicture(file) {
         });
 
         const data = await res.json();
+        await new Promise((resolve) => setTimeout(resolve, 5000));
 
         if (!res.ok) {
             // Handle HTTP errors

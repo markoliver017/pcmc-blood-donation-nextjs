@@ -15,7 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { getAdminDashboard } from "@/action/adminEventAction";
 import { BiBuildings } from "react-icons/bi";
-import ForApprovalEventList from "./(admin-events)/events/@approval/ForApprovalEventList";
+import ForApprovalEventList from "./(admin-events)/events/(index)/ForApprovalEventList";
 import ForApprovalAgencyList from "./(agencies)/agencies/(index)/ForApprovalAgencyList";
 import { fetchAgencyByStatus } from "@/action/agencyAction";
 
@@ -189,7 +189,7 @@ export default function Dashboard() {
                                     For Approval - Blood Drives
                                     <FaArrowRight />
                                 </Link>
-                                <div className="max-h-72 overflow-y-auto mt-2 space-y-2 p-2">
+                                <div className="max-h-72 overflow-y-auto mt-2 flex flex-col gap-4 p-2">
                                     <ForApprovalEventList target="_blank" />
                                 </div>
                             </div>
@@ -199,10 +199,11 @@ export default function Dashboard() {
                                     href="/portal/admin/agencies?tab=for-approval"
                                     className="btn btn-block justify-between text-orange-800 dark:text-orange-400"
                                 >
-                                    For Approval - Agencies
+                                    For Approval - Agencies (
+                                    {forApprovalAgencies?.length || 0})
                                     <FaArrowRight />
                                 </Link>
-                                <div className="max-h-72 overflow-y-auto mt-2 space-y-2 p-2">
+                                <div className="max-h-72 overflow-y-auto mt-2 flex flex-col gap-4 p-2">
                                     <ForApprovalAgencyList
                                         agencies={forApprovalAgencies}
                                         isFetching={forApprovalAgencyIsFetching}

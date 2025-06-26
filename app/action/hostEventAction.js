@@ -15,7 +15,10 @@ import {
 } from "@lib/models";
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
-import { bloodDonationEventSchema, timeScheduleSchema } from "@lib/zod/bloodDonationSchema";
+import {
+    bloodDonationEventSchema,
+    timeScheduleSchema,
+} from "@lib/zod/bloodDonationSchema";
 import { addDays, format, subDays } from "date-fns";
 import { ForeignKeyConstraintError, Op } from "sequelize";
 // import { logAuditTrail } from "@lib/audit_trails.utils";
@@ -62,6 +65,14 @@ export async function getAgencyId() {
             ],
         });
         return response?.coordinator?.agency?.id;
+    } else if (user?.role_name === "Donor") {
+        const response = await Donor.findOne({
+            where: { user_id: user.id },
+            attributes: ["agency_id"],
+        });
+        if (response) {
+            return response.agency_id;
+        }
     }
     return null;
 }
@@ -440,9 +451,9 @@ export async function storeEvent(formData) {
 
     // Calculate the 90-day window
     const eventDate = new Date(data.date);
-    const currentDate = new Date(data.date);
+    const currentDate = new Date();
 
-    if (currentDate < new Date()) {
+    if (eventDate < currentDate) {
         return {
             success: false,
             message: "You cannot book a donation in the past ☺.",
@@ -468,11 +479,12 @@ export async function storeEvent(formData) {
     if (overlappingEvent) {
         return {
             success: false,
-            message: `Event date conflict: Another event ("${overlappingEvent?.title
-                }") dated ${format(
-                    overlappingEvent?.date,
-                    "PP"
-                )} is scheduled within 90 days of your selected date. Please choose a different date.`,
+            message: `Event date conflict: Your agency has another event ("${
+                overlappingEvent?.title
+            }") scheduled on ${format(
+                overlappingEvent?.date,
+                "PP"
+            )} Please choose a date that's at least 90 days before or after this event.`,
         };
     }
 
@@ -585,12 +597,60 @@ export async function updateEvent(id, formData) {
         };
     }
 
+    // Calculate the 90-day window
+    const eventDate = new Date(data.date);
+    const currentDate = new Date();
+
+    if (eventDate < currentDate) {
+        return {
+            success: false,
+            message: "You cannot book a donation in the past ☺.",
+        };
+    }
+
+    const start = subDays(eventDate, 90);
+    const end = addDays(eventDate, 89);
+
+    // Query for any event whose date is between start and end
+    const overlappingEvent = await BloodDonationEvent.findOne({
+        where: {
+            id: { [Op.ne]: id },
+            agency_id: data.agency_id,
+            status: {
+                [Op.in]: ["approved", "for approval"],
+            },
+            date: {
+                [Op.between]: [start, end],
+            },
+        },
+    });
+
+    if (overlappingEvent) {
+        return {
+            success: false,
+            type: "field_errors",
+            message: `Event date conflict: Your agency has another event "${
+                overlappingEvent?.title
+            }" scheduled on ${format(
+                overlappingEvent?.date,
+                "PP"
+            )}. Please choose a date that's at least 90 days before or after this event.`,
+            errors: {
+                date: `Event date conflict: Your agency has another event "${
+                    overlappingEvent?.title
+                }" scheduled on ${format(
+                    overlappingEvent?.date,
+                    "PP"
+                )}. Please choose a date that's at least 90 days before or after this event.`,
+            },
+        };
+    }
+
     const transaction = await sequelize.transaction();
 
     try {
         data.updated_by = user.id;
         await existingEvent.update(data, { transaction });
-
 
         await transaction.commit();
 
@@ -638,7 +698,7 @@ export async function updateEventTimeSchedule(id, formData) {
         };
     }
     const { user } = session;
-    console.log(id, formData)
+    console.log(id, formData);
     const parsed = timeScheduleSchema.safeParse(formData);
 
     if (!parsed.success) {
@@ -657,7 +717,6 @@ export async function updateEventTimeSchedule(id, formData) {
     console.log("parsed data", data);
 
     const timeSchedule = await EventTimeSchedule.findByPk(id);
-
 
     if (!timeSchedule) {
         return {
@@ -709,7 +768,6 @@ export async function updateEventTimeSchedule(id, formData) {
         };
     }
 }
-
 
 // 1. Get all existing schedules for this event
 // const existingSchedules = await EventTimeSchedule.findAll({

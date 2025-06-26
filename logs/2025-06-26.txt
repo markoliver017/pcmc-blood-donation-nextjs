@@ -1,0 +1,300 @@
+[2025-06-26T03:22:07.194Z] ❌ ERROR (CREATE AGENCY): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async MySQLQueryInterface.insert (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11598:25)
+    at async model.save (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:10606:39)
+    at async Agency.create (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9376:16)
+    at async storeAgency (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\[root of the server]__76aff05f._.js:1358:27)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:438:2357
+    at async handleAction (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:437:23434)
+    at async renderToHTMLOrFlightImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:443:26714)
+    at async doRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1650:34)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1915:28)
+    at async DevServer.renderPageComponent (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2393:24)
+    at async DevServer.renderToResponseImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:2430:32)
+    at async DevServer.pipeImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:1003:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\next-server.js:304:17)
+    at async DevServer.handleRequestImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\base-server.js:895:17)
+    at async C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:371:20
+    at async Span.traceAsyncFn (C:\nextJs\blood-bank-portal\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\dev\next-dev-server.js:368:24)
+    at async invokeRender (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:235:21)
+    at async handleRequest (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:426:24)
+    at async requestHandlerImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:450:13)
+    at async Server.requestListener (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\start-server.js:158:13)
+[2025-06-26T03:22:33.627Z] ✅ SUCCESS (send-email): Email sent to agency@email.com with subject "🩸 Thank You for Registering - Your Agency Application is Pending Approval". Message ID: <a81eafcc-fb81-2b96-8270-1e3764b0c3df@pcmc.gov.ph>
+[2025-06-26T03:22:36.080Z] ✅ SUCCESS (send-email): Email sent to mark.roman@pcmc.gov.ph with subject "📥 New Agency Registration Request – Action Required". Message ID: <1e92e7b1-ca4f-132d-090a-446f5d7f866d@pcmc.gov.ph>
+[2025-06-26T07:24:24.756Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:24:24.913Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:24:25.375Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:24:25.895Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:24:26.444Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:24:27.470Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:24:28.031Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:24:29.057Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:24:29.609Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:24:30.128Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:26:52.496Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:26:53.064Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:26:54.023Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:26:54.525Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:26:55.041Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:26:55.558Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:26:56.593Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:26:57.171Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:26:57.689Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:26:58.188Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:49:30.700Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:49:30.906Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:49:31.400Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:49:31.998Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:49:32.592Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:49:33.649Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:49:34.175Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:49:34.712Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:49:35.301Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)
+[2025-06-26T07:49:36.342Z] ❌ ERROR (getEventsById ERROR): Error: 
+    at Query.run (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:18236:29)
+    at C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:26054:36
+    at async MySQLQueryInterface.select (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:11702:16)
+    at async BloodDonationEvent.findAll (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9138:25)
+    at async BloodDonationEvent.findOne (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9245:16)
+    at async BloodDonationEvent.findByPk (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\node_modules_sequelize_a04ec824._.js:9226:16)
+    at async getEventsById (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:649:24)
+    at async queryFn (C:\nextJs\blood-bank-portal\.next\server\chunks\ssr\_2351ccfa._.js:1255:28)

@@ -109,7 +109,7 @@ export default function CreateEventForm({ agency }) {
                 confirmButtonText: "Okay",
                 onConfirm: () => {
                     reset();
-                    router.replace("/portal/hosts/events?tab=for-approval");
+                    router.push("/portal/hosts/events?tab=for-approval");
                 },
             });
         },
@@ -352,7 +352,7 @@ export default function CreateEventForm({ agency }) {
                                                     <Button
                                                         variant={"outline"}
                                                         className={cn(
-                                                            "pl-3 text-left font-normal mt-1 text-xl dark:!bg-[#181717]",
+                                                            "pl-3 text-left font-normal mt-1 text-xl dark:!bg-[#181717] hover:!text-slate-300",
                                                             !field.value &&
                                                                 "text-muted-foreground"
                                                         )}
@@ -390,7 +390,11 @@ export default function CreateEventForm({ agency }) {
                                                     onMonthChange={
                                                         setCalendarMonth
                                                     }
-                                                    className="bg-transparent p-5 [--cell-size:--spacing(10.5)]"
+                                                    className="bg-transparent p-5 [--cell-size:--spacing(10.5)] dark:text-white dark:bg-black"
+                                                    // classNames={{
+                                                    //     caption_dropdowns:
+                                                    //         "bg-slate-900 text-white dark:!bg-slate-900 dark:text-white border border-slate-700 rounded",
+                                                    // }}
                                                     onSelect={(date) => {
                                                         if (date) {
                                                             // Format as "yyyy-MM-dd"
@@ -438,6 +442,11 @@ export default function CreateEventForm({ agency }) {
                                                         booked: "[&>button]:line-through font-bold bg-red-500 dark:bg-red-900 text-white  bg-opacity-50  rounded",
                                                     }}
                                                     captionLayout="dropdown"
+                                                    fromYear={new Date().getFullYear()} // Earliest year selectable
+                                                    toYear={
+                                                        new Date().getFullYear() +
+                                                        5
+                                                    }
                                                 />
                                             </PopoverContent>
                                         </Popover>

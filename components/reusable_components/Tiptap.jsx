@@ -160,11 +160,15 @@ const Tiptap = ({ content = "", onContentChange }) => {
                     onChange={(e) =>
                         handleFontSizeChange(Number(e.target.value))
                     }
-                    className="px-3 py-1 border rounded"
+                    className="px-3 py-1 border rounded dark:bg-black"
                     title="Font Size"
                 >
                     {fontSizeOptions.map(({ label, value }) => (
-                        <option key={value} value={value}>
+                        <option
+                            key={value}
+                            value={value}
+                            className="dark:bg-black"
+                        >
                             {label}
                         </option>
                     ))}

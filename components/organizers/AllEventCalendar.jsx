@@ -10,18 +10,25 @@ import { CalendarCheck2 } from "lucide-react";
 import Skeleton_line from "@components/ui/skeleton_line";
 import notify from "@components/ui/notify";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 export default function AllEventCalendar() {
+    const session = useSession();
+    // console.log("session", session);
     const { data: events, isLoading } = useQuery({
         queryKey: ["all_event_schedules"],
         queryFn: getAllEvents,
     });
+
     const { data: agency_id, isLoading: agencyIdIsLoading } = useQuery({
         queryKey: ["agency_id"],
         queryFn: getAgencyId,
     });
 
-    if (isLoading || agencyIdIsLoading) return <Skeleton_line />;
+    if (isLoading || agencyIdIsLoading || session.status === "loading")
+        return <Skeleton_line />;
+
+    const currentRole = session?.data?.user?.role_name;
 
     return (
         <Card>
@@ -72,23 +79,50 @@ export default function AllEventCalendar() {
                     }
                     eventDisplay="block"
                     eventContent={(eventInfo) => (
-                        <div className="flex text-left gap-1 pt-5 rounded-2xl p-2 truncate relative cursor-pointer">
+                        <div className="flex flex-col text-left gap-1 pt-5 rounded-2xl p-2 truncate relative cursor-pointer">
                             {/* <CalendarCheck2 size={20} /> */}
                             {eventInfo.event.title}
-                            {eventInfo.event.extendedProps.isCurrentAgency && (
-                                <Image
-                                    src={
-                                        eventInfo.event.extendedProps
-                                            .agency_avatar
-                                    }
-                                    alt={
-                                        eventInfo.event.extendedProps
-                                            .agency_name
-                                    }
-                                    width={50}
-                                    height={50}
-                                    className="absolute top-0 right-0 rounded-full max-w-6 max-h-6"
-                                />
+                            {currentRole === "Admin" ? (
+                                <>
+                                    <span>
+                                        {
+                                            eventInfo.event.extendedProps
+                                                .agency_name
+                                        }
+                                    </span>
+                                    <div className="absolute w-7 h-7 top-0 right-0 ">
+                                        <Image
+                                            src={
+                                                eventInfo.event.extendedProps
+                                                    .agency_avatar
+                                            }
+                                            alt={
+                                                eventInfo.event.extendedProps
+                                                    .agency_name
+                                            }
+                                            fill
+                                            className="object-cover rounded-full"
+                                        />
+                                    </div>
+                                </>
+                            ) : eventInfo.event.extendedProps
+                                  .isCurrentAgency ? (
+                                <div className="absolute w-7 h-7 top-0 right-0 ">
+                                    <Image
+                                        src={
+                                            eventInfo.event.extendedProps
+                                                .agency_avatar
+                                        }
+                                        alt={
+                                            eventInfo.event.extendedProps
+                                                .agency_name
+                                        }
+                                        fill
+                                        className="object-cover rounded-full"
+                                    />
+                                </div>
+                            ) : (
+                                ""
                             )}
                         </div>
                     )}

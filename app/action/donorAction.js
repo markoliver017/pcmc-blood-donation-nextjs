@@ -761,7 +761,7 @@ export async function getDonorDashboard() {
 
         const latestDonation = await getLastDonationDateDonated(user?.id);
         if (latestDonation.success) {
-            latestDonationDate = latestDonation?.data?.last_donation_date;
+            latestDonationDate = latestDonation?.last_donation_date;
         }
 
         if (latestDonationDate) {
@@ -903,7 +903,7 @@ export async function getLastDonationDateDonated(user_id) {
         // Verify donor exists
         const donor = await Donor.findOne({
             where: { user_id },
-            attributes: ["id"],
+            attributes: ["id", "is_regular_donor", "last_donation_date"],
         });
 
         if (!donor) {
@@ -954,12 +954,21 @@ export async function getLastDonationDateDonated(user_id) {
             raw: true, // Optimize by returning plain object
         });
 
+        let last_donation_date = null;
+
+        if (donor?.is_regular_donor) {
+            last_donation_date = donor?.last_donation_date;
+        }
+
+        if (latestDonation) {
+            last_donation_date = latestDonation?.["physical_exam.event.date"];
+        }
+
         return {
             success: true,
+            last_donation_date,
             data: {
-                last_donation_date:
-                    latestDonation?.["physical_exam.event.date"] || null,
-                donation_date: formatSeqObj(latestDonation),
+                last_donation_date,
             },
         };
     } catch (err) {
