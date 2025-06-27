@@ -891,8 +891,24 @@ export async function getAllAppointments() {
                     include: {
                         model: BloodDonationEvent,
                         as: "event",
-                        order: [["title", "ASC"]],
                     },
+                },
+                {
+                    model: PhysicalExamination,
+                    as: "physical_exam",
+                    required: false,
+                    attributes: ["id", "eligibility_status"],
+                },
+                {
+                    model: BloodDonationCollection,
+                    as: "blood_collection",
+                    required: false,
+                    attributes: ["id", "volume"],
+                },
+                {
+                    model: PhysicalExamination,
+                    as: "physical_exam",
+                    required: false,
                 },
                 {
                     model: Donor,
@@ -913,6 +929,14 @@ export async function getAllAppointments() {
                         },
                     ],
                 },
+            ],
+            order: [
+                [
+                    { model: EventTimeSchedule, as: "time_schedule" },
+                    { model: BloodDonationEvent, as: "event" },
+                    "date",
+                    "DESC",
+                ],
             ],
         });
 

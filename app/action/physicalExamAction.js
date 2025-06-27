@@ -4,6 +4,8 @@ import { logAuditTrail } from "@lib/audit_trails.utils";
 import { auth } from "@lib/auth";
 import { logErrorToFile } from "@lib/logger.server";
 import {
+    BloodDonationEvent,
+    Donor,
     DonorAppointmentInfo,
     PhysicalExamination,
     sequelize,
@@ -13,165 +15,7 @@ import { formatSeqObj } from "@lib/utils/object.utils";
 
 import { appointmentDetailsSchema } from "@lib/zod/appointmentSchema";
 import { physicalExaminationSchema } from "@lib/zod/physicalExaminationSchema";
-
-/* For client user registration */
-export async function storePhysicalExam(appointmentId, formData) {
-    const session = await auth();
-    if (!session) {
-        return {
-            success: false,
-            message: "You are not authorized to access this request.",
-        };
-    }
-    const { user } = session;
-    formData.examiner_id = user.id;
-
-    const parsed = physicalExaminationSchema.safeParse(formData);
-
-    if (!parsed.success) {
-        const fieldErrors = parsed.error.flatten().fieldErrors;
-        return {
-            success: false,
-            type: "validation",
-            message: "Please check your input and try again.",
-            errorObj: parsed.error.flatten().fieldErrors,
-            errorArr: Object.values(fieldErrors).flat(),
-        };
-    }
-
-    const { data } = parsed;
-
-    const appointment = await DonorAppointmentInfo.findByPk(appointmentId);
-    if (!appointment) {
-        return {
-            success: false,
-            message: "Database Error: Appointment ID was not found.",
-        };
-    }
-
-    const existingExam = await PhysicalExamination.findOne({
-        where: { appointment_id: appointmentId },
-    });
-
-    if (existingExam) {
-        return {
-            success: false,
-            message:
-                "Database Error: A physical examination has already been created for this appointment.",
-        };
-    }
-
-    data.appointment_id = appointment?.id;
-    data.donor_id = appointment?.donor_id;
-    data.event_id = appointment?.event_id;
-
-    const transaction = await sequelize.transaction();
-
-    try {
-        const newExam = await PhysicalExamination.create(data, { transaction });
-        if (!newExam) {
-            return {
-                success: false,
-                message:
-                    "Registration Failed: There was an error while trying to save new entry for physical exam!",
-            };
-        }
-
-        await transaction.commit();
-
-        await logAuditTrail({
-            userId: user.id,
-            controller: "physicalExamAction",
-            action: "storePhysicalExam ",
-            details: `The donor physical exam has been successfully created. With appointment ID#: ${appointmentId} with new Exam ID: ${newExam?.id}`,
-        });
-
-        return {
-            success: true,
-            message: "Physical Exam has been successfully created.",
-            data: newExam.get({ plain: true }),
-        };
-    } catch (err) {
-        logErrorToFile(err, "storePhysicalExam");
-        await transaction.rollback();
-
-        return {
-            success: false,
-            message: extractErrorMessage(err),
-        };
-    }
-}
-
-export async function updatePhysicalExam(examId, formData) {
-    const session = await auth();
-    if (!session) {
-        return {
-            success: false,
-            message: "You are not authorized to access this request.",
-        };
-    }
-    const { user } = session;
-    formData.updated_by = user.id;
-
-    const parsed = physicalExaminationSchema.safeParse(formData);
-
-    if (!parsed.success) {
-        const fieldErrors = parsed.error.flatten().fieldErrors;
-        return {
-            success: false,
-            type: "validation",
-            message: "Please check your input and try again.",
-            errorObj: parsed.error.flatten().fieldErrors,
-            errorArr: Object.values(fieldErrors).flat(),
-        };
-    }
-
-    const { data } = parsed;
-
-    const exam = await PhysicalExamination.findByPk(examId);
-    if (!exam) {
-        return {
-            success: false,
-            message: "Database Error: Examination ID was not found.",
-        };
-    }
-
-    const transaction = await sequelize.transaction();
-
-    try {
-        const updatedExam = await exam.update(data, { transaction });
-        if (!updatedExam) {
-            return {
-                success: false,
-                message:
-                    "Update Failed: There was an error while trying to update the physical examination!",
-            };
-        }
-
-        await transaction.commit();
-
-        await logAuditTrail({
-            userId: user.id,
-            controller: "physicalExamAction",
-            action: "updatePhysicalExam ",
-            details: `The donor physical examination has been successfully updated. With examination ID#: ${examId}.`,
-        });
-
-        return {
-            success: true,
-            message: "Physical Exam has been successfully updated.",
-            data: updatedExam.get({ plain: true }),
-        };
-    } catch (err) {
-        logErrorToFile(err, "updatePhysicalExam");
-        await transaction.rollback();
-
-        return {
-            success: false,
-            message: extractErrorMessage(err),
-        };
-    }
-}
+import { getLastDonationExamData } from "./donorAction";
 
 export async function storeUpdatePhysicalExam(appointmentId, formData) {
     const session = await auth();
@@ -198,10 +42,16 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
 
     const { data } = parsed;
 
-    console.log("formData", formData)
-    console.log("parsed data", data)
+    console.log("formData", formData);
+    console.log("parsed data", data);
 
-    const appointment = await DonorAppointmentInfo.findByPk(appointmentId);
+    const appointment = await DonorAppointmentInfo.findByPk(appointmentId, {
+        include: {
+            model: BloodDonationEvent,
+            as: "event",
+            attributes: ["date"],
+        },
+    });
 
     if (!appointment) {
         return {
@@ -210,6 +60,47 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
         };
     }
 
+    if (
+        appointment.status !== "registered" &&
+        appointment.status !== "examined"
+    ) {
+        return {
+            success: false,
+            message: `You can not conduct a physical exam with the status of ${appointment.status.toUpperCase()}`,
+        };
+    }
+
+    const donor = await Donor.findByPk(appointment.donor_id);
+    if (!donor) {
+        return {
+            success: false,
+            message: "Database Error: Donor ID was not found.",
+        };
+    }
+
+    /* check if the event physical exam is the latest appointment of the donor
+    if yes then update the donor last physical exam and last donation event  */
+    const currentDate = new Date();
+    const eventDate = new Date(appointment?.event?.date);
+    // if (currentDate < eventDate) {
+    //     return {
+    //         success: false,
+    //         message: "You cannot conduct a physical exam for a future event.",
+    //     };
+    // }
+
+    let lastExaminationDate = null;
+
+    const lastExam = await getLastDonationExamData(donor?.user_id);
+    if (lastExam.success) {
+        lastExaminationDate = new Date(lastExam.last_donation_data.date);
+    }
+    const isEventAfterEqualLastDonationDate = isNaN(
+        lastExaminationDate.getTime()
+    )
+        ? true
+        : eventDate.getTime() >= lastExaminationDate.getTime();
+
     const transaction = await sequelize.transaction();
 
     try {
@@ -217,17 +108,41 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
             where: { appointment_id: appointmentId },
         });
 
-
         if (!exam) {
-            data.appointment_id = appointment?.id
-            data.donor_id = appointment.donor_id
-            data.event_id = appointment.event_id
+            data.appointment_id = appointment?.id;
+            data.donor_id = appointment.donor_id;
+            data.event_id = appointment.event_id;
             data.examiner_id = user.id;
-            await PhysicalExamination.create(data, { transaction });
+            const newExam = await PhysicalExamination.create(data, {
+                transaction,
+            });
+
+            if (isEventAfterEqualLastDonationDate && newExam) {
+                await donor.update(
+                    {
+                        last_donation_examination_id: newExam.id,
+                        last_donation_event_id: appointment.event_id,
+                    },
+                    { transaction }
+                );
+            }
         } else {
             data.updated_by = user.id;
-            await exam.update(data, { transaction });
+            const updatedExam = await exam.update(data, { transaction });
+
+            if (isEventAfterEqualLastDonationDate && updatedExam) {
+                await donor.update(
+                    {
+                        last_donation_examination_id: exam.id,
+                        last_donation_event_id: appointment.event_id,
+                    },
+                    { transaction }
+                );
+            }
         }
+
+        /* update donor appointment status */
+        await appointment.update({ status: "examined" }, { transaction });
 
         await transaction.commit();
 
@@ -238,15 +153,13 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
             details: `The Donor's physical examination has been successfully submitted. With appointment ID#: ${appointmentId}.`,
         });
 
-
-
         return {
             success: true,
             message: `The Donor's physical examination has been successfully submitted.`,
             data: data,
         };
-
     } catch (err) {
+        console.log("err", err);
         logErrorToFile(err, "updatePhysicalExam");
         await transaction.rollback();
 
@@ -393,3 +306,162 @@ export async function updateAppointmentDetails(appointmentId, formData) {
         };
     }
 }
+
+/* For client user registration */
+// export async function storePhysicalExam(appointmentId, formData) {
+//     const session = await auth();
+//     if (!session) {
+//         return {
+//             success: false,
+//             message: "You are not authorized to access this request.",
+//         };
+//     }
+//     const { user } = session;
+//     formData.examiner_id = user.id;
+
+//     const parsed = physicalExaminationSchema.safeParse(formData);
+
+//     if (!parsed.success) {
+//         const fieldErrors = parsed.error.flatten().fieldErrors;
+//         return {
+//             success: false,
+//             type: "validation",
+//             message: "Please check your input and try again.",
+//             errorObj: parsed.error.flatten().fieldErrors,
+//             errorArr: Object.values(fieldErrors).flat(),
+//         };
+//     }
+
+//     const { data } = parsed;
+
+//     const appointment = await DonorAppointmentInfo.findByPk(appointmentId);
+//     if (!appointment) {
+//         return {
+//             success: false,
+//             message: "Database Error: Appointment ID was not found.",
+//         };
+//     }
+
+//     const existingExam = await PhysicalExamination.findOne({
+//         where: { appointment_id: appointmentId },
+//     });
+
+//     if (existingExam) {
+//         return {
+//             success: false,
+//             message:
+//                 "Database Error: A physical examination has already been created for this appointment.",
+//         };
+//     }
+
+//     data.appointment_id = appointment?.id;
+//     data.donor_id = appointment?.donor_id;
+//     data.event_id = appointment?.event_id;
+
+//     const transaction = await sequelize.transaction();
+
+//     try {
+//         const newExam = await PhysicalExamination.create(data, { transaction });
+//         if (!newExam) {
+//             return {
+//                 success: false,
+//                 message:
+//                     "Registration Failed: There was an error while trying to save new entry for physical exam!",
+//             };
+//         }
+
+//         await transaction.commit();
+
+//         await logAuditTrail({
+//             userId: user.id,
+//             controller: "physicalExamAction",
+//             action: "storePhysicalExam ",
+//             details: `The donor physical exam has been successfully created. With appointment ID#: ${appointmentId} with new Exam ID: ${newExam?.id}`,
+//         });
+
+//         return {
+//             success: true,
+//             message: "Physical Exam has been successfully created.",
+//             data: newExam.get({ plain: true }),
+//         };
+//     } catch (err) {
+//         logErrorToFile(err, "storePhysicalExam");
+//         await transaction.rollback();
+
+//         return {
+//             success: false,
+//             message: extractErrorMessage(err),
+//         };
+//     }
+// }
+
+// export async function updatePhysicalExam(examId, formData) {
+//     const session = await auth();
+//     if (!session) {
+//         return {
+//             success: false,
+//             message: "You are not authorized to access this request.",
+//         };
+//     }
+//     const { user } = session;
+//     formData.updated_by = user.id;
+
+//     const parsed = physicalExaminationSchema.safeParse(formData);
+
+//     if (!parsed.success) {
+//         const fieldErrors = parsed.error.flatten().fieldErrors;
+//         return {
+//             success: false,
+//             type: "validation",
+//             message: "Please check your input and try again.",
+//             errorObj: parsed.error.flatten().fieldErrors,
+//             errorArr: Object.values(fieldErrors).flat(),
+//         };
+//     }
+
+//     const { data } = parsed;
+
+//     const exam = await PhysicalExamination.findByPk(examId);
+//     if (!exam) {
+//         return {
+//             success: false,
+//             message: "Database Error: Examination ID was not found.",
+//         };
+//     }
+
+//     const transaction = await sequelize.transaction();
+
+//     try {
+//         const updatedExam = await exam.update(data, { transaction });
+//         if (!updatedExam) {
+//             return {
+//                 success: false,
+//                 message:
+//                     "Update Failed: There was an error while trying to update the physical examination!",
+//             };
+//         }
+
+//         await transaction.commit();
+
+//         await logAuditTrail({
+//             userId: user.id,
+//             controller: "physicalExamAction",
+//             action: "updatePhysicalExam ",
+//             details: `The donor physical examination has been successfully updated. With examination ID#: ${examId}.`,
+//         });
+
+//         return {
+//             success: true,
+//             message: "Physical Exam has been successfully updated.",
+//             data: updatedExam.get({ plain: true }),
+//         };
+//     } catch (err) {
+//         logErrorToFile(err, "updatePhysicalExam");
+//         await transaction.rollback();
+
+//         return {
+//             success: false,
+//             message: extractErrorMessage(err),
+//         };
+//     }
+// }

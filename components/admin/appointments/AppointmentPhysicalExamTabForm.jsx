@@ -50,7 +50,10 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
 
     const { data, mutate, isPending } = useMutation({
         mutationFn: async (formData) => {
-            const res = await storeUpdatePhysicalExam(appointment?.id, formData);
+            const res = await storeUpdatePhysicalExam(
+                appointment?.id,
+                formData
+            );
             if (!res.success) {
                 throw res;
             }
@@ -94,7 +97,6 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
             eligibility_status: physicalExam?.eligibility_status || "",
             deferral_reason: physicalExam?.deferral_reason || "",
             remarks: physicalExam?.remarks || "",
-
         },
     });
 
@@ -131,7 +133,12 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
         }
     }, [eligibilityStatus]);
 
-    if (!appointment) return <div className="alert alert-error">No appointment found! Please refresh your browser and try again!</div>
+    if (!appointment)
+        return (
+            <div className="alert alert-error">
+                No appointment found! Please refresh your browser and try again!
+            </div>
+        );
     // const hemoglobinRegex = /^\d+(?:\.\d+)?\/\d+(?:\.\d+)?$/;
     // const schema = z.object({
     //     hemoglobin_level: z.string().regex(hemoglobinRegex, {
@@ -190,7 +197,10 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                             render={({ field }) => (
                                 <FormItem>
                                     <InlineLabel>
-                                        Pulse Rate: <span className="text-xs text-slate-600">(bpm)</span>{" "}
+                                        Pulse Rate:{" "}
+                                        <span className="text-xs text-slate-600">
+                                            (bpm)
+                                        </span>{" "}
                                     </InlineLabel>
 
                                     <label
@@ -219,7 +229,10 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                             render={({ field }) => (
                                 <FormItem>
                                     <InlineLabel>
-                                        Hemoglobin Level: <span className="text-xs text-slate-600">(g/dl)</span>{" "}
+                                        Hemoglobin Level:{" "}
+                                        <span className="text-xs text-slate-600">
+                                            (g/dl)
+                                        </span>{" "}
                                     </InlineLabel>
 
                                     <label
@@ -249,7 +262,12 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                             name="weight"
                             render={({ field }) => (
                                 <FormItem>
-                                    <InlineLabel>Weight: <span className="text-xs text-slate-600">(kg)</span> </InlineLabel>
+                                    <InlineLabel>
+                                        Weight:{" "}
+                                        <span className="text-xs text-slate-600">
+                                            (kg)
+                                        </span>{" "}
+                                    </InlineLabel>
 
                                     <label
                                         className={clsx(
@@ -391,9 +409,7 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                                         placeholder="Your message"
                                         {...field}
                                     />
-                                    <FieldError
-                                        field={errors?.remarks}
-                                    />
+                                    <FieldError field={errors?.remarks} />
                                 </FormItem>
                             )}
                         />

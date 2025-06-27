@@ -17,6 +17,7 @@ import {
     getApprovedEventsByAgency,
     getDonorDashboard,
     getLastDonationDateDonated,
+    getLastDonationExamData,
 } from "@/action/donorAction";
 import DashboardEventCardList from "@components/dashboard/DashboardEventCardList";
 import Skeleton_line from "@components/ui/skeleton_line";
@@ -37,7 +38,7 @@ export default function Dashboard() {
     const { data: lastDonation } = useQuery({
         queryKey: ["last-donation"],
         queryFn: async () => {
-            const res = await getLastDonationDateDonated();
+            const res = await getLastDonationExamData();
             if (!res.success) {
                 throw res;
             }

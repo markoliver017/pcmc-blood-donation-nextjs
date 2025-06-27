@@ -1,4 +1,4 @@
-// import { Checkbox } from "@components/ui/checkbox";
+"use client";
 import DataTableColumnHeader from "@components/reusable_components/DataTableColumnHeader";
 import Image from "next/image";
 import {
@@ -10,11 +10,11 @@ import {
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
-import { Check, Command, Eye, MoreHorizontal } from "lucide-react";
+import { Command, Eye, MoreHorizontal, XCircle } from "lucide-react";
 import Link from "next/link";
-import { formatFormalName } from "@lib/utils/string.utils";
 import moment from "moment";
 import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+import { MdCheckCircleOutline } from "react-icons/md";
 
 function calculateAge(dateOfBirth) {
     const today = new Date();
@@ -63,7 +63,7 @@ export const appointmentsColumns = [
             const isVerified = data.donor.is_data_verified;
             return (
                 <>
-                    <span>{getValue()}</span>{" "}
+                    {/* <span>{getValue()}</span>{" "}
                     {isVerified ? (
                         <div className="badge badge-success p-1 rounded-full">
                             <Check className="h-4 w-4" />
@@ -71,6 +71,17 @@ export const appointmentsColumns = [
                     ) : (
                         <div className="badge badge-warning p-1 rounded-full">
                             <QuestionMarkCircledIcon className="h-4 w-4" />
+                        </div>
+                    )} */}
+                    {isVerified ? (
+                        <div className="btn btn-ghost p-2 font-bold rounded-full">
+                            {getValue()}{" "}
+                            <MdCheckCircleOutline className="h-4 w-4 text-green-500" />
+                        </div>
+                    ) : (
+                        <div className="btn btn-ghost p-2 font-bold rounded-full">
+                            {getValue()}{" "}
+                            <QuestionMarkCircledIcon className="h-4 w-4 text-red-500" />
                         </div>
                     )}
                 </>
@@ -155,12 +166,14 @@ export const appointmentsColumns = [
                 return (
                     <>
                         {isVerified ? (
-                            <div className="badge badge-success p-2 rounded-full">
-                                {formatFormalName(blood_type)}
+                            <div className="btn btn-ghost p-2 font-bold rounded-full">
+                                {blood_type}{" "}
+                                <MdCheckCircleOutline className="h-4 w-4 text-green-500" />
                             </div>
                         ) : (
-                            <div className="badge badge-warning p-2 rounded-full">
-                                {formatFormalName(blood_type)}
+                            <div className="btn btn-ghost p-2 font-bold rounded-full">
+                                {blood_type}{" "}
+                                <XCircle className="h-4 w-4 text-red-500" />
                             </div>
                         )}
                     </>
@@ -205,7 +218,10 @@ export const appointmentsColumns = [
     {
         accessorKey: "status",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Status" />
+            <DataTableColumnHeader
+                column={column}
+                title="Registration status"
+            />
         ),
         filterFn: "columnFilter",
         cell: ({ row }) => {
@@ -237,6 +253,74 @@ export const appointmentsColumns = [
                     {status.toUpperCase()}
                 </div>
             );
+        },
+    },
+    {
+        accessorKey: "physical_exam",
+        header: ({ column }) => (
+            <DataTableColumnHeader
+                column={column}
+                title="Physical Examination status"
+            />
+        ),
+        filterFn: "columnFilter",
+        cell: ({ getValue }) => {
+            const exam = getValue();
+            if (!exam) {
+                return (
+                    <div className="badge p-2 font-semibold text-xs badge-secondary">
+                        Not Conducted Yet
+                    </div>
+                );
+            }
+
+            if (exam.eligibility_status == "ACCEPTED") {
+                return (
+                    <div className="badge p-2 font-semibold text-xs badge-success">
+                        {exam.eligibility_status.toUpperCase()}
+                    </div>
+                );
+            }
+            if (exam.eligibility_status == "TEMPORARILY-DEFERRED") {
+                return (
+                    <div className="badge p-2 font-semibold text-xs badge-warning">
+                        {exam.eligibility_status.toUpperCase()}
+                    </div>
+                );
+            }
+            return (
+                <div className="badge p-2 font-semibold text-xs badge-error">
+                    {exam.eligibility_status.toUpperCase()}
+                </div>
+            );
+        },
+    },
+    {
+        accessorKey: "blood_collection",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Blood Collection" />
+        ),
+        filterFn: "columnFilter",
+        cell: ({ getValue }) => {
+            const collection = getValue();
+            if (!collection) {
+                return (
+                    <div className="badge p-2 font-semibold text-xs badge-secondary">
+                        Not Conducted Yet
+                    </div>
+                );
+            }
+
+            if (collection?.volume) {
+                return (
+                    <div className="badge p-2 font-semibold text-lg">
+                        {Number.isInteger(Number(collection?.volume))
+                            ? Number(collection?.volume).toString()
+                            : Number(collection?.volume).toFixed(2)}{" "}
+                        ml
+                    </div>
+                );
+            }
         },
     },
     {

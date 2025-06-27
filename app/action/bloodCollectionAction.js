@@ -17,7 +17,7 @@ import {
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import { bloodCollectionchema } from "@lib/zod/bloodCollectionSchema";
-
+import { Op } from "sequelize";
 
 export async function storeUpdateBloodCollection(appointmentId, formData) {
     const session = await auth();
@@ -44,22 +44,32 @@ export async function storeUpdateBloodCollection(appointmentId, formData) {
 
     const { data } = parsed;
 
-    console.log("formData", formData)
-    console.log("parsed data", data)
+    console.log("formData", formData);
+    console.log("parsed data", data);
 
     const appointment = await DonorAppointmentInfo.findByPk(appointmentId, {
         include: {
             model: PhysicalExamination,
             as: "physical_exam",
             where: { eligibility_status: "ACCEPTED" },
-            required: true
-        }
+            required: true,
+        },
     });
 
     if (!appointment) {
         return {
             success: false,
-            message: `No appointment found with the provided ID: ${appointmentId} .`,
+            message: `No appointment found with accepted physical examination with the provided ID: ${appointmentId} .`,
+        };
+    }
+
+    if (
+        appointment.status !== "collected" &&
+        appointment.status !== "examined"
+    ) {
+        return {
+            success: false,
+            message: `You can not conduct a blood collection with the status of ${appointment.status}`,
         };
     }
 
@@ -82,6 +92,9 @@ export async function storeUpdateBloodCollection(appointmentId, formData) {
             await bloodCollection.update(data, { transaction });
         }
 
+        /* update donor appointment status */
+        await appointment.update({ status: "collected" }, { transaction });
+
         await transaction.commit();
 
         await logAuditTrail({
@@ -91,14 +104,11 @@ export async function storeUpdateBloodCollection(appointmentId, formData) {
             details: `The Donor's blood collection data has been successfully updated. With appointment ID#: ${appointmentId}.`,
         });
 
-
-
         return {
             success: true,
             message: `The Donor's blood collection data has been successfully updated.`,
             data: data,
         };
-
     } catch (err) {
         logErrorToFile(err, "storeUpdateBloodDonationCollection");
         await transaction.rollback();
@@ -144,6 +154,68 @@ export async function getAllBloodCollections() {
                             attributes: ["name"],
                         },
                     ],
+                },
+            ],
+        });
+
+        const formattedData = formatSeqObj(collections);
+        return {
+            success: true,
+            data: formattedData,
+        };
+    } catch (err) {
+        logErrorToFile(err, "getAllBloodCollections ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
+        };
+    }
+}
+
+export async function getAllDonorsBloodCollections() {
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+
+    try {
+        const collections = await Donor.findAll({
+            where: {
+                status: {
+                    [Op.in]: ["activated", "deactivated"],
+                },
+            },
+            include: [
+                {
+                    model: BloodDonationCollection,
+                    as: "blood_collections",
+                },
+                {
+                    model: User,
+                    as: "user",
+                    attributes: [
+                        "id",
+                        "first_name",
+                        "middle_name",
+                        "last_name",
+                        "full_name",
+                        "email",
+                        "image",
+                        "gender",
+                    ],
+                },
+                {
+                    model: BloodType,
+                    as: "blood_type",
+                },
+                {
+                    model: Agency,
+                    as: "agency",
+                    attributes: ["name"],
                 },
             ],
         });

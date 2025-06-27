@@ -22,6 +22,7 @@ import clsx from "clsx";
 import {
     Form,
     FormControl,
+    FormDescription,
     FormField,
     FormItem,
     FormMessage,
@@ -309,6 +310,8 @@ export default function AppointmentStatusTabForm({ appointment }) {
                                             "registered",
                                             "no show",
                                             "cancelled",
+                                            "examined",
+                                            "collected",
                                         ].map((status) => ({
                                             value: status,
                                             label: status.toUpperCase(),
@@ -320,11 +323,20 @@ export default function AppointmentStatusTabForm({ appointment }) {
                                                     option.value === value
                                             ) || null;
 
+                                        const isDisabled =
+                                            selectedOption &&
+                                            (selectedOption.value ===
+                                                "examined" ||
+                                                selectedOption.value ===
+                                                    "collected" ||
+                                                selectedOption.value ===
+                                                    "cancelled");
+
                                         return (
                                             <CreatableSelectNoSSR
                                                 name={name}
                                                 ref={ref}
-                                                placeholder="Area "
+                                                placeholder="Appointment status "
                                                 value={selectedOption}
                                                 onChange={(selectedOption) => {
                                                     onChange(
@@ -338,6 +350,14 @@ export default function AppointmentStatusTabForm({ appointment }) {
                                                 styles={getSingleStyle(
                                                     resolvedTheme
                                                 )}
+                                                isOptionDisabled={(option) =>
+                                                    option.value ===
+                                                        "examined" ||
+                                                    option.value ===
+                                                        "collected" ||
+                                                    option.value === "cancelled"
+                                                }
+                                                isDisabled={isDisabled}
                                                 className="sm:text-lg"
                                                 tabIndex={4}
                                                 isClearable
@@ -346,6 +366,10 @@ export default function AppointmentStatusTabForm({ appointment }) {
                                     }}
                                 />
                             </fieldset>
+                            <FormDescription>
+                                Cancellation, Examined, Collected are
+                                automatically set by the system
+                            </FormDescription>
                             <FieldError field={errors?.province} />
                         </div>
                     </div>

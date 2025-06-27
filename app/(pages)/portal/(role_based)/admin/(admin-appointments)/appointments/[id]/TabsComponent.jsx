@@ -83,41 +83,45 @@ export default function TabsComponent({ appointmentId }) {
                         <CardTitle>Account Information</CardTitle>
                     </CardHeader>
                     <CardContent id="form-modal" className="p-0">
-                        <button
-                            onClick={() => router.back()}
-                            type="button"
-                            className="btn absolute right-5"
-                        >
-                            <FaArrowLeft />{" "}
-                            <span className="hidden md:inline-block">Back</span>
-                        </button>
-
                         <Tabs defaultValue="donor-profile" className="p-2">
-                            <TabsList className="flex flex-wrap">
-                                <TabsTrigger
-                                    value="donor-profile"
-                                    title="Donor's Profile"
-                                >
-                                    <div className="flex items-center gap-1 px-3 ring-offset-1 rounded-t-lg hover:ring">
-                                        <UserCircle />
-                                        <span className="hidden md:inline-block">
-                                            Donor's Profile
-                                        </span>
-                                    </div>
-                                </TabsTrigger>
+                            <div className="flex justify-between items-center gap-10 rounded-2xl bg-gray-300 px-5 py-2">
+                                <TabsList className="flex-1 flex flex-wrap">
+                                    <TabsTrigger
+                                        value="donor-profile"
+                                        title="Donor's Profile"
+                                    >
+                                        <div className="flex items-center gap-1 px-3 ring-offset-1 hover:text-blue-600">
+                                            <UserCircle />
+                                            <span className="hidden md:inline-block">
+                                                Donor's Profile
+                                            </span>
+                                        </div>
+                                    </TabsTrigger>
 
-                                <TabsTrigger
-                                    value="blood-donation-details"
-                                    title="Blood Donation Details"
+                                    <TabsTrigger
+                                        value="blood-donation-details"
+                                        title="Blood Donation Details"
+                                    >
+                                        <div className="flex items-center gap-1 px-3 ring-offset-1 hover:text-blue-600">
+                                            <Text className="h-6 w-6" />
+                                            <span className="hidden md:inline-block">
+                                                Blood Donation Details
+                                            </span>
+                                        </div>
+                                    </TabsTrigger>
+                                </TabsList>
+
+                                <button
+                                    onClick={() => router.back()}
+                                    type="button"
+                                    className="btn btn-neutral"
                                 >
-                                    <div className="flex items-center gap-1 px-3 ring-offset-1 rounded-t-lg hover:ring">
-                                        <Text className="h-6 w-6" />
-                                        <span className="hidden md:inline-block">
-                                            Blood Donation Details
-                                        </span>
-                                    </div>
-                                </TabsTrigger>
-                            </TabsList>
+                                    <FaArrowLeft />{" "}
+                                    <span className="hidden md:inline-block">
+                                        Back
+                                    </span>
+                                </button>
+                            </div>
                             <TabsContent className="p-2" value="donor-profile">
                                 <Tabs
                                     defaultValue="basic-info"

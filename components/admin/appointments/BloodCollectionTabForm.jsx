@@ -3,8 +3,6 @@ import React, { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
-;
-
 import { Card } from "@components/ui/card";
 import { Volume } from "lucide-react";
 
@@ -26,7 +24,6 @@ import {
 
 import { GrUpdate } from "react-icons/gr";
 
-
 import { IoInformationCircle } from "react-icons/io5";
 import { toastError } from "@lib/utils/toastError.utils";
 import { bloodCollectionchema } from "@lib/zod/bloodCollectionSchema";
@@ -38,7 +35,10 @@ export default function BloodCollectionTabForm({ appointment }) {
 
     const { data, mutate, isPending } = useMutation({
         mutationFn: async (formData) => {
-            const res = await storeUpdateBloodCollection(appointment?.id, formData);
+            const res = await storeUpdateBloodCollection(
+                appointment?.id,
+                formData
+            );
             if (!res.success) {
                 throw res;
             }
@@ -102,8 +102,12 @@ export default function BloodCollectionTabForm({ appointment }) {
         });
     };
 
-
-    if (!appointment) return <div className="alert alert-error">No appointment found! Please refresh your browser and try again!</div>
+    if (!appointment)
+        return (
+            <div className="alert alert-error">
+                No appointment found! Please refresh your browser and try again!
+            </div>
+        );
 
     return (
         <Form {...form}>
@@ -118,13 +122,17 @@ export default function BloodCollectionTabForm({ appointment }) {
                         </h1>
                     </div>
                     <div className="pl-4 space-y-5">
-
                         <FormField
                             control={control}
                             name="volume"
                             render={({ field }) => (
                                 <FormItem>
-                                    <InlineLabel>Volume: <span className="text-xs text-slate-600">(ml)</span> </InlineLabel>
+                                    <InlineLabel>
+                                        Volume:{" "}
+                                        <span className="text-xs text-slate-600">
+                                            (ml)
+                                        </span>{" "}
+                                    </InlineLabel>
 
                                     <label
                                         className={clsx(
@@ -165,9 +173,7 @@ export default function BloodCollectionTabForm({ appointment }) {
                                         tabIndex={2}
                                         {...field}
                                     />
-                                    <FieldError
-                                        field={errors?.remarks}
-                                    />
+                                    <FieldError field={errors?.remarks} />
                                 </FormItem>
                             )}
                         />
@@ -194,12 +200,12 @@ export default function BloodCollectionTabForm({ appointment }) {
                     </div>
                 </Card>
             </form>
-            <FormLogger
+            {/* <FormLogger
                 watch={watch}
                 errors={errors}
                 initialData={bloodCollection}
                 data={data}
-            />
+            /> */}
         </Form>
     );
 }

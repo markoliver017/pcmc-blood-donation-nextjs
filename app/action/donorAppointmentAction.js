@@ -18,7 +18,7 @@ import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import { bookAppointmentSchema } from "@lib/zod/bloodDonationSchema";
 import { Op } from "sequelize";
-import { getLastDonationDateBooked } from "./donorAction";
+import { getLastDonationDateDonated } from "./donorAction";
 import moment from "moment";
 import { appointmentDetailsSchema } from "@lib/zod/appointmentSchema";
 
@@ -40,7 +40,7 @@ export async function bookDonorAppointment(formData) {
     if (!donor) {
         return {
             success: false,
-            message: "Database Error: Agency not found or inactive.",
+            message: "Database Error: Donor not found or inactive.",
         };
     }
 
@@ -74,7 +74,7 @@ export async function bookDonorAppointment(formData) {
 
     let latestDonationDate = null;
 
-    const latestDonation = await getLastDonationDateBooked(user?.id);
+    const latestDonation = await getLastDonationDateDonated(user?.id);
     if (latestDonation.success) {
         latestDonationDate = latestDonation?.data?.last_donation_date;
     }
@@ -222,14 +222,16 @@ export async function cancelDonorAppointment(appointmentId, formData) {
     if (!appointment) {
         return {
             success: false,
-            message: "Unable to find the appointment. It may be inactive or does not exist.",
+            message:
+                "Unable to find the appointment. It may be inactive or does not exist.",
         };
     }
     const dateNow = moment().format("YYYY-MM-DD");
     if (dateNow >= appointment.date) {
         return {
             success: false,
-            message: "You cannot cancel an appointment on or after the scheduled event date.",
+            message:
+                "You cannot cancel an appointment on or after the scheduled event date.",
         };
     }
 
@@ -270,13 +272,14 @@ export async function cancelDonorAppointment(appointmentId, formData) {
     const timeSchedTotalDonors = timeSchedule?.dataValues?.donorCount || 0;
 
     const transaction = await sequelize.transaction();
-    console.log("formData", formData)
+    console.log("formData", formData);
     try {
         const updatedData = await appointment.update(formData, {
             transaction,
         });
         if (
-            timeSchedule?.status == "closed" && timeSchedule?.has_limit &&
+            timeSchedule?.status == "closed" &&
+            timeSchedule?.has_limit &&
             timeSchedule?.max_limit > timeSchedTotalDonors - 1
         ) {
             await timeSchedule.update({ status: "open" }, { transaction });
@@ -293,9 +296,8 @@ export async function cancelDonorAppointment(appointmentId, formData) {
 
         return {
             success: true,
-            message: `The donor's appointment has been successfully cancelled. ID#: ${updatedData?.id}`
+            message: `The donor's appointment has been successfully cancelled. ID#: ${updatedData?.id}`,
         };
-
     } catch (err) {
         console.log(">>>>>>>>>>>>>>>>>>>>>", err);
         logErrorToFile(err, "BOOK DONOR APPOINTMENT");
@@ -495,9 +497,8 @@ export async function getBookedAppointmentById(id) {
                                 "agency_address",
                             ],
                         },
-                    ]
+                    ],
                 },
-
             ],
         });
 

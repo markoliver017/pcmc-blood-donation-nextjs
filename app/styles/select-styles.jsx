@@ -279,7 +279,7 @@ export const getSingleStyle = (mode) => {
                 // border: "1px solid gray",
             };
         },
-        option: (provided, { data, isFocused, isSelected }) => {
+        option: (provided, { data, isFocused, isSelected, isDisabled }) => {
             return {
                 ...provided,
                 // borderRadius: '10px',
@@ -291,14 +291,17 @@ export const getSingleStyle = (mode) => {
                         : isFocused
                         ? "#fff"
                         : "#fff",
-                backgroundColor:
-                    mode === "light"
-                        ? isFocused
-                            ? "#D0EFFF" // Light blue for focused option
-                            : "#fff"
-                        : isFocused
-                        ? "#3A3A3A" // Dark gray for focused option
-                        : "#2C2C2C",
+                backgroundColor: isDisabled
+                    ? mode === "light"
+                        ? "#D1D5DC"
+                        : "lightgray"
+                    : mode === "light"
+                    ? isFocused
+                        ? "#D0EFFF" // Light blue for focused option
+                        : "#fff"
+                    : isFocused
+                    ? "#3A3A3A" // Dark gray for focused option
+                    : "#2C2C2C",
                 ":hover": {
                     backgroundColor: mode === "light" ? "#E0E0E0" : "#1E1E1E", // Light gray for light mode, dark gray for dark mode
                 },

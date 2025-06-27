@@ -69,6 +69,17 @@ export async function getApprovedEventsByAgency() {
             },
             order: [["date", "ASC"]],
             include: [
+                // {
+                //     model: DonorAppointmentInfo,
+                //     as: "donors",
+                //     attributes: [
+                //         "id",
+                //         "donor_id",
+                //         "time_schedule_id",
+                //         "event_id",
+                //         "status",
+                //     ],
+                // },
                 {
                     model: EventTimeSchedule,
                     as: "time_schedules",
@@ -790,8 +801,8 @@ export async function getDonorDashboard() {
                 next_eligible_date: donateNow
                     ? "Donate now"
                     : nextEligibleDate
-                        ? moment(nextEligibleDate).format("MMM.DD, YYYY")
-                        : null,
+                    ? moment(nextEligibleDate).format("MMM.DD, YYYY")
+                    : null,
                 days_remaining: donateNow ? 0 : daysRemaining,
                 latest_donation_date: latestDonationDate,
             },
@@ -806,7 +817,7 @@ export async function getDonorDashboard() {
     }
 }
 
-export async function getLastDonationDateBooked(user_id) {
+export async function getLastDonationExamData(user_id) {
     if (!user_id) {
         const session = await auth();
         if (!session) {
@@ -824,7 +835,27 @@ export async function getLastDonationDateBooked(user_id) {
         // Verify donor exists
         const donor = await Donor.findOne({
             where: { user_id },
-            attributes: ["id"],
+            attributes: ["id", "is_regular_donor", "last_donation_date"],
+            include: [
+                {
+                    model: BloodDonationEvent,
+                    as: "last_donation_event",
+                    attributes: ["id", "date"],
+                    required: false,
+                },
+                {
+                    model: PhysicalExamination,
+                    as: "last_donation_examination",
+                    attributes: ["id", "eligibility_status", "deferral_reason"],
+                    required: false,
+                    include: {
+                        model: BloodDonationCollection,
+                        as: "blood_collection",
+                        attributes: ["id", "volume"],
+                        required: false,
+                    },
+                },
+            ],
         });
 
         if (!donor) {
@@ -834,49 +865,30 @@ export async function getLastDonationDateBooked(user_id) {
             };
         }
 
-        // Fetch latest donation date
-        const latestDonation = await DonorAppointmentInfo.findOne({
-            where: {
-                donor_id: donor.id,
-                status: {
-                    [Op.in]: ["registered"],
-                },
-            },
-            attributes: [], // No direct attributes from DonorAppointmentInfo
-            include: [
-                {
-                    model: EventTimeSchedule,
-                    as: "time_schedule",
-                    attributes: [],
-                    include: [
-                        {
-                            model: BloodDonationEvent,
-                            as: "event",
-                            attributes: ["date"],
-                        },
-                    ],
-                },
-            ],
-            order: [
-                [
-                    { model: EventTimeSchedule, as: "time_schedule" },
-                    { model: BloodDonationEvent, as: "event" },
-                    "date",
-                    "DESC",
-                ],
-            ],
-            raw: true, // Optimize by returning plain object
-        });
+        let last_donation_data = null;
+
+        if (donor?.is_regular_donor) {
+            last_donation_data = {
+                date: donor?.last_donation_date,
+                eligibility_status: "ACCEPTED",
+            };
+        }
+
+        if (donor?.last_donation_event) {
+            last_donation_data = {
+                date: donor?.last_donation_event?.date,
+                eligibility_status:
+                    donor?.last_donation_examination?.eligibility_status,
+            };
+        }
 
         return {
             success: true,
-            data: {
-                last_donation_date:
-                    latestDonation?.["time_schedule.event.date"] || null,
-            },
+            last_donation_data,
+            donor: donor.get({ plain: true }),
         };
     } catch (err) {
-        logErrorToFile(err, "getLastDonationDateBooked ERROR"); // Your error logging function
+        logErrorToFile(err, "getLastDonationDateDonated ERROR"); // Your error logging function
         return {
             success: false,
             type: "server",
@@ -981,9 +993,8 @@ export async function getLastDonationDateDonated(user_id) {
     }
 }
 
-
 export async function notifyRegistrationOpen(donor) {
-    console.log(donor)
+    console.log(donor);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     if (donor == "oliver") {
         return {

@@ -7,9 +7,14 @@ import {
     getAllAgencyOptions,
     getAllEventOptions,
 } from "@/action/adminEventAction";
-import { getAllBloodCollections } from "@/action/bloodCollectionAction";
+import {
+    getAllBloodCollections,
+    getAllDonorsBloodCollections,
+} from "@/action/bloodCollectionAction";
 import { BloodCollectionsDatatable } from "@components/admin/blood-collections/BloodCollectionsDatatable";
 import { bloodCollectionColumns } from "./bloodCollectionColumns";
+import { DonorCollectionsDatatable } from "@components/admin/blood-collections/DonorCollectionsDatatable";
+import { donorCollectionColumns } from "./donorCollectionColumns";
 
 export default function BloodCollecitionList() {
     const queryClient = useQueryClient();
@@ -22,6 +27,21 @@ export default function BloodCollecitionList() {
         queryKey: ["blood_donations"],
         queryFn: async () => {
             const res = await getAllBloodCollections();
+            if (!res.success) {
+                throw res;
+            }
+            return res.data;
+        },
+    });
+
+    const {
+        data: donor_blood_collections,
+        error: donorCollectionsError,
+        isLoading: donorCollectionsLoading,
+    } = useQuery({
+        queryKey: ["donor_blood_collections"],
+        queryFn: async () => {
+            const res = await getAllDonorsBloodCollections();
             if (!res.success) {
                 throw res;
             }
@@ -59,10 +79,22 @@ export default function BloodCollecitionList() {
         },
     });
 
-    if (isLoading || isLoadingEvents || isLoadingAgency) return <Skeleton />;
+    if (
+        isLoading ||
+        isLoadingEvents ||
+        isLoadingAgency ||
+        donorCollectionsLoading
+    )
+        return <Skeleton />;
 
     if (error)
         return <div className="alert alert-error">{JSON.stringify(error)}</div>;
+    if (donorCollectionsError)
+        return (
+            <div className="alert alert-error">
+                {JSON.stringify(donorCollectionsError)}
+            </div>
+        );
     if (errorEvents)
         return (
             <div className="alert alert-error">
@@ -102,6 +134,14 @@ export default function BloodCollecitionList() {
                             <RefreshCcw className="h-4" />
                         </button>
                     </div>
+                    <DonorCollectionsDatatable
+                        columns={donorCollectionColumns}
+                        data={donor_blood_collections}
+                        isLoading={isLoading}
+                        eventOptions={eventOptions}
+                        agencyOptions={agencyOptions}
+                    />
+                    <div className="divider mt-5"></div>
                     <BloodCollectionsDatatable
                         columns={bloodCollectionColumns}
                         data={blood_donations}
