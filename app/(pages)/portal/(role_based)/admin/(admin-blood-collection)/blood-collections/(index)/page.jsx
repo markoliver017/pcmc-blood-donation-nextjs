@@ -12,7 +12,7 @@ export default function Page() {
                     {
                         path: "/portal/admin/blood-collections",
                         icon: <MdBloodtype className="w-4" />,
-                        title: "Blood Collections",
+                        title: "Blood Donations",
                     },
                 ]}
             />

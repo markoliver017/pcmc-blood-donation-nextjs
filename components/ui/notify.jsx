@@ -2,7 +2,7 @@
 import { toast, Bounce } from "react-toastify";
 import parse from "html-react-parser"; // Import html-react-parser
 
-export default function notify(res, type = null) {
+export default function notify(res, type = null, position = "bottom-right") {
     const { error, message } = res;
 
     // If the message is a string, parse it. Otherwise, render it as a component.
@@ -12,7 +12,7 @@ export default function notify(res, type = null) {
 
         if (error) {
             toast.error(content, {
-                position: "bottom-right",
+                position,
                 autoClose: 5000,
                 hideProgressBar: false,
                 closeOnClick: false,
@@ -28,7 +28,7 @@ export default function notify(res, type = null) {
 
     } else {
         toast[type](content, {
-            position: "bottom-right",
+            position,
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: false,

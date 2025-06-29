@@ -12,7 +12,7 @@ import {
     getAllDonorsBloodCollections,
 } from "@/action/bloodCollectionAction";
 import { BloodCollectionsDatatable } from "@components/admin/blood-collections/BloodCollectionsDatatable";
-import { bloodCollectionColumns } from "./bloodCollectionColumns";
+import { bloodCollectionColumns } from "../[donor_id]/bloodCollectionColumns";
 import { DonorCollectionsDatatable } from "@components/admin/blood-collections/DonorCollectionsDatatable";
 import { donorCollectionColumns } from "./donorCollectionColumns";
 
@@ -141,14 +141,7 @@ export default function BloodCollecitionList() {
                         eventOptions={eventOptions}
                         agencyOptions={agencyOptions}
                     />
-                    <div className="divider mt-5"></div>
-                    <BloodCollectionsDatatable
-                        columns={bloodCollectionColumns}
-                        data={blood_donations}
-                        isLoading={isLoading}
-                        eventOptions={eventOptions}
-                        agencyOptions={agencyOptions}
-                    />
+
                 </>
             )}
         </div>

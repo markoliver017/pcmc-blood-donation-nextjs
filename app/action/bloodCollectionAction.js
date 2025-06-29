@@ -7,6 +7,7 @@ import {
     Agency,
     BloodDonationCollection,
     BloodDonationEvent,
+    BloodDonationHistory,
     BloodType,
     Donor,
     DonorAppointmentInfo,
@@ -195,6 +196,11 @@ export async function getAllDonorsBloodCollections() {
                     as: "blood_collections",
                 },
                 {
+                    model: BloodDonationHistory,
+                    as: "blood_history",
+                    attributes: ["previous_donation_count", "previous_donation_volume"]
+                },
+                {
                     model: User,
                     as: "user",
                     attributes: [
@@ -215,7 +221,88 @@ export async function getAllDonorsBloodCollections() {
                 {
                     model: Agency,
                     as: "agency",
-                    attributes: ["name"],
+                    attributes: ["name", "address", "barangay", "city_municipality", "province", "contact_number", "agency_address"],
+                },
+            ],
+        });
+
+        const formattedData = formatSeqObj(collections);
+        return {
+            success: true,
+            data: formattedData,
+        };
+    } catch (err) {
+        logErrorToFile(err, "getAllBloodCollections ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
+        };
+    }
+}
+
+export async function getDonorBloodCollections(donorId) {
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+
+    try {
+        const collections = await Donor.findByPk(donorId, {
+            include: [
+                {
+                    model: BloodDonationCollection,
+                    as: "blood_collections",
+                    include: [
+                        {
+                            where: { status: "collected" },
+                            model: DonorAppointmentInfo,
+                            as: "appointment",
+                            attributes: ["id", "donor_type", "collection_method", "status"],
+                        },
+                        {
+                            model: PhysicalExamination,
+                            as: "exam",
+                            attributes: ["id", "eligibility_status", "blood_pressure", "pulse_rate", "hemoglobin_level", "weight", "temperature", "deferral_reason", "remarks"]
+                        },
+                        {
+                            model: BloodDonationEvent,
+                            as: "event",
+                            attributes: ["date", "title"]
+                        }
+
+                    ]
+                },
+                {
+                    model: BloodDonationHistory,
+                    as: "blood_history",
+                    attributes: ["previous_donation_count", "previous_donation_volume"]
+                },
+                {
+                    model: User,
+                    as: "user",
+                    attributes: [
+                        "id",
+                        "first_name",
+                        "middle_name",
+                        "last_name",
+                        "full_name",
+                        "email",
+                        "image",
+                        "gender",
+                    ],
+                },
+                {
+                    model: BloodType,
+                    as: "blood_type",
+                },
+                {
+                    model: Agency,
+                    as: "agency",
+                    attributes: ["name", "address", "barangay", "city_municipality", "province", "contact_number", "agency_address"],
                 },
             ],
         });

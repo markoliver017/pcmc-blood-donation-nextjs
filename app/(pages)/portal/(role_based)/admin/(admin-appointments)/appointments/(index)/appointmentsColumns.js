@@ -173,7 +173,7 @@ export const appointmentsColumns = [
                         ) : (
                             <div className="btn btn-ghost p-2 font-bold rounded-full">
                                 {blood_type}{" "}
-                                <XCircle className="h-4 w-4 text-red-500" />
+                                <QuestionMarkCircledIcon className="h-4 w-4 text-warning" />
                             </div>
                         )}
                     </>

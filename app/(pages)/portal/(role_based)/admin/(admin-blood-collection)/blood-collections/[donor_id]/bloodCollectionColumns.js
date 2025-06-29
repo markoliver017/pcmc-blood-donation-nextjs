@@ -13,7 +13,8 @@ import Image from "next/image";
 // import { Check, Command, Eye, MoreHorizontal } from "lucide-react";
 // import Link from "next/link";
 import { formatFormalName } from "@lib/utils/string.utils";
-import moment from "moment";
+
+import { format } from "date-fns";
 // import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 
 // function calculateAge(dateOfBirth) {
@@ -35,58 +36,30 @@ export const bloodCollectionColumns = [
         ),
         filterFn: "columnFilter",
     },
+    // {
+    //     accessorKey: "donor.user.image",
+    //     header: ({ column }) => (
+    //         <DataTableColumnHeader column={column} title="Avatar" />
+    //     ),
+    //     cell: ({ getValue }) => {
+    //         const imageSrc = getValue();
+    //         return (
+    //             <Image
+    //                 src={imageSrc || "/default_avatar.png"}
+    //                 className="flex-none rounded-4xl"
+    //                 width={50}
+    //                 height={50}
+    //                 alt="Logo"
+    //             />
+    //         );
+    //     },
+    // },
     {
-        accessorKey: "donor.user.image",
+        accessorKey: "event.date",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Avatar" />
+            <DataTableColumnHeader column={column} title="Date" />
         ),
-        cell: ({ getValue }) => {
-            const imageSrc = getValue();
-            return (
-                <Image
-                    src={imageSrc || "/default_avatar.png"}
-                    className="flex-none rounded-4xl"
-                    width={50}
-                    height={50}
-                    alt="Logo"
-                />
-            );
-        },
-    },
-    {
-        accessorKey: "donor.user.full_name",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Name" />
-        ),
-        cell: ({ getValue }) => {
-            return (
-                <>
-                    <span>{getValue()}</span>{" "}
-                </>
-            );
-        },
-        filterFn: "columnFilter",
-    },
-    {
-        accessorKey: "donor.user.gender",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Sex" />
-        ),
-        cell: ({ getValue }) => {
-            return (
-                <>
-                    <span>{formatFormalName(getValue())}</span>{" "}
-                </>
-            );
-        },
-        filterFn: "columnFilter",
-    },
-    {
-        accessorKey: "donor.agency.name",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Agency" />
-        ),
-        cell: ({ getValue }) => <span>{getValue()}</span>,
+        cell: ({ getValue }) => <span>{format(getValue(), "PP")}</span>,
         filterFn: "columnFilter",
     },
     {
@@ -94,45 +67,47 @@ export const bloodCollectionColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Event Title" />
         ),
+        cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
+        filterFn: "columnFilter",
+    },
+    {
+        accessorKey: "appointment.donor_type",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Donor Type" />
+        ),
+        cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
+        filterFn: "columnFilter",
+    },
+    {
+        accessorKey: "appointment.collection_method",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Collection Method" />
+        ),
+        cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
+        filterFn: "columnFilter",
+    },
+    {
+        accessorKey: "exam.blood_pressure",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Blood Pressure" />
+        ),
         cell: ({ getValue }) => <span>{getValue()}</span>,
         filterFn: "columnFilter",
     },
     {
-        accessorKey: "event.date",
+        accessorKey: "exam.pulse_rate",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Date" />
+            <DataTableColumnHeader column={column} title="Pulse Rate" />
         ),
-        cell: ({ getValue }) => (
-            <span>{moment(getValue()).format("MMM DD, YYYY")}</span>
-        ),
+        cell: ({ getValue }) => <span>{getValue()}</span>,
         filterFn: "columnFilter",
     },
     {
-        accessorKey: "donor.blood_type.blood_type",
+        accessorKey: "exam.hemoglobin_level",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Blood Type" />
+            <DataTableColumnHeader column={column} title="Hemoglobin Level" />
         ),
-        cell: ({ getValue, row }) => {
-            const blood_type = getValue();
-            const data = row.original;
-            const isVerified = data?.donor?.is_bloodtype_verified;
-            if (blood_type) {
-                return (
-                    <>
-                        {isVerified ? (
-                            <div className="badge badge-success p-2 rounded-full">
-                                {formatFormalName(blood_type)}
-                            </div>
-                        ) : (
-                            <div className="badge badge-warning p-2 rounded-full">
-                                {formatFormalName(blood_type)}
-                            </div>
-                        )}
-                    </>
-                );
-            }
-            return "Not Specified";
-        },
+        cell: ({ getValue }) => <span>{getValue()}</span>,
         filterFn: "columnFilter",
     },
     {
@@ -140,17 +115,42 @@ export const bloodCollectionColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Volume" />
         ),
-        cell: ({ getValue }) => <span>{getValue() || "N/A"}</span>,
-        filterFn: "columnFilter",
-    },
-    {
-        accessorKey: "remarks",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Remarks" />
-        ),
         cell: ({ getValue }) => <span>{getValue()}</span>,
         filterFn: "columnFilter",
     },
+    // {
+    //     accessorKey: "appointment.status",
+    //     header: ({ column }) => (
+    //         <DataTableColumnHeader column={column} title="Appointment Status" />
+    //     ),
+    //     cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
+    //     filterFn: "columnFilter",
+    // },
+    // {
+    //     accessorKey: "exam.eligibility_status",
+    //     header: ({ column }) => (
+    //         <DataTableColumnHeader column={column} title="Eligibility Status" />
+    //     ),
+    //     cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
+    //     filterFn: "columnFilter",
+    // },
+
+    // {
+    //     accessorKey: "volume",
+    //     header: ({ column }) => (
+    //         <DataTableColumnHeader column={column} title="Volume" />
+    //     ),
+    //     cell: ({ getValue }) => <span>{getValue() || "N/A"}</span>,
+    //     filterFn: "columnFilter",
+    // },
+    // {
+    //     accessorKey: "remarks",
+    //     header: ({ column }) => (
+    //         <DataTableColumnHeader column={column} title="Remarks" />
+    //     ),
+    //     cell: ({ getValue }) => <span>{getValue()}</span>,
+    //     filterFn: "columnFilter",
+    // },
     //     {
     //     accessorKey: "donor_type",
     //     header: ({ column }) => (

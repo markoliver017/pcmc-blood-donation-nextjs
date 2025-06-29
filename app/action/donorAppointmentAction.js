@@ -93,9 +93,9 @@ export async function bookDonorAppointment(formData) {
         if (nextEligibleDate.isAfter(eventDate)) {
             return {
                 success: false,
-                message: `You cannot book an appointment before 90 days from your last donation date (${moment(
+                message: `<p>You cannot book an appointment before <b>90 days</b> from your last donation date <b>(${moment(
                     latestDonationDate
-                ).format("MMM DD, YYYY")}).`,
+                ).format("MMM DD, YYYY")})</b>.</p>`,
             };
         }
     }
@@ -194,7 +194,7 @@ export async function bookDonorAppointment(formData) {
             data: newAppointment.get({ plain: true }),
         };
     } catch (err) {
-        console.log(">>>>>>>>>>>>>>>>>>>>>", err);
+        console.log("bookDonorAppointment>>>>>>>>>>>>>>>>>>>>>", err);
         logErrorToFile(err, "BOOK DONOR APPOINTMENT");
         await transaction.rollback();
 

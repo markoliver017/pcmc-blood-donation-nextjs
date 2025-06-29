@@ -585,6 +585,7 @@ export default function AppointmentDonorProfileTabForm({ donor }) {
                                         )}
                                     >
                                         <Phone className="h-3" />
+                                        +63
                                         <input
                                             type="text"
                                             tabIndex={4}

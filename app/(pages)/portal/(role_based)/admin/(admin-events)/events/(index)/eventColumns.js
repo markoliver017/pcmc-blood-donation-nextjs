@@ -304,7 +304,7 @@ export const eventColumns = (setIsLoading) => [
                                 <DropdownMenuItem>
                                     <Link
                                         href={`/portal/admin/events/${data.id}/participants`}
-                                        className="btn btn-block space-x-2 flex justify-center"
+                                        className="btn btn-ghost btn-primary btn-block space-x-2 flex justify-center"
                                     >
                                         <Users />
                                         <span>View Donors</span>

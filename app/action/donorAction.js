@@ -215,6 +215,7 @@ export async function storeDonor(formData) {
 
         return { success: true, data: newDonor.get({ plain: true }) };
     } catch (err) {
+        console.log("create donor error>>>>>>>", err)
         logErrorToFile(err, "CREATE DONOR");
         await transaction.rollback();
 
@@ -801,8 +802,8 @@ export async function getDonorDashboard() {
                 next_eligible_date: donateNow
                     ? "Donate now"
                     : nextEligibleDate
-                    ? moment(nextEligibleDate).format("MMM.DD, YYYY")
-                    : null,
+                        ? moment(nextEligibleDate).format("MMM.DD, YYYY")
+                        : null,
                 days_remaining: donateNow ? 0 : daysRemaining,
                 latest_donation_date: latestDonationDate,
             },

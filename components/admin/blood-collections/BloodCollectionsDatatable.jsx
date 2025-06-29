@@ -33,7 +33,7 @@ import moment from "moment";
 export function BloodCollectionsDatatable({
     columns,
     data,
-    isLoading,
+    isLoading = false,
     eventOptions,
     agencyOptions,
 }) {

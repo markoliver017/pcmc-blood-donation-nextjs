@@ -57,8 +57,7 @@ export default function BookEventButton({
             });
         },
         onError: (error) => {
-            console.log(">>>>>>>>>>>>>>>>>", error);
-            notify({ error: true, message: error?.message });
+            notify({ error: true, message: error?.message }, "warning", "top-center");
             onFinish();
         },
         onSettled: () => {
