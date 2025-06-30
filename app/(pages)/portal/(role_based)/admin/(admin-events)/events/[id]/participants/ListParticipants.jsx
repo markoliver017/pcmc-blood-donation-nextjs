@@ -2,12 +2,12 @@
 
 import { getEventParticipants } from "@/action/hostEventAction";
 import { useQuery } from "@tanstack/react-query";
-import Skeleton_form from "@components/ui/Skeleton_form";
 import { ArrowLeftCircle, CalendarCheck, Users2 } from "lucide-react";
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 import { useRouter } from "next/navigation";
-import { adminParticipantsColumns } from "./adminParticipantsColumns";
 import { ParticipantsDatatable } from "@components/donors/ParticipantsDatatable";
+import Skeleton from "@components/ui/skeleton";
+import { appointmentsColumns } from "./appointmentsColumns";
 
 export default function ListParticipants({ eventId }) {
     const router = useRouter();
@@ -23,7 +23,7 @@ export default function ListParticipants({ eventId }) {
     });
 
     if (isLoading) {
-        return <Skeleton_form />;
+        return <Skeleton />;
     }
 
     if (isError) {
@@ -66,7 +66,7 @@ export default function ListParticipants({ eventId }) {
                     Back
                 </button>
                 <ParticipantsDatatable
-                    columns={adminParticipantsColumns}
+                    columns={appointmentsColumns}
                     data={participants}
                     isLoading={isLoading}
                 />

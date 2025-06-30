@@ -21,7 +21,7 @@ import { InfoCircledIcon } from "@radix-ui/react-icons";
 import AppointmentDonorProfileTabForm from "@components/admin/appointments/AppointmentDonorProfileTabForm";
 import AppointmentBloodTypeTabForm from "@components/admin/appointments/AppointmentBloodTypeTabForm";
 import SideComponent from "./SideComponent";
-import { MdDetails, MdOutlineBloodtype } from "react-icons/md";
+import { MdOutlineBloodtype } from "react-icons/md";
 import { FaArrowLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import AppointmentStatusTabForm from "@components/admin/appointments/AppointmentStatusTabForm";
@@ -74,11 +74,11 @@ export default function TabsComponent({ appointmentId }) {
                     },
                 ]}
             />
-            <div className="w-full h-full md:w-95/100 mx-auto p-2 grid grid-cols-1 md:grid-cols-4 gap-2">
+            <div className="w-full h-full md:w-95/100 mx-auto py-2 grid grid-cols-1 lg:grid-cols-4 gap-2">
                 {/* Side panel: Event Details */}
                 <SideComponent appointment={appointment} />
                 {/* Right Panel: Main Content Area */}
-                <Card className="col-span-1 md:col-span-3 bg-gray-100 p-2 relative">
+                <Card className="col-span-1 sm:col-span-3 bg-gray-100 p-2 relative">
                     <CardHeader className="text-2xl font-bold hidden">
                         <CardTitle>Account Information</CardTitle>
                     </CardHeader>
@@ -92,7 +92,7 @@ export default function TabsComponent({ appointmentId }) {
                                     >
                                         <div className="flex items-center gap-1 px-3 ring-offset-1 hover:text-blue-600">
                                             <UserCircle />
-                                            <span className="hidden md:inline-block">
+                                            <span className="hidden lg:inline-block">
                                                 Donor's Profile
                                             </span>
                                         </div>
@@ -104,7 +104,7 @@ export default function TabsComponent({ appointmentId }) {
                                     >
                                         <div className="flex items-center gap-1 px-3 ring-offset-1 hover:text-blue-600">
                                             <Text className="h-6 w-6" />
-                                            <span className="hidden md:inline-block">
+                                            <span className="hidden lg:inline-block">
                                                 Blood Donation Details
                                             </span>
                                         </div>
@@ -117,7 +117,7 @@ export default function TabsComponent({ appointmentId }) {
                                     className="btn btn-neutral"
                                 >
                                     <FaArrowLeft />{" "}
-                                    <span className="hidden md:inline-block">
+                                    <span className="hidden lg:inline-block">
                                         Back
                                     </span>
                                 </button>
@@ -128,14 +128,14 @@ export default function TabsComponent({ appointmentId }) {
                                     className="flex gap-4 p-2"
                                 >
                                     {/* Vertical Tabs List */}
-                                    <TabsList className="flex flex-col w-56 max-h-60 rounded-lg border p-2">
+                                    <TabsList className="flex flex-col max-w-max max-h-60 rounded-lg border p-2">
                                         <TabsTrigger
                                             value="basic-info"
                                             title="Basic Information"
                                         >
                                             <div className="flex items-center justify-center rounded gap-2 p-2 w-full border-b">
                                                 <IoInformationCircle />
-                                                <span className="hidden md:inline-block">
+                                                <span className="hidden lg:inline-block">
                                                     User Profile
                                                 </span>
                                             </div>
@@ -146,7 +146,7 @@ export default function TabsComponent({ appointmentId }) {
                                         >
                                             <div className="flex items-center justify-center rounded gap-2 p-2 w-full border-b">
                                                 <MdOutlineBloodtype className="h-6 w-6" />
-                                                <span className="hidden md:inline-block">
+                                                <span className="hidden lg:inline-block">
                                                     Blood Type
                                                 </span>
                                             </div>
@@ -174,17 +174,17 @@ export default function TabsComponent({ appointmentId }) {
                             >
                                 <Tabs
                                     defaultValue="appointment-info"
-                                    className="flex gap-2 p-1"
+                                    className="flex flex-wrap gap-2 p-1"
                                 >
                                     {/* Vertical Tabs List */}
-                                    <TabsList className="flex flex-col w-56 max-h-60 rounded-lg border p-2">
+                                    <TabsList className="flex flex-col max-w-max max-h-60 rounded-lg border p-2">
                                         <TabsTrigger
                                             value="appointment-info"
                                             title="Appointment Information"
                                         >
                                             <div className="flex items-center rounded gap-2 p-2 w-full border-b">
                                                 <IoInformationCircle />
-                                                <span className="hidden md:inline-block">
+                                                <span className="hidden lg:inline-block">
                                                     Appointment Details
                                                 </span>
                                             </div>
@@ -195,7 +195,7 @@ export default function TabsComponent({ appointmentId }) {
                                         >
                                             <div className="flex items-center rounded gap-2 p-2 w-full border-b">
                                                 <UserSearch />
-                                                <span className="hidden md:inline-block">
+                                                <span className="hidden lg:inline-block">
                                                     Physical Examination
                                                 </span>
                                             </div>
@@ -211,7 +211,7 @@ export default function TabsComponent({ appointmentId }) {
                                         >
                                             <div className="flex items-center rounded gap-2 p-2 w-full border-b">
                                                 <GiBlood />
-                                                <span className="hidden md:inline-block">
+                                                <span className="hidden lg:inline-block">
                                                     Blood Collection
                                                 </span>
                                             </div>

@@ -10,6 +10,7 @@ import {
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
 import {
+    Check,
     CheckIcon,
     Command,
     Eye,
@@ -27,7 +28,7 @@ import { GiClosedDoors, GiOpenBook } from "react-icons/gi";
 import EventRegistrationStatus from "@components/organizers/EventRegistrationStatus";
 // import parse from "html-react-parser";
 
-export const eventColumns = (setIsLoading) => [
+export const presentEventColumns = (setIsLoading) => [
     {
         accessorKey: "id",
         header: ({ column }) => (
@@ -117,76 +118,7 @@ export const eventColumns = (setIsLoading) => [
             );
         },
     },
-    // {
-    //     accessorKey: "time_schedules",
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="Participants" />
-    //     ),
-    //     filterFn: "columnFilter",
 
-    //     cell: ({ getValue }) => {
-    //         const time_schedules = getValue();
-
-    //         return (
-    //             <ul className="list text-right max-w-42">
-    //                 {time_schedules.map((sched) => (
-    //                     <li key={sched.id}>
-    //                         <span className="italic text-slate-500">
-    //                             {sched.formatted_time}
-    //                         </span>
-    //                         {" - "}
-    //                         <b>{sched?.donors?.length}</b>
-    //                     </li>
-    //                 ))}
-    //                 <li className="font-semibold">
-    //                     Total -{" "}
-    //                     {time_schedules.reduce(
-    //                         (acc, sched) => acc + sched?.donors?.length,
-    //                         0
-    //                     )}
-    //                 </li>
-    //             </ul>
-    //         );
-    //     },
-    // },
-    {
-        accessorKey: "createdAt",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Date Created" />
-        ),
-        cell: ({ getValue }) => moment(getValue()).format("MMM DD, YYYY"),
-        filterFn: "columnFilter",
-    },
-    {
-        accessorKey: "status",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Status" />
-        ),
-        filterFn: "columnFilter",
-        cell: ({ row }) => {
-            const data = row.original;
-            const status = data.status.toUpperCase();
-            if (status == "APPROVED") {
-                return (
-                    <div className="badge p-2 font-semibold text-xs badge-success">
-                        {status}
-                    </div>
-                );
-            } else if (status == "FOR APPROVAL") {
-                return (
-                    <div className="badge p-2 font-semibold text-xs badge-warning">
-                        {status}
-                    </div>
-                );
-            } else {
-                return (
-                    <div className="badge p-2 font-semibold text-xs badge-error">
-                        {status}
-                    </div>
-                );
-            }
-        },
-    },
     {
         accessorKey: "registration_status",
         header: ({ column }) => (
@@ -207,6 +139,13 @@ export const eventColumns = (setIsLoading) => [
                     <div className="badge p-2 font-semibold text-xs badge-error">
                         <GiClosedDoors />{" "}
                         {formatFormalName(data.registration_status)}
+                    </div>
+                );
+            }
+            if (data.registration_status == "completed") {
+                regStatusBadge = (
+                    <div className="badge p-2 font-semibold text-xs badge-success">
+                        <Check /> {formatFormalName(data.registration_status)}
                     </div>
                 );
             }
@@ -237,7 +176,14 @@ export const eventColumns = (setIsLoading) => [
         cell: ({ getValue }) => getValue(),
         filterFn: "columnFilter",
     },
-
+    {
+        accessorKey: "createdAt",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Date Created" />
+        ),
+        cell: ({ getValue }) => moment(getValue()).format("MMM DD, YYYY"),
+        filterFn: "columnFilter",
+    },
     {
         id: "actions",
         header: ({ column }) => (
@@ -312,7 +258,7 @@ export const eventColumns = (setIsLoading) => [
                                         </Link>
                                     </DropdownMenuItem>
                                 )}
-                                {data?.registration_status == "not started" && (
+                                {data?.registration_status !== "completed" && (
                                     <>
                                         <DropdownMenuItem>
                                             <EventRegistrationStatus

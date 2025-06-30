@@ -7,22 +7,12 @@ import {
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
-import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 
-import {
-    CheckIcon,
-    Command,
-    Eye,
-    FileClock,
-    MoreHorizontal,
-    Pencil,
-    SquareMenu,
-} from "lucide-react";
+import { CheckIcon, Command, Eye, FileClock, SquareMenu } from "lucide-react";
 import parse from "html-react-parser";
 
 import Link from "next/link";
-import { getEventsByStatus } from "@/action/adminEventAction";
 import Skeleton_line from "@components/ui/skeleton_line";
 import {
     DropdownMenu,
@@ -36,13 +26,11 @@ import { Button } from "@components/ui/button";
 import VerifyEvent from "@components/events/VerifyEvent";
 import RejectEvent from "@components/events/RejectEvent";
 
-export default function ForApprovalEventList({ target = "" }) {
-    const { data: events, isLoading: eventsIsFetching } = useQuery({
-        queryKey: ["all_events", "for approval"],
-        queryFn: async () => getEventsByStatus("for approval"),
-        staleTime: 0,
-    });
-
+export default function ForApprovalEventList({
+    target = "",
+    events,
+    eventsIsFetching,
+}) {
     if (eventsIsFetching)
         return (
             <>

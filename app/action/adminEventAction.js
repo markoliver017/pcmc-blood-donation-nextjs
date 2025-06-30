@@ -196,6 +196,79 @@ export async function getAllEvents() {
     }
 }
 
+export async function getPresentEvents() {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    const currentDate = moment().format("YYYY-MM-DD");
+    try {
+        const events = await BloodDonationEvent.findAll({
+            where: {
+                status: {
+                    [Op.eq]: "approved",
+                },
+                date: {
+                    [Op.gte]: currentDate,
+                },
+            },
+            order: [["date", "DESC"]],
+            include: [
+                {
+                    model: User,
+                    as: "requester",
+                    attributes: ["id", "name", "email", "image"],
+                },
+                {
+                    model: Agency,
+                    as: "agency",
+                },
+                {
+                    model: User,
+                    as: "validator",
+                    attributes: ["id", "name", "email", "image"],
+                },
+                {
+                    model: User,
+                    as: "editor",
+                    attributes: ["id", "name", "email", "image"],
+                },
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedules",
+                    include: {
+                        model: DonorAppointmentInfo,
+                        as: "donors",
+                        include: {
+                            model: Donor,
+                            as: "donor",
+                            include: [
+                                {
+                                    model: User,
+                                    as: "user",
+                                },
+                                {
+                                    model: BloodType,
+                                    as: "blood_type",
+                                },
+                            ],
+                        },
+                    },
+                },
+            ],
+        });
+
+        const formattedEvents = formatSeqObj(events);
+
+        return { success: true, data: formattedEvents };
+    } catch (err) {
+        logErrorToFile(err, "getAllEvents ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: err || "Unknown error",
+        };
+    }
+}
+
 export async function getAllEventOptions() {
     try {
         const events = await BloodDonationEvent.findAll({
@@ -892,12 +965,6 @@ export async function getAllAppointments() {
                         model: BloodDonationEvent,
                         as: "event",
                     },
-                },
-                {
-                    model: PhysicalExamination,
-                    as: "physical_exam",
-                    required: false,
-                    attributes: ["id", "eligibility_status"],
                 },
                 {
                     model: BloodDonationCollection,

@@ -456,6 +456,7 @@ export async function storeAgency(formData) {
 
         const { email } = data;
 
+        /* notif email to the admin for new agency  */
         await send_mail({
             to: email,
             subject:
@@ -464,32 +465,33 @@ export async function storeAgency(formData) {
             user_id: newUser.id,
         });
 
+        /* notif to the MBDT for new agency */
         await send_mail({
             to: process.env.NEXT_PUBLIC_MBDT_EMAIL,
-            subject: "📥 New Agency Registration Request – Action Required",
+            subject: "📥 New Agency Registration Request - Action Required",
             html: getEmailToMBDT(data),
             user_id: newUser.id,
         });
 
+        /* notif to the MBDT for new agency for approval */
         await Notification.create({
-            user_id: newUser.id,
+            user_id: newUser.id, //sender user id
             subject: "New Agency Registration",
             type: "agency_for_approval",
             reference_id: newAgency.id,
             created_by: newUser.id,
         });
 
-        // const adminSubject = ;
-
         await logAuditTrail({
             userId: newUser.id,
             controller: "agencies",
             action: "CREATE",
-            details: `A new agency has been successfully created. Agency ID#: ${newAgency.id} with User account: ${newUser.id}`,
+            details: `A new agency has been successfully created. Agency ID#: ${newAgency.id} (${newAgency?.name}) with User account: ${newUser.id} (${newUser?.email})`,
         });
 
         return { success: true, data };
     } catch (err) {
+        console.log("storeAgency error:", err);
         logErrorToFile(err, "CREATE AGENCY");
         await transaction.rollback();
 

@@ -126,19 +126,20 @@ export const usePagesStore = create((set) => ({
             is_role_based: true,
             has_child: false,
         },
-        {
-            title: "Blood Drives",
-            path: "/events",
-            icon: <CalendarCheck />,
-            roles: ["Admin", "Developer", "Agency Administrator", "Organizer"],
-            is_role_based: true,
-            has_child: false,
-        },
+
         {
             title: "Blood Donations",
             path: "/blood-collections",
             icon: <MdBloodtype />,
             roles: ["Admin"],
+            is_role_based: true,
+            has_child: false,
+        },
+        {
+            title: "Blood Drives",
+            path: "/events",
+            icon: <CalendarCheck />,
+            roles: ["Admin", "Developer", "Agency Administrator", "Organizer"],
             is_role_based: true,
             has_child: false,
         },
@@ -246,7 +247,6 @@ export const usePagesStore = create((set) => ({
                     has_child: false,
                     is_role_based: true,
                 },
-
             ],
         },
     ],

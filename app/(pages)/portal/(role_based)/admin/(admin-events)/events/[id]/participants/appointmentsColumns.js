@@ -90,30 +90,6 @@ export const appointmentsColumns = [
         filterFn: "columnFilter",
     },
     {
-        accessorKey: "donor.agency.name",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Agency" />
-        ),
-        cell: ({ getValue }) => <span>{getValue()}</span>,
-        filterFn: "columnFilter",
-    },
-    {
-        accessorKey: "time_schedule.event.title",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Event Title" />
-        ),
-        cell: ({ getValue }) => <span>{getValue()}</span>,
-        filterFn: "columnFilter",
-    },
-    {
-        accessorKey: "time_schedule.event.date",
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Date" />
-        ),
-        cell: ({ getValue }) => <span>{getValue()}</span>,
-        filterFn: "columnFilter",
-    },
-    {
         accessorKey: "time_schedule.formatted_time",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Time Schedule" />
@@ -131,7 +107,6 @@ export const appointmentsColumns = [
         ),
         filterFn: "columnFilter",
     },
-
     {
         id: "age",
         header: ({ column }) => (
@@ -183,38 +158,6 @@ export const appointmentsColumns = [
         },
         filterFn: "columnFilter",
     },
-    // {
-    //     accessorKey: "patient_name",
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="Patient Name" />
-    //     ),
-    //     cell: ({ getValue }) => <span>{getValue() || "N/A"}</span>,
-    //     filterFn: "columnFilter",
-    // },
-    //     {
-    //     accessorKey: "donor_type",
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="Donor Type" />
-    //     ),
-    //     cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
-    //     filterFn: "columnFilter",
-    // },
-
-    // {
-    //     accessorKey: "collection_method",
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="Collection Method" />
-    //     ),
-    //     cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
-    //     filterFn: "columnFilter",
-    // },
-    // {
-    //     accessorKey: "comments",
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="Remarks" />
-    //     ),
-    //     filterFn: "columnFilter",
-    // },
     {
         accessorKey: "status",
         header: ({ column }) => (

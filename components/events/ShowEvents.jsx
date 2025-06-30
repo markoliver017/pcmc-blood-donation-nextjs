@@ -35,11 +35,13 @@ import Skeleton_line from "@components/ui/skeleton_line";
 export default function ShowEvents({ eventId }) {
     const session = useSession();
     const [isLoading, setIsLoading] = useState(false);
-    const { data: event } = useQuery({
+    const { data: event, isLoading: isFetching } = useQuery({
         queryKey: ["agency_events", eventId],
         queryFn: async () => await getEventsById(eventId),
         enabled: !!eventId,
     });
+
+    if (isFetching) return <Skeleton_line />;
 
     const { status, registration_status } = event;
     let statusClass = "badge-error";

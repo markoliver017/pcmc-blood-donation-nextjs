@@ -26,7 +26,7 @@ export default function EventRegistrationStatus({
     let className = "btn btn-ghost btn-success";
 
     if (data?.registration_status == "ongoing") {
-        registration_status = "closed";
+        registration_status = "completed";
         confirmText = `Are you sure you want to <b>CLOSE</b> now the registration for <b><i>"${data?.title}"</i></b>?`;
         label = "Close the Registration";
         icon = <XIcon />;
@@ -48,6 +48,7 @@ export default function EventRegistrationStatus({
             queryClient.invalidateQueries({ queryKey: ["events"] });
             queryClient.invalidateQueries({ queryKey: ["agency_events"] });
             queryClient.invalidateQueries({ queryKey: ["all_events"] });
+            queryClient.invalidateQueries({ queryKey: ["present_events"] });
 
             SweetAlert({
                 title: data?.title,
@@ -99,7 +100,11 @@ export default function EventRegistrationStatus({
             >
                 <button
                     type="submit"
-                    disabled={isPending}
+                    disabled={
+                        isPending ||
+                        data?.registration_status === "closed" ||
+                        data?.registration_status === "completed"
+                    }
                     className={clsx(className)}
                 >
                     {isPending ? (

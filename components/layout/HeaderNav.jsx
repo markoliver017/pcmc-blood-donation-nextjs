@@ -33,6 +33,7 @@ import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import { MdAmpStories, MdEmail } from "react-icons/md";
+import NotificationComponent from "./NotificationComponent";
 
 const HeaderNav = ({ currentUser }) => {
     let isLoggedIn = false;
@@ -277,63 +278,68 @@ const HeaderNav = ({ currentUser }) => {
                     {!isLoggedIn ? (
                         <LoginDrawer />
                     ) : (
-                        <DropdownMenu className="text-xl">
-                            <DropdownMenuTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    className="h-12 w-12 p-0"
-                                >
-                                    <span className="sr-only">Open menu</span>
-
-                                    <CustomAvatar
-                                        avatar={
-                                            currentUser?.image ||
-                                            "/default_avatar.png"
-                                        }
-                                        className="w-8 h-8"
-                                    />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuLabel className="flex items-center space-x-2">
-                                    <UserRoundCheck className="w-3 h-3" />
-                                    <div className="flex flex-col">
-                                        <span>{currentUser.name}</span>
-                                        <span className="text-xs font-light">
-                                            {currentUser?.role_name}
+                        <div className="flex items-center justify-center gap-5">
+                            <NotificationComponent />
+                            <DropdownMenu className="text-xl">
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="h-12 w-12 p-0 rounded-full"
+                                    >
+                                        <span className="sr-only">
+                                            Open menu
                                         </span>
-                                        <span className="text-xs font-light">
-                                            {currentUser.email}
-                                        </span>
-                                    </div>
-                                </DropdownMenuLabel>
 
-                                <DropdownMenuSeparator />
+                                        <CustomAvatar
+                                            avatar={
+                                                currentUser?.image ||
+                                                "/default_avatar.png"
+                                            }
+                                            className="w-8 h-8"
+                                        />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                    <DropdownMenuLabel className="flex items-center space-x-2">
+                                        <UserRoundCheck className="w-3 h-3" />
+                                        <div className="flex flex-col">
+                                            <span>{currentUser.name}</span>
+                                            <span className="text-xs font-light">
+                                                {currentUser?.role_name}
+                                            </span>
+                                            <span className="text-xs font-light">
+                                                {currentUser.email}
+                                            </span>
+                                        </div>
+                                    </DropdownMenuLabel>
 
-                                <Link href={`/portal`}>
-                                    <DropdownMenuItem className="flex items-center space-x-2">
-                                        <HomeIcon className="w-4 h-4" />
-                                        <span>Dashboard</span>
+                                    <DropdownMenuSeparator />
+
+                                    <Link href={`/portal`}>
+                                        <DropdownMenuItem className="flex items-center space-x-2">
+                                            <HomeIcon className="w-4 h-4" />
+                                            <span>Dashboard</span>
+                                        </DropdownMenuItem>
+                                    </Link>
+                                    {currentUser?.roles &&
+                                        currentUser?.roles?.length > 1 && (
+                                            <Link href="/portal/change-role">
+                                                <DropdownMenuItem className="flex items-center space-x-2">
+                                                    <FileSliders className="w-4 h-4" />
+                                                    <span>Change Role</span>
+                                                </DropdownMenuItem>
+                                            </Link>
+                                        )}
+                                    <DropdownMenuItem
+                                        className="flex items-center space-x-2"
+                                        onClick={handleLogOut}
+                                    >
+                                        <LogOut className="w-4 h-4" />
+                                        <span>Log Out</span>
                                     </DropdownMenuItem>
-                                </Link>
-                                {currentUser?.roles &&
-                                    currentUser?.roles?.length > 1 && (
-                                        <Link href="/portal/change-role">
-                                            <DropdownMenuItem className="flex items-center space-x-2">
-                                                <FileSliders className="w-4 h-4" />
-                                                <span>Change Role</span>
-                                            </DropdownMenuItem>
-                                        </Link>
-                                    )}
-                                <DropdownMenuItem
-                                    className="flex items-center space-x-2"
-                                    onClick={handleLogOut}
-                                >
-                                    <LogOut className="w-4 h-4" />
-                                    <span>Log Out</span>
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
                     )}
                 </div>
             </header>

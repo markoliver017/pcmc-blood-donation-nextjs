@@ -5,11 +5,13 @@ import { logErrorToFile } from "@lib/logger.server";
 import {
     Agency,
     AgencyCoordinator,
+    BloodDonationCollection,
     BloodDonationEvent,
     BloodType,
     Donor,
     DonorAppointmentInfo,
     EventTimeSchedule,
+    PhysicalExamination,
     sequelize,
     User,
 } from "@lib/models";
@@ -285,6 +287,17 @@ export async function getEventsById(id) {
                     as: "agency",
                 },
                 {
+                    model: DonorAppointmentInfo,
+                    as: "donors",
+                    attributes: ["id"],
+                    where: {
+                        status: {
+                            [Op.in]: ["registered", "examined", "collected"],
+                        },
+                    },
+                    required: false,
+                },
+                {
                     model: EventTimeSchedule,
                     as: "time_schedules",
                     include: {
@@ -346,14 +359,29 @@ export async function getEventParticipants(eventId) {
 
     try {
         const donors = await DonorAppointmentInfo.findAll({
+            where: {
+                event_id: eventId,
+            },
             include: [
                 {
                     model: EventTimeSchedule,
                     as: "time_schedule",
                     required: true,
-                    where: {
-                        blood_donation_event_id: eventId, // filter by the event ID
+                    include: {
+                        model: BloodDonationEvent,
+                        as: "event",
                     },
+                },
+                {
+                    model: BloodDonationCollection,
+                    as: "blood_collection",
+                    required: false,
+                    attributes: ["id", "volume"],
+                },
+                {
+                    model: PhysicalExamination,
+                    as: "physical_exam",
+                    required: false,
                 },
                 {
                     model: Donor,
@@ -367,8 +395,21 @@ export async function getEventParticipants(eventId) {
                             model: BloodType,
                             as: "blood_type",
                         },
+                        {
+                            model: Agency,
+                            as: "agency",
+                            attributes: ["name"],
+                        },
                     ],
                 },
+            ],
+            order: [
+                [
+                    { model: EventTimeSchedule, as: "time_schedule" },
+                    { model: BloodDonationEvent, as: "event" },
+                    "date",
+                    "DESC",
+                ],
             ],
         });
 
