@@ -1115,3 +1115,825 @@ export async function getAppointmentById(id) {
         };
     }
 }
+
+export async function getEventDashboardData(eventId) {
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+
+    if (!eventId) {
+        return {
+            success: false,
+            message: "Event ID is required.",
+        };
+    }
+
+    try {
+        // Fetch event details
+        const event = await BloodDonationEvent.findByPk(eventId, {
+            include: [
+                {
+                    model: User,
+                    as: "requester",
+                    attributes: ["id", "name", "email", "image"],
+                    include: {
+                        model: AgencyCoordinator,
+                        as: "coordinator",
+                        attributes: ["contact_number"],
+                        required: false,
+                    },
+                },
+                {
+                    model: Agency,
+                    as: "agency",
+                },
+                {
+                    model: User,
+                    as: "validator",
+                    attributes: ["id", "name", "email", "image"],
+                },
+                {
+                    model: User,
+                    as: "editor",
+                    attributes: ["id", "name", "email", "image"],
+                },
+            ],
+        });
+
+        if (!event) {
+            return {
+                success: false,
+                message: "Event not found.",
+            };
+        }
+
+        // Fetch all appointments for this event with related data
+        const appointments = await DonorAppointmentInfo.findAll({
+            where: { event_id: eventId },
+            include: [
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedule",
+                    required: true,
+                },
+                {
+                    model: BloodDonationCollection,
+                    as: "blood_collection",
+                    required: false,
+                    attributes: ["id", "volume", "remarks", "createdAt"],
+                },
+                {
+                    model: PhysicalExamination,
+                    as: "physical_exam",
+                    required: false,
+                    attributes: [
+                        "id",
+                        "blood_pressure",
+                        "pulse_rate",
+                        "hemoglobin_level",
+                        "weight",
+                        "temperature",
+                        "eligibility_status",
+                        "deferral_reason",
+                        "remarks",
+                        "createdAt",
+                    ],
+                },
+                {
+                    model: Donor,
+                    as: "donor",
+                    include: [
+                        {
+                            model: User,
+                            as: "user",
+                            attributes: [
+                                "id",
+                                "name",
+                                "first_name",
+                                "middle_name",
+                                "last_name",
+                                "gender",
+                                "email",
+                                "image",
+                                "full_name",
+                            ],
+                        },
+                        {
+                            model: BloodType,
+                            as: "blood_type",
+                            attributes: ["id", "blood_type"],
+                        },
+                        {
+                            model: Agency,
+                            as: "agency",
+                            attributes: ["id", "name"],
+                        },
+                    ],
+                },
+            ],
+            order: [
+                [
+                    { model: EventTimeSchedule, as: "time_schedule" },
+                    "time_start",
+                    "ASC",
+                ],
+            ],
+        });
+
+        const formattedAppointments = formatSeqObj(appointments);
+
+        // Calculate statistics
+        const totalRegistered = appointments.length;
+        const pendingExamination = appointments.filter(
+            (apt) => apt.status === "registered"
+        ).length;
+        const collected = appointments.filter(
+            (apt) => apt.status === "collected"
+        ).length;
+        const examinedOnly = appointments.filter(
+            (apt) => apt.status === "examined"
+        ).length;
+        // Total examined includes both "examined" and "collected" statuses
+        const examined = examinedOnly + collected;
+        const cancelled = appointments.filter(
+            (apt) => apt.status === "cancelled"
+        ).length;
+        const noShow = appointments.filter(
+            (apt) => apt.status === "no show"
+        ).length;
+
+        // Calculate success rate (collected / total registered)
+        const successRate =
+            totalRegistered > 0
+                ? Math.round((collected / totalRegistered) * 100)
+                : 0;
+
+        // Calculate total blood volume collected
+        const totalBloodVolume = appointments
+            .filter((apt) => apt.blood_collection)
+            .reduce((total, apt) => {
+                return total + (parseFloat(apt.blood_collection.volume) || 0);
+            }, 0);
+
+        // Group appointments by status
+        const appointmentsByStatus = {
+            pending: formattedAppointments.filter(
+                (apt) => apt.status === "registered"
+            ),
+            examined: formattedAppointments.filter(
+                (apt) => apt.status === "examined"
+            ),
+            collected: formattedAppointments.filter(
+                (apt) => apt.status === "collected"
+            ),
+            cancelled: formattedAppointments.filter(
+                (apt) => apt.status === "cancelled"
+            ),
+            noShow: formattedAppointments.filter(
+                (apt) => apt.status === "no show"
+            ),
+        };
+
+        // Get deferred donors (those with physical examination but deferred)
+        const deferredDonors = formattedAppointments.filter(
+            (apt) =>
+                apt.physical_exam &&
+                apt.physical_exam.eligibility_status !== "ACCEPTED"
+        );
+
+        const statistics = {
+            total_registered: totalRegistered,
+            pending_examination: pendingExamination,
+            examined: examined,
+            collected: collected,
+            cancelled: cancelled,
+            no_show: noShow,
+            deferred: deferredDonors.length,
+            success_rate: successRate,
+            total_blood_volume: totalBloodVolume,
+        };
+
+        const formattedEvent = formatSeqObj(event);
+
+        return {
+            success: true,
+            data: {
+                event: formattedEvent,
+                statistics: statistics,
+                appointments: appointmentsByStatus,
+                deferred_donors: deferredDonors,
+                all_appointments: formattedAppointments,
+            },
+        };
+    } catch (err) {
+        logErrorToFile(err, "getEventDashboardData ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
+        };
+    }
+}
+
+export async function getEventAppointmentsByStatus(
+    eventId,
+    status,
+    options = {}
+) {
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+
+    if (!eventId) {
+        return {
+            success: false,
+            message: "Event ID is required.",
+        };
+    }
+
+    if (!status) {
+        return {
+            success: false,
+            message: "Status is required.",
+        };
+    }
+
+    const {
+        page = 1,
+        limit = 10,
+        search = "",
+        sortBy = "createdAt",
+        sortOrder = "DESC",
+    } = options;
+    const offset = (page - 1) * limit;
+
+    try {
+        // Build where clause
+        let whereClause = { event_id: eventId };
+
+        // Handle special status cases
+        if (status === "deferred") {
+            // For deferred, we need to check physical examination eligibility status
+            whereClause = {
+                event_id: eventId,
+                "$physical_exam.eligibility_status$": {
+                    [Op.ne]: "ACCEPTED",
+                },
+            };
+        } else {
+            whereClause.status = status;
+        }
+
+        // Build search conditions
+        let searchConditions = {};
+        if (search) {
+            searchConditions = {
+                [Op.or]: [
+                    {
+                        "$donor.user.name$": {
+                            [Op.like]: `%${search}%`,
+                        },
+                    },
+                    {
+                        "$donor.user.email$": {
+                            [Op.like]: `%${search}%`,
+                        },
+                    },
+                    {
+                        "$donor.blood_type.blood_type$": {
+                            [Op.like]: `%${search}%`,
+                        },
+                    },
+                    {
+                        "$donor.agency.name$": {
+                            [Op.like]: `%${search}%`,
+                        },
+                    },
+                ],
+            };
+        }
+
+        // Combine where conditions
+        const finalWhereClause = {
+            ...whereClause,
+            ...searchConditions,
+        };
+
+        const appointments = await DonorAppointmentInfo.findAndCountAll({
+            where: finalWhereClause,
+            include: [
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedule",
+                    required: true,
+                },
+                {
+                    model: BloodDonationCollection,
+                    as: "blood_collection",
+                    required: false,
+                    attributes: ["id", "volume", "remarks", "createdAt"],
+                },
+                {
+                    model: PhysicalExamination,
+                    as: "physical_exam",
+                    required: status === "deferred" ? true : false,
+                    attributes: [
+                        "id",
+                        "blood_pressure",
+                        "pulse_rate",
+                        "hemoglobin_level",
+                        "weight",
+                        "temperature",
+                        "eligibility_status",
+                        "deferral_reason",
+                        "remarks",
+                        "createdAt",
+                    ],
+                },
+                {
+                    model: Donor,
+                    as: "donor",
+                    include: [
+                        {
+                            model: User,
+                            as: "user",
+                            attributes: [
+                                "id",
+                                "name",
+                                "email",
+                                "image",
+                                "full_name",
+                            ],
+                        },
+                        {
+                            model: BloodType,
+                            as: "blood_type",
+                            attributes: ["id", "blood_type"],
+                        },
+                        {
+                            model: Agency,
+                            as: "agency",
+                            attributes: ["id", "name"],
+                        },
+                    ],
+                },
+            ],
+            order: [
+                [sortBy, sortOrder],
+                [
+                    { model: EventTimeSchedule, as: "time_schedule" },
+                    "time_start",
+                    "ASC",
+                ],
+            ],
+            limit: parseInt(limit),
+            offset: parseInt(offset),
+        });
+
+        const formattedAppointments = formatSeqObj(appointments.rows);
+
+        return {
+            success: true,
+            data: {
+                appointments: formattedAppointments,
+                pagination: {
+                    total: appointments.count,
+                    page: parseInt(page),
+                    limit: parseInt(limit),
+                    totalPages: Math.ceil(appointments.count / limit),
+                },
+            },
+        };
+    } catch (err) {
+        logErrorToFile(err, "getEventAppointmentsByStatus ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
+        };
+    }
+}
+
+export async function getEventStatistics(eventId) {
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+
+    if (!eventId) {
+        return {
+            success: false,
+            message: "Event ID is required.",
+        };
+    }
+
+    try {
+        // Get all appointments for the event
+        const appointments = await DonorAppointmentInfo.findAll({
+            where: { event_id: eventId },
+            include: [
+                {
+                    model: BloodDonationCollection,
+                    as: "blood_collection",
+                    required: false,
+                    attributes: ["volume"],
+                },
+                {
+                    model: PhysicalExamination,
+                    as: "physical_exam",
+                    required: false,
+                    attributes: ["eligibility_status"],
+                },
+            ],
+        });
+
+        // Calculate basic counts
+        const totalRegistered = appointments.length;
+        const pendingExamination = appointments.filter(
+            (apt) => apt.status === "registered"
+        ).length;
+        const collected = appointments.filter(
+            (apt) => apt.status === "collected"
+        ).length;
+        const examinedOnly = appointments.filter(
+            (apt) => apt.status === "examined"
+        ).length;
+        // Total examined includes both "examined" and "collected" statuses
+        const examined = examinedOnly + collected;
+        const cancelled = appointments.filter(
+            (apt) => apt.status === "cancelled"
+        ).length;
+        const noShow = appointments.filter(
+            (apt) => apt.status === "no show"
+        ).length;
+
+        // Calculate deferred count
+        const deferred = appointments.filter(
+            (apt) =>
+                apt.physical_exam &&
+                apt.physical_exam.eligibility_status !== "ACCEPTED"
+        ).length;
+
+        // Calculate success rate
+        const successRate =
+            totalRegistered > 0
+                ? Math.round((collected / totalRegistered) * 100)
+                : 0;
+
+        // Calculate blood collection statistics
+        const bloodCollections = appointments.filter(
+            (apt) => apt.blood_collection
+        );
+
+        const totalBloodVolume = bloodCollections.reduce(
+            (total, apt) =>
+                total + (parseFloat(apt.blood_collection.volume) || 0),
+            0
+        );
+
+        const averageBloodVolume =
+            bloodCollections.length > 0
+                ? Math.round(totalBloodVolume / bloodCollections.length)
+                : 0;
+
+        // Calculate time-based statistics
+        const today = new Date();
+        const todayAppointments = appointments.filter((apt) => {
+            const aptDate = new Date(apt.time_schedule?.event?.date);
+            return aptDate.toDateString() === today.toDateString();
+        }).length;
+
+        // Calculate status distribution percentages
+        const statusDistribution = {
+            pending:
+                totalRegistered > 0
+                    ? Math.round((pendingExamination / totalRegistered) * 100)
+                    : 0,
+            examined:
+                totalRegistered > 0
+                    ? Math.round((examined / totalRegistered) * 100)
+                    : 0,
+            collected:
+                totalRegistered > 0
+                    ? Math.round((collected / totalRegistered) * 100)
+                    : 0,
+            cancelled:
+                totalRegistered > 0
+                    ? Math.round((cancelled / totalRegistered) * 100)
+                    : 0,
+            no_show:
+                totalRegistered > 0
+                    ? Math.round((noShow / totalRegistered) * 100)
+                    : 0,
+            deferred:
+                totalRegistered > 0
+                    ? Math.round((deferred / totalRegistered) * 100)
+                    : 0,
+        };
+
+        const statistics = {
+            total_registered: totalRegistered,
+            pending_examination: pendingExamination,
+            examined: examined,
+            collected: collected,
+            cancelled: cancelled,
+            no_show: noShow,
+            deferred: deferred,
+            success_rate: successRate,
+            total_blood_volume: totalBloodVolume,
+            average_blood_volume: averageBloodVolume,
+            today_appointments: todayAppointments,
+            status_distribution: statusDistribution,
+            last_updated: new Date().toISOString(),
+        };
+
+        return {
+            success: true,
+            data: statistics,
+        };
+    } catch (err) {
+        logErrorToFile(err, "getEventStatistics ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
+        };
+    }
+}
+
+export async function updateAppointmentStatus(appointmentId, formData) {
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+
+    const { user } = session;
+
+    if (!appointmentId) {
+        return {
+            success: false,
+            message: "Appointment ID is required.",
+        };
+    }
+
+    // Validate required fields
+    if (!formData.status) {
+        return {
+            success: false,
+            message: "Status is required.",
+        };
+    }
+
+    // Validate status values
+    const validStatuses = [
+        "registered",
+        "cancelled",
+        "no show",
+        "examined",
+        "collected",
+    ];
+    if (!validStatuses.includes(formData.status)) {
+        return {
+            success: false,
+            message: "Invalid status value.",
+        };
+    }
+
+    try {
+        // Find the appointment with related data
+        const appointment = await DonorAppointmentInfo.findByPk(appointmentId, {
+            include: [
+                {
+                    model: Donor,
+                    as: "donor",
+                    include: [
+                        {
+                            model: User,
+                            as: "user",
+                            attributes: ["id", "name", "email"],
+                        },
+                    ],
+                },
+                {
+                    model: BloodDonationEvent,
+                    as: "event",
+                    attributes: ["id", "title", "date"],
+                },
+                {
+                    model: PhysicalExamination,
+                    as: "physical_exam",
+                    required: false,
+                },
+                {
+                    model: BloodDonationCollection,
+                    as: "blood_collection",
+                    required: false,
+                },
+            ],
+        });
+
+        if (!appointment) {
+            return {
+                success: false,
+                message: "Appointment not found.",
+            };
+        }
+
+        const oldStatus = appointment.status;
+        const newStatus = formData.status;
+
+        // Validate status transitions
+        const validTransitions = {
+            registered: ["registered", "cancelled", "no show", "examined"],
+            examined: ["collected", "cancelled"],
+            collected: [], // No further transitions from collected
+            cancelled: [], // No further transitions from cancelled
+            "no show": [], // No further transitions from no show
+        };
+
+        if (
+            validTransitions[oldStatus] &&
+            !validTransitions[oldStatus].includes(newStatus)
+        ) {
+            return {
+                success: false,
+                message: `Invalid status transition from "${oldStatus}" to "${newStatus}".`,
+            };
+        }
+
+        // Special validation for status transitions
+        if (newStatus === "examined" && !appointment.physical_exam) {
+            return {
+                success: false,
+                message:
+                    "Cannot mark as examined without physical examination record.",
+            };
+        }
+
+        if (newStatus === "collected" && !appointment.physical_exam) {
+            return {
+                success: false,
+                message:
+                    "Cannot mark as collected without physical examination record.",
+            };
+        }
+
+        if (
+            newStatus === "collected" &&
+            appointment.physical_exam?.eligibility_status !== "ACCEPTED"
+        ) {
+            return {
+                success: false,
+                message:
+                    "Cannot mark as collected for donors who are not eligible (deferred).",
+            };
+        }
+
+        if (newStatus === "collected" && !appointment.blood_collection) {
+            return {
+                success: false,
+                message:
+                    "Cannot mark as collected without blood collection record.",
+            };
+        }
+
+        console.log("formData on updateAppointmentStatus", formData);
+        // Prepare update data
+        const updateData = {
+            status: newStatus,
+            updated_by: user.id,
+        };
+
+        // Add comments if provided
+        if (formData.comments) {
+            updateData.comments = formData.comments;
+        }
+
+        // If appointment is registered, allow updating other fields
+        if (oldStatus === "registered") {
+            if (typeof formData.collection_method !== "undefined") {
+                updateData.collection_method = formData.collection_method;
+            }
+            if (typeof formData.donor_type !== "undefined") {
+                updateData.donor_type = formData.donor_type;
+            }
+            if (typeof formData.patient_name !== "undefined") {
+                updateData.patient_name = formData.patient_name;
+            }
+            if (typeof formData.relation !== "undefined") {
+                updateData.relation = formData.relation;
+            }
+        }
+
+        // Handle special cases for status updates
+        if (newStatus === "cancelled" || newStatus === "no show") {
+            // Update time schedule availability if appointment is cancelled or no-show
+            const timeSchedule = await EventTimeSchedule.findByPk(
+                appointment.time_schedule_id
+            );
+            if (
+                timeSchedule &&
+                timeSchedule.status === "closed" &&
+                timeSchedule.has_limit
+            ) {
+                // Reopen the time slot if it was closed due to limit
+                const currentAppointments = await DonorAppointmentInfo.count({
+                    where: {
+                        time_schedule_id: appointment.time_schedule_id,
+                        status: {
+                            [Op.notIn]: ["cancelled", "no show"],
+                        },
+                    },
+                });
+
+                if (currentAppointments < timeSchedule.max_limit) {
+                    await timeSchedule.update({ status: "open" });
+                }
+            }
+        }
+
+        // Update the appointment
+        await appointment.update(updateData);
+
+        // Log audit trail
+        await logAuditTrail({
+            userId: user.id,
+            controller: "adminEventAction",
+            action: "UPDATE_APPOINTMENT_STATUS",
+            details: `Appointment status updated from "${oldStatus}" to "${newStatus}" for donor ${appointment.donor.user.name} (ID: ${appointmentId}). Event: ${appointment.event.title} on ${appointment.event.date}.`,
+        });
+
+        // Return updated appointment data
+        const updatedAppointment = await DonorAppointmentInfo.findByPk(
+            appointmentId,
+            {
+                include: [
+                    {
+                        model: Donor,
+                        as: "donor",
+                        include: [
+                            {
+                                model: User,
+                                as: "user",
+                                attributes: ["id", "name", "email"],
+                            },
+                            {
+                                model: BloodType,
+                                as: "blood_type",
+                                attributes: ["blood_type"],
+                            },
+                            {
+                                model: Agency,
+                                as: "agency",
+                                attributes: ["name"],
+                            },
+                        ],
+                    },
+                    {
+                        model: EventTimeSchedule,
+                        as: "time_schedule",
+                    },
+                    {
+                        model: PhysicalExamination,
+                        as: "physical_exam",
+                        required: false,
+                    },
+                    {
+                        model: BloodDonationCollection,
+                        as: "blood_collection",
+                        required: false,
+                    },
+                ],
+            }
+        );
+
+        const formattedAppointment = formatSeqObj(updatedAppointment);
+
+        return {
+            success: true,
+            message: `Appointment status successfully updated from "${oldStatus}" to "${newStatus}".`,
+            data: formattedAppointment,
+        };
+    } catch (err) {
+        logErrorToFile(err, "updateAppointmentStatus ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
+        };
+    }
+}

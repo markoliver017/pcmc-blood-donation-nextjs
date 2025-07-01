@@ -10,6 +10,7 @@ import {
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
 import {
+    CalendarCog,
     Check,
     CheckIcon,
     Command,
@@ -248,15 +249,26 @@ export const presentEventColumns = (setIsLoading) => [
                         {status == "approved" ? (
                             <>
                                 {data?.registration_status === "ongoing" && (
-                                    <DropdownMenuItem>
-                                        <Link
-                                            href={`/portal/admin/events/${data.id}/participants`}
-                                            className="btn btn-ghost btn-primary btn-block space-x-2 flex justify-center"
-                                        >
-                                            <Users />
-                                            <span>Registered Donors</span>
-                                        </Link>
-                                    </DropdownMenuItem>
+                                    <>
+                                        <DropdownMenuItem>
+                                            <Link
+                                                href={`/portal/admin/events/${data.id}/event-dashboard`}
+                                                className="btn btn-ghost btn-primary btn-block space-x-2 flex justify-center"
+                                            >
+                                                <CalendarCog />
+                                                <span>Manage Event</span>
+                                            </Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem>
+                                            <Link
+                                                href={`/portal/admin/events/${data.id}/participants`}
+                                                className="btn btn-ghost btn-primary btn-block space-x-2 flex justify-center"
+                                            >
+                                                <Users />
+                                                <span>Registered Donors</span>
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    </>
                                 )}
                                 {data?.registration_status !== "completed" && (
                                     <>
