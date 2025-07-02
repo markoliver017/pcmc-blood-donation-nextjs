@@ -31,9 +31,9 @@ import {
 // Import action functions
 import {
     getEventDashboardData,
-    getEventStatistics,
     updateAppointmentStatus,
 } from "@/action/adminEventAction";
+import CancelledDonorsList from "./CancelledDonorsList";
 
 export default function EventDashboardClient({ eventId }) {
     const router = useRouter();
@@ -310,6 +310,16 @@ export default function EventDashboardClient({ eventId }) {
                         ...(deferred_donors || []),
                         ...getAppointmentsByStatus("no show"),
                     ]}
+                />
+            ),
+        },
+        cancelled: {
+            label: "Cancelled Appointments",
+            icon: AlertCircle,
+            count: getAppointmentsByStatus("cancelled").length,
+            component: (
+                <CancelledDonorsList
+                    appointments={getAppointmentsByStatus("cancelled")}
                 />
             ),
         },

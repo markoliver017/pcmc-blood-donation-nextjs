@@ -35,6 +35,7 @@ export async function getAdminDashboard() {
     }
 
     try {
+        // Basic counts
         const donorCount = await Donor.count({
             where: {
                 status: {
@@ -53,13 +54,90 @@ export async function getAdminDashboard() {
             },
         });
 
-        const eventCount = await BloodDonationEvent.count({
+        const totalEventCount = await BloodDonationEvent.count();
+
+        // Event status counts
+        const approvedEventCount = await BloodDonationEvent.count({
             where: {
-                status: {
-                    [Op.in]: ["approved"],
+                status: "approved",
+            },
+        });
+
+        const pendingApprovalCount = await BloodDonationEvent.count({
+            where: {
+                status: "for approval",
+            },
+        });
+
+        const activeEventCount = await BloodDonationEvent.count({
+            where: {
+                status: "approved",
+                date: {
+                    [Op.gte]: moment().format("YYYY-MM-DD"),
                 },
             },
         });
+
+        // Participant counts
+        const totalParticipants = await DonorAppointmentInfo.count({
+            where: {
+                status: {
+                    [Op.not]: "cancelled",
+                },
+            },
+            include: [
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedule",
+                    include: [
+                        {
+                            model: BloodDonationEvent,
+                            as: "event",
+                            where: {
+                                status: "approved",
+                            },
+                        },
+                    ],
+                },
+            ],
+        });
+
+        // Recent events (last 30 days)
+        const thirtyDaysAgo = moment()
+            .subtract(30, "days")
+            .format("YYYY-MM-DD");
+        const today = moment().format("YYYY-MM-DD");
+
+        const recentEventCount = await BloodDonationEvent.count({
+            where: {
+                status: "approved",
+                date: {
+                    [Op.gte]: thirtyDaysAgo,
+                    [Op.lte]: today,
+                },
+            },
+        });
+
+        // Success rate calculation
+        const completedEvents = await BloodDonationEvent.count({
+            where: {
+                status: "approved",
+                date: {
+                    [Op.lt]: moment().format("YYYY-MM-DD"),
+                },
+            },
+        });
+
+        const successRate =
+            totalEventCount > 0
+                ? Math.round((completedEvents / totalEventCount) * 100)
+                : 0;
+
+        // Average participants per event
+        const averageParticipants =
+            totalEventCount > 0
+                ? Math.round(totalParticipants / totalEventCount)
+                : 0;
 
         return {
             success: true,
@@ -67,11 +145,237 @@ export async function getAdminDashboard() {
                 donorCount,
                 donationCount,
                 agencyCount,
-                eventCount,
+                totalEventCount,
+                approvedEventCount,
+                pendingApprovalCount,
+                activeEventCount,
+                totalParticipants,
+                recentEventCount,
+                successRate,
+                averageParticipants,
             },
         };
     } catch (err) {
-        logErrorToFile(err, "getHostCoordinatorsByStatus ERROR");
+        logErrorToFile(err, "getAdminDashboard ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: err.message || "Unknown error",
+        };
+    }
+}
+
+export async function getEventsAnalytics() {
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this page.",
+        };
+    }
+
+    try {
+        // Events over time (last 12 months)
+        const twelveMonthsAgo = moment()
+            .subtract(12, "months")
+            .startOf("month");
+        const eventsOverTime = await BloodDonationEvent.findAll({
+            where: {
+                date: {
+                    [Op.gte]: twelveMonthsAgo.format("YYYY-MM-DD"),
+                },
+            },
+            attributes: [
+                [
+                    sequelize.fn("DATE_FORMAT", sequelize.col("date"), "%Y-%m"),
+                    "month",
+                ],
+                [sequelize.fn("COUNT", sequelize.col("id")), "count"],
+            ],
+            group: [
+                sequelize.fn("DATE_FORMAT", sequelize.col("date"), "%Y-%m"),
+            ],
+            order: [
+                [
+                    sequelize.fn("DATE_FORMAT", sequelize.col("date"), "%Y-%m"),
+                    "ASC",
+                ],
+            ],
+            raw: true,
+        });
+
+        // Status distribution
+        const statusDistribution = await BloodDonationEvent.findAll({
+            attributes: [
+                "status",
+                [sequelize.fn("COUNT", sequelize.col("id")), "count"],
+            ],
+            group: ["status"],
+            raw: true,
+        });
+
+        // Agency performance (top 10 agencies)
+        const agencyPerformance = await BloodDonationEvent.findAll({
+            include: [
+                {
+                    model: Agency,
+                    as: "agency",
+                    attributes: ["name"],
+                },
+            ],
+            attributes: [
+                "agency_id",
+                [
+                    sequelize.fn(
+                        "COUNT",
+                        sequelize.col("BloodDonationEvent.id")
+                    ),
+                    "eventCount",
+                ],
+            ],
+            group: ["agency_id"],
+            order: [
+                [
+                    sequelize.fn(
+                        "COUNT",
+                        sequelize.col("BloodDonationEvent.id")
+                    ),
+                    "DESC",
+                ],
+            ],
+            limit: 10,
+            raw: true,
+        });
+
+        // Participant trends (last 6 months)
+        const sixMonthsAgo = moment().subtract(6, "months").startOf("month");
+        const participantTrends = await DonorAppointmentInfo.findAll({
+            where: {
+                status: {
+                    [Op.not]: "cancelled",
+                },
+            },
+            include: [
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedule",
+                    include: [
+                        {
+                            model: BloodDonationEvent,
+                            as: "event",
+                            attributes: [], // Only need the date for grouping
+                        },
+                    ],
+                    attributes: [],
+                },
+            ],
+            attributes: [
+                [
+                    sequelize.fn(
+                        "DATE_FORMAT",
+                        sequelize.col("time_schedule.event.date"),
+                        "%Y-%m"
+                    ),
+                    "month",
+                ],
+                [
+                    sequelize.fn(
+                        "COUNT",
+                        sequelize.col("DonorAppointmentInfo.id")
+                    ),
+                    "count",
+                ],
+            ],
+            where: {
+                [Op.and]: [
+                    { status: { [Op.not]: "cancelled" } },
+                    sequelize.where(
+                        sequelize.col("time_schedule.event.date"),
+                        ">=",
+                        sixMonthsAgo.format("YYYY-MM-DD")
+                    ),
+                ],
+            },
+            group: [
+                sequelize.fn(
+                    "DATE_FORMAT",
+                    sequelize.col("time_schedule.event.date"),
+                    "%Y-%m"
+                ),
+            ],
+            order: [
+                [
+                    sequelize.fn(
+                        "DATE_FORMAT",
+                        sequelize.col("time_schedule.event.date"),
+                        "%Y-%m"
+                    ),
+                    "ASC",
+                ],
+            ],
+            raw: true,
+        });
+
+        // Blood type distribution
+        const bloodTypeDistribution = await Donor.findAll({
+            include: [
+                {
+                    model: BloodType,
+                    as: "blood_type",
+                    attributes: ["blood_type"],
+                },
+            ],
+            attributes: [
+                "blood_type_id",
+                [sequelize.fn("COUNT", sequelize.col("Donor.id")), "count"],
+            ],
+            group: ["blood_type_id"],
+            raw: true,
+        });
+
+        // Format data for charts
+        const formattedEventsOverTime = eventsOverTime.map((item) => ({
+            month: moment(item.month, "YYYY-MM").format("MMM YYYY"),
+            count: parseInt(item.count),
+        }));
+
+        const formattedStatusDistribution = statusDistribution.map((item) => ({
+            status: item.status.toUpperCase(),
+            count: parseInt(item.count),
+        }));
+
+        const formattedAgencyPerformance = agencyPerformance
+            .filter((item) => item["agency.name"])
+            .map((item) => ({
+                agency: item["agency.name"],
+                eventCount: parseInt(item.eventCount),
+            }));
+
+        const formattedParticipantTrends = participantTrends.map((item) => ({
+            month: moment(item.month, "YYYY-MM").format("MMM YYYY"),
+            count: parseInt(item.count),
+        }));
+
+        const formattedBloodTypeDistribution = bloodTypeDistribution
+            .filter((item) => item["blood_type.blood_type"])
+            .map((item) => ({
+                bloodType: item["blood_type.blood_type"],
+                count: parseInt(item.count),
+            }));
+
+        return {
+            success: true,
+            data: {
+                eventsOverTime: formattedEventsOverTime,
+                statusDistribution: formattedStatusDistribution,
+                agencyPerformance: formattedAgencyPerformance,
+                participantTrends: formattedParticipantTrends,
+                bloodTypeDistribution: formattedBloodTypeDistribution,
+            },
+        };
+    } catch (err) {
+        console.log("getEventsAnalytics()", err);
+        logErrorToFile(err, "getEventsAnalytics ERROR");
         return {
             success: false,
             type: "server",
@@ -1249,22 +1553,17 @@ export async function getEventDashboardData(eventId) {
         // Calculate statistics
         const totalRegistered = appointments.length;
         const pendingExamination = appointments.filter(
-            (apt) => apt.status === "registered"
-        ).length;
-        const collected = appointments.filter(
-            (apt) => apt.status === "collected"
-        ).length;
-        const examinedOnly = appointments.filter(
-            (apt) => apt.status === "examined"
-        ).length;
-        // Total examined includes both "examined" and "collected" statuses
-        const examined = examinedOnly + collected;
+            (apt) =>
+                !apt.physical_exam &&
+                apt.status !== "no show" &&
+                apt.status !== "cancelled"
+        );
+        const collected = appointments.filter((apt) => apt.blood_collection);
+        const examined = appointments.filter((apt) => apt.physical_exam);
         const cancelled = appointments.filter(
             (apt) => apt.status === "cancelled"
-        ).length;
-        const noShow = appointments.filter(
-            (apt) => apt.status === "no show"
-        ).length;
+        );
+        const noShow = appointments.filter((apt) => apt.status === "no show");
 
         // Calculate success rate (collected / total registered)
         const successRate =
@@ -1273,46 +1572,34 @@ export async function getEventDashboardData(eventId) {
                 : 0;
 
         // Calculate total blood volume collected
-        const totalBloodVolume = appointments
-            .filter((apt) => apt.blood_collection)
-            .reduce((total, apt) => {
-                return total + (parseFloat(apt.blood_collection.volume) || 0);
-            }, 0);
+        const totalBloodVolume = collected?.reduce((total, apt) => {
+            return total + (parseFloat(apt.blood_collection.volume) || 0);
+        }, 0);
 
         // Group appointments by status
         const appointmentsByStatus = {
-            pending: formattedAppointments.filter(
-                (apt) => apt.status === "registered"
-            ),
-            examined: formattedAppointments.filter(
-                (apt) => apt.status === "examined"
-            ),
-            collected: formattedAppointments.filter(
-                (apt) => apt.status === "collected"
-            ),
-            cancelled: formattedAppointments.filter(
-                (apt) => apt.status === "cancelled"
-            ),
-            noShow: formattedAppointments.filter(
-                (apt) => apt.status === "no show"
-            ),
+            pending: pendingExamination,
+            examined: examined,
+            collected: collected,
+            cancelled: cancelled,
+            noShow: noShow,
         };
 
         // Get deferred donors (those with physical examination but deferred)
         const deferredDonors = formattedAppointments.filter(
             (apt) =>
-                apt.physical_exam &&
-                apt.physical_exam.eligibility_status !== "ACCEPTED"
+                apt?.physical_exam &&
+                apt?.physical_exam?.eligibility_status !== "ACCEPTED"
         );
 
         const statistics = {
             total_registered: totalRegistered,
-            pending_examination: pendingExamination,
-            examined: examined,
-            collected: collected,
-            cancelled: cancelled,
-            no_show: noShow,
-            deferred: deferredDonors.length,
+            pending_examination: pendingExamination?.length || 0,
+            examined: examined?.length || 0,
+            collected: collected?.length || 0,
+            cancelled: cancelled?.length || 0,
+            no_show: noShow?.length || 0,
+            deferred: deferredDonors?.length || 0,
             success_rate: successRate,
             total_blood_volume: totalBloodVolume,
         };
@@ -1324,8 +1611,8 @@ export async function getEventDashboardData(eventId) {
             data: {
                 event: formattedEvent,
                 statistics: statistics,
-                appointments: appointmentsByStatus,
-                deferred_donors: deferredDonors,
+                appointments: formatSeqObj(appointmentsByStatus),
+                deferred_donors: formatSeqObj(deferredDonors),
                 all_appointments: formattedAppointments,
             },
         };
@@ -1561,7 +1848,7 @@ export async function getEventStatistics(eventId) {
         // Calculate basic counts
         const totalRegistered = appointments.length;
         const pendingExamination = appointments.filter(
-            (apt) => apt.status === "registered"
+            (apt) => !apt.physical_exam
         ).length;
         const collected = appointments.filter(
             (apt) => apt.status === "collected"
@@ -1705,6 +1992,7 @@ export async function updateAppointmentStatus(appointmentId, formData) {
         "no show",
         "examined",
         "collected",
+        "deferred",
     ];
     if (!validStatuses.includes(formData.status)) {
         return {
@@ -1759,8 +2047,9 @@ export async function updateAppointmentStatus(appointmentId, formData) {
         // Validate status transitions
         const validTransitions = {
             registered: ["registered", "cancelled", "no show", "examined"],
-            examined: ["collected", "cancelled"],
+            examined: ["collected", "deferred", "cancelled"],
             collected: [], // No further transitions from collected
+            deferred: [], // No further transitions from deferred
             cancelled: [], // No further transitions from cancelled
             "no show": [], // No further transitions from no show
         };

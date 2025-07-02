@@ -22,9 +22,12 @@ import {
     AlertTriangle,
     CheckCircle,
     XCircle,
+    UserSearch,
+    UserX,
 } from "lucide-react";
 import { updateAppointmentStatus } from "@action/adminEventAction";
 import notify from "@components/ui/notify";
+import { FaExclamationCircle } from "react-icons/fa";
 
 export default function UpdateStatusModal({
     isOpen,
@@ -108,22 +111,25 @@ export default function UpdateStatusModal({
     };
 
     const getStatusOptions = () => {
-        const currentStatus = appointment?.status;
+        let currentStatus = "registered";
+        if (appointment?.physical_exam) {
+            currentStatus = "examined";
+        }
 
         switch (currentStatus) {
             case "registered":
                 return [
                     {
-                        value: "cancelled",
-                        label: "Mark as Cancelled",
-                        icon: XCircle,
-                        color: "text-red-600",
-                    },
-                    {
                         value: "no show",
                         label: "Mark as No Show",
-                        icon: XCircle,
-                        color: "text-red-600",
+                        icon: FaExclamationCircle,
+                        color: "text-orange-600",
+                    },
+                    {
+                        value: "examined",
+                        label: "Mark as Examined",
+                        icon: UserSearch,
+                        color: "text-yellow-600",
                     },
                 ];
             case "examined":
@@ -137,8 +143,8 @@ export default function UpdateStatusModal({
                     {
                         value: "deferred",
                         label: "Mark as Deferred",
-                        icon: AlertTriangle,
-                        color: "text-red-600",
+                        icon: UserX,
+                        color: "text-orange-600",
                     },
                 ];
             default:

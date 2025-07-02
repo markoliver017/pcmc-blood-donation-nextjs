@@ -153,6 +153,7 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
         <Form {...form}>
             <form
                 onSubmit={handleSubmit(onSubmit)}
+                id="form-modal"
                 className="space-y-2 flex flex-col gap-2 justify-center"
             >
                 <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
@@ -280,7 +281,7 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                                         <Weight className="h-3" />
                                         <input
                                             type="number"
-                                            tabIndex={3}
+                                            tabIndex={4}
                                             placeholder="Enter weight"
                                             {...field}
                                         />
@@ -307,7 +308,7 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                                         <FaTemperatureHigh className="h-3" />
                                         <input
                                             type="number"
-                                            tabIndex={4}
+                                            tabIndex={5}
                                             placeholder="Enter temperature"
                                             {...field}
                                         />
@@ -360,7 +361,7 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                                                     resolvedTheme
                                                 )}
                                                 className="sm:text-lg"
-                                                tabIndex={4}
+                                                tabIndex={6}
                                                 isClearable
                                             />
                                         );
@@ -383,6 +384,7 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                                             <textarea
                                                 className="textarea textarea-info h-24 w-full"
                                                 placeholder="Your message"
+                                                tabIndex={7}
                                                 {...field}
                                             />
                                             <FieldError
@@ -407,6 +409,7 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                                     <textarea
                                         className="textarea textarea-info h-24 w-full"
                                         placeholder="Your message"
+                                        tabIndex={8}
                                         {...field}
                                     />
                                     <FieldError field={errors?.remarks} />
@@ -418,7 +421,8 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                     <div className="flex justify-end">
                         <button
                             disabled={!isDirty || isPending}
-                            className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300"
+                            className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300 focus:bg-neutral-800 focus:text-green-300   "
+                            tabIndex={9}
                         >
                             {isPending ? (
                                 <>

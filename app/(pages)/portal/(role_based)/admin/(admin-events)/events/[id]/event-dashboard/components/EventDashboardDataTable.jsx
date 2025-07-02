@@ -43,7 +43,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@components/ui/select";
-import moment from "moment";
 
 export default function EventDashboardDataTable({ appointments, eventId }) {
     const [searchTerm, setSearchTerm] = useState("");
@@ -167,7 +166,9 @@ export default function EventDashboardDataTable({ appointments, eventId }) {
         };
 
         return (
-            <Badge className={`text-xs ${config.color}`}>{config.text}</Badge>
+            <badge className={`badge px-2 text-xs ${config.color}`}>
+                {config.text}
+            </badge>
         );
     };
 
@@ -204,10 +205,10 @@ export default function EventDashboardDataTable({ appointments, eventId }) {
         }
     };
 
-    const handleExport = () => {
-        // TODO: Implement export functionality
-        console.log("Export data");
-    };
+    // const handleExport = () => {
+    //     // TODO: Implement export functionality
+    //     console.log("Export data");
+    // };
 
     const handleViewDetails = (appointment) => {
         // TODO: Navigate to appointment details
@@ -232,7 +233,7 @@ export default function EventDashboardDataTable({ appointments, eventId }) {
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <CardTitle>All Appointments</CardTitle>
-                    <div className="flex items-center gap-2">
+                    {/* <div className="flex items-center gap-2">
                         <Button
                             variant="outline"
                             size="sm"
@@ -242,7 +243,7 @@ export default function EventDashboardDataTable({ appointments, eventId }) {
                             <Download className="h-4 w-4" />
                             Export
                         </Button>
-                    </div>
+                    </div> */}
                 </div>
             </CardHeader>
             <CardContent>
@@ -301,6 +302,9 @@ export default function EventDashboardDataTable({ appointments, eventId }) {
                                     </SelectItem>
                                     <SelectItem value="no show">
                                         No Show
+                                    </SelectItem>
+                                    <SelectItem value="cancelled">
+                                        Cancelled
                                     </SelectItem>
                                 </SelectContent>
                             </Select>
@@ -506,6 +510,7 @@ export default function EventDashboardDataTable({ appointments, eventId }) {
                                                     <Button
                                                         variant="ghost"
                                                         className="h-8 w-8 p-0"
+                                                        disabled
                                                     >
                                                         <MoreHorizontal className="h-4 w-4" />
                                                     </Button>

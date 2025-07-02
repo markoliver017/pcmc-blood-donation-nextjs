@@ -1,14 +1,6 @@
 "use client";
 import React from "react";
-import { Card, CardContent } from "@components/ui/card";
 import EventDashboardHeader from "./EventDashboardHeader";
-import EventStatisticsCards from "./EventStatisticsCards";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
-import PendingDonorsList from "./PendingDonorsList";
-import ExaminedDonorsList from "./ExaminedDonorsList";
-import CollectedDonorsList from "./CollectedDonorsList";
-import DeferredDonorsList from "./DeferredDonorsList";
-import EventDashboardDataTable from "./EventDashboardDataTable";
 
 export default function EventDashboardLayout({
     event,
@@ -78,7 +70,10 @@ export default function EventDashboardLayout({
                                 </svg>
                             </button>
                             {lastUpdated && (
-                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                <span
+                                    suppressHydrationWarning={true}
+                                    className="text-xs text-gray-500 dark:text-gray-400"
+                                >
                                     Updated: {lastUpdated.toLocaleTimeString()}
                                 </span>
                             )}

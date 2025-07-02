@@ -1,8 +1,7 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
-import { Badge } from "@components/ui/badge";
 import {
     Dialog,
     DialogContent,
@@ -23,7 +22,6 @@ import {
     UserSearch,
 } from "lucide-react";
 
-import moment from "moment";
 import { MdOutlineBloodtype } from "react-icons/md";
 import { GiBlood } from "react-icons/gi";
 import { IoInformationCircle } from "react-icons/io5";
@@ -33,6 +31,9 @@ import { getAppointmentById } from "@/action/adminEventAction";
 import { useQuery } from "@tanstack/react-query";
 import Skeleton from "@components/ui/skeleton";
 import EventDashboardAppointmentForm from "./EventDashboardAppointmentForm";
+import AppointmentPhysicalExamTabForm from "@components/admin/appointments/AppointmentPhysicalExamTabForm";
+import ScrollToTop from "@components/ui/scroll-to-top";
+import BloodCollectionTabForm from "@components/admin/appointments/BloodCollectionTabForm";
 
 export default function AppointmentManagementModal({
     isOpen,
@@ -40,6 +41,12 @@ export default function AppointmentManagementModal({
     appointmentId,
     eventId,
 }) {
+    const basicInfoRef = useRef(null);
+    const bloodTypeRef = useRef(null);
+    const appointmentInfoRef = useRef(null);
+    const physicalExamRef = useRef(null);
+    const bloodCollectionRef = useRef(null);
+
     const { data: appointment, isLoading } = useQuery({
         queryKey: ["appointment", appointmentId],
         queryFn: async () => {
@@ -64,7 +71,7 @@ export default function AppointmentManagementModal({
                 text: "REGISTERED",
             },
             examined: {
-                color: "bg-yellow-100 text-yellow-800",
+                color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
                 text: "EXAMINED",
             },
             collected: {
@@ -72,6 +79,7 @@ export default function AppointmentManagementModal({
                 text: "COLLECTED",
             },
             cancelled: { color: "bg-red-100 text-red-800", text: "CANCELLED" },
+            deferred: { color: "bg-red-100 text-red-800", text: "DEFERRED" },
             "no show": { color: "bg-red-100 text-red-800", text: "NO SHOW" },
         };
 
@@ -81,7 +89,9 @@ export default function AppointmentManagementModal({
         };
 
         return (
-            <Badge className={`text-xs ${config.color}`}>{config.text}</Badge>
+            <badge className={`text-xs badge px-2 ${config.color}`}>
+                {config.text}
+            </badge>
         );
     };
 
@@ -102,6 +112,7 @@ export default function AppointmentManagementModal({
                         <Button
                             variant="ghost"
                             size="sm"
+                            tabIndex={-1}
                             onClick={onClose}
                             className="h-8 w-8 p-0"
                         >
@@ -217,20 +228,36 @@ export default function AppointmentManagementModal({
                                     {/* Sub Tab Content */}
                                     <TabsContent
                                         value="basic-info"
-                                        className="flex-1 border rounded-lg p-4 shadow-sm overflow-y-auto"
+                                        className="flex-1 border rounded-lg p-4 shadow-sm overflow-y-auto relative"
+                                        ref={basicInfoRef}
                                     >
                                         <EventDashboardDonorProfileForm
                                             donor={donor}
                                             eventId={eventId}
                                         />
+                                        <ScrollToTop
+                                            containerRef={basicInfoRef}
+                                            position="bottom-center"
+                                            size="sm"
+                                            variant="outline"
+                                            className="bg-blue-200/90 backdrop-blur-sm border-gray-200 hover:bg-blue-300/80 dark:hover:bg-blue-600/80 dark:bg-blue-500/90 dark:border-blue-300"
+                                        />
                                     </TabsContent>
                                     <TabsContent
                                         value="blood-type"
-                                        className="flex-1 border rounded-lg p-4 shadow-sm overflow-y-auto"
+                                        className="flex-1 border rounded-lg p-4 shadow-sm overflow-y-auto relative"
+                                        ref={bloodTypeRef}
                                     >
                                         <EventDashboardBloodTypeForm
                                             donor={donor}
                                             eventId={eventId}
+                                        />
+                                        <ScrollToTop
+                                            containerRef={bloodTypeRef}
+                                            position="bottom-center"
+                                            size="sm"
+                                            variant="outline"
+                                            className="bg-blue-200/90 backdrop-blur-sm border-gray-200 hover:bg-blue-300/80 dark:hover:bg-blue-600/80 dark:bg-blue-500/90 dark:border-blue-300"
                                         />
                                     </TabsContent>
                                 </Tabs>
@@ -249,7 +276,7 @@ export default function AppointmentManagementModal({
                                     <TabsList className="flex flex-col max-w-max max-h-60 rounded-lg border p-2">
                                         <TabsTrigger
                                             value="appointment-info"
-                                            className="flex items-center rounded gap-2 p-2 w-full border-b"
+                                            className="flex items-center justify-center gap-2 p-2 w-full border-b data-[state=active]:bg-gray-100 data-[state=active]:text-gray-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-300"
                                         >
                                             <IoInformationCircle className="h-4 w-4" />
                                             <span className="hidden lg:inline-block">
@@ -258,7 +285,7 @@ export default function AppointmentManagementModal({
                                         </TabsTrigger>
                                         <TabsTrigger
                                             value="physical-exam"
-                                            className="flex items-center rounded gap-2 p-2 w-full border-b"
+                                            className="flex items-center justify-center gap-2 p-2 w-full border-b data-[state=active]:bg-gray-100 data-[state=active]:text-gray-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-300"
                                         >
                                             <UserSearch className="h-4 w-4" />
                                             <span className="hidden lg:inline-block">
@@ -272,11 +299,18 @@ export default function AppointmentManagementModal({
                                                     ?.eligibility_status !==
                                                     "ACCEPTED" || false
                                             }
-                                            className="flex items-center rounded gap-2 p-2 w-full border-b disabled:opacity-50"
+                                            className="flex items-center justify-center gap-2 p-2 w-full border-b data-[state=active]:bg-gray-100 data-[state=active]:text-gray-700 data-[state=active]:font-bold px-4 py-2 rounded-md disabled:opacity-50 dark:text-slate-300"
                                         >
                                             <GiBlood className="h-4 w-4" />
                                             <span className="hidden lg:inline-block">
                                                 Blood Collection
+                                                {appointment?.physical_exam
+                                                    ?.eligibility_status !==
+                                                    "ACCEPTED" && (
+                                                    <sup className="italic text-xs text-red-500">
+                                                        (Not Eligible)
+                                                    </sup>
+                                                )}
                                             </span>
                                         </TabsTrigger>
                                     </TabsList>
@@ -284,7 +318,8 @@ export default function AppointmentManagementModal({
                                     {/* Sub Tab Content */}
                                     <TabsContent
                                         value="appointment-info"
-                                        className="flex-1 border rounded-lg p-4 bg-white dark:bg-inherit shadow-sm overflow-y-auto"
+                                        className="flex-1 border rounded-lg p-4 bg-white dark:bg-inherit shadow-sm overflow-y-auto relative"
+                                        ref={appointmentInfoRef}
                                     >
                                         {appointment && (
                                             <EventDashboardAppointmentForm
@@ -292,36 +327,45 @@ export default function AppointmentManagementModal({
                                                 eventId={eventId}
                                             />
                                         )}
+                                        <ScrollToTop
+                                            containerRef={appointmentInfoRef}
+                                            position="bottom-center"
+                                            size="sm"
+                                            variant="outline"
+                                            className="bg-blue-200/90 backdrop-blur-sm border-gray-200 hover:bg-blue-300/80 dark:hover:bg-blue-600/80 dark:bg-blue-500/90 dark:border-blue-300"
+                                        />
                                     </TabsContent>
                                     <TabsContent
                                         value="physical-exam"
-                                        className="flex-1 border rounded-lg p-4 bg-white dark:bg-inherit shadow-sm overflow-y-auto"
+                                        className="flex-1 border rounded-lg p-4 bg-white dark:bg-inherit shadow-sm overflow-y-auto relative"
+                                        ref={physicalExamRef}
                                     >
-                                        <div className="space-y-4">
-                                            <h4 className="text-lg font-semibold">
-                                                Physical Examination
-                                            </h4>
-                                            <p className="text-muted-foreground">
-                                                Physical examination form will
-                                                be implemented here.
-                                            </p>
-                                            {/* TODO: Add EventDashboardPhysicalExamForm component */}
-                                        </div>
+                                        <AppointmentPhysicalExamTabForm
+                                            appointment={appointment}
+                                        />
+                                        <ScrollToTop
+                                            containerRef={physicalExamRef}
+                                            position="bottom-center"
+                                            size="sm"
+                                            variant="outline"
+                                            className="bg-blue-200/90 backdrop-blur-sm border-gray-200 hover:bg-blue-300/80 dark:hover:bg-blue-600/80 dark:bg-blue-500/90 dark:border-blue-300"
+                                        />
                                     </TabsContent>
                                     <TabsContent
                                         value="blood-collection"
-                                        className="flex-1 border rounded-lg p-4 bg-white dark:bg-inherit shadow-sm overflow-y-auto"
+                                        className="flex-1 border rounded-lg p-4 bg-white dark:bg-inherit shadow-sm overflow-y-auto relative"
+                                        ref={bloodCollectionRef}
                                     >
-                                        <div className="space-y-4">
-                                            <h4 className="text-lg font-semibold">
-                                                Blood Collection
-                                            </h4>
-                                            <p className="text-muted-foreground">
-                                                Blood collection form will be
-                                                implemented here.
-                                            </p>
-                                            {/* TODO: Add EventDashboardBloodCollectionForm component */}
-                                        </div>
+                                        <BloodCollectionTabForm
+                                            appointment={appointment}
+                                        />
+                                        <ScrollToTop
+                                            containerRef={bloodCollectionRef}
+                                            position="bottom-right"
+                                            size="sm"
+                                            variant="outline"
+                                            className="bg-blue-200/90 backdrop-blur-sm border-gray-200 hover:bg-blue-300/80 dark:hover:bg-blue-600/80 dark:bg-blue-500/90 dark:border-blue-300"
+                                        />
                                     </TabsContent>
                                 </Tabs>
                             </TabsContent>

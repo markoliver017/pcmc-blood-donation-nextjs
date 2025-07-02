@@ -6,6 +6,7 @@ import { eventColumns } from "./eventColumns";
 import {
     getAllAgencyOptions,
     getAllEvents,
+    getEventsByStatus,
     getPresentEvents,
 } from "@/action/adminEventAction";
 import LoadingModal from "@components/layout/LoadingModal";
@@ -13,7 +14,7 @@ import { DataTable } from "@components/events/Datatable";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
-import { Calendar, CalendarCheck, Check, Text } from "lucide-react";
+import { Calendar, CalendarCheck, Check, Text, BarChart3 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import ForApprovalEventList from "./ForApprovalEventList";
 import Skeleton from "@components/ui/skeleton";
@@ -25,11 +26,12 @@ import {
 } from "@radix-ui/react-icons";
 import { MdUpcoming } from "react-icons/md";
 import { Card } from "@components/ui/card";
+import EventsDashboard from "@components/admin/events/EventsDashboard";
 
 export default function ListofEvents() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const currentTab = searchParams.get("tab") || "all";
+    const currentTab = searchParams.get("tab") || "dashboard";
 
     const handleTabChange = (value) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -166,6 +168,15 @@ export default function ListofEvents() {
             >
                 <TabsList className="mt-4 bg-muted p-1 rounded-md w-max">
                     <TabsTrigger
+                        value="dashboard"
+                        className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600"
+                    >
+                        <div className="flex-items-center">
+                            <BarChart3 className="h-4 w-4" />
+                            Dashboard
+                        </div>
+                    </TabsTrigger>
+                    <TabsTrigger
                         value="ongoing"
                         className="data-[state=active]:bg-green-100 data-[state=active]:text-green-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600"
                     >
@@ -206,6 +217,10 @@ export default function ListofEvents() {
                         </div>
                     </TabsTrigger>
                 </TabsList>
+
+                <TabsContent value="dashboard">
+                    <EventsDashboard />
+                </TabsContent>
 
                 <TabsContent value="ongoing">
                     {!ongoingEvents?.length ? (

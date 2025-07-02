@@ -11,8 +11,6 @@ import { GiCycle } from "react-icons/gi";
 import SelectRegisterDrawer from "./SelectRegisterDrawer";
 
 export default function MainSlider() {
-    const [openRegister, setOpenRegister] = useState(false);
-
     var settings = {
         dots: true,
         infinite: true,
@@ -128,11 +126,6 @@ export default function MainSlider() {
                     </button>
                 </div>
             </div>
-
-            <SelectRegisterDrawer
-                open={openRegister}
-                setOpen={setOpenRegister}
-            />
         </>
     );
 }

@@ -46,6 +46,12 @@ export default function BloodCollectionTabForm({ appointment }) {
         },
         onSuccess: (res) => {
             // Invalidate the posts query to refetch the updated list
+            queryClient.invalidateQueries({
+                queryKey: ["event-dashboard"],
+            });
+            queryClient.invalidateQueries({
+                queryKey: ["event-statistics"],
+            });
             queryClient.invalidateQueries({ queryKey: ["appointment"] });
             SweetAlert({
                 title: "Blood Collection",
@@ -113,6 +119,7 @@ export default function BloodCollectionTabForm({ appointment }) {
         <Form {...form}>
             <form
                 onSubmit={handleSubmit(onSubmit)}
+                id="form-modal"
                 className="space-y-2 flex flex-col gap-2 justify-center"
             >
                 <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">

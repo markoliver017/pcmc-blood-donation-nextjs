@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Card, CardContent } from "@components/ui/card";
-import { Badge } from "@components/ui/badge";
+
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import {
@@ -17,9 +17,8 @@ import {
 } from "lucide-react";
 import moment from "moment";
 
-export default function DeferredDonorsList({ appointments }) {
+export default function CancelledDonorsList({ appointments }) {
     const [searchTerm, setSearchTerm] = useState("");
-    const [filterType, setFilterType] = useState("all"); // all, deferred, no_show
 
     const filteredAppointments = appointments.filter((appointment) => {
         const donorName = appointment.donor?.user?.name?.toLowerCase() || "";
@@ -32,16 +31,6 @@ export default function DeferredDonorsList({ appointments }) {
             donorName.includes(search) ||
             bloodType.includes(search) ||
             agencyName.includes(search);
-
-        if (filterType === "all") return matchesSearch;
-        if (filterType === "deferred")
-            return (
-                matchesSearch &&
-                appointment?.physical_exam &&
-                appointment?.physical_exam?.eligibility_status !== "ACCEPTED"
-            );
-        if (filterType === "no_show")
-            return matchesSearch && appointment.status === "no show";
 
         return matchesSearch;
     });
@@ -62,48 +51,15 @@ export default function DeferredDonorsList({ appointments }) {
         };
 
         return (
-            <badge className={`badge px-2 text-xs ${config.color}`}>
+            <div className={`text-xs px-2 badge ${config.color}`}>
                 {config.text}
-            </badge>
-        );
-    };
-
-    const getDeferralTypeBadge = (eligibilityStatus) => {
-        const config = {
-            "TEMPORARILY-DEFERRED": {
-                color: "badge-warning",
-                text: "TEMPORARY",
-            },
-            "PERMANENTLY-DEFERRED": { color: "badge-error", text: "PERMANENT" },
-        };
-
-        const statusConfig = config[eligibilityStatus] || {
-            color: "badge-secondary",
-            text: "UNKNOWN",
-        };
-
-        return (
-            <badge className={`badge px-2 text-xs ${statusConfig.color}`}>
-                {statusConfig.text}
-            </badge>
+            </div>
         );
     };
 
     const handleViewDetails = (appointment) => {
         // TODO: Navigate to detailed view
         console.log("View details for:", appointment.id);
-    };
-
-    const getDeferredCount = () => {
-        return appointments.filter(
-            (a) =>
-                a?.physical_exam &&
-                a?.physical_exam?.eligibility_status !== "ACCEPTED"
-        ).length;
-    };
-
-    const getNoShowCount = () => {
-        return appointments.filter((a) => a.status === "no show").length;
     };
 
     if (!appointments || appointments.length === 0) {
@@ -127,84 +83,15 @@ export default function DeferredDonorsList({ appointments }) {
 
     return (
         <div className="space-y-4">
-            {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-red-100 dark:bg-red-800 rounded-lg">
-                                <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
-                            </div>
-                            <div>
-                                <h3 className="font-medium text-red-800 dark:text-red-200">
-                                    Deferred Donors
-                                </h3>
-                                <p className="text-sm text-red-600 dark:text-red-300">
-                                    {getDeferredCount()} donors deferred
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                                <XCircle className="h-6 w-6 text-gray-600 dark:text-gray-400" />
-                            </div>
-                            <div>
-                                <h3 className="font-medium text-gray-800 dark:text-gray-200">
-                                    No-Show Donors
-                                </h3>
-                                <p className="text-sm text-gray-600 dark:text-gray-300">
-                                    {getNoShowCount()} donors didn't show
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-
             {/* Filter and Search */}
-            <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex gap-2">
-                    <Button
-                        variant={filterType === "all" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setFilterType("all")}
-                    >
-                        All ({appointments.length})
-                    </Button>
-                    <Button
-                        variant={
-                            filterType === "deferred" ? "default" : "outline"
-                        }
-                        size="sm"
-                        onClick={() => setFilterType("deferred")}
-                    >
-                        Deferred ({getDeferredCount()})
-                    </Button>
-                    <Button
-                        variant={
-                            filterType === "no_show" ? "default" : "outline"
-                        }
-                        size="sm"
-                        onClick={() => setFilterType("no_show")}
-                    >
-                        No Show ({getNoShowCount()})
-                    </Button>
-                </div>
-
-                <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        placeholder="Search by donor name, blood type, or agency..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10"
-                    />
-                </div>
+            <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                    placeholder="Search by donor name, blood type, or agency..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                />
             </div>
 
             {/* Donors List */}
@@ -253,17 +140,6 @@ export default function DeferredDonorsList({ appointments }) {
                                                 {getStatusBadge(
                                                     appointment.status
                                                 )}
-                                                {appointment?.physical_exam &&
-                                                    appointment?.physical_exam
-                                                        ?.eligibility_status &&
-                                                    appointment?.physical_exam?.eligibility_status.includes(
-                                                        "DEFERRED"
-                                                    ) &&
-                                                    getDeferralTypeBadge(
-                                                        appointment
-                                                            ?.physical_exam
-                                                            ?.eligibility_status
-                                                    )}
                                             </div>
 
                                             <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -331,7 +207,7 @@ export default function DeferredDonorsList({ appointments }) {
                                 </div>
 
                                 {/* Deferral Details */}
-                                {isDeferred && appointment?.physical_exam && (
+                                {isDeferred && appointment.physical_exam && (
                                     <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/20 rounded">
                                         <h5 className="text-sm font-medium mb-2 text-red-700 dark:text-red-300">
                                             Deferral Information
@@ -342,8 +218,8 @@ export default function DeferredDonorsList({ appointments }) {
                                                     Deferral Type:
                                                 </span>
                                                 <span className="ml-1">
-                                                    {appointment?.physical_exam
-                                                        ?.eligibility_status ===
+                                                    {appointment.physical_exam
+                                                        .eligibility_status ===
                                                     "TEMPORARILY-DEFERRED"
                                                         ? "Temporary"
                                                         : "Permanent"}
@@ -354,12 +230,12 @@ export default function DeferredDonorsList({ appointments }) {
                                                     Deferral Date:
                                                 </span>
                                                 <span className="ml-1">
-                                                    {appointment?.physical_exam
-                                                        ?.created_at
+                                                    {appointment.physical_exam
+                                                        .created_at
                                                         ? moment(
                                                               appointment
-                                                                  ?.physical_exam
-                                                                  ?.created_at
+                                                                  .physical_exam
+                                                                  .created_at
                                                           ).format(
                                                               "MMM DD, YYYY"
                                                           )
@@ -367,27 +243,26 @@ export default function DeferredDonorsList({ appointments }) {
                                                 </span>
                                             </div>
                                         </div>
-                                        {appointment?.physical_exam
-                                            ?.deferral_reason && (
+                                        {appointment.physical_exam
+                                            .deferral_reason && (
                                             <div className="mt-2 p-2 bg-white dark:bg-gray-800 rounded text-xs">
                                                 <span className="font-medium">
                                                     Reason:
                                                 </span>{" "}
                                                 {
-                                                    appointment?.physical_exam
-                                                        ?.deferral_reason
+                                                    appointment.physical_exam
+                                                        .deferral_reason
                                                 }
                                             </div>
                                         )}
-                                        {appointment?.physical_exam
-                                            ?.remarks && (
+                                        {appointment.physical_exam.remarks && (
                                             <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-xs">
                                                 <span className="font-medium">
                                                     Medical Notes:
                                                 </span>{" "}
                                                 {
-                                                    appointment?.physical_exam
-                                                        ?.remarks
+                                                    appointment.physical_exam
+                                                        .remarks
                                                 }
                                             </div>
                                         )}
@@ -429,7 +304,7 @@ export default function DeferredDonorsList({ appointments }) {
             {/* Results Count */}
             <div className="text-sm text-muted-foreground text-center">
                 Showing {filteredAppointments.length} of {appointments.length}{" "}
-                deferred/no-show donors
+                cancelled appointments
             </div>
         </div>
     );

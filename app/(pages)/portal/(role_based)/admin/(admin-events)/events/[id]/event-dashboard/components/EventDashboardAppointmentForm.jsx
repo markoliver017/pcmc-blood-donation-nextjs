@@ -89,6 +89,7 @@ export default function EventDashboardAppointmentForm({
         examined: "badge-warning",
         collected: "badge-success",
         cancelled: "badge-error",
+        deferred: "badge-error",
         "no show": "badge-error",
     };
     const statusLabel = (status) => (status ? status.toUpperCase() : "UNKNOWN");
@@ -190,7 +191,7 @@ export default function EventDashboardAppointmentForm({
                                             className="w-full dark:bg-inherit"
                                             tabIndex={2}
                                             {...field}
-                                            disabled={!isEditable}
+                                            readOnly={!isEditable}
                                         >
                                             <option value="">
                                                 Select here
@@ -240,7 +241,7 @@ export default function EventDashboardAppointmentForm({
                                                     tabIndex={3}
                                                     placeholder="Enter patient name"
                                                     {...field}
-                                                    disabled={!isEditable}
+                                                    readOnly={!isEditable}
                                                 />
                                             </label>
                                             <FieldError
@@ -272,7 +273,7 @@ export default function EventDashboardAppointmentForm({
                                                     tabIndex={4}
                                                     placeholder="Enter relation"
                                                     {...field}
-                                                    disabled={!isEditable}
+                                                    readOnly={!isEditable}
                                                 />
                                             </label>
                                             <FieldError
@@ -283,49 +284,57 @@ export default function EventDashboardAppointmentForm({
                                 />
                             </>
                         )}
+
                         {/* Status */}
-                        <Controller
-                            control={control}
-                            name="status"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <InlineLabel>
-                                        Appointment Status:{" "}
-                                    </InlineLabel>
-                                    <label
-                                        className={clsx(
-                                            "input w-full mt-1",
-                                            errors?.status
-                                                ? "input-error"
-                                                : "input-info"
-                                        )}
-                                    >
-                                        {" "}
-                                        <Flag className="h-3" />
-                                        <select
-                                            className="w-full dark:bg-inherit"
-                                            tabIndex={5}
-                                            {...field}
-                                            disabled={!isEditable}
+                        {["registered", "no show", "cancelled"].includes(
+                            appointment?.status
+                        ) && (
+                            <Controller
+                                control={control}
+                                name="status"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <InlineLabel>
+                                            Appointment Status:{" "}
+                                        </InlineLabel>
+                                        <label
+                                            className={clsx(
+                                                "input w-full mt-1",
+                                                errors?.status
+                                                    ? "input-error"
+                                                    : "input-info"
+                                            )}
                                         >
-                                            <option value="">
-                                                Select status
-                                            </option>
-                                            {[
-                                                "registered",
-                                                "no show",
-                                                "cancelled",
-                                            ].map((status, i) => (
-                                                <option key={i} value={status}>
-                                                    {status.toUpperCase()}
+                                            {" "}
+                                            <Flag className="h-3" />
+                                            <select
+                                                className="w-full dark:bg-inherit"
+                                                tabIndex={5}
+                                                {...field}
+                                                readOnly={!isEditable}
+                                            >
+                                                <option value="">
+                                                    Select status
                                                 </option>
-                                            ))}
-                                        </select>
-                                    </label>
-                                    <FieldError field={errors?.status} />
-                                </FormItem>
-                            )}
-                        />
+                                                {[
+                                                    "registered",
+                                                    "no show",
+                                                    "cancelled",
+                                                ].map((status, i) => (
+                                                    <option
+                                                        key={i}
+                                                        value={status}
+                                                    >
+                                                        {status.toUpperCase()}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </label>
+                                        <FieldError field={errors?.status} />
+                                    </FormItem>
+                                )}
+                            />
+                        )}
                         {/* Comments */}
                         <Controller
                             control={control}
@@ -346,7 +355,7 @@ export default function EventDashboardAppointmentForm({
                                             tabIndex={6}
                                             placeholder="Enter comments or notes"
                                             {...field}
-                                            disabled={!isEditable}
+                                            readOnly={!isEditable}
                                         />
                                     </label>
                                     <FieldError field={errors?.comments} />
@@ -375,7 +384,7 @@ export default function EventDashboardAppointmentForm({
                     </div>
                 </Card>
             </form>
-            <FormLogger watch={watch} />
+            {/* <FormLogger watch={watch} /> */}
         </Form>
     );
 }

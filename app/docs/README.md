@@ -11,6 +11,8 @@ This is a comprehensive **PCMC Pediatric Blood Center - Medical Blood Donation**
 -   **Authentication**: NextAuth.js with role-based access control
 -   **UI**: Tailwind CSS with shadcn/ui components
 -   **State Management**: React Query for server state
+-   **Data Querying/Mutation**: TanStack Query
+-   **Form**: REACT HOOK FORM
 -   **Form Validation**: Zod schema validation
 -   **Styling**: DaisyUI components with custom theming
 

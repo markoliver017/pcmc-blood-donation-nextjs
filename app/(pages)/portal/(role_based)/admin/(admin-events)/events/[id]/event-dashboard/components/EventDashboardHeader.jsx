@@ -198,6 +198,19 @@ export default function EventDashboardHeader({ event }) {
                                     {event.requester.email}
                                 </p>
                             )}
+                            <p className="text-xs text-muted-foreground">
+                                +63
+                                {event.requester?.coordinator ? (
+                                    <>
+                                        {
+                                            event?.requester?.coordinator
+                                                ?.contact_number
+                                        }
+                                    </>
+                                ) : (
+                                    <>{event?.agency?.contact_number}</>
+                                )}
+                            </p>
                         </div>
                     </div>
 

@@ -82,12 +82,12 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
     if yes then update the donor last physical exam and last donation event  */
     const currentDate = new Date();
     const eventDate = new Date(appointment?.event?.date);
-    // if (currentDate < eventDate) {
-    //     return {
-    //         success: false,
-    //         message: "You cannot conduct a physical exam for a future event.",
-    //     };
-    // }
+    if (currentDate < eventDate) {
+        return {
+            success: false,
+            message: "You cannot conduct a physical exam for a future event.",
+        };
+    }
 
     let lastExaminationDate = null;
 
@@ -142,7 +142,11 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
         }
 
         /* update donor appointment status */
-        await appointment.update({ status: "examined" }, { transaction });
+        if (data.eligibility_status === "ACCEPTED") {
+            await appointment.update({ status: "examined" }, { transaction });
+        } else {
+            await appointment.update({ status: "deferred" }, { transaction });
+        }
 
         await transaction.commit();
 
