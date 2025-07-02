@@ -110,21 +110,9 @@ export default function MainSlider() {
                         </p> */}
                     </div>
                 </Slider>
-                <div className="absolute bottom-10 left-30 flex gap-5">
-                    <button
-                        type="button"
-                        className="cursor-pointer btn-blue-500 flex-items-center justify-center min-w-48 text-blue-900 bg-[rgba(255,255,255,0.9)] rounded-2xl p-5 border shadow-[5px_5px_0px_0px_rgba(0,_0,_0,_0.5),inset_6px_6px_1px_1px_rgba(0,_0,_0,_0.3)] shadow-blue-800 hover:ring-1 hover:font-semibold"
-                        onClick={() => setOpenRegister(true)}
-                    >
-                        <Handshake className="h-10 w-10" /> Join Us
-                    </button>
-                    <button
-                        type="button"
-                        className="cursor-pointer flex-items-center text-blue-900 bg-[rgba(255,255,255,0.9)] rounded-2xl p-5 border shadow-[5px_5px_0px_0px_rgba(0,_0,_0,_0.5),inset_6px_6px_1px_1px_rgba(0,_0,_0,_0.3)] shadow-blue-800 hover:ring-1 hover:font-semibold"
-                    >
-                        <GiCycle className="h-10 w-10" /> Donation Process
-                    </button>
-                </div>
+                {/* <div className="absolute bottom-10 left-30 flex gap-5">
+
+                </div> */}
             </div>
         </>
     );

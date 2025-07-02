@@ -388,6 +388,14 @@ export async function sendEmail(data) {
     console.log("email status", emailStatus);
 }
 
+// Notification helper for single or bulk notification creation
+async function notifyUsers(userIds, notificationData) {
+    if (!Array.isArray(userIds)) userIds = [userIds];
+    const notifications = userIds.map(user_id => ({ ...notificationData, user_id }));
+    await Notification.bulkCreate(notifications);
+    console.log(`Notifications sent to:`, userIds);
+}
+
 /* For client user registration */
 export async function storeAgency(formData) {
     console.log("formData received on storeAgebcy", formData);
@@ -455,6 +463,35 @@ export async function storeAgency(formData) {
         data.agency_address = newAgency.agency_address;
 
         const { email } = data;
+
+        // Notify the registering user
+        await notifyUsers(newUser.id, {
+            subject: "Registration Received",
+            message: "Thank you for registering your agency. Your application is pending approval.",
+            type: "GENERAL",
+            reference_id: newAgency.id,
+            created_by: newUser.id,
+        });
+
+        // Notify all admins
+        const adminRole = await Role.findOne({ where: { role_name: "Admin" } });
+        const adminUsers = await User.findAll({
+            include: [{
+                model: Role,
+                as: "roles",
+                where: { id: adminRole.id }, through: { attributes: [] }
+            }]
+        });
+        await notifyUsers(adminUsers.map(a => a.id), {
+            subject: "New Agency Registration",
+            message: `A new agency (${newAgency.name}) has registered and is pending approval.`,
+            type: "AGENCY_APPROVAL",
+            reference_id: newAgency.id,
+            created_by: newUser.id,
+        });
+
+        // (Optional) Notify MBDT if required (using email in your current logic)
+        // You can add a notification for MBDT user(s) here if you have their user IDs
 
         /* notif email to the admin for new agency  */
         await send_mail({

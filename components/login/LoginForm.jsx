@@ -18,7 +18,7 @@ const credentials = {
     password: "User@1234",
 };
 
-export default function LoginForm() {
+export default function LoginForm({ showHeader = true, showProvidersSection = false }) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState({});
     const {
@@ -69,27 +69,27 @@ export default function LoginForm() {
         <>
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="fieldset w-full bg-base-200/50 border border-base-300 px-20 py-5 rounded-box"
+                className="w-full bg-white/80 dark:bg-slate-900/80 border border-blue-100 dark:border-slate-800 px-6 sm:px-10 py-6 rounded-2xl shadow-md flex flex-col gap-4"
             >
-                <div className="flex flex-col items-center justify-center mb-4">
-                    <Image
-                        src="/pcmc_logo.png"
-                        className="flex-none"
-                        width={75}
-                        height={75}
-                        layout="intrinsic"
-                        alt="Logo"
-                    />
-                    <h2 className="text-center font-geist-sans font-semibold text-xl mt-2 leading-tight text-shadow-[_1px_1px_8px_#8b8eee]">
-                        PCMC Pediatric Blood Center <br /> Medical Blood
-                        Donation <br />
-                        <span className="text-lg">Member Login</span>
-                    </h2>
-                </div>
+                {showHeader && (
+                    <div className="flex flex-col items-center justify-center mb-2 gap-2">
+                        <Image
+                            src="/pcmc_logo.png"
+                            width={60}
+                            height={60}
+                            alt="PCMC Pediatric Blood Center Logo"
+                            className="rounded-full border-2 border-blue-200 dark:border-sky-700 shadow bg-white"
+                        />
+                        <h2 className="text-center font-geist-sans font-bold text-xl mt-1 leading-tight text-red-700 dark:text-red-300">
+                            PCMC Pediatric Blood Center
+                        </h2>
+                        <span className="text-base text-slate-600 dark:text-slate-300">Member Login</span>
+                    </div>
+                )}
                 <div>
-                    <label className="fieldset-label">Email</label>
-                    <label className="input validator mt-1">
-                        <Mail className="h-3" />
+                    <label className="fieldset-label font-semibold">Email</label>
+                    <label className="w-full border focus-within:shadow-md focus-within:shadow-red-400 input mt-1 flex items-center gap-2">
+                        <Mail className="h-4 text-blue-500" />
                         <input
                             type="email"
                             {...register("email", {
@@ -105,18 +105,17 @@ export default function LoginForm() {
                                 },
                             })}
                             placeholder="mail@site.com"
-                        // required
+                            className="bg-transparent flex-1 outline-none"
                         />
                     </label>
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-500 text-sm min-h-[1.5em]">
                         {errors.email && <span>{errors.email?.message}</span>}
                     </p>
                 </div>
-
-                <div className="mt-2">
-                    <label className="fieldset-label">Password</label>
-                    <label className="input validator mt-1">
-                        <Key className="h-3" />
+                <div>
+                    <label className="fieldset-label font-semibold">Password</label>
+                    <label className="input border focus-within:shadow-md focus-within:shadow-red-300 w-full mt-1 flex items-center gap-2">
+                        <Key className="h-4 text-blue-500" />
                         <input
                             type="password"
                             {...register("password", {
@@ -127,23 +126,43 @@ export default function LoginForm() {
                                     }
                                 },
                             })}
-                            // required
                             placeholder="Password"
                             minLength="8"
-                            pattern=".{8,}"
-                            title="Must be more than 8 characters"
+                            className="bg-transparent flex-1 outline-none"
                         />
                     </label>
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-500 text-sm min-h-[1.5em]">
                         {errors.password && (
                             <span>{errors.password?.message}</span>
                         )}
                     </p>
                 </div>
-
+                <div className="flex flex-col  gap-2 mt-2">
+                    <label className="flex max-w-max items-center gap-2 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            {...register("rememberMe")}
+                            className="border checkbox checkbox-primary"
+                        />
+                        <span className="text-sm text-slate-600 dark:text-slate-300">Remember Me</span>
+                    </label>
+                    <label className="flex max-w-max items-center gap-2 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            {...register("agreeTerms", { required: "You must agree to the terms and conditions." })}
+                            className="border checkbox checkbox-primary"
+                        />
+                        <span className="text-sm text-slate-600 dark:text-slate-300">
+                            I agree to the <a href="#" className="underline hover:text-blue-600">Terms & Conditions</a>
+                        </span>
+                    </label>
+                </div>
+                <p className="text-red-500 text-sm min-h-[1.5em]">
+                    {errors.agreeTerms && <span>{errors.agreeTerms?.message}</span>}
+                </p>
                 <button
                     disabled={isAnyLoading}
-                    className="btn btn-neutral mt-4 hover:bg-neutral-800 hover:text-green-300"
+                    className="btn btn-primary mt-2 w-full flex items-center justify-center gap-2 text-lg shadow-md hover:scale-[1.02] transition-transform"
                 >
                     {isLoading?.credentials ? (
                         <>
@@ -158,121 +177,44 @@ export default function LoginForm() {
                     )}
                 </button>
             </form>
-            <div className="hidden">
-                <button
-                    onClick={() => {
-                        signIn("github", {
-                            callbackUrl: "/portal",
-                        });
-                        setIsLoading((prev) => ({ ...prev, github: true }));
-                    }}
-                    className="btn bg-violet-300 mt-4 w-full hover:bg-neutral-800 hover:text-green-300"
-                >
-                    {isLoading?.github ? (
-                        <>
-                            <span className="loading loading-bars loading-xs"></span>
-                            Signing In...
-                        </>
-                    ) : (
-                        <>
-                            <GitHubLogoIcon />
-                            Sign In with Github
-                        </>
-                    )}
-                </button>
-                <button
-                    onClick={() => {
-                        signIn("google", {
-                            callbackUrl: "/portal",
-                        });
-                        setIsLoading((prev) => ({ ...prev, google: true }));
-                    }}
-                    className="btn bg-white-300 mt-4 w-full hover:bg-neutral-800 hover:text-green-300"
-                >
-                    {isLoading?.google ? (
-                        <>
-                            <span className="loading loading-bars loading-xs"></span>
-                            Signing In...
-                        </>
-                    ) : (
-                        <>
-                            <FaGoogle />
-                            Sign In with Google
-                        </>
-                    )}
-                </button>
-            </div>
-            <div className="flex flex-col gap-3 py-5">
-                {/* Google */}
-                <button
-                    disabled={isAnyLoading}
-                    className="btn bg-white text-black border-[#e5e5e5]"
-                    onClick={() => {
-                        signIn("google", {
-                            callbackUrl: "/portal",
-                        });
-                        setIsLoading((prev) => ({ ...prev, google: true }));
-                    }}
-                >
-                    {isLoading?.google ? (
-                        <>
-                            <span className="loading loading-bars loading-xs"></span>
-                            Signing In...
-                        </>
-                    ) : (
-                        <>
-                            <svg
-                                aria-label="Google logo"
-                                width="16"
-                                height="16"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 512 512"
-                            >
-                                <g>
-                                    <path d="m0 0H512V512H0" fill="#fff"></path>
-                                    <path
-                                        fill="#34a853"
-                                        d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"
-                                    ></path>
-                                    <path
-                                        fill="#4285f4"
-                                        d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"
-                                    ></path>
-                                    <path
-                                        fill="#fbbc02"
-                                        d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"
-                                    ></path>
-                                    <path
-                                        fill="#ea4335"
-                                        d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"
-                                    ></path>
-                                </g>
-                            </svg>
-                            Login with Google
-                        </>
-                    )}
-                </button>
-
-                {/* Facebook */}
-                <button
-                    disabled={isAnyLoading}
-                    className="btn bg-[#1A77F2] text-white border-[#005fd8]"
-                >
-                    <svg
-                        aria-label="Facebook logo"
-                        width="16"
-                        height="16"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 32 32"
-                    >
-                        <path
-                            fill="white"
-                            d="M8 12h5V8c0-6 4-7 11-6v5c-4 0-5 0-5 3v2h5l-1 6h-4v12h-6V18H8z"
-                        ></path>
-                    </svg>
-                    Login with Facebook
-                </button>
-            </div>
+            {showProvidersSection && (
+                <div className="w-full flex flex-col items-center mt-6">
+                    <div className="flex items-center w-full mb-4">
+                        <div className="flex-1 h-px bg-blue-200 dark:bg-slate-700" />
+                        <span className="mx-3 text-slate-400 dark:text-slate-500 text-sm">or sign in with</span>
+                        <div className="flex-1 h-px bg-blue-200 dark:bg-slate-700" />
+                    </div>
+                    <div className="flex flex-col gap-3 w-full">
+                        <button
+                            disabled={isAnyLoading}
+                            className="flex items-center justify-center gap-3 w-full py-3 rounded-lg bg-white border border-blue-200 dark:bg-slate-800 dark:border-slate-700 shadow hover:bg-blue-50 dark:hover:bg-slate-700 text-blue-700 dark:text-blue-200 font-semibold text-base transition-all"
+                            onClick={() => {
+                                signIn("google", { callbackUrl: "/portal" });
+                                setIsLoading((prev) => ({ ...prev, google: true }));
+                            }}
+                        >
+                            {isLoading?.google ? (
+                                <>
+                                    <span className="loading loading-bars loading-xs"></span>
+                                    Signing In with Google...
+                                </>
+                            ) : (
+                                <>
+                                    <FaGoogle className="text-xl" />
+                                    Continue with Google
+                                </>
+                            )}
+                        </button>
+                        <button
+                            disabled={isAnyLoading}
+                            className="flex items-center justify-center gap-3 w-full py-3 rounded-lg bg-[#1A77F2] border border-blue-700 shadow hover:bg-blue-800 text-white font-semibold text-base transition-all"
+                        >
+                            <svg aria-label="Facebook logo" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path fill="white" d="M8 12h5V8c0-6 4-7 11-6v5c-4 0-5 0-5 3v2h5l-1 6h-4v12h-6V18H8z"></path></svg>
+                            Continue with Facebook
+                        </button>
+                    </div>
+                </div>
+            )}
         </>
     );
 }

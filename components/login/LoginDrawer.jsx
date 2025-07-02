@@ -13,6 +13,7 @@ import {
 import LoginForm from "@components/login/LoginForm";
 import Image from "next/image";
 import { X } from "lucide-react";
+import { DialogTitle } from "@components/ui/dialog";
 
 export default function LoginDrawer() {
     const drawerRef = useRef();
@@ -29,36 +30,46 @@ export default function LoginDrawer() {
             </button>
 
             <Drawer ref={drawerRef} direction="top">
-                <DrawerContent className="dark:bg-neutral-900 dark:text-slate-100 b-bl">
-                    <DrawerHeader className="hidden">
-                        <DrawerTitle className="dark:text-slate-100">
-                            SYSTEM ADMINISTRATOR LOGIN
-                        </DrawerTitle>
-                        {/* <DrawerDescription>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Nam veniam reiciendis nulla ducimus fuga ad.
-                        </DrawerDescription> */}
-                    </DrawerHeader>
-
-                    <div className="relative h-screen w-full flex items-center justify-end overflow-hidden">
+                <DrawerContent className="dark:bg-neutral-900 dark:text-slate-100">
+                    <DialogTitle></DialogTitle>
+                    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden py-8 px-2 sm:px-8">
                         {/* Background Image */}
-
                         <Image
                             src="/blood-bg.jpg"
                             alt="Login Background"
                             fill
-                            className="object-cover object-right"
+                            className="object-cover object-right opacity-40"
                             quality={100}
                             priority
                         />
-
+                        {/* Overlay for readability */}
+                        <div className="absolute inset-0 bg-black/30 dark:bg-black/60 backdrop-blur-sm z-10" aria-hidden="true" />
+                        {/* Logo and Heading */}
+                        <div className="w-full md:w-8/10 lg:w-6/10 xl:w-5/12 2xl:w-4/12">
                         {/* Login Form */}
-                        <div className="relative p-10 z-20 mr-10 bg-base-300/40 rounded-lg shadow-lg">
-                            <LoginForm />
+                            <div className="relative z-20 w-9/10 mx-auto bg-white/90 dark:bg-slate-900/90 rounded-2xl shadow-2xl p-6 flex flex-col items-center gap-6 border border-blue-100 dark:border-slate-800 ">
+                                <div className="flex flex-col items-center gap-2">
+                                    <Image
+                                        src="/pcmc_logo.png"
+                                        width={60}
+                                        height={60}
+                                        alt="PCMC Pediatric Blood Center Logo"
+                                        className="rounded-full border-2 border-blue-200 dark:border-sky-700 shadow bg-white"
+                                    />
+                                    <h2 className="text-2xl font-extrabold text-red-700 dark:text-red-300 text-center leading-tight drop-shadow">
+                                        Welcome Back
+                                    </h2>
+                                    <p className="text-md text-slate-700 dark:text-slate-200 text-center max-w-xs drop-shadow">
+                                        Sign in to your account to access the<br/> PCMC Pediatric Blood Center Portal.
+                                    </p>
+                                </div>
+                                <LoginForm showHeader={false} showProvidersSection={true} />
+                            </div>
                         </div>
                         <button
-                            className="absolute left-10 top-10 btn btn-circle"
+                            className="absolute left-10 top-10 btn btn-circle bg-white/80 dark:bg-slate-800/80 shadow hover:bg-red-200 dark:hover:bg-red-900 z-30"
                             onClick={() => drawerRef.current.close()}
+                            aria-label="Close login drawer"
                         >
                             <X />
                         </button>

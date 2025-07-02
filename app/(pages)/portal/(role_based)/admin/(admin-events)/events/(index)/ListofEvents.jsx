@@ -164,7 +164,7 @@ export default function ListofEvents() {
             <Tabs
                 defaultValue={currentTab}
                 onValueChange={handleTabChange}
-                className="mt-5 px-2 sm:px-5 relative"
+                className="mt-5 px-2 sm:px-5 mb-5 relative"
             >
                 <TabsList className="mt-4 bg-muted p-1 rounded-md w-max">
                     <TabsTrigger

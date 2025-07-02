@@ -56,37 +56,35 @@ const HeaderNav = ({ currentUser }) => {
     };
     return (
         <>
-            <header className="flex-none border-b border-gray-200 p-2 shadow-lg/100 shadow-gray-500 bg-gradient-to-b from-cyan-100 dark:from-sky-500 to-slate-200 dark:to-sky-800">
-                <div className="flex-1 flex justify-between md:justify-evenly gap-2 items-center">
+            <header className="sticky top-0 z-40 flex-none border-b border-gray-200 dark:border-slate-700 p-2 shadow-lg bg-gradient-to-b from-blue-50/80 via-white/90 to-blue-100/80 dark:from-sky-900 dark:via-slate-900 dark:to-sky-800/80 backdrop-blur-md rounded-b-2xl transition-all duration-300">
+                <div className="flex-1 flex flex-wrap justify-between md:justify-evenly gap-2 items-center min-h-[70px]">
                     <Link
                         href="/"
-                        className="flex-none flex gap-2 items-center rounded-xl p-2 z-1 text-blue-700 dark:text-slate-100 text-shadow-sm/100 text-shadow-yellow-300 dark:text-shadow-yellow-800"
+                        className="flex-none flex gap-2 items-center rounded-xl p-2 z-1 text-blue-700 dark:text-slate-100 text-shadow-sm/100 text-shadow-yellow-300 dark:text-shadow-yellow-800 hover:bg-blue-100/60 dark:hover:bg-sky-900/40 transition-colors duration-200"
                     >
                         <Image
                             src="/pcmc_logo.png"
-                            // className="flex-none w-24 sm:w-32 md:w-48 lg:w-64"
-                            width={80}
-                            height={80}
+                            width={64}
+                            height={64}
                             alt="PCMC Pediatric Blood Center - Mobile Blood Donation Portal"
                             title="PCMC Pediatric Blood Center - Mobile Blood Donation Portal"
+                            className="rounded-full border-2 border-blue-200 dark:border-sky-700 shadow-md bg-white"
                         />
-                        <h1
-                            className="inline-block md:hidden text-lg md:text-base font-extrabold italic"
-                            title="PCMC Pediatric Blood Center - Mobile Blood Donation Portal"
-                        >
-                            PCMC PedBC - MBD Portal
-                        </h1>
-                        <h1 className="hidden md:inline-block text-lg md:text-base font-extrabold italic">
-                            PCMC Pediatric Blood Center <br /> Mobile Blood
-                            Donation Portal
-                        </h1>
+                        <div className="flex flex-col justify-center">
+                            <h1 className="inline-block md:hidden text-lg md:text-base font-extrabold italic leading-tight">
+                                PCMC PedBC - MBD Portal
+                            </h1>
+                            <h1 className="hidden md:inline-block text-lg md:text-base font-extrabold italic leading-tight">
+                                PCMC Pediatric Blood Center <br /> <span className="font-normal">Mobile Blood Donation Portal</span>
+                            </h1>
+                        </div>
                     </Link>
-                    <nav>
-                        <ul className="flex items-center space-x-4 font-bold text-xl md:text-sm text-shadow-md italic text-shadow">
+                    <nav className="flex-1">
+                        <ul className="flex flex-wrap items-center justify-center space-x-2 md:space-x-4 font-bold text-base md:text-sm text-shadow-md italic text-shadow">
                             <li className="hidden md:block">
                                 <Link
                                     href="/"
-                                    className="p-3 hover:ring rounded-xl flex-items-center"
+                                    className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
                                 >
                                     <Home className="h-4" />
                                     Home
@@ -95,7 +93,7 @@ const HeaderNav = ({ currentUser }) => {
                             <li className="hidden md:block">
                                 <Link
                                     href="#"
-                                    className="p-3 hover:ring rounded-xl flex-items-center"
+                                    className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
                                 >
                                     <Droplet className="h-4" />
                                     Why Donate
@@ -104,7 +102,7 @@ const HeaderNav = ({ currentUser }) => {
                             <li className="hidden lg:block">
                                 <Link
                                     href="#"
-                                    className="p-3 hover:ring rounded-xl flex-items-center"
+                                    className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
                                 >
                                     <Text className="h-4" />
                                     Eligibility Requirements
@@ -113,7 +111,7 @@ const HeaderNav = ({ currentUser }) => {
                             <li className="hidden xl:block">
                                 <Link
                                     href="#"
-                                    className="p-3 hover:ring rounded-xl flex-items-center"
+                                    className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
                                 >
                                     <MdAmpStories className="h-4" />
                                     Success Stories
@@ -122,7 +120,7 @@ const HeaderNav = ({ currentUser }) => {
                             <li className="hidden xl:block">
                                 <Link
                                     href="#"
-                                    className="p-3 hover:ring rounded-xl flex-items-center"
+                                    className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
                                 >
                                     <PhoneCall className="h-4" />
                                     Contact Us
@@ -148,6 +146,7 @@ const HeaderNav = ({ currentUser }) => {
                                     <DropdownMenuContent
                                         side="bottom"
                                         align="start"
+                                        className="rounded-xl shadow-lg bg-white dark:bg-slate-900 border border-blue-200 dark:border-sky-800"
                                     >
                                         <DropdownMenuLabel className="flex items-center gap-2 space-x-2">
                                             <Command className="w-3 h-3" />
@@ -157,7 +156,7 @@ const HeaderNav = ({ currentUser }) => {
                                         <DropdownMenuItem className="block md:hidden p-3 shadow-xs">
                                             <Link
                                                 href="#"
-                                                className="w-full hover:ring rounded flex-items-center "
+                                                className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
                                             >
                                                 <Home className="h-4" />
                                                 Home
@@ -166,7 +165,7 @@ const HeaderNav = ({ currentUser }) => {
                                         <DropdownMenuItem className="block md:hidden p-3 shadow-xs">
                                             <Link
                                                 href="#"
-                                                className="w-full hover:ring rounded flex-items-center"
+                                                className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
                                             >
                                                 <Droplet className="h-4" />
                                                 Why Donate
@@ -175,7 +174,7 @@ const HeaderNav = ({ currentUser }) => {
                                         <DropdownMenuItem className="block lg:hidden p-3 shadow-xs">
                                             <Link
                                                 href="#"
-                                                className="w-full hover:ring rounded flex-items-center"
+                                                className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
                                             >
                                                 <Calendar className="h-4" />
                                                 Upcoming Events
@@ -184,7 +183,7 @@ const HeaderNav = ({ currentUser }) => {
                                         <DropdownMenuItem className="block xl:hidden p-3 shadow-xs">
                                             <Link
                                                 href="#"
-                                                className="w-full hover:ring rounded flex-items-center"
+                                                className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
                                             >
                                                 <MdAmpStories className="h-4" />
                                                 Success Stories
@@ -193,7 +192,7 @@ const HeaderNav = ({ currentUser }) => {
                                         <DropdownMenuItem className="block xl:hidden p-3 shadow-xs">
                                             <Link
                                                 href="#"
-                                                className="w-full hover:ring rounded flex-items-center"
+                                                className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
                                             >
                                                 <PhoneCall className="h-4" />
                                                 Contact Us

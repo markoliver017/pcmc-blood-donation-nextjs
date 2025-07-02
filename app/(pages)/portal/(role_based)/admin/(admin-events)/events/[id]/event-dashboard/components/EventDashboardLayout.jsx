@@ -1,6 +1,8 @@
 "use client";
 import React from "react";
 import EventDashboardHeader from "./EventDashboardHeader";
+import { useRouter } from "next/navigation";
+
 
 export default function EventDashboardLayout({
     event,
@@ -13,6 +15,7 @@ export default function EventDashboardLayout({
     onBack,
     children,
 }) {
+    const router = useRouter();
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
             {/* Header with navigation and refresh */}
@@ -21,7 +24,7 @@ export default function EventDashboardLayout({
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <button
-                                onClick={onBack}
+                                onClick={() => router.back()}
                                 className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                             >
                                 <svg
