@@ -28,6 +28,7 @@ import {
     coordinatorSchema,
 } from "@lib/zod/agencySchema";
 import { Op } from "sequelize";
+import { sendEmailByCategory } from "./emailTemplateAction";
 
 export async function fetchAgencies() {
     // await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -391,9 +392,214 @@ export async function sendEmail(data) {
 // Notification helper for single or bulk notification creation
 async function notifyUsers(userIds, notificationData) {
     if (!Array.isArray(userIds)) userIds = [userIds];
-    const notifications = userIds.map(user_id => ({ ...notificationData, user_id }));
+    const notifications = userIds.map((user_id) => ({
+        ...notificationData,
+        user_id,
+    }));
     await Notification.bulkCreate(notifications);
     console.log(`Notifications sent to:`, userIds);
+}
+
+/**
+ * Handle non-critical notifications and emails for agency registration
+ * This function is designed to not throw errors that would affect the main registration flow
+ */
+async function handleAgencyRegistrationNotifications(newUser, newAgency, data) {
+    const notificationResults = {
+        userNotification: false,
+        adminNotification: false,
+        emailSent: false,
+        mbdtEmail: false,
+        mbdtNotification: false,
+        auditTrail: false,
+    };
+
+    try {
+        const { email } = data;
+
+        // 1. Notify the registering user
+        try {
+            await notifyUsers(newUser.id, {
+                subject: "Registration Received",
+                message:
+                    "Thank you for registering your agency. Your application is pending approval.",
+                type: "GENERAL",
+                reference_id: newAgency.id,
+                created_by: newUser.id,
+            });
+            notificationResults.userNotification = true;
+            console.log("User notification sent successfully");
+        } catch (error) {
+            console.error("Failed to send user notification:", error);
+        }
+
+        // 2. Notify all admins
+        try {
+            const adminRole = await Role.findOne({
+                where: { role_name: "Admin" },
+            });
+            if (adminRole) {
+                const adminUsers = await User.findAll({
+                    include: [
+                        {
+                            model: Role,
+                            as: "roles",
+                            where: { id: adminRole.id },
+                            through: { attributes: [] },
+                        },
+                    ],
+                });
+
+                if (adminUsers.length > 0) {
+                    await notifyUsers(
+                        adminUsers.map((a) => a.id),
+                        {
+                            subject: "New Agency Registration",
+                            message: `A new agency (${newAgency.name}) has registered and is pending approval.`,
+                            type: "AGENCY_APPROVAL",
+                            reference_id: newAgency.id,
+                            created_by: newUser.id,
+                        }
+                    );
+                    notificationResults.adminNotification = true;
+                    console.log(
+                        `Admin notifications sent to ${adminUsers.length} admins`
+                    );
+                }
+            }
+        } catch (error) {
+            console.error("Failed to send admin notifications:", error);
+        }
+
+        // 3. Send email to the registering user
+        try {
+            const emailData = {
+                user_first_name: newUser.first_name,
+                user_last_name: newUser.last_name,
+                user_email: newUser.email,
+                user_name: `${newUser.first_name} ${newUser.last_name}`,
+                agency_name: newAgency.name,
+                agency_address: newAgency.address,
+                system_name: "Blood Donation Management System",
+                registration_date: new Date().toLocaleDateString(),
+            };
+
+            // Try email template first, fallback to original method
+            const emailResult = await sendEmailByCategory(
+                "AGENCY_REGISTRATION",
+                email,
+                emailData
+            );
+
+            if (!emailResult.success) {
+                console.log("Email template send failed:", emailResult.message);
+                // Fallback to original email method
+                await send_mail({
+                    to: email,
+                    subject:
+                        "🩸 Thank You for Registering - Your Agency Application is Pending Approval",
+                    html: getEmailToAgencyHead(data),
+                    user_id: newUser.id,
+                });
+                console.log("Fallback email sent successfully");
+            } else {
+                console.log(
+                    "Email sent successfully using template:",
+                    emailResult.data.template
+                );
+            }
+            notificationResults.emailSent = true;
+        } catch (error) {
+            console.error("Failed to send email:", error);
+        }
+
+        // 4. Send notification to MBDT
+        try {
+            if (process.env.NEXT_PUBLIC_MBDT_EMAIL) {
+                await send_mail({
+                    to: process.env.NEXT_PUBLIC_MBDT_EMAIL,
+                    subject:
+                        "📥 New Agency Registration Request - Action Required",
+                    html: getEmailToMBDT(data),
+                    user_id: newUser.id,
+                });
+                notificationResults.mbdtEmail = true;
+                console.log("MBDT email sent successfully");
+            }
+        } catch (error) {
+            console.error("Failed to send MBDT email:", error);
+        }
+
+        // 5. Create notification for MBDT approval
+        try {
+            await Notification.create({
+                user_id: newUser.id,
+                subject: "New Agency Registration",
+                type: "AGENCY_APPROVAL",
+                reference_id: newAgency.id,
+                created_by: newUser.id,
+            });
+            notificationResults.mbdtNotification = true;
+            console.log("MBDT notification created successfully");
+        } catch (error) {
+            console.error("Failed to create MBDT notification:", error);
+        }
+
+        // 6. Log audit trail
+        try {
+            await logAuditTrail({
+                userId: newUser.id,
+                controller: "agencies",
+                action: "CREATE",
+                details: `A new agency has been successfully created. Agency ID#: ${newAgency.id} (${newAgency?.name}) with User account: ${newUser.id} (${newUser?.email})`,
+            });
+            notificationResults.auditTrail = true;
+            console.log("Audit trail logged successfully");
+        } catch (error) {
+            console.error("Failed to log audit trail:", error);
+        }
+
+        // Log summary of what succeeded/failed
+        const successCount =
+            Object.values(notificationResults).filter(Boolean).length;
+        const totalCount = Object.keys(notificationResults).length;
+        console.log(
+            `Notifications summary: ${successCount}/${totalCount} operations succeeded`
+        );
+        console.log("Notification results:", notificationResults);
+
+        return {
+            success: true,
+            results: notificationResults,
+            message: `Registration successful. ${successCount}/${totalCount} notifications completed.`,
+        };
+    } catch (error) {
+        // This should rarely happen since individual operations are wrapped in try-catch
+        console.error(
+            "Unexpected error in handleAgencyRegistrationNotifications:",
+            error
+        );
+        logErrorToFile(error, "AGENCY_REGISTRATION_NOTIFICATIONS");
+
+        // Still try to log the audit trail even if everything else fails
+        try {
+            await logAuditTrail({
+                userId: newUser.id,
+                controller: "agencies",
+                action: "CREATE",
+                details: `A new agency has been successfully created. Agency ID#: ${newAgency.id} (${newAgency?.name}) with User account: ${newUser.id} (${newUser?.email}) - Notifications may have failed`,
+            });
+            notificationResults.auditTrail = true;
+        } catch (auditError) {
+            console.error("Audit trail error:", auditError);
+        }
+
+        return {
+            success: false,
+            error: error.message,
+            results: notificationResults,
+        };
+    }
 }
 
 /* For client user registration */
@@ -460,73 +666,41 @@ export async function storeAgency(formData) {
 
         await transaction.commit();
 
+        // Registration is successful! Now handle notifications and emails as non-critical operations
         data.agency_address = newAgency.agency_address;
 
-        const { email } = data;
+        // Handle notifications and emails in a non-blocking way
+        // This ensures that even if notifications/emails fail, the user still gets a success response
+        handleAgencyRegistrationNotifications(newUser, newAgency, data)
+            .then((result) => {
+                if (result.success) {
+                    console.log("Notifications completed:", result.message);
+                    if (result.results) {
+                        const successCount = Object.values(
+                            result.results
+                        ).filter(Boolean).length;
+                        const totalCount = Object.keys(result.results).length;
+                        console.log(
+                            `Notification success rate: ${successCount}/${totalCount}`
+                        );
+                    }
+                } else {
+                    console.log(
+                        "Some notifications/emails failed:",
+                        result.error
+                    );
+                }
+            })
+            .catch((error) => {
+                console.error("Unexpected error in notifications:", error);
+            });
 
-        // Notify the registering user
-        await notifyUsers(newUser.id, {
-            subject: "Registration Received",
-            message: "Thank you for registering your agency. Your application is pending approval.",
-            type: "GENERAL",
-            reference_id: newAgency.id,
-            created_by: newUser.id,
-        });
-
-        // Notify all admins
-        const adminRole = await Role.findOne({ where: { role_name: "Admin" } });
-        const adminUsers = await User.findAll({
-            include: [{
-                model: Role,
-                as: "roles",
-                where: { id: adminRole.id }, through: { attributes: [] }
-            }]
-        });
-        await notifyUsers(adminUsers.map(a => a.id), {
-            subject: "New Agency Registration",
-            message: `A new agency (${newAgency.name}) has registered and is pending approval.`,
-            type: "AGENCY_APPROVAL",
-            reference_id: newAgency.id,
-            created_by: newUser.id,
-        });
-
-        // (Optional) Notify MBDT if required (using email in your current logic)
-        // You can add a notification for MBDT user(s) here if you have their user IDs
-
-        /* notif email to the admin for new agency  */
-        await send_mail({
-            to: email,
-            subject:
-                "🩸 Thank You for Registering - Your Agency Application is Pending Approval",
-            html: getEmailToAgencyHead(data),
-            user_id: newUser.id,
-        });
-
-        /* notif to the MBDT for new agency */
-        await send_mail({
-            to: process.env.NEXT_PUBLIC_MBDT_EMAIL,
-            subject: "📥 New Agency Registration Request - Action Required",
-            html: getEmailToMBDT(data),
-            user_id: newUser.id,
-        });
-
-        /* notif to the MBDT for new agency for approval */
-        await Notification.create({
-            user_id: newUser.id, //sender user id
-            subject: "New Agency Registration",
-            type: "agency_for_approval",
-            reference_id: newAgency.id,
-            created_by: newUser.id,
-        });
-
-        await logAuditTrail({
-            userId: newUser.id,
-            controller: "agencies",
-            action: "CREATE",
-            details: `A new agency has been successfully created. Agency ID#: ${newAgency.id} (${newAgency?.name}) with User account: ${newUser.id} (${newUser?.email})`,
-        });
-
-        return { success: true, data };
+        return {
+            success: true,
+            data,
+            message:
+                "Agency registration completed successfully. Notifications are being processed in the background.",
+        };
     } catch (err) {
         console.log("storeAgency error:", err);
         logErrorToFile(err, "CREATE AGENCY");

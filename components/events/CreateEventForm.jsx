@@ -759,7 +759,7 @@ export default function CreateEventForm({ agency }) {
                     </CardContent>
                 </Card>
             </form>
-            {/* <FormLogger watch={watch} errors={errors} data={agency} /> */}
+            <FormLogger watch={watch} errors={errors} data={agency} />
         </Form>
     );
 }

@@ -8,7 +8,13 @@ import { useEditor, EditorContent } from "@tiptap/react";
 // import { FontFamily } from './fontFamilyExtension'
 
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useState } from "react";
+import {
+    useEffect,
+    useState,
+    forwardRef,
+    useImperativeHandle,
+    useRef,
+} from "react";
 
 // Sample font family options
 const fontFamilyOptions = [
@@ -25,157 +31,169 @@ const fontSizeOptions = [
     { label: "Xtra Large", value: 32 },
 ];
 
-const Tiptap = ({ content = "", onContentChange }) => {
-    const [fontSize, setFontSize] = useState(16);
-    const [fontFamily, setFontFamily] = useState("");
+const Tiptap = forwardRef(
+    ({ content = "", onContentChange, onInsertField }, ref) => {
+        const [fontSize, setFontSize] = useState(16);
+        const [fontFamily, setFontFamily] = useState("");
 
-    const editor = useEditor({
-        extensions: [
-            StarterKit,
-            TextStyle,
-            Underline,
-            FontSize.configure({
-                defaultFontSize: "16px",
-                minFontSize: 8,
-                maxFontSize: 72,
-                fontSizeStep: 2,
-            }),
-            FontFamily.configure({
-                defaultFontFamily: "", // or 'Arial, sans-serif'
-            }),
-            // You need to create or import a FontFamily extension like FontSize
-            // For demo, assume you have a similar FontFamily extension configured here
-        ],
-        content,
-        onUpdate: ({ editor }) => {
-            const html = editor.getHTML();
-            if (typeof onContentChange === "function") onContentChange(html);
-        },
-        editorProps: {
-            attributes: {
-                class: "px-4 py-2 bg-white dark:bg-inherit text-gray-900 dark:text-gray-50 min-h-[80px] border border-gray-300 rounded",
-                tabIndex: "3",
+        const editor = useEditor({
+            extensions: [
+                StarterKit,
+                TextStyle,
+                Underline,
+                FontSize.configure({
+                    defaultFontSize: "16px",
+                    minFontSize: 8,
+                    maxFontSize: 72,
+                    fontSizeStep: 2,
+                }),
+                FontFamily.configure({
+                    defaultFontFamily: "", // or 'Arial, sans-serif'
+                }),
+            ],
+            content,
+            onUpdate: ({ editor }) => {
+                const html = editor.getHTML();
+                if (typeof onContentChange === "function") {
+                    onContentChange(html);
+                }
             },
-        },
-    });
+            editorProps: {
+                attributes: {
+                    class: "px-4 py-2 bg-white dark:bg-inherit text-gray-900 dark:text-gray-50 min-h-[80px] border border-gray-300 rounded",
+                    tabIndex: "3",
+                },
+            },
+        });
 
-    useEffect(() => {
-        if (!editor) return;
+        useEffect(() => {
+            if (!editor) return;
 
-        const updateToolbar = () => {
-            const { from } = editor.state.selection;
-            const marks = editor.state.doc.resolve(from).marks();
+            const updateToolbar = () => {
+                const { from } = editor.state.selection;
+                const marks = editor.state.doc.resolve(from).marks();
 
-            // Font size
-            const textStyleMark = marks.find(
-                (mark) => mark.type.name === "textStyle"
-            );
-            const currentFontSize = textStyleMark?.attrs?.fontSize
-                ? parseInt(textStyleMark.attrs.fontSize.replace("px", ""), 10)
-                : 16;
-            setFontSize(currentFontSize);
+                // Font size
+                const textStyleMark = marks.find(
+                    (mark) => mark.type.name === "textStyle"
+                );
+                const currentFontSize = textStyleMark?.attrs?.fontSize
+                    ? parseInt(
+                          textStyleMark.attrs.fontSize.replace("px", ""),
+                          10
+                      )
+                    : 16;
+                setFontSize(currentFontSize);
 
-            // Font family example (if stored in textStyle attrs)
-            const currentFontFamily = textStyleMark?.attrs?.fontFamily || "";
-            setFontFamily(currentFontFamily);
+                // Font family example (if stored in textStyle attrs)
+                const currentFontFamily =
+                    textStyleMark?.attrs?.fontFamily || "";
+                setFontFamily(currentFontFamily);
+            };
+
+            updateToolbar();
+            editor.on("selectionUpdate", updateToolbar);
+            editor.on("transaction", updateToolbar);
+
+            return () => {
+                editor.off("selectionUpdate", updateToolbar);
+                editor.off("transaction", updateToolbar);
+            };
+        }, [editor]);
+
+        const toggleBold = () => editor.chain().focus().toggleBold().run();
+        const toggleItalic = () => editor.chain().focus().toggleItalic().run();
+        const toggleUnderline = () =>
+            editor.chain().focus().toggleUnderline().run();
+
+        const handleFontSizeChange = (size) => {
+            setFontSize(size);
+            editor.chain().focus().setFontSize(size).run();
         };
 
-        updateToolbar();
-        editor.on("selectionUpdate", updateToolbar);
-        editor.on("transaction", updateToolbar);
-
-        return () => {
-            editor.off("selectionUpdate", updateToolbar);
-            editor.off("transaction", updateToolbar);
+        const handleFontFamilyChange = (e) => {
+            const family = e.target.value;
+            setFontFamily(family);
+            editor.chain().focus().setFontFamily(family).run(); // Assuming you have this extension
         };
-    }, [editor]);
 
-    const toggleBold = () => editor.chain().focus().toggleBold().run();
-    const toggleItalic = () => editor.chain().focus().toggleItalic().run();
-    const toggleUnderline = () =>
-        editor.chain().focus().toggleUnderline().run();
+        const undo = () => editor.chain().focus().undo().run();
+        const redo = () => editor.chain().focus().redo().run();
 
-    const handleFontSizeChange = (size) => {
-        setFontSize(size);
-        editor.chain().focus().setFontSize(size).run();
-    };
+        // Expose editor to parent component
+        useImperativeHandle(ref, () => ({
+            editor: editor,
+        }));
 
-    const handleFontFamilyChange = (e) => {
-        const family = e.target.value;
-        setFontFamily(family);
-        editor.chain().focus().setFontFamily(family).run(); // Assuming you have this extension
-    };
+        if (!editor) return null;
 
-    const undo = () => editor.chain().focus().undo().run();
-    const redo = () => editor.chain().focus().redo().run();
+        return (
+            <div className="border rounded p-4">
+                <div className="mb-4 flex items-center gap-2">
+                    {/* Bold */}
+                    <button
+                        onClick={toggleBold}
+                        className={`px-2 py-1 border rounded ${
+                            editor.isActive("bold")
+                                ? "bg-blue-500 text-white"
+                                : ""
+                        }`}
+                        title="Bold"
+                        type="button"
+                    >
+                        B
+                    </button>
 
-    if (!editor) return null;
+                    {/* Italic */}
+                    <button
+                        onClick={toggleItalic}
+                        className={`px-2 py-1 border rounded ${
+                            editor.isActive("italic")
+                                ? "bg-blue-500 text-white"
+                                : ""
+                        }`}
+                        title="Italic"
+                        type="button"
+                    >
+                        I
+                    </button>
 
-    return (
-        <div className="border rounded p-4">
-            <div className="mb-4 flex items-center gap-2">
-                {/* Bold */}
-                <button
-                    onClick={toggleBold}
-                    className={`px-2 py-1 border rounded ${
-                        editor.isActive("bold") ? "bg-blue-500 text-white" : ""
-                    }`}
-                    title="Bold"
-                    type="button"
-                >
-                    B
-                </button>
+                    {/* Underline */}
+                    <button
+                        onClick={toggleUnderline}
+                        className={`px-2 py-1 border rounded ${
+                            editor.isActive("underline")
+                                ? "bg-blue-500 text-white"
+                                : ""
+                        }`}
+                        title="Underline"
+                        type="button"
+                    >
+                        U
+                    </button>
 
-                {/* Italic */}
-                <button
-                    onClick={toggleItalic}
-                    className={`px-2 py-1 border rounded ${
-                        editor.isActive("italic")
-                            ? "bg-blue-500 text-white"
-                            : ""
-                    }`}
-                    title="Italic"
-                    type="button"
-                >
-                    I
-                </button>
+                    {/* Font Size */}
+                    <select
+                        value={fontSize}
+                        onChange={(e) =>
+                            handleFontSizeChange(Number(e.target.value))
+                        }
+                        className="px-3 py-1 border rounded dark:bg-black"
+                        title="Font Size"
+                    >
+                        {fontSizeOptions.map(({ label, value }) => (
+                            <option
+                                key={value}
+                                value={value}
+                                className="dark:bg-black"
+                            >
+                                {label}
+                            </option>
+                        ))}
+                    </select>
 
-                {/* Underline */}
-                <button
-                    onClick={toggleUnderline}
-                    className={`px-2 py-1 border rounded ${
-                        editor.isActive("underline")
-                            ? "bg-blue-500 text-white"
-                            : ""
-                    }`}
-                    title="Underline"
-                    type="button"
-                >
-                    U
-                </button>
-
-                {/* Font Size */}
-                <select
-                    value={fontSize}
-                    onChange={(e) =>
-                        handleFontSizeChange(Number(e.target.value))
-                    }
-                    className="px-3 py-1 border rounded dark:bg-black"
-                    title="Font Size"
-                >
-                    {fontSizeOptions.map(({ label, value }) => (
-                        <option
-                            key={value}
-                            value={value}
-                            className="dark:bg-black"
-                        >
-                            {label}
-                        </option>
-                    ))}
-                </select>
-
-                {/* Font Family */}
-                {/* <select
+                    {/* Font Family */}
+                    {/* <select
                     value={fontFamily}
                     onChange={(e) => {
                         const family = e.target.value
@@ -189,32 +207,45 @@ const Tiptap = ({ content = "", onContentChange }) => {
                     <option value='"Courier New", monospace'>Courier New</option>
                 </select> */}
 
-                {/* Undo */}
-                <button
-                    onClick={undo}
-                    disabled={!editor.can().undo()}
-                    className="px-2 py-1 border rounded"
-                    title="Undo"
-                    type="button"
-                >
-                    ↺
-                </button>
+                    {/* Undo */}
+                    <button
+                        onClick={undo}
+                        disabled={!editor.can().undo()}
+                        className="px-2 py-1 border rounded"
+                        title="Undo"
+                        type="button"
+                    >
+                        ↺
+                    </button>
 
-                {/* Redo */}
-                <button
-                    onClick={redo}
-                    disabled={!editor.can().redo()}
-                    className="px-2 py-1 border rounded"
-                    title="Redo"
-                    type="button"
-                >
-                    ↻
-                </button>
+                    {/* Redo */}
+                    <button
+                        onClick={redo}
+                        disabled={!editor.can().redo()}
+                        className="px-2 py-1 border rounded"
+                        title="Redo"
+                        type="button"
+                    >
+                        ↻
+                    </button>
+
+                    {/* Insert Field Button */}
+                    {onInsertField && (
+                        <button
+                            onClick={onInsertField}
+                            className="px-2 py-1 border rounded bg-green-100 hover:bg-green-200"
+                            title="Insert Dynamic Field"
+                            type="button"
+                        >
+                            {`{{}}`}
+                        </button>
+                    )}
+                </div>
+
+                <EditorContent editor={editor} />
             </div>
-
-            <EditorContent editor={editor} />
-        </div>
-    );
-};
+        );
+    }
+);
 
 export default Tiptap;
