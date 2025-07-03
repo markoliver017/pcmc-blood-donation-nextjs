@@ -362,6 +362,71 @@ export async function getTemplatesByCategory(category) {
 /**
  * Replace dynamic fields in template content
  */
+
+/**
+ * This function sends an email using a template category.
+ * It finds the active template for the given category, replaces dynamic fields in the subject and content,
+ * and sends the email using the send_mail utility.
+ * 
+ * @param {string} category - The template category (e.g., "AGENCY_REGISTRATION")
+ * @param {string} to - The recipient's email address
+ * @param {object} templateData - The data to replace dynamic fields in the template
+ * @returns {Promise<object>} - { success, message }
+ */
+export async function sendEmailByCategory(category, to, templateData = {}) {
+    try {
+        // Find the active template for the given category
+        const template = await EmailTemplate.findOne({
+            where: { category, is_active: true },
+            order: [["updatedAt", "DESC"]],
+        });
+
+        if (!template) {
+            return {
+                success: false,
+                message: `No active email template found for category: ${category}`,
+            };
+        }
+
+        // Replace dynamic fields in subject and content
+        const subject = await replaceDynamicFields(template.subject, templateData);
+        const html = await replaceDynamicFields(template.html_content, templateData);
+        const text = template.text_content
+            ? await replaceDynamicFields(template.text_content, templateData)
+            : "";
+
+        // Send the email
+        const result = await send_mail({
+            to,
+            subject,
+            html,
+            text,
+        });
+
+        if (result && result.success) {
+            return { success: true, message: "Email sent successfully" };
+        } else {
+            return {
+                success: false,
+                message: result?.message || "Failed to send email",
+            };
+        }
+    } catch (err) {
+        logErrorToFile(err, "SEND EMAIL BY CATEGORY");
+        return { success: false, message: extractErrorMessage(err) };
+    }
+}
+
+/**
+ * This function replaces dynamic field placeholders in an email template's content
+ * with actual values provided in the `data` object.
+ * Placeholders in the template are denoted by double curly braces, e.g. {{user_name}}.
+ * The function iterates over all possible dynamic fields (as defined in DYNAMIC_FIELDS),
+ * and for each field, it searches for its placeholder in the content and replaces all
+ * occurrences with the corresponding value from the `data` object. If a value is not
+ * provided for a field, it substitutes a fallback string in the format [field].
+ * */
+
 export async function replaceDynamicFields(content, data) {
     let processedContent = content;
 

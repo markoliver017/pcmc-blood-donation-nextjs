@@ -240,3 +240,5 @@
     at async requestHandlerImpl (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\router-server.js:450:13)
     at async Server.requestListener (C:\nextJs\blood-bank-portal\node_modules\next\dist\server\lib\start-server.js:158:13)
 [2025-07-03T07:57:35.985Z] ✅ SUCCESS (email-template): Email template "Agency Registration" updated successfully. ID: 3
+[2025-07-03T14:36:53.854Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <4ef91853-249c-3e4d-0707-4af765df2026@pcmc.gov.ph>
+[2025-07-03T14:41:19.544Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <3800f2d6-4b70-1adb-3450-b244d5761a03@pcmc.gov.ph>
