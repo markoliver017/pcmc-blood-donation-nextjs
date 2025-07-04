@@ -16,7 +16,13 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { Eye, Mail, FileText, X, Copy, Check } from "lucide-react";
 
-const EmailTemplatePreview = ({ previewData, isOpen, onClose, template }) => {
+const EmailTemplatePreview = ({
+    previewData,
+    sampleDataPreview,
+    isOpen,
+    onClose,
+    template,
+}) => {
     const [copied, setCopied] = useState(false);
 
     if (!previewData || !template) {
@@ -49,10 +55,15 @@ const EmailTemplatePreview = ({ previewData, isOpen, onClose, template }) => {
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContentNoX className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
+                <DialogHeader className="dark:text-white">
                     <div className="flex items-center justify-between">
                         <DialogTitle>Email Template Preview</DialogTitle>
-                        <Button variant="ghost" size="sm" onClick={onClose}>
+                        <Button
+                            className="dark:text-white"
+                            variant="ghost"
+                            size="sm"
+                            onClick={onClose}
+                        >
                             <X className="h-4 w-4" />
                         </Button>
                     </div>
@@ -184,7 +195,7 @@ const EmailTemplatePreview = ({ previewData, isOpen, onClose, template }) => {
                                             </Button>
                                         </div>
                                         <Separator />
-                                        <div className="border rounded-lg p-4 bg-gray-50 whitespace-pre-wrap">
+                                        <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-900 whitespace-pre-wrap">
                                             {previewData.text_content ||
                                                 formatHtmlForDisplay(
                                                     previewData.html_content
@@ -210,7 +221,7 @@ const EmailTemplatePreview = ({ previewData, isOpen, onClose, template }) => {
                                                 <h3 className="font-medium mb-2">
                                                     Raw Text:
                                                 </h3>
-                                                <div className="border rounded-lg p-4 bg-gray-100 font-mono text-sm">
+                                                <div className="border rounded-lg p-4 bg-gray-100 dark:bg-gray-900 font-mono text-sm">
                                                     <pre>
                                                         {
                                                             previewData.text_content
@@ -234,7 +245,7 @@ const EmailTemplatePreview = ({ previewData, isOpen, onClose, template }) => {
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {Object.entries(previewData).map(
+                                {Object.entries(sampleDataPreview).map(
                                     ([key, value]) => (
                                         <div
                                             key={key}

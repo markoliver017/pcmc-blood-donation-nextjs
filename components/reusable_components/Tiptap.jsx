@@ -101,6 +101,13 @@ const Tiptap = forwardRef(
             };
         }, [editor]);
 
+        // Update editor content when content prop changes
+        useEffect(() => {
+            if (editor && content !== editor.getHTML()) {
+                editor.commands.setContent(content);
+            }
+        }, [editor, content]);
+
         const toggleBold = () => editor.chain().focus().toggleBold().run();
         const toggleItalic = () => editor.chain().focus().toggleItalic().run();
         const toggleUnderline = () =>

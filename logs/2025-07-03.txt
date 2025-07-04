@@ -242,3 +242,6 @@
 [2025-07-03T07:57:35.985Z] ✅ SUCCESS (email-template): Email template "Agency Registration" updated successfully. ID: 3
 [2025-07-03T14:36:53.854Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <4ef91853-249c-3e4d-0707-4af765df2026@pcmc.gov.ph>
 [2025-07-03T14:41:19.544Z] ✅ SUCCESS (send-email): Email sent to markoliver01728@gmail.com with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <3800f2d6-4b70-1adb-3450-b244d5761a03@pcmc.gov.ph>
+[2025-07-03T23:48:24.353Z] ✅ SUCCESS (send-email): Email sent to mark.roman@pcmc.gov.ph with subject "🩸 Thank You for Registering – Your Agency Application is Pending Approval". Message ID: <afc0148f-97d4-2b99-0a1b-b9075db0224b@pcmc.gov.ph>
+[2025-07-03T23:49:14.951Z] ✅ SUCCESS (send-email): Email sent to mark.roman@pcmc.gov.ph with subject "🩸 Thank You for Registering - Your Agency Application is Pending Approval". Message ID: <19d0e895-8fe5-2218-8a76-cc3dbe9d4bb8@pcmc.gov.ph>
+[2025-07-03T23:49:14.951Z] ✅ SUCCESS (email-template): Email sent successfully using template "Agency Registration" to mark.roman@pcmc.gov.ph

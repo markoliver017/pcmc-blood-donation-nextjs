@@ -7,6 +7,7 @@ import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import { agencyStatusSchema } from "@lib/zod/agencySchema";
 import { Op } from "sequelize";
+import { sendNotificationAndEmail } from "@lib/notificationEmail.utils";
 
 export async function getVerifiedCoordinators() {
     try {
@@ -189,6 +190,58 @@ export async function updateCoordinatorStatus(formData) {
             action: "UPDATE COORDINATOR STATUS",
             details: `Coordinator status has been successfully updated. ID#: ${updatedCoordinator.id}`,
         });
+
+        // Send email notification to coordinator if approved
+        if (data.status === "activated") {
+            try {
+                // Get coordinator and agency details for email
+                const coordinatorWithDetails = await AgencyCoordinator.findByPk(
+                    data.id,
+                    {
+                        include: [
+                            {
+                                model: User,
+                                as: "user",
+                            },
+                            {
+                                model: Agency,
+                                as: "agency",
+                            },
+                        ],
+                    }
+                );
+
+                if (coordinatorWithDetails) {
+                    await sendNotificationAndEmail({
+                        emailData: {
+                            to: coordinatorWithDetails.user.email,
+                            templateCategory: "AGENCY_COORDINATOR_APPROVAL",
+                            templateData: {
+                                agency_name: coordinatorWithDetails.agency.name,
+                                user_name:
+                                    coordinatorWithDetails.user.full_name,
+                                user_email: coordinatorWithDetails.user.email,
+                                user_first_name:
+                                    coordinatorWithDetails.user.first_name,
+                                user_last_name:
+                                    coordinatorWithDetails.user.last_name,
+                                contact_number:
+                                    coordinatorWithDetails.contact_number,
+                                approval_date: new Date().toLocaleDateString(),
+                                system_name: "PCMC Pediatric Blood Center",
+                                support_email: "support@pcmc.gov.ph",
+                                domain_url:
+                                    process.env.NEXT_PUBLIC_APP_URL ||
+                                    "https://blood-donation.pcmc.gov.ph",
+                            },
+                        },
+                    });
+                }
+            } catch (err) {
+                console.error("Coordinator approval email failed:", err);
+                // Don't fail the main operation if email fails
+            }
+        }
 
         const title = {
             rejected: "Coordinator Rejected",

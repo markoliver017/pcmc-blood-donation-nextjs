@@ -51,6 +51,7 @@ export default function EmailNotificationsDashboard() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [previewData, setPreviewData] = useState(null);
+    const [sampleDataPreview, setSampleDataPreview] = useState(null);
 
     const queryClient = useQueryClient();
 
@@ -90,7 +91,7 @@ export default function EmailNotificationsDashboard() {
     const handlePreviewTemplate = async (template) => {
         setSelectedTemplate(template);
         setIsPreviewOpen(true);
-        setActiveTab("preview");
+        // setActiveTab("preview");
         // Fetch preview data from API
         try {
             const sampleData = getSampleDataForCategory(template.category);
@@ -101,6 +102,7 @@ export default function EmailNotificationsDashboard() {
             });
             const data = await res.json();
             setPreviewData(data);
+            setSampleDataPreview(sampleData);
         } catch (err) {
             setPreviewData({
                 subject: template.subject,
@@ -145,26 +147,41 @@ export default function EmailNotificationsDashboard() {
     // Template categories for filter
     const templateCategories = [
         { value: "all", label: "All Categories" },
-        { value: "AGENCY_REGISTRATION", label: "Agency Registration" },
-        { value: "AGENCY_APPROVAL", label: "Agency Approval" },
+        { value: "AGENCY_REGISTRATION", label: "Agency Registration" }, //done
+        {
+            value: "AGENCY_COORDINATOR_REGISTRATION",
+            label: "Agency Coordinator Registration",
+        }, //done
+        {
+            value: "AGENCY_COORDINATOR_APPROVAL",
+            label: "Agency Coordinator Approval",
+        }, //done
+        {
+            value: "AGENCY_COORDINATOR_REGISTRATION_NOTIFICATION_TO_AGENCY",
+            label: "Agency Coordinator Registration Notification to Agency",
+        },
+        { value: "AGENCY_APPROVAL", label: "Agency Approval" }, //done
         { value: "DONOR_REGISTRATION", label: "Donor Registration" },
         { value: "DONOR_APPROVAL", label: "Donor Approval" },
         { value: "EVENT_CREATION", label: "Event Creation" },
         { value: "APPOINTMENT_BOOKING", label: "Appointment Booking" },
+        { value: "MBDT_NOTIFICATION", label: "MBDT Notification" }, //done
+        { value: "GENERAL", label: "General" },
         { value: "BLOOD_COLLECTION", label: "Blood Collection" },
         { value: "SYSTEM_NOTIFICATION", label: "System Notification" },
-        { value: "GENERAL", label: "General" },
     ];
 
     // Get category badge color
     const getCategoryBadgeVariant = (category) => {
         const variants = {
             AGENCY_REGISTRATION: "default",
+            AGENCY_COORDINATOR_REGISTRATION: "default",
             AGENCY_APPROVAL: "secondary",
             DONOR_REGISTRATION: "outline",
             DONOR_APPROVAL: "destructive",
             EVENT_CREATION: "default",
             APPOINTMENT_BOOKING: "secondary",
+            MBDT_NOTIFICATION: "destructive",
             BLOOD_COLLECTION: "outline",
             SYSTEM_NOTIFICATION: "destructive",
             GENERAL: "default",
@@ -236,9 +253,7 @@ export default function EmailNotificationsDashboard() {
                                     Categories
                                 </p>
                                 <p className="text-2xl font-bold">
-                                    {new Set(
-                                        templates?.data?.map((t) => t.category)
-                                    ).size || 0}
+                                    {templateCategories?.length - 1 || 0}
                                 </p>
                             </div>
                             <Eye className="h-8 w-8 text-blue-500" />
@@ -419,6 +434,7 @@ export default function EmailNotificationsDashboard() {
                                                         )
                                                     }
                                                 >
+                                                    View
                                                     <Eye className="h-4 w-4" />
                                                 </Button>
                                                 <Button
@@ -464,7 +480,7 @@ export default function EmailNotificationsDashboard() {
                                 <CardTitle>
                                     {selectedTemplate
                                         ? "Edit Template"
-                                        : "Create New Template"}
+                                        : "New Template"}
                                 </CardTitle>
                                 <CardDescription>
                                     {selectedTemplate
@@ -499,6 +515,7 @@ export default function EmailNotificationsDashboard() {
                 <EmailTemplatePreview
                     template={selectedTemplate}
                     previewData={previewData}
+                    sampleDataPreview={sampleDataPreview}
                     isOpen={isPreviewOpen}
                     onClose={handlePreviewClose}
                 />

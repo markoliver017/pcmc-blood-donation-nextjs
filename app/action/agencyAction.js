@@ -4,20 +4,10 @@
 
 import { logAuditTrail } from "@lib/audit_trails.utils";
 import { auth } from "@lib/auth";
-import {
-    getEmailToAgencyHead,
-    getEmailToMBDT,
-} from "@lib/email-html-template/getNewAgencyRegistrationEmailTemplate";
+import { getEmailToMBDT } from "@lib/email-html-template/getNewAgencyRegistrationEmailTemplate";
 import { logErrorToFile } from "@lib/logger.server";
 import { send_mail } from "@lib/mail.utils";
-import {
-    Agency,
-    AgencyCoordinator,
-    Notification,
-    Role,
-    sequelize,
-    User,
-} from "@lib/models";
+import { Agency, AgencyCoordinator, Role, sequelize, User } from "@lib/models";
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import {
@@ -28,7 +18,6 @@ import {
     coordinatorSchema,
 } from "@lib/zod/agencySchema";
 import { Op } from "sequelize";
-import { sendEmailByCategory } from "./emailTemplateAction";
 import { sendNotificationAndEmail } from "@lib/notificationEmail.utils";
 
 export async function fetchAgencies() {
@@ -393,194 +382,6 @@ export async function sendEmail(data) {
     console.log("email status", emailStatus);
 }
 
-// Notification helper for single or bulk notification creation
-async function notifyUsers(userIds, notificationData) {
-    if (!Array.isArray(userIds)) userIds = [userIds];
-    const notifications = userIds.map((user_id) => ({
-        ...notificationData,
-        user_id,
-    }));
-    await Notification.bulkCreate(notifications);
-    console.log(`Notifications sent to:`, userIds);
-}
-
-/**
- * Handle non-critical notifications and emails for agency registration
- * This function is designed to not throw errors that would affect the main registration flow
- */
-async function handleAgencyRegistrationNotifications(newUser, newAgency, data) {
-    const notificationResults = {
-        userNotification: false,
-        adminNotification: false,
-        emailSent: false,
-        mbdtNotification: false,
-        auditTrail: false,
-    };
-
-    try {
-        const { email } = data;
-
-        // 1. Notify the registering user
-        try {
-            await notifyUsers(newUser.id, {
-                subject: "Registration Received",
-                message:
-                    "Thank you for registering your agency. Your application is pending approval.",
-                type: "GENERAL",
-                reference_id: newAgency.id,
-                created_by: newUser.id,
-            });
-            notificationResults.userNotification = true;
-            console.log("User notification sent successfully");
-        } catch (error) {
-            console.error("Failed to send user notification:", error);
-        }
-
-        // 2. Notify all admins
-        try {
-            const adminRole = await Role.findOne({
-                where: { role_name: "Admin" },
-            });
-            if (adminRole) {
-                const adminUsers = await User.findAll({
-                    include: [
-                        {
-                            model: Role,
-                            as: "roles",
-                            where: { id: adminRole.id },
-                            through: { attributes: [] },
-                        },
-                    ],
-                });
-
-                if (adminUsers.length > 0) {
-                    await notifyUsers(
-                        adminUsers.map((a) => a.id),
-                        {
-                            subject: "New Agency Registration",
-                            message: `A new agency (${newAgency.name}) has registered and is pending approval.`,
-                            type: "AGENCY_APPROVAL",
-                            reference_id: newAgency.id,
-                            created_by: newUser.id,
-                        }
-                    );
-                    notificationResults.adminNotification = true;
-                    console.log(
-                        `Admin notifications sent to ${adminUsers.length} admins`
-                    );
-                }
-            }
-        } catch (error) {
-            console.error("Failed to send admin notifications:", error);
-        }
-
-        // 3. Send email to the registering user
-        try {
-            const emailData = {
-                user_first_name: newUser.first_name,
-                user_last_name: newUser.last_name,
-                user_email: newUser.email,
-                user_name: `${newUser.first_name} ${newUser.last_name}`,
-                agency_name: newAgency.name,
-                agency_address: newAgency.address,
-                system_name: "Blood Donation Management System",
-                registration_date: new Date().toLocaleDateString(),
-            };
-
-            // Try email template first, fallback to original method
-            const emailResult = await sendEmailByCategory(
-                "AGENCY_REGISTRATION",
-                email,
-                emailData
-            );
-
-            if (!emailResult.success) {
-                console.log("Email template send failed:", emailResult.message);
-
-            } else {
-                console.log(
-                    "Email sent successfully using template:",
-                    emailResult.data.template
-                );
-            }
-            notificationResults.emailSent = true;
-        } catch (error) {
-            console.error("Failed to send email:", error);
-        }
-
-
-        // 4. Create notification for MBDT approval
-        try {
-            await Notification.create({
-                user_id: newUser.id,
-                subject: "New Agency Registration",
-                type: "AGENCY_APPROVAL",
-                reference_id: newAgency.id,
-                created_by: newUser.id,
-            });
-            notificationResults.mbdtNotification = true;
-            console.log("MBDT notification created successfully");
-        } catch (error) {
-            console.error("Failed to create MBDT notification:", error);
-        }
-
-        // 5. Log audit trail
-        try {
-            await logAuditTrail({
-                userId: newUser.id,
-                controller: "agencies",
-                action: "CREATE",
-                details: `A new agency has been successfully created. Agency ID#: ${newAgency.id} (${newAgency?.name}) with User account: ${newUser.id} (${newUser?.email})`,
-            });
-            notificationResults.auditTrail = true;
-            console.log("Audit trail logged successfully");
-        } catch (error) {
-            console.error("Failed to log audit trail:", error);
-        }
-
-        // Log summary of what succeeded/failed
-        const successCount =
-            Object.values(notificationResults).filter(Boolean).length;
-        const totalCount = Object.keys(notificationResults).length;
-        console.log(
-            `Notifications summary: ${successCount}/${totalCount} operations succeeded`
-        );
-        console.log("Notification results:", notificationResults);
-
-        return {
-            success: true,
-            results: notificationResults,
-            message: `Registration successful. ${successCount}/${totalCount} notifications completed.`,
-        };
-    } catch (error) {
-        // This should rarely happen since individual operations are wrapped in try-catch
-        console.error(
-            "Unexpected error in handleAgencyRegistrationNotifications:",
-            error
-        );
-        logErrorToFile(error, "AGENCY_REGISTRATION_NOTIFICATIONS");
-
-        // Still try to log the audit trail even if everything else fails
-        try {
-            await logAuditTrail({
-                userId: newUser.id,
-                controller: "agencies",
-                action: "CREATE",
-                details: `A new agency has been successfully created. Agency ID#: ${newAgency.id} (${newAgency?.name}) with User account: ${newUser.id} (${newUser?.email}) - Notifications may have failed`,
-            });
-            notificationResults.auditTrail = true;
-        } catch (auditError) {
-            console.error("Audit trail error:", auditError);
-        }
-
-        return {
-            success: false,
-            error: error.message,
-            results: notificationResults,
-        };
-    }
-}
-
 /* For client user registration */
 export async function storeAgency(formData) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -670,7 +471,10 @@ export async function storeAgency(formData) {
 
             // 2. Notify all admins
             try {
-                const adminRole = await Role.findOne({ where: { role_name: "Admin" } });
+                const adminRole = await Role.findOne({
+                    where: { role_name: "Admin" },
+                });
+
                 if (adminRole) {
                     const adminUsers = await User.findAll({
                         include: [
@@ -693,6 +497,34 @@ export async function storeAgency(formData) {
                                 created_by: newUser.id,
                             },
                         });
+
+                        for (const adminUser of adminUsers) {
+                            await sendNotificationAndEmail({
+                                emailData: {
+                                    to: adminUser.email,
+                                    templateCategory: "MBDT_NOTIFICATION",
+                                    templateData: {
+                                        agency_name: newAgency.name,
+                                        user_name: `${newUser.first_name} ${newUser.last_name}`,
+                                        user_email: newUser.email,
+                                        user_first_name: newUser.first_name,
+                                        user_last_name: newUser.last_name,
+                                        agency_address: newAgency.address,
+                                        agency_contact:
+                                            newAgency.contact_number ||
+                                            "Not provided",
+                                        registration_date:
+                                            new Date().toLocaleDateString(),
+                                        system_name:
+                                            "Blood Donation Management System",
+                                        support_email: "support@pcmc.gov.ph",
+                                        domain_url:
+                                            process.env.NEXT_PUBLIC_APP_URL ||
+                                            "https://blood-donation.pcmc.gov.ph",
+                                    },
+                                },
+                            });
+                        }
                     }
                 }
             } catch (err) {
@@ -713,6 +545,10 @@ export async function storeAgency(formData) {
                             agency_name: newAgency.name,
                             agency_address: newAgency.address,
                             system_name: "Blood Donation Management System",
+                            support_email: "support@pcmc.gov.ph",
+                            domain_url:
+                                process.env.NEXT_PUBLIC_APP_URL ||
+                                "https://blood-donation.pcmc.gov.ph",
                             registration_date: new Date().toLocaleDateString(),
                         },
                     },
@@ -721,22 +557,7 @@ export async function storeAgency(formData) {
                 console.error("User email failed:", err);
             }
 
-            // 4. Create notification for MBDT approval
-            try {
-                await sendNotificationAndEmail({
-                    userIds: newUser.id,
-                    notificationData: {
-                        subject: "New Agency Registration",
-                        type: "AGENCY_APPROVAL",
-                        reference_id: newAgency.id,
-                        created_by: newUser.id,
-                    },
-                });
-            } catch (err) {
-                console.error("MBDT notification failed:", err);
-            }
-
-            // 5. Log audit trail
+            // 4. Log audit trail
             try {
                 await logAuditTrail({
                     userId: newUser.id,
@@ -755,7 +576,6 @@ export async function storeAgency(formData) {
             message:
                 "Agency registration completed successfully. Notifications are being processed in the background.",
         };
-
     } catch (err) {
         console.log("storeAgency error:", err);
         logErrorToFile(err, "CREATE AGENCY");
@@ -1015,12 +835,156 @@ export async function storeCoordinator(formData) {
 
         await transaction.commit();
 
+        // Fetch agency and agency head for notifications/emails
+        let agency = null;
+        let agencyHead = null;
+        try {
+            agency = await Agency.findByPk(newCoordinator.agency_id);
+            if (agency) {
+                agencyHead = await User.findByPk(agency.head_id);
+            }
+        } catch (err) {
+            console.error("Failed to fetch agency or agency head:", err);
+        }
+
         await logAuditTrail({
             userId: newUser.id,
             controller: "agencies",
             action: "storeCoordinator",
-            details: `A new coordinator has been successfully created. Coordinator ID#: ${newCoordinator.id} with User account: ${newUser.id}`,
+            details: `A new coordinator has been successfully created. Coordinator ID#: ${newCoordinator.id} with User account: ${newUser.id} (${newUser?.email}) and Agency ID#: ${newCoordinator.agency_id} (${agency?.name})`,
         });
+
+        // Notifications and emails (non-blocking)
+        (async () => {
+            // 1. Notify the registering coordinator
+            try {
+                await sendNotificationAndEmail({
+                    userIds: newUser.id,
+                    notificationData: {
+                        subject: "Coordinator Registration Received",
+                        message:
+                            "Thank you for registering as a coordinator. Your application is pending approval by your agency.",
+                        type: "GENERAL",
+                        reference_id: newCoordinator.id,
+                        created_by: newUser.id,
+                    },
+                });
+            } catch (err) {
+                console.error("Coordinator notification failed:", err);
+            }
+
+            // 2. Notify all admins (MBDT team)
+            try {
+                const adminRole = await Role.findOne({
+                    where: { role_name: "Admin" },
+                });
+                if (adminRole) {
+                    const adminUsers = await User.findAll({
+                        include: [
+                            {
+                                model: Role,
+                                as: "roles",
+                                where: { id: adminRole.id },
+                                through: { attributes: [] },
+                            },
+                        ],
+                    });
+                    if (adminUsers.length > 0) {
+                        await sendNotificationAndEmail({
+                            userIds: adminUsers.map((a) => a.id),
+                            notificationData: {
+                                subject: "New Coordinator Registration",
+                                message: `A new coordinator (${
+                                    newUser.first_name
+                                } ${
+                                    newUser.last_name
+                                }) has registered and is pending approval for agency (${
+                                    agency?.name || newCoordinator.agency_id
+                                }).`,
+                                type: "GENERAL",
+                                reference_id: newCoordinator.id,
+                                created_by: newUser.id,
+                            },
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error("Admin notification failed:", err);
+            }
+
+            // 3. Send email to the registering coordinator (template only)
+            try {
+                await sendNotificationAndEmail({
+                    emailData: {
+                        to: newUser.email,
+                        templateCategory: "AGENCY_COORDINATOR_REGISTRATION",
+                        templateData: {
+                            agency_name:
+                                agency?.name || newCoordinator.agency_id,
+                            user_name: `${newUser.first_name} ${newUser.last_name}`,
+                            user_email: newUser.email,
+                            user_first_name: newUser.first_name,
+                            user_last_name: newUser.last_name,
+                            contact_number: newCoordinator.contact_number,
+                            registration_date: new Date().toLocaleDateString(),
+                            system_name: "PCMC Pediatric Blood Center",
+                            support_email: "support@pcmc.gov.ph",
+                            domain_url:
+                                process.env.NEXT_PUBLIC_APP_URL ||
+                                "https://blood-donation.pcmc.gov.ph",
+                        },
+                    },
+                });
+            } catch (err) {
+                console.error("Coordinator registration email failed:", err);
+            }
+
+            // 4. Send email to the agency head (administrator) about new coordinator registration
+            try {
+                if (agencyHead && agencyHead.email) {
+                    await sendNotificationAndEmail({
+                        userIds: agencyHead.id,
+                        notificationData: {
+                            subject: "New Coordinator Registration",
+                            message: `A new coordinator (${
+                                newUser.first_name
+                            } ${
+                                newUser.last_name
+                            }) has registered and is awaiting for your approval (${
+                                agency?.name || newCoordinator.agency_id
+                            }).`,
+                            type: "AGENCY_COORDINATOR_APPROVAL",
+                            reference_id: newCoordinator.id,
+                            created_by: newUser.id,
+                        },
+                    });
+                    await sendNotificationAndEmail({
+                        emailData: {
+                            to: agencyHead.email,
+                            templateCategory:
+                                "AGENCY_COORDINATOR_REGISTRATION_NOTIFICATION_TO_AGENCY",
+                            templateData: {
+                                agency_name:
+                                    agency?.name || newCoordinator.agency_id,
+                                coordinator_name: `${newUser.first_name} ${newUser.last_name}`,
+                                coordinator_email: newUser.email,
+                                coordinator_contact:
+                                    newCoordinator.contact_number,
+                                registration_date:
+                                    new Date().toLocaleDateString(),
+                                system_name: "PCMC Pediatric Blood Center",
+                                support_email: "support@pcmc.gov.ph",
+                                domain_url:
+                                    process.env.NEXT_PUBLIC_APP_URL ||
+                                    "https://blood-donation.pcmc.gov.ph",
+                            },
+                        },
+                    });
+                }
+            } catch (err) {
+                console.error("Agency head notification email failed:", err);
+            }
+        })();
 
         return { success: true, data: newCoordinator.get({ plain: true }) };
     } catch (err) {
@@ -1085,3 +1049,190 @@ export async function updateCoordinator(formData) {
         return { success: false, message: extractErrorMessage(err) };
     }
 }
+
+/**
+ * Handle non-critical notifications and emails for agency registration
+ * This function is designed to not throw errors that would affect the main registration flow
+ */
+// async function handleAgencyRegistrationNotifications(newUser, newAgency, data) {
+//     const notificationResults = {
+//         userNotification: false,
+//         adminNotification: false,
+//         emailSent: false,
+//         mbdtNotification: false,
+//         auditTrail: false,
+//     };
+
+//     try {
+//         const { email } = data;
+
+//         // 1. Notify the registering user
+//         try {
+//             await notifyUsers(newUser.id, {
+//                 subject: "Registration Received",
+//                 message:
+//                     "Thank you for registering your agency. Your application is pending approval.",
+//                 type: "GENERAL",
+//                 reference_id: newAgency.id,
+//                 created_by: newUser.id,
+//             });
+//             notificationResults.userNotification = true;
+//             console.log("User notification sent successfully");
+//         } catch (error) {
+//             console.error("Failed to send user notification:", error);
+//         }
+
+//         // 2. Notify all admins
+//         try {
+//             const adminRole = await Role.findOne({
+//                 where: { role_name: "Admin" },
+//             });
+//             if (adminRole) {
+//                 const adminUsers = await User.findAll({
+//                     include: [
+//                         {
+//                             model: Role,
+//                             as: "roles",
+//                             where: { id: adminRole.id },
+//                             through: { attributes: [] },
+//                         },
+//                     ],
+//                 });
+
+//                 if (adminUsers.length > 0) {
+//                     await notifyUsers(
+//                         adminUsers.map((a) => a.id),
+//                         {
+//                             subject: "New Agency Registration",
+//                             message: `A new agency (${newAgency.name}) has registered and is pending approval.`,
+//                             type: "AGENCY_APPROVAL",
+//                             reference_id: newAgency.id,
+//                             created_by: newUser.id,
+//                         }
+//                     );
+//                     notificationResults.adminNotification = true;
+//                     console.log(
+//                         `Admin notifications sent to ${adminUsers.length} admins`
+//                     );
+//                 }
+//             }
+//         } catch (error) {
+//             console.error("Failed to send admin notifications:", error);
+//         }
+
+//         // 3. Send email to the registering user
+//         try {
+//             const emailData = {
+//                 user_first_name: newUser.first_name,
+//                 user_last_name: newUser.last_name,
+//                 user_email: newUser.email,
+//                 user_name: `${newUser.first_name} ${newUser.last_name}`,
+//                 agency_name: newAgency.name,
+//                 agency_address: newAgency.address,
+//                 system_name: "Blood Donation Management System",
+//                 registration_date: new Date().toLocaleDateString(),
+//             };
+
+//             // Try email template first, fallback to original method
+//             const emailResult = await sendEmailByCategory(
+//                 "AGENCY_REGISTRATION",
+//                 email,
+//                 emailData
+//             );
+
+//             if (!emailResult.success) {
+//                 console.log("Email template send failed:", emailResult.message);
+
+//             } else {
+//                 console.log(
+//                     "Email sent successfully using template:",
+//                     emailResult.data.template
+//                 );
+//             }
+//             notificationResults.emailSent = true;
+//         } catch (error) {
+//             console.error("Failed to send email:", error);
+//         }
+
+//         // 4. Create notification for MBDT approval
+//         try {
+//             await Notification.create({
+//                 user_id: newUser.id,
+//                 subject: "New Agency Registration",
+//                 type: "AGENCY_APPROVAL",
+//                 reference_id: newAgency.id,
+//                 created_by: newUser.id,
+//             });
+//             notificationResults.mbdtNotification = true;
+//             console.log("MBDT notification created successfully");
+//         } catch (error) {
+//             console.error("Failed to create MBDT notification:", error);
+//         }
+
+//         // 5. Log audit trail
+//         try {
+//             await logAuditTrail({
+//                 userId: newUser.id,
+//                 controller: "agencies",
+//                 action: "CREATE",
+//                 details: `A new agency has been successfully created. Agency ID#: ${newAgency.id} (${newAgency?.name}) with User account: ${newUser.id} (${newUser?.email})`,
+//             });
+//             notificationResults.auditTrail = true;
+//             console.log("Audit trail logged successfully");
+//         } catch (error) {
+//             console.error("Failed to log audit trail:", error);
+//         }
+
+//         // Log summary of what succeeded/failed
+//         const successCount =
+//             Object.values(notificationResults).filter(Boolean).length;
+//         const totalCount = Object.keys(notificationResults).length;
+//         console.log(
+//             `Notifications summary: ${successCount}/${totalCount} operations succeeded`
+//         );
+//         console.log("Notification results:", notificationResults);
+
+//         return {
+//             success: true,
+//             results: notificationResults,
+//             message: `Registration successful. ${successCount}/${totalCount} notifications completed.`,
+//         };
+//     } catch (error) {
+//         // This should rarely happen since individual operations are wrapped in try-catch
+//         console.error(
+//             "Unexpected error in handleAgencyRegistrationNotifications:",
+//             error
+//         );
+//         logErrorToFile(error, "AGENCY_REGISTRATION_NOTIFICATIONS");
+
+//         // Still try to log the audit trail even if everything else fails
+//         try {
+//             await logAuditTrail({
+//                 userId: newUser.id,
+//                 controller: "agencies",
+//                 action: "CREATE",
+//                 details: `A new agency has been successfully created. Agency ID#: ${newAgency.id} (${newAgency?.name}) with User account: ${newUser.id} (${newUser?.email}) - Notifications may have failed`,
+//             });
+//             notificationResults.auditTrail = true;
+//         } catch (auditError) {
+//             console.error("Audit trail error:", auditError);
+//         }
+
+//         return {
+//             success: false,
+//             error: error.message,
+//             results: notificationResults,
+//         };
+//     }
+// }
+
+// Notification helper for single or bulk notification creation
+// async function notifyUsers(userIds, notificationData) {
+//     if (!Array.isArray(userIds)) userIds = [userIds];
+//     const notifications = userIds.map((user_id) => ({
+//         ...notificationData,
+//         user_id,
+//     }));
+//     await Notification.bulkCreate(notifications);
+//     console.log(`Notifications sent to:`, userIds);
+// }

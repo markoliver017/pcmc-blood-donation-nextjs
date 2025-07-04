@@ -3,6 +3,7 @@
 import { EmailTemplate, sequelize } from "@lib/models";
 import { logErrorToFile, logSuccessToFile } from "@lib/logger.server";
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
+import { handleValidationError } from "@lib/utils/validationErrorHandler";
 import { logAuditTrail } from "@lib/audit_trails.utils";
 import {
     DYNAMIC_FIELDS,
@@ -75,6 +76,13 @@ export async function createEmailTemplateAction(formData) {
     } catch (err) {
         console.log("createEmailTemplateAction error:", err);
         logErrorToFile(err, "CREATE EMAIL TEMPLATE");
+
+        // Use custom validation error handler
+        const validationResult = handleValidationError(err);
+        if (validationResult.success === false) {
+            return validationResult;
+        }
+
         return { success: false, message: extractErrorMessage(err) };
     }
 }
@@ -133,6 +141,13 @@ export async function createEmailTemplate(formData) {
     } catch (err) {
         console.log("createEmailTemplate error:", err);
         logErrorToFile(err, "CREATE EMAIL TEMPLATE");
+
+        // Use custom validation error handler
+        const validationResult = handleValidationError(err);
+        if (validationResult.success === false) {
+            return validationResult;
+        }
+
         return { success: false, message: extractErrorMessage(err) };
     }
 }
@@ -257,6 +272,13 @@ export async function updateEmailTemplate(id, formData) {
     } catch (err) {
         console.log("updateEmailTemplate error:", err);
         logErrorToFile(err, "UPDATE EMAIL TEMPLATE");
+
+        // Use custom validation error handler
+        const validationResult = handleValidationError(err);
+        if (validationResult.success === false) {
+            return validationResult;
+        }
+
         return { success: false, message: extractErrorMessage(err) };
     }
 }
@@ -367,7 +389,7 @@ export async function getTemplatesByCategory(category) {
  * This function sends an email using a template category.
  * It finds the active template for the given category, replaces dynamic fields in the subject and content,
  * and sends the email using the send_mail utility.
- * 
+ *
  * @param {string} category - The template category (e.g., "AGENCY_REGISTRATION")
  * @param {string} to - The recipient's email address
  * @param {object} templateData - The data to replace dynamic fields in the template
@@ -389,8 +411,14 @@ export async function sendEmailByCategory(category, to, templateData = {}) {
         }
 
         // Replace dynamic fields in subject and content
-        const subject = await replaceDynamicFields(template.subject, templateData);
-        const html = await replaceDynamicFields(template.html_content, templateData);
+        const subject = await replaceDynamicFields(
+            template.subject,
+            templateData
+        );
+        const html = await replaceDynamicFields(
+            template.html_content,
+            templateData
+        );
         const text = template.text_content
             ? await replaceDynamicFields(template.text_content, templateData)
             : "";
@@ -404,6 +432,10 @@ export async function sendEmailByCategory(category, to, templateData = {}) {
         });
 
         if (result && result.success) {
+            logSuccessToFile(
+                `Email sent successfully using template "${template.name}" to ${to}`,
+                "email-template"
+            );
             return { success: true, message: "Email sent successfully" };
         } else {
             return {
@@ -496,123 +528,123 @@ export async function previewTemplate(template, sampleData = {}) {
 /**
  * Send email using a template with dynamic field replacement
  */
-export async function sendEmailWithTemplate(
-    templateId,
-    recipientEmail,
-    dynamicData = {}
-) {
-    try {
-        // Get the email template
-        const templateResult = await getEmailTemplate(templateId);
+// export async function sendEmailWithTemplate(
+//     templateId,
+//     recipientEmail,
+//     dynamicData = {}
+// ) {
+//     try {
+//         // Get the email template
+//         const templateResult = await getEmailTemplate(templateId);
 
-        if (!templateResult.success) {
-            return {
-                success: false,
-                message: `Email template not found: ${templateResult.message}`,
-            };
-        }
+//         if (!templateResult.success) {
+//             return {
+//                 success: false,
+//                 message: `Email template not found: ${templateResult.message}`,
+//             };
+//         }
 
-        const template = templateResult.data;
+//         const template = templateResult.data;
 
-        // Check if template is active
-        if (!template.is_active) {
-            return {
-                success: false,
-                message: "Email template is not active",
-            };
-        }
+//         // Check if template is active
+//         if (!template.is_active) {
+//             return {
+//                 success: false,
+//                 message: "Email template is not active",
+//             };
+//         }
 
-        // Process the template with dynamic data
-        const previewResult = await previewTemplate(template, dynamicData);
+//         // Process the template with dynamic data
+//         const previewResult = await previewTemplate(template, dynamicData);
 
-        if (!previewResult.success) {
-            return {
-                success: false,
-                message: `Error processing template: ${previewResult.message}`,
-            };
-        }
+//         if (!previewResult.success) {
+//             return {
+//                 success: false,
+//                 message: `Error processing template: ${previewResult.message}`,
+//             };
+//         }
 
-        const { subject, html_content, text_content } = previewResult.data;
+//         const { subject, html_content, text_content } = previewResult.data;
 
-        // Import send_mail function
+//         // Import send_mail function
 
-        // Send the email
-        const emailResult = await send_mail({
-            to: recipientEmail,
-            subject: subject,
-            html: html_content,
-            text: text_content,
-        });
+//         // Send the email
+//         const emailResult = await send_mail({
+//             to: recipientEmail,
+//             subject: subject,
+//             html: html_content,
+//             text: text_content,
+//         });
 
-        if (emailResult.success) {
-            logSuccessToFile(
-                `Email sent successfully using template "${template.name}" to ${recipientEmail}`,
-                "email-template"
-            );
-        }
+//         if (emailResult.success) {
+//             logSuccessToFile(
+//                 `Email sent successfully using template "${template.name}" to ${recipientEmail}`,
+//                 "email-template"
+//             );
+//         }
 
-        return {
-            success: true,
-            data: {
-                template: template.name,
-                recipient: recipientEmail,
-                subject: subject,
-                emailResult: emailResult,
-            },
-        };
-    } catch (err) {
-        console.log("sendEmailWithTemplate error:", err);
-        logErrorToFile(err, "SEND EMAIL WITH TEMPLATE");
-        return {
-            success: false,
-            message: extractErrorMessage(err),
-        };
-    }
-}
+//         return {
+//             success: true,
+//             data: {
+//                 template: template.name,
+//                 recipient: recipientEmail,
+//                 subject: subject,
+//                 emailResult: emailResult,
+//             },
+//         };
+//     } catch (err) {
+//         console.log("sendEmailWithTemplate error:", err);
+//         logErrorToFile(err, "SEND EMAIL WITH TEMPLATE");
+//         return {
+//             success: false,
+//             message: extractErrorMessage(err),
+//         };
+//     }
+// }
 
 /**
  * Send email using template by category
  */
-export async function sendEmailByCategory(
-    category,
-    recipientEmail,
-    dynamicData = {}
-) {
-    try {
-        // Get templates by category
-        const templatesResult = await getTemplatesByCategory(category);
+// export async function sendEmailByCategory(
+//     category,
+//     recipientEmail,
+//     dynamicData = {}
+// ) {
+//     try {
+//         // Get templates by category
+//         const templatesResult = await getTemplatesByCategory(category);
 
-        if (!templatesResult.success) {
-            return {
-                success: false,
-                message: `Error getting templates: ${templatesResult.message}`,
-            };
-        }
+//         if (!templatesResult.success) {
+//             return {
+//                 success: false,
+//                 message: `Error getting templates: ${templatesResult.message}`,
+//             };
+//         }
 
-        const templates = templatesResult.data;
+//         const templates = templatesResult.data;
 
-        if (templates.length === 0) {
-            return {
-                success: false,
-                message: `No active templates found for category: ${category}`,
-            };
-        }
+//         if (templates.length === 0) {
+//             return {
+//                 success: false,
+//                 message: `No active templates found for category: ${category}`,
+//             };
+//         }
 
-        // Use the first active template (you could add logic to select specific templates)
-        const template = templates[0];
+//         // Use the first active template (you could add logic to select specific templates)
+//         const template = templates[0];
 
-        // Send email using the template
-        return await sendEmailWithTemplate(
-            template.id,
-            recipientEmail,
-            dynamicData
-        );
-    } catch (err) {
-        console.log("sendEmailByCategory error:", err);
-        logErrorToFile(err, "SEND EMAIL BY CATEGORY");
-        return {
-            success: false,
-            message: extractErrorMessage(err),
-        };
-    }
-}
+//         // Send email using the template
+//         return await sendEmailWithTemplate(
+//             template.id,
+//             recipientEmail,
+//             dynamicData
+//         );
+//     } catch (err) {
+//         console.log("sendEmailByCategory error:", err);
+//         logErrorToFile(err, "SEND EMAIL BY CATEGORY");
+//         return {
+//             success: false,
+//             message: extractErrorMessage(err),
+//         };
+//     }
+// }
