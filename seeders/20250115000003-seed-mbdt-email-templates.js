@@ -1,3 +1,4 @@
+// npx sequelize-cli db:seed --seed 20250115000003-seed-mbdt-email-templates.js
 "use strict";
 
 /** @type {import('sequelize-cli').Migration} */

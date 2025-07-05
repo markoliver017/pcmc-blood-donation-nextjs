@@ -2,7 +2,7 @@
 
 import { logAuditTrail } from "@lib/audit_trails.utils";
 import { auth } from "@lib/auth";
-
+import { sendNotificationAndEmail } from "@lib/notificationEmail.utils";
 import { logErrorToFile } from "@lib/logger.server";
 import {
     Agency,
@@ -206,12 +206,188 @@ export async function storeDonor(formData) {
 
         await transaction.commit();
 
+        // Fetch agency and blood type for notifications/emails
+        let agency = null;
+        let bloodType = null;
+        try {
+            agency = await Agency.findByPk(newDonor.agency_id);
+            if (newDonor.blood_type_id) {
+                bloodType = await BloodType.findByPk(newDonor.blood_type_id);
+            }
+        } catch (err) {
+            console.error("Failed to fetch agency or blood type:", err);
+        }
+
         await logAuditTrail({
             userId: newUser.id,
-            controller: "agencies",
+            controller: "donors",
             action: "CREATE",
-            details: `A new donor has been successfully created. Donor ID#: ${newDonor.id} with User account: ${newUser.id}`,
+            details: `A new donor has been successfully created. Donor ID#: ${newDonor.id} with User account: ${newUser.id} (${newUser?.email}) and Agency ID#: ${newDonor.agency_id} (${agency?.name})`,
         });
+
+        // Notifications and emails (non-blocking)
+        (async () => {
+            // 1. Notify the registering donor
+            try {
+                await sendNotificationAndEmail({
+                    userIds: newUser.id,
+                    notificationData: {
+                        subject: "Donor Registration Received",
+                        message:
+                            "Thank you for registering as a blood donor. Your application is pending approval by your agency.",
+                        type: "GENERAL",
+                        reference_id: newDonor.id,
+                        created_by: newUser.id,
+                    },
+                });
+            } catch (err) {
+                console.error("Donor notification failed:", err);
+            }
+
+            // 2. Send email to the registering donor (template only)
+            try {
+                await sendNotificationAndEmail({
+                    emailData: {
+                        to: newUser.email,
+                        templateCategory: "DONOR_REGISTRATION",
+                        templateData: {
+                            user_name: `${newUser.first_name} ${newUser.last_name}`,
+                            user_email: newUser.email,
+                            user_first_name: newUser.first_name,
+                            user_last_name: newUser.last_name,
+                            contact_number: newDonor?.contact_number,
+                            blood_type: bloodType?.blood_type || "Not specified",
+                            agency_name: agency?.name || "Your agency",
+                            registration_date: new Date().toLocaleDateString(),
+                            system_name: "PCMC Pediatric Blood Center",
+                            support_email: "support@pcmc.gov.ph",
+                            domain_url:
+                                process.env.NEXT_PUBLIC_APP_URL ||
+                                "https://blood-donation.pcmc.gov.ph",
+                        },
+                    },
+                });
+            } catch (err) {
+                console.error("Donor registration email failed:", err);
+            }
+
+            // 3. Notify all admins (MBDT team)
+            try {
+                const adminRole = await Role.findOne({
+                    where: { role_name: "Admin" },
+                });
+                if (adminRole) {
+                    const adminUsers = await User.findAll({
+                        include: [
+                            {
+                                model: Role,
+                                as: "roles",
+                                where: { id: adminRole.id },
+                                through: { attributes: [] },
+                            },
+                        ],
+                    });
+                    if (adminUsers.length > 0) {
+                        await sendNotificationAndEmail({
+                            userIds: adminUsers.map((a) => a.id),
+                            notificationData: {
+                                subject: "New Donor Registration",
+                                message: `A new donor (${
+                                    newUser.first_name
+                                } ${
+                                    newUser.last_name
+                                }) has registered and is pending approval for agency (${
+                                    agency?.name || newDonor.agency_id
+                                }).`,
+                                type: "GENERAL",
+                                reference_id: newDonor.id,
+                                created_by: newUser.id,
+                            },
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error("Admin notification failed:", err);
+            }
+
+            // 4. Send system notification and email to agency head and active coordinators
+            try {
+                if (agency) {
+                    // Get agency head
+                    const agencyHead = await User.findByPk(agency.head_id);
+                    
+                    // Get active coordinators
+                    const activeCoordinators = await AgencyCoordinator.findAll({
+                        where: {
+                            agency_id: agency.id,
+                            status: "activated",
+                        },
+                        include: {
+                            model: User,
+                            as: "user",
+                            attributes: ["id", "email", "first_name", "last_name"],
+                        },
+                    });
+
+                    // Collect all recipients (agency head + active coordinators)
+                    const recipients = [];
+                    if (agencyHead) {
+                        recipients.push(agencyHead);
+                    }
+                    activeCoordinators.forEach(coordinator => {
+                        if (coordinator.user) {
+                            recipients.push(coordinator.user);
+                        }
+                    });
+
+                    if (recipients.length > 0) {
+                        // Send system notification to all recipients
+                        await sendNotificationAndEmail({
+                            userIds: recipients.map((r) => r.id),
+                            notificationData: {
+                                subject: "New Donor Registration",
+                                message: `A new donor (${
+                                    newUser.first_name
+                                } ${
+                                    newUser.last_name
+                                }) has registered and is awaiting approval for agency (${
+                                    agency?.name || newDonor.agency_id
+                                }).`,
+                                type: "AGENCY_DONOR_APPROVAL",
+                                reference_id: newDonor.id,
+                                created_by: newUser.id,
+                            },
+                        });
+
+                        // Send email to each recipient
+                        for (const recipient of recipients) {
+                            await sendNotificationAndEmail({
+                                emailData: {
+                                    to: recipient.email,
+                                    templateCategory:
+                                        "AGENCY_DONOR_REGISTRATION_NOTIFICATION_TO_AGENCY",
+                                    templateData: {
+                                        agency_name: agency?.name || newDonor.agency_id,
+                                        donor_name: `${newUser.first_name} ${newUser.last_name}`,
+                                        donor_email: newUser.email,
+                                        donor_contact: newUser.contact_number,
+                                        blood_type: bloodType?.blood_type || "Not specified",
+                                        registration_date: new Date().toLocaleDateString(),
+                                        system_name: "PCMC Pediatric Blood Center",
+                                        support_email: "support@pcmc.gov.ph",
+                                        domain_url:
+                                            process.env.NEXT_PUBLIC_APP_URL ||
+                                            "https://blood-donation.pcmc.gov.ph",
+                                    },
+                                },
+                            });
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error("Agency notification email failed:", err);
+            }
+        })();
 
         return { success: true, data: newDonor.get({ plain: true }) };
     } catch (err) {
@@ -614,6 +790,9 @@ export async function updateDonorStatus(formData) {
     const transaction = await sequelize.transaction();
 
     try {
+        // Check if status is changing from "for approval" to "activated"
+        const isActivation = donor.status === "for approval" && data.status === "activated";
+        
         const updatedDonor = await donor.update(data, {
             transaction,
         });
@@ -629,12 +808,277 @@ export async function updateDonorStatus(formData) {
 
         await transaction.commit();
 
+        // Fetch additional data for notifications/emails
+        let agency = null;
+        let bloodType = null;
+        try {
+            agency = await Agency.findByPk(updatedDonor.agency_id);
+            if (updatedDonor.blood_type_id) {
+                bloodType = await BloodType.findByPk(updatedDonor.blood_type_id);
+            }
+        } catch (err) {
+            console.error("Failed to fetch agency or blood type:", err);
+        }
+
         await logAuditTrail({
             userId: user.id,
             controller: "donors",
             action: "UPDATE DONOR STATUS",
-            details: `The Donor status has been successfully updated. ID#: ${updatedDonor.id}`,
+            details: `Donor status updated from "${donor.status}" to "${data.status}" for Donor ID#: ${updatedDonor.id} (${user_donor.first_name} ${user_donor.last_name} - ${user_donor.email}). Agency: ${agency?.name || updatedDonor.agency_id}. ${data.remarks ? `Rejection reason: "${data.remarks}"` : ''} Updated by: ${user?.name} (${user.id})`,
         });
+
+        // Notifications and emails (only for activation from "for approval")
+        if (isActivation) {
+            (async () => {
+                // 1. Send system notification to donor
+                try {
+                    await sendNotificationAndEmail({
+                        userIds: updatedDonor.user_id,
+                        notificationData: {
+                            subject: "Donor Account Activated",
+                            message: "Congratulations! Your donor account has been activated. You can now participate in blood donation events.",
+                            type: "GENERAL",
+                            reference_id: updatedDonor.id,
+                            created_by: user.id,
+                        },
+                    });
+                } catch (err) {
+                    console.error("Donor notification failed:", err);
+                }
+
+                // 2. Send email notification to donor
+                try {
+                    await sendNotificationAndEmail({
+                        emailData: {
+                            to: user_donor.email,
+                            templateCategory: "DONOR_APPROVAL",
+                            templateData: {
+                                user_name: `${user_donor.first_name} ${user_donor.last_name}`,
+                                user_email: user_donor.email,
+                                user_first_name: user_donor.first_name,
+                                user_last_name: user_donor.last_name,
+                                approval_status: "Approved",
+                                approval_date: new Date().toLocaleDateString(),
+                                approval_reason: "All requirements met",
+                                agency_name: agency?.name || "Your agency",
+                                blood_type: bloodType?.blood_type || "Not specified",
+                                system_name: "PCMC Pediatric Blood Center",
+                                support_email: "support@pcmc.gov.ph",
+                                domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                            },
+                        },
+                    });
+                } catch (err) {
+                    console.error("Donor approval email failed:", err);
+                }
+
+                // 3. Send system notification to all admins (MBDT team)
+                try {
+                    const adminRole = await Role.findOne({
+                        where: { role_name: "Admin" },
+                    });
+                    if (adminRole) {
+                        const adminUsers = await User.findAll({
+                            include: [
+                                {
+                                    model: Role,
+                                    as: "roles",
+                                    where: { id: adminRole.id },
+                                    through: { attributes: [] },
+                                },
+                            ],
+                        });
+                        if (adminUsers.length > 0) {
+                            await sendNotificationAndEmail({
+                                userIds: adminUsers.map((a) => a.id),
+                                notificationData: {
+                                    subject: "Donor Account Activated",
+                                    message: `A donor (${user_donor.first_name} ${user_donor.last_name}) has been activated for agency (${agency?.name || updatedDonor.agency_id}).`,
+                                    type: "GENERAL",
+                                    reference_id: updatedDonor.id,
+                                    created_by: user.id,
+                                },
+                            });
+                        }
+                    }
+                } catch (err) {
+                    console.error("Admin notification failed:", err);
+                }
+
+                // 4. Send system notification to agency head and active coordinators
+                try {
+                    if (agency) {
+                        // Get agency head
+                        const agencyHead = await User.findByPk(agency.head_id);
+                        
+                        // Get active coordinators
+                        const activeCoordinators = await AgencyCoordinator.findAll({
+                            where: {
+                                agency_id: agency.id,
+                                status: "activated",
+                            },
+                            include: {
+                                model: User,
+                                as: "user",
+                                attributes: ["id", "email", "first_name", "last_name"],
+                            },
+                        });
+
+                        // Collect all recipients (agency head + active coordinators)
+                        const recipients = [];
+                        if (agencyHead) {
+                            recipients.push(agencyHead);
+                        }
+                        activeCoordinators.forEach(coordinator => {
+                            if (coordinator.user) {
+                                recipients.push(coordinator.user);
+                            }
+                        });
+
+                        if (recipients.length > 0) {
+                            await sendNotificationAndEmail({
+                                userIds: recipients.map((r) => r.id),
+                                notificationData: {
+                                    subject: "Donor Account Activated",
+                                    message: `A donor (${user_donor.first_name} ${user_donor.last_name}) has been activated for your agency (${agency.name}).`,
+                                    type: "GENERAL",
+                                    reference_id: updatedDonor.id,
+                                    created_by: user.id,
+                                },
+                            });
+                        }
+                    }
+                } catch (err) {
+                    console.error("Agency notification failed:", err);
+                }
+            })();
+        }
+
+        // Notifications and emails for rejection
+        if (data.status === "rejected") {
+            (async () => {
+                // 1. Send system notification to donor
+                try {
+                    await sendNotificationAndEmail({
+                        userIds: updatedDonor.user_id,
+                        notificationData: {
+                            subject: "Donor Application Status Update",
+                            message: "Your donor application has been reviewed. Please check your email for details.",
+                            type: "GENERAL",
+                            reference_id: updatedDonor.id,
+                            created_by: user.id,
+                        },
+                    });
+                } catch (err) {
+                    console.error("Donor rejection notification failed:", err);
+                }
+
+                // 2. Send email notification to donor
+                try {
+                    await sendNotificationAndEmail({
+                        emailData: {
+                            to: user_donor.email,
+                            templateCategory: "DONOR_REJECTION",
+                            templateData: {
+                                user_name: `${user_donor.first_name} ${user_donor.last_name}`,
+                                user_email: user_donor.email,
+                                user_first_name: user_donor.first_name,
+                                user_last_name: user_donor.last_name,
+                                agency_name: agency?.name || "Your agency",
+                                approval_status: "Rejected",
+                                approval_date: new Date().toLocaleDateString(),
+                                approval_reason: data.remarks || "Application requirements not met",
+                                system_name: "PCMC Pediatric Blood Center",
+                                support_email: "support@pcmc.gov.ph",
+                                domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                            },
+                        },
+                    });
+                } catch (err) {
+                    console.error("Donor rejection email failed:", err);
+                }
+
+                // 3. Send system notification to all admins (MBDT team)
+                try {
+                    const adminRole = await Role.findOne({
+                        where: { role_name: "Admin" },
+                    });
+                    if (adminRole) {
+                        const adminUsers = await User.findAll({
+                            include: [
+                                {
+                                    model: Role,
+                                    as: "roles",
+                                    where: { id: adminRole.id },
+                                    through: { attributes: [] },
+                                },
+                            ],
+                        });
+                        if (adminUsers.length > 0) {
+                            await sendNotificationAndEmail({
+                                userIds: adminUsers.map((a) => a.id),
+                                notificationData: {
+                                    subject: "Donor Application Rejected",
+                                    message: `A donor (${user_donor.first_name} ${user_donor.last_name}) has been rejected for agency (${agency?.name || updatedDonor.agency_id}).`,
+                                    type: "GENERAL",
+                                    reference_id: updatedDonor.id,
+                                    created_by: user.id,
+                                },
+                            });
+                        }
+                    }
+                } catch (err) {
+                    console.error("Admin rejection notification failed:", err);
+                }
+
+                // 4. Send system notification to agency head and active coordinators
+                try {
+                    if (agency) {
+                        // Get agency head
+                        const agencyHead = await User.findByPk(agency.head_id);
+                        
+                        // Get active coordinators
+                        const activeCoordinators = await AgencyCoordinator.findAll({
+                            where: {
+                                agency_id: agency.id,
+                                status: "activated",
+                            },
+                            include: {
+                                model: User,
+                                as: "user",
+                                attributes: ["id", "email", "first_name", "last_name"],
+                            },
+                        });
+
+                        // Collect all recipients (agency head + active coordinators)
+                        const recipients = [];
+                        if (agencyHead) {
+                            recipients.push(agencyHead);
+                        }
+                        activeCoordinators.forEach(coordinator => {
+                            if (coordinator.user) {
+                                recipients.push(coordinator.user);
+                            }
+                        });
+
+                        if (recipients.length > 0) {
+                            await sendNotificationAndEmail({
+                                userIds: recipients.map((r) => r.id),
+                                notificationData: {
+                                    subject: "Donor Application Rejected",
+                                    message: `A donor (${user_donor.first_name} ${user_donor.last_name}) has been rejected for your agency (${agency.name}).`,
+                                    type: "GENERAL",
+                                    reference_id: updatedDonor.id,
+                                    created_by: user.id,
+                                },
+                            });
+                        }
+                    }
+                } catch (err) {
+                    console.error("Agency rejection notification failed:", err);
+                }
+            })();
+        }
 
         const title = {
             rejected: "Donor Rejected",

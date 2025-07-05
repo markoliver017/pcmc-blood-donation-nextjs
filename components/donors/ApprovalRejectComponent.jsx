@@ -31,7 +31,7 @@ export default function ApprovalRejectComponent({ data, callbackUrl }) {
                     <span>Actions</span>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="space-x-2 hidden">
+                <DropdownMenuItem className="space-x-2">
                     <Button
                         onClick={() => router.push(callbackUrl)}
                         variant="secondary"
@@ -54,7 +54,17 @@ export default function ApprovalRejectComponent({ data, callbackUrl }) {
                         icon={<CheckIcon />}
                     />
                 </DropdownMenuItem>
-                <DropdownMenuItem className="space-x-2 flex justify-between">
+                <DropdownMenuItem 
+                    className="space-x-2 flex justify-between" 
+                    onSelect={(e) => e.preventDefault()}
+                    onKeyDown={(e) => {
+                        // Prevent dropdown from interfering with dialog
+                        if (e.key === ' ') {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+                    }}
+                >
                     <RejectDonor
                         donorId={data.id}
                         className="w-full btn-error"

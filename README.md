@@ -4,7 +4,7 @@ A comprehensive blood donation management system built with Next.js 15, designed
 
 ## 🚀 Features
 
--   **Multi-Role System**: Admin, Host (Agency), and Donor interfaces
+-   **Multi-Role System**: Admin, Host (Agency)/Coordinators, and Donor interfaces
 -   **Event Management**: Blood drive creation, scheduling, and execution
 -   **Donor Management**: Registration, verification, and appointment booking
 -   **Real-time Tracking**: Live updates and status monitoring

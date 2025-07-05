@@ -160,9 +160,14 @@ export default function EmailNotificationsDashboard() {
             value: "AGENCY_COORDINATOR_REGISTRATION_NOTIFICATION_TO_AGENCY",
             label: "Agency Coordinator Registration Notification to Agency",
         },
+        {
+            value: "AGENCY_DONOR_REGISTRATION_NOTIFICATION_TO_AGENCY",
+            label: "Agency Donor Registration Notification to Agency",
+        },
         { value: "AGENCY_APPROVAL", label: "Agency Approval" }, //done
         { value: "DONOR_REGISTRATION", label: "Donor Registration" },
         { value: "DONOR_APPROVAL", label: "Donor Approval" },
+        { value: "DONOR_REJECTION", label: "Donor Rejection" },
         { value: "EVENT_CREATION", label: "Event Creation" },
         { value: "APPOINTMENT_BOOKING", label: "Appointment Booking" },
         { value: "MBDT_NOTIFICATION", label: "MBDT Notification" }, //done
@@ -176,9 +181,12 @@ export default function EmailNotificationsDashboard() {
         const variants = {
             AGENCY_REGISTRATION: "default",
             AGENCY_COORDINATOR_REGISTRATION: "default",
+            AGENCY_COORDINATOR_REGISTRATION_NOTIFICATION_TO_AGENCY: "secondary",
+            AGENCY_DONOR_REGISTRATION_NOTIFICATION_TO_AGENCY: "secondary",
             AGENCY_APPROVAL: "secondary",
             DONOR_REGISTRATION: "outline",
             DONOR_APPROVAL: "destructive",
+            DONOR_REJECTION: "destructive",
             EVENT_CREATION: "default",
             APPOINTMENT_BOOKING: "secondary",
             MBDT_NOTIFICATION: "destructive",

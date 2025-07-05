@@ -50,7 +50,7 @@ export default function ForApprovalDonorList({ avatarClassName = "" }) {
     return (
         <>
             {donors.map((donor) => (
-                <Link href={`/portal/hosts/donors/${donor.id}`} key={donor.id}>
+                // <Link href={`/portal/hosts/donors/${donor.id}`} key={donor.id}>
                     <Card
                         key={donor.id}
                         className="hover:ring-2 hover:ring-blue-400 group transition shadow-lg/40"
@@ -98,7 +98,7 @@ export default function ForApprovalDonorList({ avatarClassName = "" }) {
                                 <span className="text-blue-700">
                                     {donor.user.email.toLowerCase()}
                                 </span>
-                                <span>{donor.contact_number}</span>
+                                <span>+63{donor.contact_number}</span>
                                 <span className="flex-items-center gap-1 italic">
                                     {donor.comments && (
                                         <>
@@ -110,7 +110,7 @@ export default function ForApprovalDonorList({ avatarClassName = "" }) {
                             </div>
                         </CardContent>
                     </Card>
-                </Link>
+                // </Link>
             ))}
         </>
     );

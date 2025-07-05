@@ -469,7 +469,33 @@ export async function storeAgency(formData) {
                 console.error("User notification failed:", err);
             }
 
-            // 2. Notify all admins
+            // 2. Send email to the registering user (template only)
+            try {
+                await sendNotificationAndEmail({
+                    emailData: {
+                        to: newUser.email,
+                        templateCategory: "AGENCY_REGISTRATION",
+                        templateData: {
+                            user_first_name: newUser.first_name,
+                            user_last_name: newUser.last_name,
+                            user_email: newUser.email,
+                            user_name: `${newUser.first_name} ${newUser.last_name}`,
+                            agency_name: newAgency.name,
+                            agency_address: newAgency.address,
+                            system_name: "Blood Donation Management System",
+                            support_email: "support@pcmc.gov.ph",
+                            domain_url:
+                                process.env.NEXT_PUBLIC_APP_URL ||
+                                "https://blood-donation.pcmc.gov.ph",
+                            registration_date: new Date().toLocaleDateString(),
+                        },
+                    },
+                });
+            } catch (err) {
+                console.error("User email failed:", err);
+            }
+
+             // 3. Notify all admins
             try {
                 const adminRole = await Role.findOne({
                     where: { role_name: "Admin" },
@@ -529,32 +555,6 @@ export async function storeAgency(formData) {
                 }
             } catch (err) {
                 console.error("Admin notification failed:", err);
-            }
-
-            // 3. Send email to the registering user (template only)
-            try {
-                await sendNotificationAndEmail({
-                    emailData: {
-                        to: newUser.email,
-                        templateCategory: "AGENCY_REGISTRATION",
-                        templateData: {
-                            user_first_name: newUser.first_name,
-                            user_last_name: newUser.last_name,
-                            user_email: newUser.email,
-                            user_name: `${newUser.first_name} ${newUser.last_name}`,
-                            agency_name: newAgency.name,
-                            agency_address: newAgency.address,
-                            system_name: "Blood Donation Management System",
-                            support_email: "support@pcmc.gov.ph",
-                            domain_url:
-                                process.env.NEXT_PUBLIC_APP_URL ||
-                                "https://blood-donation.pcmc.gov.ph",
-                            registration_date: new Date().toLocaleDateString(),
-                        },
-                    },
-                });
-            } catch (err) {
-                console.error("User email failed:", err);
             }
 
             // 4. Log audit trail
@@ -873,7 +873,34 @@ export async function storeCoordinator(formData) {
                 console.error("Coordinator notification failed:", err);
             }
 
-            // 2. Notify all admins (MBDT team)
+            // 2. Send email to the registering coordinator (template only)
+            try {
+                await sendNotificationAndEmail({
+                    emailData: {
+                        to: newUser.email,
+                        templateCategory: "AGENCY_COORDINATOR_REGISTRATION",
+                        templateData: {
+                            agency_name:
+                                agency?.name || newCoordinator.agency_id,
+                            user_name: `${newUser.first_name} ${newUser.last_name}`,
+                            user_email: newUser.email,
+                            user_first_name: newUser.first_name,
+                            user_last_name: newUser.last_name,
+                            contact_number: newCoordinator.contact_number,
+                            registration_date: new Date().toLocaleDateString(),
+                            system_name: "PCMC Pediatric Blood Center",
+                            support_email: "support@pcmc.gov.ph",
+                            domain_url:
+                                process.env.NEXT_PUBLIC_APP_URL ||
+                                "https://blood-donation.pcmc.gov.ph",
+                        },
+                    },
+                });
+            } catch (err) {
+                console.error("Coordinator registration email failed:", err);
+            }
+
+            // 3. Notify all admins (MBDT team)
             try {
                 const adminRole = await Role.findOne({
                     where: { role_name: "Admin" },
@@ -912,32 +939,7 @@ export async function storeCoordinator(formData) {
                 console.error("Admin notification failed:", err);
             }
 
-            // 3. Send email to the registering coordinator (template only)
-            try {
-                await sendNotificationAndEmail({
-                    emailData: {
-                        to: newUser.email,
-                        templateCategory: "AGENCY_COORDINATOR_REGISTRATION",
-                        templateData: {
-                            agency_name:
-                                agency?.name || newCoordinator.agency_id,
-                            user_name: `${newUser.first_name} ${newUser.last_name}`,
-                            user_email: newUser.email,
-                            user_first_name: newUser.first_name,
-                            user_last_name: newUser.last_name,
-                            contact_number: newCoordinator.contact_number,
-                            registration_date: new Date().toLocaleDateString(),
-                            system_name: "PCMC Pediatric Blood Center",
-                            support_email: "support@pcmc.gov.ph",
-                            domain_url:
-                                process.env.NEXT_PUBLIC_APP_URL ||
-                                "https://blood-donation.pcmc.gov.ph",
-                        },
-                    },
-                });
-            } catch (err) {
-                console.error("Coordinator registration email failed:", err);
-            }
+            
 
             // 4. Send email to the agency head (administrator) about new coordinator registration
             try {
@@ -958,6 +960,7 @@ export async function storeCoordinator(formData) {
                             created_by: newUser.id,
                         },
                     });
+                    
                     await sendNotificationAndEmail({
                         emailData: {
                             to: agencyHead.email,

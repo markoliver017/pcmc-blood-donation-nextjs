@@ -1,3 +1,4 @@
+// npx sequelize-cli db:seed --seed 20250115000005-seed-coordinator-registration-notification-to-agency-email-template.js
 "use strict";
 
 /** @type {import('sequelize-cli').Migration} */
