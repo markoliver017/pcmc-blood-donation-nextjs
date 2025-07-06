@@ -101,6 +101,31 @@ try {
 }
 ```
 
+## ⚠️ Status Update Pattern (CRITICAL)
+
+**ALWAYS capture original status before update:**
+
+```javascript
+// ✅ CORRECT
+const record = await Model.findByPk(id);
+const originalStatus = record.status; // Capture BEFORE update
+const updatedRecord = await record.update(newData);
+
+if (originalStatus === "for approval" && newData.status === "activated") {
+    // Send notifications
+}
+
+// ❌ WRONG - record.status is already updated!
+if (record.status === "for approval" && newData.status === "activated") {
+    // This will NEVER trigger
+}
+```
+
+**Session User Properties:**
+
+-   Use `session.user.name` and `session.user.email`
+-   NOT `session.user.first_name`/`last_name`
+
 ## 📧 Email Template Structure
 
 ```javascript

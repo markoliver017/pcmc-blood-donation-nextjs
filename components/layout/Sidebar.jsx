@@ -8,6 +8,7 @@ import SideNavLink from "./SideNavLink";
 import clsx from "clsx";
 import { usePagesStore } from "@/store/pagesStore";
 import { redirect, usePathname } from "next/navigation";
+import SessionTimer from "@lib/utils/SessionTimer";
 
 const Sidebar = ({ currentUser }) => {
     const { status, data } = useSession();
@@ -67,7 +68,7 @@ const Sidebar = ({ currentUser }) => {
         <motion.aside
             initial={{ width: "290px" }}
             animate={{ width: isCollapsed ? "70px" : "290px" }}
-            className="w-64 flex-none h-screen overflow-y-auto bg-gradient-to-r from-gray-700 to-gray-800 text-white px-4 pt-5 shadow-xl"
+            className="w-64 flex-none h-screen overflow-y-auto bg-gradient-to-r from-gray-700 to-gray-800 text-white px-4 pt-5 pb-10 shadow-xl"
         >
             <div className="flex justify-end">
                 <button
@@ -132,6 +133,9 @@ const Sidebar = ({ currentUser }) => {
                     </ul>
                 </nav>
             </div>
+            <br />
+            <br />
+            <SessionTimer />
         </motion.aside>
     );
 };

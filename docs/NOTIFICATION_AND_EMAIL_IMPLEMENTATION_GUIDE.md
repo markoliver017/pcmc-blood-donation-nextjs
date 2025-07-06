@@ -12,6 +12,7 @@ This document provides a comprehensive guide for implementing system notificatio
 4. [Code Examples](#code-examples)
 5. [Best Practices](#best-practices)
 6. [Troubleshooting](#troubleshooting)
+7. [⚠️ Adding a New Email Template Category (CRITICAL)](#adding-a-new-email-template-category-critical)
 
 ## Prerequisites
 
@@ -253,6 +254,33 @@ try {
 }
 ```
 
+#### 3.2 Status Update Pattern (CRITICAL)
+
+**⚠️ IMPORTANT**: When implementing notifications for status updates, you MUST capture the original status BEFORE updating the record.
+
+```javascript
+// ❌ WRONG - This will always be the new status
+const record = await Model.findByPk(id);
+const updatedRecord = await record.update(newData);
+if (record.status === "old_status" && newData.status === "new_status") {
+    // This condition will NEVER be true because record.status is already updated!
+}
+
+// ✅ CORRECT - Capture original status before update
+const record = await Model.findByPk(id);
+const originalStatus = record.status; // Capture BEFORE update
+const updatedRecord = await record.update(newData);
+
+if (originalStatus === "for approval" && newData.status === "activated") {
+    // This condition will work correctly
+}
+```
+
+**Session User Properties**:
+
+-   Use `session.user.name` and `session.user.email` (not `first_name`/`last_name`)
+-   The session user object structure: `{ id, name, email, ... }`
+
 ### Step 4: Testing and Validation
 
 #### 4.1 Test Template Creation
@@ -491,6 +519,71 @@ export async function createEvent(formData) {
 2. Document new template categories
 3. Update seeder examples
 4. Review and improve error handling
+
+## ⚠️ Adding a New Email Template Category (CRITICAL)
+
+When adding a new email template category, ALWAYS update all of the following:
+
+-   [ ] **ENUM in `EmailTemplateModel.js`**: Add the new category to the ENUM list.
+-   [ ] **`TEMPLATE_CATEGORIES` and sample data in `emailTemplateUtils.js`**: Add the new category to the array and provide sample data for previews.
+-   [ ] **Admin UI (`page.jsx` in email-notifications)**:
+    -   Add the new category to the `templateCategories` array for filtering and creation.
+    -   Add the new category to the `getCategoryBadgeVariant` function for correct badge styling.
+-   [ ] **Seeder file**: Create a new seeder for the default template for this category using ES module syntax (not CommonJS).
+
+**WARNING:**
+
+> If you miss any of these steps, the new category may not appear in the admin UI, may not be selectable, or may cause errors in template management and notifications.
+
+### Seeder File Pattern (ES Modules)
+
+**✅ CORRECT ES Module Pattern:**
+
+```javascript
+// npx sequelize-cli db:seed --seed your-seeder-file.js
+"use strict";
+
+/** @type {import('sequelize-cli').Migration} */
+export async function up(queryInterface) {
+    const emailTemplates = [
+        {
+            name: "Your Template Name",
+            category: "YOUR_CATEGORY",
+            subject: "Your Subject with {{dynamic_field}}",
+            html_content: `Your HTML template`,
+            text_content: `Your text template`,
+            dynamic_fields: JSON.stringify(["field1", "field2"]),
+            is_active: true,
+            created_by: null,
+            updated_by: null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+    ];
+
+    await queryInterface.bulkInsert("email_templates", emailTemplates, {});
+}
+
+export async function down(queryInterface) {
+    await queryInterface.bulkDelete(
+        "email_templates",
+        {
+            category: "YOUR_CATEGORY",
+        },
+        {}
+    );
+}
+```
+
+**❌ WRONG CommonJS Pattern:**
+
+```javascript
+module.exports = {
+    async up(queryInterface, Sequelize) {
+        // This will cause errors in ES module setup
+    },
+};
+```
 
 ---
 

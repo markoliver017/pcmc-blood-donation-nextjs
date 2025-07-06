@@ -78,8 +78,7 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
         };
     }
 
-    /* check if the event physical exam is the latest appointment of the donor
-    if yes then update the donor last physical exam and last donation event  */
+
     const currentDate = new Date();
     const eventDate = new Date(appointment?.event?.date);
     if (currentDate < eventDate) {
@@ -89,6 +88,8 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
         };
     }
 
+    /* check if the event physical exam is the latest appointment of the donor
+    if yes then update the donor last physical exam and last donation event  */
     let lastExaminationDate = null;
 
     const lastExam = await getLastDonationExamData(donor?.user_id);

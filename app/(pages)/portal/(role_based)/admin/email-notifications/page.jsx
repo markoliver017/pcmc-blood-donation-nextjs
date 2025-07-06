@@ -165,6 +165,7 @@ export default function EmailNotificationsDashboard() {
             label: "Agency Donor Registration Notification to Agency",
         },
         { value: "AGENCY_APPROVAL", label: "Agency Approval" }, //done
+        { value: "AGENCY_REJECTION", label: "Agency Rejection" },
         { value: "DONOR_REGISTRATION", label: "Donor Registration" },
         { value: "DONOR_APPROVAL", label: "Donor Approval" },
         { value: "DONOR_REJECTION", label: "Donor Rejection" },
@@ -184,6 +185,7 @@ export default function EmailNotificationsDashboard() {
             AGENCY_COORDINATOR_REGISTRATION_NOTIFICATION_TO_AGENCY: "secondary",
             AGENCY_DONOR_REGISTRATION_NOTIFICATION_TO_AGENCY: "secondary",
             AGENCY_APPROVAL: "secondary",
+            AGENCY_REJECTION: "destructive",
             DONOR_REGISTRATION: "outline",
             DONOR_APPROVAL: "destructive",
             DONOR_REJECTION: "destructive",
