@@ -762,6 +762,7 @@ export async function updateDonorStatus(formData) {
         };
     }
 
+    const currentDonorStatus = donor?.status;
     const user_donor = await User.findByPk(donor.user_id, {
         include: [
             {
@@ -1080,15 +1081,138 @@ export async function updateDonorStatus(formData) {
             })();
         }
 
+        // Notifications and emails for deactivation
+        if (currentDonorStatus === "activated" && data.status === "deactivated") {
+            (async () => {
+                // 1. Send email notification to donor
+                try {
+                    await sendNotificationAndEmail({
+                        emailData: {
+                            to: user_donor.email,
+                            templateCategory: "DONOR_DEACTIVATION",
+                            templateData: {
+                                user_name: `${user_donor.first_name} ${user_donor.last_name}`,
+                                user_email: user_donor.email,
+                                user_first_name: user_donor.first_name,
+                                user_last_name: user_donor.last_name,
+                                agency_name: agency?.name || "Your agency",
+                                deactivation_date: new Date().toLocaleDateString(),
+                                deactivation_reason: data.remarks || "Account deactivated by agency/admin.",
+                                system_name: "PCMC Pediatric Blood Center",
+                                support_email: "support@pcmc.gov.ph",
+                                domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                            },
+                        },
+                    });
+                } catch (err) {
+                    console.error("Donor deactivation email failed:", err);
+                }
+                // 2. Send system notification to all admins
+                try {
+                    const adminRole = await Role.findOne({
+                        where: { role_name: "Admin" },
+                    });
+                    if (adminRole) {
+                        const adminUsers = await User.findAll({
+                            include: [
+                                {
+                                    model: Role,
+                                    as: "roles",
+                                    where: { id: adminRole.id },
+                                    through: { attributes: [] },
+                                },
+                            ],
+                        });
+                        if (adminUsers.length > 0) {
+                            await sendNotificationAndEmail({
+                                userIds: adminUsers.map((a) => a.id),
+                                notificationData: {
+                                    subject: "Donor Account Deactivated",
+                                    message: `A donor (${user_donor.first_name} ${user_donor.last_name}) has been deactivated for agency (${agency?.name || updatedDonor.agency_id}).`,
+                                    type: "GENERAL",
+                                    reference_id: updatedDonor.id,
+                                    created_by: user.id,
+                                },
+                            });
+                        }
+                    }
+                } catch (err) {
+                    console.error("Admin deactivation notification failed:", err);
+                }
+            })();
+        }
+
+        // Notifications and emails for reactivation
+        if (currentDonorStatus === "deactivated" && data.status === "activated") {
+            (async () => {
+                // 1. Send email notification to donor
+                try {
+                    await sendNotificationAndEmail({
+                        emailData: {
+                            to: user_donor.email,
+                            templateCategory: "DONOR_REACTIVATION",
+                            templateData: {
+                                user_name: `${user_donor.first_name} ${user_donor.last_name}`,
+                                user_email: user_donor.email,
+                                user_first_name: user_donor.first_name,
+                                user_last_name: user_donor.last_name,
+                                agency_name: agency?.name || "Your agency",
+                                reactivation_date: new Date().toLocaleDateString(),
+                                system_name: "PCMC Pediatric Blood Center",
+                                support_email: "support@pcmc.gov.ph",
+                                domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                            },
+                        },
+                    });
+                } catch (err) {
+                    console.error("Donor reactivation email failed:", err);
+                }
+                // 2. Send system notification to all admins
+                try {
+                    const adminRole = await Role.findOne({
+                        where: { role_name: "Admin" },
+                    });
+                    if (adminRole) {
+                        const adminUsers = await User.findAll({
+                            include: [
+                                {
+                                    model: Role,
+                                    as: "roles",
+                                    where: { id: adminRole.id },
+                                    through: { attributes: [] },
+                                },
+                            ],
+                        });
+                        if (adminUsers.length > 0) {
+                            await sendNotificationAndEmail({
+                                userIds: adminUsers.map((a) => a.id),
+                                notificationData: {
+                                    subject: "Donor Account Reactivated",
+                                    message: `A donor (${user_donor.first_name} ${user_donor.last_name}) has been reactivated for agency (${agency?.name || updatedDonor.agency_id}).`,
+                                    type: "GENERAL",
+                                    reference_id: updatedDonor.id,
+                                    created_by: user.id,
+                                },
+                            });
+                        }
+                    }
+                } catch (err) {
+                    console.error("Admin reactivation notification failed:", err);
+                }
+            })();
+        }
+
+        
+
         const title = {
-            rejected: "Donor Rejected",
-            activated: "Donor Activated",
-            deactivated: "Donor Deactivated",
+            rejected: "Donor Application Rejected",
+            activated: "Donor Successfully Activated",
+            deactivated: "Donor Account Deactivated",
         };
         const text = {
-            rejected: "The Donor was rejected successfully.",
-            activated: "The Donor was activated successfully.",
-            deactivated: "The Donor was deactivated successfully.",
+            rejected: "The donor's application has been reviewed and rejected. The applicant will be notified of this decision. ",
+            activated: "The donor's account has been approved and activated. They can now log in and participate in blood donation activities. A notification and email have been sent to inform them of their new status.",
+            deactivated: "The donor's account has been deactivated. They will no longer be able to access the system until reactivated. A notification has been sent to inform them of this change.",
         };
 
         return {
@@ -1098,6 +1222,7 @@ export async function updateDonorStatus(formData) {
             text:
                 text[data.status] || "Donor application updated successfully.",
         };
+        
     } catch (err) {
         logErrorToFile(err, "UPDATE DONOR STATUS");
         await transaction.rollback();

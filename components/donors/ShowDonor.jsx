@@ -39,10 +39,12 @@ export default function ShowDonor({ donorId }) {
             <CardHeader>
                 <CardTitle className="flex justify-between">
                     <div className="text-4xl">{donor.user.full_name}</div>
+                    {donor.status === "for approval" && (
                     <ApprovalRejectComponent
                         data={donor}
                         callbackUrl={`/portal/hosts/donors/${donorId}`}
                     />
+                    )}
                 </CardTitle>
                 <CardDescription>Donor Information</CardDescription>
             </CardHeader>

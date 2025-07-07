@@ -141,6 +141,8 @@ export async function updateCoordinatorStatus(formData) {
         };
     }
 
+    const currentCoordinatorStatus = agencyCoordinator.status;
+
     const coordinator = await User.findByPk(agencyCoordinator.user_id, {
         include: [
             {
@@ -160,7 +162,7 @@ export async function updateCoordinatorStatus(formData) {
     if (!coordinator) {
         return {
             success: false,
-            message: "Database Error: Agency Head was Not found",
+            message: "Database Error: Coordinator account was not found!",
         };
     }
 
@@ -186,72 +188,308 @@ export async function updateCoordinatorStatus(formData) {
 
         await logAuditTrail({
             userId: user.id,
-            controller: "agencies",
-            action: "UPDATE COORDINATOR STATUS",
-            details: `Coordinator status has been successfully updated. ID#: ${updatedCoordinator.id}`,
+            controller: "coordinatorAction",
+            action: "updateCoordinatorStatus",
+            details: `Coordinator ${coordinator?.full_name || coordinator?.name} has been successfully updated. ID#: ${updatedCoordinator.id} from ${currentCoordinatorStatus} to ${data.status}. Updated by: ${user?.name} (${user?.email})`,
         });
 
         // Send email notification to coordinator if approved
-        if (data.status === "activated") {
-            try {
-                // Get coordinator and agency details for email
-                const coordinatorWithDetails = await AgencyCoordinator.findByPk(
-                    data.id,
-                    {
-                        include: [
-                            {
-                                model: User,
-                                as: "user",
-                            },
-                            {
-                                model: Agency,
-                                as: "agency",
-                            },
-                        ],
-                    }
-                );
-
-                if (coordinatorWithDetails) {
-                    await sendNotificationAndEmail({
-                        emailData: {
-                            to: coordinatorWithDetails.user.email,
-                            templateCategory: "AGENCY_COORDINATOR_APPROVAL",
-                            templateData: {
-                                agency_name: coordinatorWithDetails.agency.name,
-                                user_name:
-                                    coordinatorWithDetails.user.full_name,
-                                user_email: coordinatorWithDetails.user.email,
-                                user_first_name:
-                                    coordinatorWithDetails.user.first_name,
-                                user_last_name:
-                                    coordinatorWithDetails.user.last_name,
-                                contact_number:
-                                    coordinatorWithDetails.contact_number,
-                                approval_date: new Date().toLocaleDateString(),
-                                system_name: "PCMC Pediatric Blood Center",
-                                support_email: "support@pcmc.gov.ph",
-                                domain_url:
-                                    process.env.NEXT_PUBLIC_APP_URL ||
-                                    "https://blood-donation.pcmc.gov.ph",
-                            },
+        (async () => {
+            const coordinatorWithDetails = await AgencyCoordinator.findByPk(
+                data.id,
+                {
+                    include: [
+                        {
+                            model: User,
+                            as: "user",
                         },
-                    });
+                        {
+                            model: Agency,
+                            as: "agency",
+                        },
+                    ],
                 }
-            } catch (err) {
-                console.error("Coordinator approval email failed:", err);
-                // Don't fail the main operation if email fails
+            );
+            if (currentCoordinatorStatus === "for approval" && coordinatorWithDetails) {
+                
+                // 1. Handle approved application. Send system notification and email to the registering coordinator (template only) and notify all admins
+                if(data.status === "activated"){
+
+                    try {
+    
+                        await sendNotificationAndEmail({
+                            userIds: coordinatorWithDetails?.user_id,
+                            notificationData: {
+                                subject: "You have been approved as a coordinator",
+                                message: `Your account has been approved. You can now login to the system and start using it.`,
+                                type: "GENERAL",
+                                created_by: user.id,
+                            },
+                            emailData: {
+                                to: coordinatorWithDetails.user.email,
+                                templateCategory: "AGENCY_COORDINATOR_APPROVAL",
+                                templateData: {
+                                    agency_name: coordinatorWithDetails.agency.name,
+                                    user_name:
+                                        coordinatorWithDetails.user.full_name,
+                                    user_email: coordinatorWithDetails.user.email,
+                                    user_first_name:
+                                        coordinatorWithDetails.user.first_name,
+                                    user_last_name:
+                                        coordinatorWithDetails.user.last_name,
+                                    contact_number:
+                                        coordinatorWithDetails.contact_number,
+                                    approval_date: new Date().toLocaleDateString(),
+                                    system_name: "PCMC Pediatric Blood Center",
+                                    support_email: "support@pcmc.gov.ph",
+                                    domain_url:
+                                        process.env.NEXT_PUBLIC_APP_URL ||
+                                        "https://blood-donation.pcmc.gov.ph",
+                                },
+                            },
+                        });
+                        
+                    } catch (err) {
+                        console.error("Coordinator approval email failed:", err);
+                        // Don't fail the main operation if email fails
+                    }
+
+                    // 2. Notify all admins
+                    try {
+                        const adminRole = await Role.findOne({
+                            where: { role_name: "Admin" },
+                        });
+                        if (adminRole) {
+                            const adminUsers = await User.findAll({
+                                include: [
+                                    {
+                                        model: Role,
+                                        as: "roles",
+                                        where: { id: adminRole.id },
+                                        through: { attributes: [] },
+                                    },
+                                ],
+                            });
+                            if (adminUsers.length > 0) {
+                                await sendNotificationAndEmail({
+                                    userIds: adminUsers.map((a) => a.id),
+                                    notificationData: {
+                                        subject: "A coordinator application was approved",
+                                        message: `A coordinator - ${coordinator?.full_name || coordinator?.name} (${coordinator?.email}) was approved by ${user?.name} (${user?.email}).`,
+                                        type: "GENERAL",
+                                        reference_id: updatedCoordinator?.id,
+                                        created_by: user?.id,
+                                    },
+                                });
+                            }
+                        }
+                    } catch (err) {
+                        console.error("Admin notification (approval) failed:", err);
+                    }
+
+                }
+
+                // 2. Handle rejection: send email to coordinator, system notification to all admins
+                if ( data.status === "rejected") {
+                    try {
+                        const coordinatorWithDetails = await AgencyCoordinator.findByPk(
+                            data.id,
+                            {
+                                include: [
+                                    { model: User, as: "user" },
+                                    { model: Agency, as: "agency" },
+                                ],
+                            }
+                        );
+                        if (coordinatorWithDetails) {
+                            await sendNotificationAndEmail({
+                                // No system notification to coordinator (rejected)
+                                emailData: {
+                                    to: coordinatorWithDetails.user.email,
+                                    templateCategory: "COORDINATOR_REJECTION",
+                                    templateData: {
+                                        agency_name: coordinatorWithDetails.agency.name,
+                                        user_name: coordinatorWithDetails.user.full_name,
+                                        user_email: coordinatorWithDetails.user.email,
+                                        user_first_name: coordinatorWithDetails.user.first_name,
+                                        user_last_name: coordinatorWithDetails.user.last_name,
+                                        approval_status: "Rejected",
+                                        approval_date: new Date().toLocaleDateString(),
+                                        approval_reason: data.remarks || "Application requirements not met.",
+                                        system_name: "PCMC Pediatric Blood Center",
+                                        support_email: "support@pcmc.gov.ph",
+                                        domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                                    },
+                                },
+                            });
+                        }
+                    } catch (err) {
+                        console.error("Coordinator rejection email failed:", err);
+                    }
+                    // Notify all admins (MBDT team)
+                    try {
+                        const adminRole = await Role.findOne({
+                            where: { role_name: "Admin" },
+                        });
+                        if (adminRole) {
+                            const adminUsers = await User.findAll({
+                                include: [
+                                    {
+                                        model: Role,
+                                        as: "roles",
+                                        where: { id: adminRole.id },
+                                        through: { attributes: [] },
+                                    },
+                                ],
+                            });
+                            if (adminUsers.length > 0) {
+                                await sendNotificationAndEmail({
+                                    userIds: adminUsers.map((a) => a.id),
+                                    notificationData: {
+                                        subject: "A coordinator application was rejected",
+                                        message: `A coordinator - ${coordinator?.full_name || coordinator?.name} (${coordinator?.email}) was rejected by ${user?.name} (${user?.email}).`,
+                                        type: "GENERAL",
+                                        reference_id: updatedCoordinator?.id,
+                                        created_by: user?.id,
+                                    },
+                                });
+                            }
+                        }
+                    } catch (err) {
+                        console.error("Admin notification (rejection) failed:", err);
+                    }
+                }
+
+                
+            }else if(currentCoordinatorStatus === "activated" && data.status === "deactivated"){
+                // 3. Handle deactivation: send email to coordinator, system notification to all admins
+                if (data.status === "deactivated") {
+                    try {
+                        await sendNotificationAndEmail({
+                            emailData: {
+                                to: coordinatorWithDetails.user.email,
+                                templateCategory: "COORDINATOR_DEACTIVATION",
+                                templateData: {
+                                    agency_name: coordinatorWithDetails.agency.name,
+                                    user_name: coordinatorWithDetails.user.full_name,
+                                    user_email: coordinatorWithDetails.user.email,
+                                    user_first_name: coordinatorWithDetails.user.first_name,
+                                    user_last_name: coordinatorWithDetails.user.last_name,
+                                    deactivation_date: new Date().toLocaleDateString(),
+                                    deactivation_reason: data.remarks || "Account deactivated by agency/admin.",
+                                    system_name: "PCMC Pediatric Blood Center",
+                                    support_email: "support@pcmc.gov.ph",
+                                    domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                                },
+                            },
+                        });
+                    } catch (err) {
+                        console.error("Coordinator deactivation email failed:", err);
+                    }
+                    // Notify all admins (MBDT team)
+                    try {
+                        const adminRole = await Role.findOne({
+                            where: { role_name: "Admin" },
+                        });
+                        if (adminRole) {
+                            const adminUsers = await User.findAll({
+                                include: [
+                                    {
+                                        model: Role,
+                                        as: "roles",
+                                        where: { id: adminRole.id },
+                                        through: { attributes: [] },
+                                    },
+                                ],
+                            });
+                            if (adminUsers.length > 0) {
+                                await sendNotificationAndEmail({
+                                    userIds: adminUsers.map((a) => a.id),
+                                    notificationData: {
+                                        subject: "A coordinator account was deactivated",
+                                        message: `A coordinator - ${coordinator?.full_name || coordinator?.name} (${coordinator?.email}) was deactivated by ${user?.name} (${user?.email}).`,
+                                        type: "GENERAL",
+                                        reference_id: updatedCoordinator?.id,
+                                        created_by: user?.id,
+                                    },
+                                });
+                            }
+                        }
+                    } catch (err) {
+                        console.error("Admin notification (deactivation) failed:", err);
+                    }
+                }
+
+            }else if(currentCoordinatorStatus === "deactivated" && data.status === "activated"){
+                // 4. Handle reactivation: send email to coordinator, system notification to all admins
+                if (currentCoordinatorStatus === "deactivated" && data.status === "activated") {
+                    try {
+                        await sendNotificationAndEmail({
+                            emailData: {
+                                to: coordinatorWithDetails.user.email,
+                                templateCategory: "COORDINATOR_REACTIVATION",
+                                templateData: {
+                                    agency_name: coordinatorWithDetails.agency.name,
+                                    user_name: coordinatorWithDetails.user.full_name,
+                                    user_email: coordinatorWithDetails.user.email,
+                                    user_first_name: coordinatorWithDetails.user.first_name,
+                                    user_last_name: coordinatorWithDetails.user.last_name,
+                                    reactivation_date: new Date().toLocaleDateString(),
+                                    system_name: "PCMC Pediatric Blood Center",
+                                    support_email: "support@pcmc.gov.ph",
+                                    domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                                },
+                            },
+                        });
+                    } catch (err) {
+                        console.error("Coordinator reactivation email failed:", err);
+                    }
+                    // Notify all admins (MBDT team)
+                    try {
+                        const adminRole = await Role.findOne({
+                            where: { role_name: "Admin" },
+                        });
+                        if (adminRole) {
+                            const adminUsers = await User.findAll({
+                                include: [
+                                    {
+                                        model: Role,
+                                        as: "roles",
+                                        where: { id: adminRole.id },
+                                        through: { attributes: [] },
+                                    },
+                                ],
+                            });
+                            if (adminUsers.length > 0) {
+                                await sendNotificationAndEmail({
+                                    userIds: adminUsers.map((a) => a.id),
+                                    notificationData: {
+                                        subject: "A coordinator account was reactivated",
+                                        message: `A coordinator - ${coordinator?.full_name || coordinator?.name} (${coordinator?.email}) was reactivated by ${user?.name} (${user?.email}).`,
+                                        type: "GENERAL",
+                                        reference_id: updatedCoordinator?.id,
+                                        created_by: user?.id,
+                                    },
+                                });
+                            }
+                        }
+                    } catch (err) {
+                        console.error("Admin notification (reactivation) failed:", err);
+                    }
+                }
             }
-        }
+        })();
 
         const title = {
-            rejected: "Coordinator Rejected",
-            activated: "Coordinator Activated",
-            deactivated: "Coordinator Deactivated",
+            rejected: "Coordinator Application Rejected",
+            activated: "Coordinator Successfully Activated",
+            deactivated: "Coordinator Account Deactivated",
         };
+
         const text = {
-            rejected: "The coordinator was rejected successfully.",
-            activated: "The coordinator was activated successfully.",
-            deactivated: "The coordinator was deactivated successfully.",
+            rejected: "The coordinator's application has been reviewed and rejected. The applicant will be notified of this decision.",
+            activated: "The coordinator's account has been approved and activated. They can now log in and access the system. A notification and email have been sent to inform them of their new status.",
+            deactivated: "The coordinator's account has been deactivated. They will no longer be able to access the system until reactivated. A notification has been sent to inform them of this change.",
         };
 
         return {

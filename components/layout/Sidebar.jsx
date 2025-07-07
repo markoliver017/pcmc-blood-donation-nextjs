@@ -70,72 +70,78 @@ const Sidebar = ({ currentUser }) => {
             animate={{ width: isCollapsed ? "70px" : "290px" }}
             className="w-64 flex-none h-screen overflow-y-auto bg-gradient-to-r from-gray-700 to-gray-800 text-white px-4 pt-5 pb-10 shadow-xl"
         >
-            <div className="flex justify-end">
-                <button
-                    onClick={handleToggleSidebar}
-                    className="block p-3 text-right rounded-2xl dark:border-neutral dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-300"
-                >
-                    <GiHamburgerMenu
-                        className="inline-block"
-                        title="Collapse the left navigation pane"
-                    />
-                </button>
-            </div>
-            {/* User Profile */}
-            <div
-                className={clsx(
-                    "flex items-center mt-4 hover:bg-gray-500 truncate rounded cursor-pointer group transition ",
-                    !isCollapsed && "p-4"
-                )}
-            >
-                <Image
-                    src={currentUserAvatar}
-                    className="flex-none rounded-4xl transform transition-transform duration-300 group-hover:scale-120"
-                    width={50}
-                    height={50}
-                    layout="intrinsic"
-                    alt="Logo"
-                />
-
-                {!isCollapsed && (
-                    <div className="ml-2 transform transition-transform duration-300 group-hover:font-bold">
-                        <h5 className="text-lg font-bold transform transition-transform duration-300 group-hover:text-2xl">
-                            {currentUser.name || "Juan Dela Cruz"}
-                        </h5>
-                        <p className="text-slate-300 truncate w-full overflow-hidden whitespace-nowrap dark:text-slate-200">
-                            {currentRole?.role_name || "Donor"}
-                        </p>
-                        <p className="text-blue-300 truncate w-full overflow-hidden whitespace-nowrap dark:text-slate-200">
-                            {currentUser.email}
-                        </p>
-                    </div>
-                )}
-            </div>
-            <div className="mt-5">
-                {!isCollapsed && (
-                    <h2 className="text-base text-gray-500 font-bold">
-                        Main Navigation
-                    </h2>
-                )}
-                <nav className="mt-4">
-                    <ul>
-                        {currentRoleMenus.map((menu, index) => (
-                            <li key={index} className="mb-2">
-                                <SideNavLink
-                                    isCollapsed={isCollapsed}
-                                    menu={menu}
-                                    currentRoleUrl={
-                                        currentRole?.url || "/portal/donors"
-                                    }
+            <div className="flex flex-col h-full">
+                <div className="flex-1">
+                    <div className="flex justify-end">
+                                <button
+                                    onClick={handleToggleSidebar}
+                                    className="block p-3 text-right rounded-2xl dark:border-neutral dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-300"
+                                >
+                                    <GiHamburgerMenu
+                                        className="inline-block"
+                                        title="Collapse the left navigation pane"
+                                    />
+                                </button>
+                            </div>
+                            {/* User Profile */}
+                            <div
+                                className={clsx(
+                                    "flex items-center mt-4 hover:bg-gray-500 truncate rounded cursor-pointer group transition ",
+                                    !isCollapsed && "p-4"
+                                )}
+                            >
+                                <Image
+                                    src={currentUserAvatar}
+                                    className="flex-none rounded-4xl transform transition-transform duration-300 group-hover:scale-120"
+                                    width={50}
+                                    height={50}
+                                    layout="intrinsic"
+                                    alt="Logo"
                                 />
-                            </li>
-                        ))}
-                    </ul>
-                </nav>
+
+                                {!isCollapsed && (
+                                    <div className="ml-2 transform transition-transform duration-300 group-hover:font-bold">
+                                        <h5 className="text-lg font-bold transform transition-transform duration-300 group-hover:text-2xl">
+                                            {currentUser.name || "Juan Dela Cruz"}
+                                        </h5>
+                                        <p className="text-slate-300 truncate w-full overflow-hidden whitespace-nowrap dark:text-slate-200">
+                                            {currentRole?.role_name || "Donor"}
+                                        </p>
+                                        <p className="text-blue-300 truncate w-full overflow-hidden whitespace-nowrap dark:text-slate-200">
+                                            {currentUser.email}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="mt-5">
+                                {!isCollapsed && (
+                                    <h2 className="text-base text-gray-500 font-bold">
+                                        Main Navigation
+                                    </h2>
+                                )}
+                                <nav className="mt-4">
+                                    <ul>
+                                        {currentRoleMenus.map((menu, index) => (
+                                            <li key={index} className="mb-2">
+                                                <SideNavLink
+                                                    isCollapsed={isCollapsed}
+                                                    menu={menu}
+                                                    currentRoleUrl={
+                                                        currentRole?.url || "/portal/donors"
+                                                    }
+                                                />
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </nav>
+                            </div>
+                </div>
+                <div className="flex-none">
+                    
+                    <SessionTimer />
+                </div>
             </div>
-            <br />
-            <br />
-            <SessionTimer />
+            
         </motion.aside>
     );
 };
