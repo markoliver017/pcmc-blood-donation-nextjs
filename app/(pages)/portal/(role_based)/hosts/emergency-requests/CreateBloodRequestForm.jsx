@@ -35,19 +35,23 @@ import clsx from "clsx";
 import FormLogger from "@lib/utils/FormLogger";
 import { toastCatchError, toastError } from "@lib/utils/toastError.utils";
 import SweetAlert from "@components/ui/SweetAlert";
+import { uploadPicture } from "@/action/uploads";
+import { useState } from "react";
 
 const CreatableSelectNoSSR = dynamic(() => import("react-select/creatable"), {
     ssr: false,
 });
 
-export default function CreateBloodRequestForm({ onSuccess }) {
+export default function CreateBloodRequestForm({ agency_id, onSuccess }) {
     const { resolvedTheme } = useTheme();
     const queryClient = useQueryClient();
+    const [isUploading, setIsUploading] = useState(false);
 
     const form = useForm({
         mode: "onChange",
-        // resolver: zodResolver(bloodRequestSchema),
+        resolver: zodResolver(bloodRequestSchema),
         defaultValues: {
+            agency_id: agency_id,
             blood_component: "",
             blood_type_id: "",
             no_of_units: "",
@@ -125,16 +129,44 @@ export default function CreateBloodRequestForm({ onSuccess }) {
         },
     });
 
+    const onSubmit = async (formData) => {
+        SweetAlert({
+            title: "Submit Blood Request",
+            text: "Are you sure you want to submit this request?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Submit",
+            cancelButtonText: "Cancel",
+            onConfirm: async () => {
+                let uploadErrors = false;
+                if (formData.file && formData.file instanceof File) {
+                    setIsUploading(true);
+                    const result = await uploadPicture(formData.file);
+                    setIsUploading(false);
+                    if (result?.success) {
+                        formData.file_url = result.file_data?.url || null;
+                        setValue("file_url", result.file_data?.url);
+                    } else {
+                        uploadErrors = true;
+                        notify({ error: true, message: result.message });
+                    }
+                }
+                if (uploadErrors) return;
+                mutate(formData);
+            },
+        });
+    };
+
     const watchIsRegisteredDonor = form.watch("is_registered_donor");
 
     if (isLoadingDonors) return <Skeleton_form />;
-    console.log("formData", watch());
+    // console.log("formData", watch());
 
     return (
         <Form {...form}>
             <form
                 id="form-modal"
-                onSubmit={form.handleSubmit(mutate)}
+                onSubmit={handleSubmit(onSubmit)}
                 className="space-y-6"
             >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -422,14 +454,45 @@ export default function CreateBloodRequestForm({ onSuccess }) {
                             field={form.formState.errors.hospital_name}
                         />
                     </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">
+                            Diagnosis/Reason
+                        </label>
+                        <Textarea {...form.register("diagnosis")} />
+                        <FieldError field={form.formState.errors.diagnosis} />
+                    </div>
                 </div>
 
+
+                {/* File Upload Field */}
                 <div className="space-y-2">
-                    <label className="text-sm font-medium">
-                        Diagnosis/Reason
-                    </label>
-                    <Textarea {...form.register("diagnosis")} />
-                    <FieldError field={form.formState.errors.diagnosis} />
+                    <InlineLabel>Attachment (PDF only)</InlineLabel>
+                    <FormField
+                        control={form.control}
+                        name="file_url"
+                        render={({ field }) => (
+                            <FormItem>
+                                <Input
+                                    type="file"
+                                    accept="application/pdf"
+                                    onChange={e => {
+                                        const file = e.target.files[0];
+                                        if (file) {
+                                            field.onChange(file);
+                                        }
+                                    }}
+                                />
+                                {/* Show file name if already uploaded or selected */}
+                                {typeof field.value === "string" && field.value && (
+                                    <div className="text-xs text-green-600 dark:text-green-400 mt-1">PDF already uploaded: <a href={field.value} target="_blank" rel="noopener noreferrer" className="underline">View PDF</a></div>
+                                )}
+                                {field.value instanceof File && (
+                                    <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">Selected: {field.value.name}</div>
+                                )}
+                                <FieldError field={errors?.file_url} />
+                            </FormItem>
+                        )}
+                    />
                 </div>
 
                 <DisplayValidationErrors errors={form.formState.errors} />
@@ -453,7 +516,7 @@ export default function CreateBloodRequestForm({ onSuccess }) {
                 </div>
             </form>
             {/* <FormLogger watch={watch} errors={errors} /> */}
-            <LoadingModal isLoading={isPending}>Processing...</LoadingModal>
+            <LoadingModal isLoading={isPending || isUploading}>Processing...</LoadingModal>
         </Form>
     );
 }

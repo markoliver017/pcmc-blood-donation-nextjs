@@ -9,43 +9,24 @@ import { formatSeqObj } from "@lib/utils/object.utils";
 import { bloodRequestSchema } from "@lib/zod/bloodRequestSchema";
 import { Op } from "sequelize";
 import { handleValidationError } from "@lib/utils/validationErrorHandler";
+import { getAgencyId } from "./hostEventAction";
 
 export async function fetchBloodRequests() {
     try {
-        const session = await auth();
-        if (!session) {
+        const agency = await getAgencyId();
+        console.log("agency", agency);
+        if (agency?.success == false || !agency) {
             return {
                 success: false,
                 message: "You are not authorized to access this request.",
             };
         }
-
-        const { user } = session;
-        let whereClause = {};
-
-        // If user is an agency head, only show requests from their agency
-        if (user.role_name === "Agency Administrator") {
-            const agency = await sequelize.models.Agency.findOne({
-                where: { head_id: user.id },
-            });
-            if (agency) {
-                whereClause = {
-                    [Op.or]: [
-                        {
-                            user_id: {
-                                [Op.in]: sequelize.literal(
-                                    `(SELECT user_id FROM donors WHERE agency_id = ${agency.id})`
-                                ),
-                            },
-                        },
-                        { user_id: null }, // Include requests without registered donors
-                    ],
-                };
-            }
-        }
+        
 
         const requests = await BloodRequest.findAll({
-            where: whereClause,
+            where: {
+                agency_id: agency,
+            },
             include: [
                 {
                     model: User,
@@ -181,6 +162,58 @@ export async function fetchAgencyDonors() {
     }
 }
 
+export async function fetchAllBloodRequests() {
+    try {
+        const session = await auth();
+        if (!session) {
+            return {
+                success: false,
+                message: "You are not authorized to access this request.",
+            };
+        }
+        // Only allow admin roles
+        const { user } = session;
+        if (user.role_name !== "Admin") {
+            return {
+                success: false,
+                message: "You are not authorized to access this request.",
+            };
+        }
+        const requests = await BloodRequest.findAll({
+            include: [
+                {
+                    model: User,
+                    as: "user",
+                    attributes: { exclude: ["password", "email_verified"] },
+                    include: [
+                        {
+                            model: sequelize.models.Donor,
+                            as: "donor",
+                            include: [
+                                {
+                                    model: sequelize.models.Agency,
+                                    as: "agency",
+                                    attributes: ["id", "name"],
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    model: BloodType,
+                    as: "blood_type",
+                    attributes: ["id", "blood_type"],
+                },
+            ],
+            order: [["createdAt", "DESC"]],
+        });
+        return { success: true, data: formatSeqObj(requests) };
+    } catch (error) {
+        console.error(error);
+        return { success: false, message: extractErrorMessage(error) };
+    }
+}
+
 export async function storeBloodRequest(formData) {
     try {
         const session = await auth();
@@ -275,7 +308,7 @@ export async function storeBloodRequest(formData) {
     }
 }
 
-export async function updateBloodRequest(formData) {
+export async function updateBloodRequest(requestId, formData) {
     try {
         const session = await auth();
         if (!session) {
@@ -302,11 +335,18 @@ export async function updateBloodRequest(formData) {
         }
 
         const { data } = parsed;
+                // Convert empty strings in data to null
+        const formattedData = Object.fromEntries(
+            Object.entries(data).map(([key, value]) => [
+                key,
+                value === "" ? null : value,
+            ])
+        );
 
         const transaction = await sequelize.transaction();
 
         try {
-            const bloodRequest = await BloodRequest.findByPk(data.id, {
+            const bloodRequest = await BloodRequest.findByPk(requestId, {
                 transaction,
             });
 
@@ -317,7 +357,14 @@ export async function updateBloodRequest(formData) {
                 };
             }
 
-            const updatedBloodRequest = await bloodRequest.update(data, {
+            if (bloodRequest?.status !== "pending") {
+                return {
+                    success: false,
+                    message: `You are not allowed to update this request if the status is already "${bloodRequest?.status}".`,
+                };
+            }
+
+            const updatedBloodRequest = await bloodRequest.update(formattedData, {
                 transaction,
             });
 

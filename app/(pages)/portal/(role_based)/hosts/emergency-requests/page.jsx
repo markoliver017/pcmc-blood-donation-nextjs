@@ -12,6 +12,8 @@ import { fetchBloodRequests } from "@action/bloodRequestAction";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { ToastContainer } from "react-toastify";
 import UpdateBloodRequestForm from "./UpdateBloodRequestForm";
+import { getAgencyId } from "@/action/hostEventAction";
+import Skeleton_line from "@components/ui/skeleton_line";
 
 export default function EmergencyRequestPage() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -28,7 +30,14 @@ export default function EmergencyRequestPage() {
         queryFn: fetchBloodRequests,
     });
 
+    const { data: agency_id, isLoading: isLoadingAgencyId } = useQuery({
+        queryKey: ["agency_id"],
+        queryFn: getAgencyId,
+    });
+
     const requests = response?.success ? response.data : [];
+
+    if (isLoadingAgencyId) return <Skeleton_line />;
 
     // Calculate statistics
     const stats = {
@@ -101,6 +110,7 @@ export default function EmergencyRequestPage() {
                         New Blood Request
                     </DialogTitle>
                     <CreateBloodRequestForm
+                        agency_id={agency_id}
                         onSuccess={() => setIsCreateModalOpen(false)}
                     />
                 </DialogContent>
@@ -114,6 +124,7 @@ export default function EmergencyRequestPage() {
                     className="max-w-3xl max-h-[90vh] overflow-y-auto"
                     onInteractOutside={(event) => event.preventDefault()}
                 >
+                    <ToastContainer />
                     <DialogTitle className="text-xl font-bold">
                         Update Blood Request
                     </DialogTitle>

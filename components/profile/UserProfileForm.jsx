@@ -37,8 +37,6 @@ export default function UserProfileForm({ userQuery }) {
 
     const session = useSession();
 
-    console.log(">>>>>>>", session);
-
     const isDonor =
         session?.status === "authenticated" &&
         session.data?.user?.role_name === "Donor";
