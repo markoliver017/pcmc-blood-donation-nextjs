@@ -51,7 +51,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import SweetAlert from "@components/ui/SweetAlert";
-import { toastError } from "@lib/utils/toastError.utils";
+import { toastCatchError, toastError } from "@lib/utils/toastError.utils";
 import FormCardSingleForm from "@components/form/FormCardSingleForm";
 import Tiptap from "@components/reusable_components/Tiptap";
 import FormLogger from "@lib/utils/FormLogger";
@@ -72,11 +72,13 @@ import { cn } from "@lib/utils";
 import { PiCalendarCheckFill } from "react-icons/pi";
 import LoadingModal from "@components/layout/LoadingModal";
 import Skeleton_form from "@components/ui/Skeleton_form";
+import { NotifyEventRegistration } from "./NotifyEventRegistration";
 
 // import DrawerComponent from "@components/reusable_components/Drawer";
 
 export default function CreateEventForm({ agency }) {
     const router = useRouter();
+    const [isUploading, setIsUploading] = useState(false);
     const [calendarMonth, setCalendarMonth] = useState(new Date());
 
     const queryClient = useQueryClient();
@@ -118,6 +120,11 @@ export default function CreateEventForm({ agency }) {
             console.log("mutate error", error);
             if (error?.type === "validation" && error?.errorArr.length) {
                 toastError(error);
+            } else if (
+                error?.type === "catch_validation_error" &&
+                error?.errors?.length
+            ) {
+                toastCatchError(error, setError);
             } else {
                 // Handle server errors
 
@@ -157,6 +164,7 @@ export default function CreateEventForm({ agency }) {
         resetField,
         reset,
         setValue,
+        setError,
         handleSubmit,
         formState: { errors, isDirty },
     } = form;
@@ -169,22 +177,32 @@ export default function CreateEventForm({ agency }) {
     const onSubmit = async (formData) => {
         SweetAlert({
             title: "Confirmation",
-            text: "Are you sure you want to create new Blood Donation Event?",
+            text: "Are you sure you want to request a new Blood Donation Event?",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Confirm",
             cancelButtonText: "Cancel",
             onConfirm: async () => {
+                setIsUploading(true);
+                let uploadErrors = false;
                 const fileUrl = watch("file_url");
-
                 if (formData.file && !fileUrl) {
                     const result = await uploadPicture(formData.file);
                     if (result?.success) {
                         formData.file_url = result.file_data?.url || null;
                         setValue("file_url", result.file_data?.url);
+                    } else {
+                        uploadErrors = true;
+                        notify({
+                            error: true,
+                            message: result.message,
+                        });
                     }
                     console.log("Upload result:", result);
                 }
+                setIsUploading(false);
+                if (uploadErrors) return;
+
                 mutate(formData);
             },
         });
@@ -206,16 +224,20 @@ export default function CreateEventForm({ agency }) {
 
     return (
         <Form {...form}>
-            <LoadingModal imgSrc="/loader_2.gif" isLoading={isPending} />
+            <LoadingModal
+                imgSrc="/loader_2.gif"
+                isLoading={isPending || isUploading}
+            />
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="p-5 shadow border rounded-2xl"
             >
+                <NotifyEventRegistration />
                 <Card className="md:p-4 bg-slate-100 p-3">
                     <CardHeader className="text-2xl font-bold">
                         <CardTitle className="flex justify-between">
                             <div className="text-2xl">
-                                Create New Blood Donation Event
+                                Blood Donation Event Request
                             </div>
                             <div className="flex justify-end">
                                 <DrawerComponent
@@ -743,7 +765,7 @@ export default function CreateEventForm({ agency }) {
                                     ) : (
                                         <>
                                             <CalendarPlus2 />
-                                            Add Event
+                                            Request Event
                                         </>
                                     )}
                                 </button>

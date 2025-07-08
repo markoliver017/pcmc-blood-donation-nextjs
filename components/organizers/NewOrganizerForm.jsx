@@ -44,7 +44,7 @@ import Preloader3 from "@components/layout/Preloader3";
 import LoadingModal from "@components/layout/LoadingModal";
 import { FaHornbill } from "react-icons/fa";
 import { GiHornInternal } from "react-icons/gi";
-import { toastError } from "@lib/utils/toastError.utils";
+import { toastCatchError, toastError } from "@lib/utils/toastError.utils";
 
 const form_sections = [
     {
@@ -77,6 +77,7 @@ const form_sections = [
 
 export default function NewOrganizerForm({ role_name }) {
     const router = useRouter();
+    const [isUploading, setIsUploading] = useState(false);
 
     const { data: user_role, isLoading: user_role_loading } = useQuery({
         queryKey: ["role", role_name],
@@ -121,6 +122,11 @@ export default function NewOrganizerForm({ role_name }) {
         onError: (error) => {
             if (error?.type === "validation" && error?.errorArr.length) {
                 toastError(error);
+            } else if (
+                error?.type === "catch_validation_error" &&
+                error?.errors?.length
+            ) {
+                toastCatchError(error, setError);
             } else {
                 // Handle server errors
                 notify({
@@ -168,6 +174,7 @@ export default function NewOrganizerForm({ role_name }) {
         watch,
         handleSubmit,
         setValue,
+        setError,
         formState: { errors, isDirty },
     } = form;
 
@@ -185,24 +192,40 @@ export default function NewOrganizerForm({ role_name }) {
             cancelButtonText: "Cancel",
             onConfirm: async () => {
                 /* if no file_url but theres an uploaded file proceed to upload picture*/
+                let uploadErrors = false;
                 const fileUrl = watch("file_url");
                 if (data?.file && !fileUrl) {
+                    setIsUploading(true);
                     const result = await uploadPicture(data.file);
                     if (result?.success) {
                         data.file_url = result.file_data?.url || null;
                         setValue("file_url", result.file_data?.url);
+                    } else {
+                        uploadErrors = true;
+                        notify({
+                            error: true,
+                            message: result.message,
+                        });
                     }
-                    console.log("Upload result:", result);
                 }
                 const fileImage = watch("image");
                 if (data?.profile_picture && !fileImage) {
+                    setIsUploading(true);
                     const result = await uploadPicture(data.profile_picture);
                     if (result?.success) {
                         data.image = result.file_data?.url || null;
                         setValue("image", result.file_data?.url);
+                    } else {
+                        uploadErrors = true;
+                        notify({
+                            error: true,
+                            message: result.message,
+                        });
                     }
-                    console.log("Upload result:", result);
                 }
+                setIsUploading(false);
+                if (uploadErrors) return;
+
                 mutate(data);
             },
         });
@@ -297,7 +320,9 @@ export default function NewOrganizerForm({ role_name }) {
                             {sectionNo == 4 ? (
                                 <>
                                     <Preloader3 />
-                                    <LoadingModal isLoading={isPending}>
+                                    <LoadingModal
+                                        isLoading={isPending || isUploading}
+                                    >
                                         Errors
                                     </LoadingModal>
                                     <Card>

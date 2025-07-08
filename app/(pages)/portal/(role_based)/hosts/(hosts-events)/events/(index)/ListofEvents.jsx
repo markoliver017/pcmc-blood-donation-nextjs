@@ -7,7 +7,7 @@ import {
     getAllEventsByAgency,
     getForApprovalEventsByAgency,
 } from "@/action/hostEventAction";
-import { CalendarCheck, CalendarPlus, Check, FileClock } from "lucide-react";
+import { CalendarCheck, Check, FileClock } from "lucide-react";
 import Link from "next/link";
 import LoadingModal from "@components/layout/LoadingModal";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -22,9 +22,6 @@ import {
 import { MdBloodtype } from "react-icons/md";
 import { Card } from "@components/ui/card";
 import clsx from "clsx";
-import { toast } from "react-toastify";
-import { notifyRegistrationOpen } from "@/action/donorAction";
-import { NotifyEventRegistration } from "@components/events/NotifyEventRegistration";
 
 export default function ListofEvents() {
     const router = useRouter();
@@ -95,7 +92,6 @@ export default function ListofEvents() {
                 ]}
             />
             <LoadingModal imgSrc="/loader_3.gif" isLoading={isLoading} />
-            <NotifyEventRegistration />
 
             <Tabs
                 defaultValue={currentTab}

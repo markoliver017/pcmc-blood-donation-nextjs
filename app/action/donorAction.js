@@ -256,7 +256,8 @@ export async function storeDonor(formData) {
                             user_first_name: newUser.first_name,
                             user_last_name: newUser.last_name,
                             contact_number: newDonor?.contact_number,
-                            blood_type: bloodType?.blood_type || "Not specified",
+                            blood_type:
+                                bloodType?.blood_type || "Not specified",
                             agency_name: agency?.name || "Your agency",
                             registration_date: new Date().toLocaleDateString(),
                             system_name: "PCMC Pediatric Blood Center",
@@ -292,9 +293,7 @@ export async function storeDonor(formData) {
                             userIds: adminUsers.map((a) => a.id),
                             notificationData: {
                                 subject: "New Donor Registration",
-                                message: `A new donor (${
-                                    newUser.first_name
-                                } ${
+                                message: `A new donor (${newUser.first_name} ${
                                     newUser.last_name
                                 }) has registered and is pending approval for agency (${
                                     agency?.name || newDonor.agency_id
@@ -315,7 +314,7 @@ export async function storeDonor(formData) {
                 if (agency) {
                     // Get agency head
                     const agencyHead = await User.findByPk(agency.head_id);
-                    
+
                     // Get active coordinators
                     const activeCoordinators = await AgencyCoordinator.findAll({
                         where: {
@@ -325,7 +324,12 @@ export async function storeDonor(formData) {
                         include: {
                             model: User,
                             as: "user",
-                            attributes: ["id", "email", "first_name", "last_name"],
+                            attributes: [
+                                "id",
+                                "email",
+                                "first_name",
+                                "last_name",
+                            ],
                         },
                     });
 
@@ -334,7 +338,7 @@ export async function storeDonor(formData) {
                     if (agencyHead) {
                         recipients.push(agencyHead);
                     }
-                    activeCoordinators.forEach(coordinator => {
+                    activeCoordinators.forEach((coordinator) => {
                         if (coordinator.user) {
                             recipients.push(coordinator.user);
                         }
@@ -346,9 +350,7 @@ export async function storeDonor(formData) {
                             userIds: recipients.map((r) => r.id),
                             notificationData: {
                                 subject: "New Donor Registration",
-                                message: `A new donor (${
-                                    newUser.first_name
-                                } ${
+                                message: `A new donor (${newUser.first_name} ${
                                     newUser.last_name
                                 }) has registered and is awaiting approval for agency (${
                                     agency?.name || newDonor.agency_id
@@ -367,13 +369,18 @@ export async function storeDonor(formData) {
                                     templateCategory:
                                         "AGENCY_DONOR_REGISTRATION_NOTIFICATION_TO_AGENCY",
                                     templateData: {
-                                        agency_name: agency?.name || newDonor.agency_id,
+                                        agency_name:
+                                            agency?.name || newDonor.agency_id,
                                         donor_name: `${newUser.first_name} ${newUser.last_name}`,
                                         donor_email: newUser.email,
                                         donor_contact: newUser.contact_number,
-                                        blood_type: bloodType?.blood_type || "Not specified",
-                                        registration_date: new Date().toLocaleDateString(),
-                                        system_name: "PCMC Pediatric Blood Center",
+                                        blood_type:
+                                            bloodType?.blood_type ||
+                                            "Not specified",
+                                        registration_date:
+                                            new Date().toLocaleDateString(),
+                                        system_name:
+                                            "PCMC Pediatric Blood Center",
                                         support_email: "support@pcmc.gov.ph",
                                         domain_url:
                                             process.env.NEXT_PUBLIC_APP_URL ||
@@ -391,7 +398,7 @@ export async function storeDonor(formData) {
 
         return { success: true, data: newDonor.get({ plain: true }) };
     } catch (err) {
-        console.log("create donor error>>>>>>>", err)
+        console.log("create donor error>>>>>>>", err);
         logErrorToFile(err, "CREATE DONOR");
         await transaction.rollback();
 
@@ -792,8 +799,9 @@ export async function updateDonorStatus(formData) {
 
     try {
         // Check if status is changing from "for approval" to "activated"
-        const isActivation = donor.status === "for approval" && data.status === "activated";
-        
+        const isActivation =
+            donor.status === "for approval" && data.status === "activated";
+
         const updatedDonor = await donor.update(data, {
             transaction,
         });
@@ -815,7 +823,9 @@ export async function updateDonorStatus(formData) {
         try {
             agency = await Agency.findByPk(updatedDonor.agency_id);
             if (updatedDonor.blood_type_id) {
-                bloodType = await BloodType.findByPk(updatedDonor.blood_type_id);
+                bloodType = await BloodType.findByPk(
+                    updatedDonor.blood_type_id
+                );
             }
         } catch (err) {
             console.error("Failed to fetch agency or blood type:", err);
@@ -825,7 +835,15 @@ export async function updateDonorStatus(formData) {
             userId: user.id,
             controller: "donors",
             action: "UPDATE DONOR STATUS",
-            details: `Donor status updated from "${donor.status}" to "${data.status}" for Donor ID#: ${updatedDonor.id} (${user_donor.first_name} ${user_donor.last_name} - ${user_donor.email}). Agency: ${agency?.name || updatedDonor.agency_id}. ${data.remarks ? `Rejection reason: "${data.remarks}"` : ''} Updated by: ${user?.name} (${user.id})`,
+            details: `Donor status updated from "${donor.status}" to "${
+                data.status
+            }" for Donor ID#: ${updatedDonor.id} (${user_donor.first_name} ${
+                user_donor.last_name
+            } - ${user_donor.email}). Agency: ${
+                agency?.name || updatedDonor.agency_id
+            }. ${
+                data.remarks ? `Rejection reason: "${data.remarks}"` : ""
+            } Updated by: ${user?.name} (${user.id})`,
         });
 
         // Notifications and emails (only for activation from "for approval")
@@ -837,7 +855,8 @@ export async function updateDonorStatus(formData) {
                         userIds: updatedDonor.user_id,
                         notificationData: {
                             subject: "Donor Account Activated",
-                            message: "Congratulations! Your donor account has been activated. You can now participate in blood donation events.",
+                            message:
+                                "Congratulations! Your donor account has been activated. You can now participate in blood donation events.",
                             type: "GENERAL",
                             reference_id: updatedDonor.id,
                             created_by: user.id,
@@ -858,14 +877,18 @@ export async function updateDonorStatus(formData) {
                                 user_email: user_donor.email,
                                 user_first_name: user_donor.first_name,
                                 user_last_name: user_donor.last_name,
+                                contact_number: donor.contact_number,
                                 approval_status: "Approved",
                                 approval_date: new Date().toLocaleDateString(),
                                 approval_reason: "All requirements met",
                                 agency_name: agency?.name || "Your agency",
-                                blood_type: bloodType?.blood_type || "Not specified",
+                                blood_type:
+                                    bloodType?.blood_type || "Not specified",
                                 system_name: "PCMC Pediatric Blood Center",
                                 support_email: "support@pcmc.gov.ph",
-                                domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                                domain_url:
+                                    process.env.NEXT_PUBLIC_APP_URL ||
+                                    "https://blood-donation.pcmc.gov.ph",
                             },
                         },
                     });
@@ -894,7 +917,13 @@ export async function updateDonorStatus(formData) {
                                 userIds: adminUsers.map((a) => a.id),
                                 notificationData: {
                                     subject: "Donor Account Activated",
-                                    message: `A donor (${user_donor.first_name} ${user_donor.last_name}) has been activated for agency (${agency?.name || updatedDonor.agency_id}).`,
+                                    message: `A donor (${
+                                        user_donor.first_name
+                                    } ${
+                                        user_donor.last_name
+                                    }) has been activated for agency (${
+                                        agency?.name || updatedDonor.agency_id
+                                    }).`,
                                     type: "GENERAL",
                                     reference_id: updatedDonor.id,
                                     created_by: user.id,
@@ -911,26 +940,32 @@ export async function updateDonorStatus(formData) {
                     if (agency) {
                         // Get agency head
                         const agencyHead = await User.findByPk(agency.head_id);
-                        
+
                         // Get active coordinators
-                        const activeCoordinators = await AgencyCoordinator.findAll({
-                            where: {
-                                agency_id: agency.id,
-                                status: "activated",
-                            },
-                            include: {
-                                model: User,
-                                as: "user",
-                                attributes: ["id", "email", "first_name", "last_name"],
-                            },
-                        });
+                        const activeCoordinators =
+                            await AgencyCoordinator.findAll({
+                                where: {
+                                    agency_id: agency.id,
+                                    status: "activated",
+                                },
+                                include: {
+                                    model: User,
+                                    as: "user",
+                                    attributes: [
+                                        "id",
+                                        "email",
+                                        "first_name",
+                                        "last_name",
+                                    ],
+                                },
+                            });
 
                         // Collect all recipients (agency head + active coordinators)
                         const recipients = [];
                         if (agencyHead) {
                             recipients.push(agencyHead);
                         }
-                        activeCoordinators.forEach(coordinator => {
+                        activeCoordinators.forEach((coordinator) => {
                             if (coordinator.user) {
                                 recipients.push(coordinator.user);
                             }
@@ -964,7 +999,8 @@ export async function updateDonorStatus(formData) {
                         userIds: updatedDonor.user_id,
                         notificationData: {
                             subject: "Donor Application Status Update",
-                            message: "Your donor application has been reviewed. Please check your email for details.",
+                            message:
+                                "Your donor application has been reviewed. Please check your email for details.",
                             type: "GENERAL",
                             reference_id: updatedDonor.id,
                             created_by: user.id,
@@ -988,10 +1024,14 @@ export async function updateDonorStatus(formData) {
                                 agency_name: agency?.name || "Your agency",
                                 approval_status: "Rejected",
                                 approval_date: new Date().toLocaleDateString(),
-                                approval_reason: data.remarks || "Application requirements not met",
+                                approval_reason:
+                                    data.remarks ||
+                                    "Application requirements not met",
                                 system_name: "PCMC Pediatric Blood Center",
                                 support_email: "support@pcmc.gov.ph",
-                                domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                                domain_url:
+                                    process.env.NEXT_PUBLIC_APP_URL ||
+                                    "https://blood-donation.pcmc.gov.ph",
                             },
                         },
                     });
@@ -1020,7 +1060,13 @@ export async function updateDonorStatus(formData) {
                                 userIds: adminUsers.map((a) => a.id),
                                 notificationData: {
                                     subject: "Donor Application Rejected",
-                                    message: `A donor (${user_donor.first_name} ${user_donor.last_name}) has been rejected for agency (${agency?.name || updatedDonor.agency_id}).`,
+                                    message: `A donor (${
+                                        user_donor.first_name
+                                    } ${
+                                        user_donor.last_name
+                                    }) has been rejected for agency (${
+                                        agency?.name || updatedDonor.agency_id
+                                    }).`,
                                     type: "GENERAL",
                                     reference_id: updatedDonor.id,
                                     created_by: user.id,
@@ -1037,26 +1083,32 @@ export async function updateDonorStatus(formData) {
                     if (agency) {
                         // Get agency head
                         const agencyHead = await User.findByPk(agency.head_id);
-                        
+
                         // Get active coordinators
-                        const activeCoordinators = await AgencyCoordinator.findAll({
-                            where: {
-                                agency_id: agency.id,
-                                status: "activated",
-                            },
-                            include: {
-                                model: User,
-                                as: "user",
-                                attributes: ["id", "email", "first_name", "last_name"],
-                            },
-                        });
+                        const activeCoordinators =
+                            await AgencyCoordinator.findAll({
+                                where: {
+                                    agency_id: agency.id,
+                                    status: "activated",
+                                },
+                                include: {
+                                    model: User,
+                                    as: "user",
+                                    attributes: [
+                                        "id",
+                                        "email",
+                                        "first_name",
+                                        "last_name",
+                                    ],
+                                },
+                            });
 
                         // Collect all recipients (agency head + active coordinators)
                         const recipients = [];
                         if (agencyHead) {
                             recipients.push(agencyHead);
                         }
-                        activeCoordinators.forEach(coordinator => {
+                        activeCoordinators.forEach((coordinator) => {
                             if (coordinator.user) {
                                 recipients.push(coordinator.user);
                             }
@@ -1082,7 +1134,10 @@ export async function updateDonorStatus(formData) {
         }
 
         // Notifications and emails for deactivation
-        if (currentDonorStatus === "activated" && data.status === "deactivated") {
+        if (
+            currentDonorStatus === "activated" &&
+            data.status === "deactivated"
+        ) {
             (async () => {
                 // 1. Send email notification to donor
                 try {
@@ -1096,11 +1151,16 @@ export async function updateDonorStatus(formData) {
                                 user_first_name: user_donor.first_name,
                                 user_last_name: user_donor.last_name,
                                 agency_name: agency?.name || "Your agency",
-                                deactivation_date: new Date().toLocaleDateString(),
-                                deactivation_reason: data.remarks || "Account deactivated by agency/admin.",
+                                deactivation_date:
+                                    new Date().toLocaleDateString(),
+                                deactivation_reason:
+                                    data.remarks ||
+                                    "Account deactivated by agency/admin.",
                                 system_name: "PCMC Pediatric Blood Center",
                                 support_email: "support@pcmc.gov.ph",
-                                domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                                domain_url:
+                                    process.env.NEXT_PUBLIC_APP_URL ||
+                                    "https://blood-donation.pcmc.gov.ph",
                             },
                         },
                     });
@@ -1128,7 +1188,13 @@ export async function updateDonorStatus(formData) {
                                 userIds: adminUsers.map((a) => a.id),
                                 notificationData: {
                                     subject: "Donor Account Deactivated",
-                                    message: `A donor (${user_donor.first_name} ${user_donor.last_name}) has been deactivated for agency (${agency?.name || updatedDonor.agency_id}).`,
+                                    message: `A donor (${
+                                        user_donor.first_name
+                                    } ${
+                                        user_donor.last_name
+                                    }) has been deactivated for agency (${
+                                        agency?.name || updatedDonor.agency_id
+                                    }).`,
                                     type: "GENERAL",
                                     reference_id: updatedDonor.id,
                                     created_by: user.id,
@@ -1137,13 +1203,19 @@ export async function updateDonorStatus(formData) {
                         }
                     }
                 } catch (err) {
-                    console.error("Admin deactivation notification failed:", err);
+                    console.error(
+                        "Admin deactivation notification failed:",
+                        err
+                    );
                 }
             })();
         }
 
         // Notifications and emails for reactivation
-        if (currentDonorStatus === "deactivated" && data.status === "activated") {
+        if (
+            currentDonorStatus === "deactivated" &&
+            data.status === "activated"
+        ) {
             (async () => {
                 // 1. Send email notification to donor
                 try {
@@ -1157,10 +1229,13 @@ export async function updateDonorStatus(formData) {
                                 user_first_name: user_donor.first_name,
                                 user_last_name: user_donor.last_name,
                                 agency_name: agency?.name || "Your agency",
-                                reactivation_date: new Date().toLocaleDateString(),
+                                reactivation_date:
+                                    new Date().toLocaleDateString(),
                                 system_name: "PCMC Pediatric Blood Center",
                                 support_email: "support@pcmc.gov.ph",
-                                domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                                domain_url:
+                                    process.env.NEXT_PUBLIC_APP_URL ||
+                                    "https://blood-donation.pcmc.gov.ph",
                             },
                         },
                     });
@@ -1188,7 +1263,13 @@ export async function updateDonorStatus(formData) {
                                 userIds: adminUsers.map((a) => a.id),
                                 notificationData: {
                                     subject: "Donor Account Reactivated",
-                                    message: `A donor (${user_donor.first_name} ${user_donor.last_name}) has been reactivated for agency (${agency?.name || updatedDonor.agency_id}).`,
+                                    message: `A donor (${
+                                        user_donor.first_name
+                                    } ${
+                                        user_donor.last_name
+                                    }) has been reactivated for agency (${
+                                        agency?.name || updatedDonor.agency_id
+                                    }).`,
                                     type: "GENERAL",
                                     reference_id: updatedDonor.id,
                                     created_by: user.id,
@@ -1197,12 +1278,13 @@ export async function updateDonorStatus(formData) {
                         }
                     }
                 } catch (err) {
-                    console.error("Admin reactivation notification failed:", err);
+                    console.error(
+                        "Admin reactivation notification failed:",
+                        err
+                    );
                 }
             })();
         }
-
-        
 
         const title = {
             rejected: "Donor Application Rejected",
@@ -1210,9 +1292,12 @@ export async function updateDonorStatus(formData) {
             deactivated: "Donor Account Deactivated",
         };
         const text = {
-            rejected: "The donor's application has been reviewed and rejected. The applicant will be notified of this decision. ",
-            activated: "The donor's account has been approved and activated. They can now log in and participate in blood donation activities. A notification and email have been sent to inform them of their new status.",
-            deactivated: "The donor's account has been deactivated. They will no longer be able to access the system until reactivated. A notification has been sent to inform them of this change.",
+            rejected:
+                "The donor's application has been reviewed and rejected. The applicant will be notified of this decision. ",
+            activated:
+                "The donor's account has been approved and activated. They can now log in and participate in blood donation activities. A notification and email have been sent to inform them of their new status.",
+            deactivated:
+                "The donor's account has been deactivated. They will no longer be able to access the system until reactivated. A notification has been sent to inform them of this change.",
         };
 
         return {
@@ -1222,7 +1307,6 @@ export async function updateDonorStatus(formData) {
             text:
                 text[data.status] || "Donor application updated successfully.",
         };
-        
     } catch (err) {
         logErrorToFile(err, "UPDATE DONOR STATUS");
         await transaction.rollback();
@@ -1371,8 +1455,8 @@ export async function getDonorDashboard() {
                 next_eligible_date: donateNow
                     ? "Donate now"
                     : nextEligibleDate
-                        ? moment(nextEligibleDate).format("MMM.DD, YYYY")
-                        : null,
+                    ? moment(nextEligibleDate).format("MMM.DD, YYYY")
+                    : null,
                 days_remaining: donateNow ? 0 : daysRemaining,
                 latest_donation_date: latestDonationDate,
             },
@@ -1422,7 +1506,7 @@ export async function getLastDonationExamData(user_id) {
                         model: BloodDonationCollection,
                         as: "blood_collection",
                         attributes: ["id", "volume"],
-                        required: false,
+                        required: true,
                     },
                 },
             ],

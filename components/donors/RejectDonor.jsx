@@ -30,8 +30,8 @@ export default function RejectDonor({ donorId, className = "btn-error" }) {
     const closeDropdowns = () => {
         // Find and close any open dropdown menus
         const dropdowns = document.querySelectorAll('[data-state="open"]');
-        dropdowns.forEach(dropdown => {
-            const event = new Event('click', { bubbles: true });
+        dropdowns.forEach((dropdown) => {
+            const event = new Event("click", { bubbles: true });
             dropdown.dispatchEvent(event);
         });
     };
@@ -109,17 +109,17 @@ export default function RejectDonor({ donorId, className = "btn-error" }) {
     // Add global event listener to handle space key when dialog is open
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if (open && e.target.tagName === 'TEXTAREA' && e.key === ' ') {
+            if (open && e.target.tagName === "TEXTAREA" && e.key === " ") {
                 e.stopPropagation();
             }
         };
 
         if (open) {
-            document.addEventListener('keydown', handleKeyDown, true);
+            document.addEventListener("keydown", handleKeyDown, true);
         }
 
         return () => {
-            document.removeEventListener('keydown', handleKeyDown, true);
+            document.removeEventListener("keydown", handleKeyDown, true);
         };
     }, [open]);
 
@@ -152,14 +152,15 @@ export default function RejectDonor({ donorId, className = "btn-error" }) {
             >
                 <XIcon /> Reject
             </DialogTrigger>
-            <DialogContentNoX 
+            <DialogContentNoX
                 onClick={(e) => e.stopPropagation()}
                 onKeyDown={(e) => {
                     // Prevent dialog from interfering with textarea input
-                    if (e.target.tagName === 'TEXTAREA') {
+                    if (e.target.tagName === "TEXTAREA") {
                         e.stopPropagation();
                     }
                 }}
+                className="dark:text-white"
             >
                 <ToastContainer />
                 <DialogHeader>
@@ -186,7 +187,7 @@ export default function RejectDonor({ donorId, className = "btn-error" }) {
                             className="space-y-2"
                             onKeyDown={(e) => {
                                 // Prevent form from interfering with textarea input
-                                if (e.target.tagName === 'TEXTAREA') {
+                                if (e.target.tagName === "TEXTAREA") {
                                     e.stopPropagation();
                                 }
                             }}
@@ -207,13 +208,13 @@ export default function RejectDonor({ donorId, className = "btn-error" }) {
                                             {...field}
                                             onKeyDown={(e) => {
                                                 // Prevent space key from being intercepted
-                                                if (e.key === ' ') {
+                                                if (e.key === " ") {
                                                     e.stopPropagation();
                                                 }
                                             }}
                                             onKeyUp={(e) => {
                                                 // Prevent space key from being intercepted
-                                                if (e.key === ' ') {
+                                                if (e.key === " ") {
                                                     e.stopPropagation();
                                                 }
                                             }}

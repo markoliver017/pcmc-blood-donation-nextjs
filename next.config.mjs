@@ -48,6 +48,7 @@ const nextConfig = {
         serverActions: {
             bodySizeLimit: "2mb",
         },
+        // nodeMiddleware: true,
     },
     // env: {
     //     host: "http://localhost:3000",

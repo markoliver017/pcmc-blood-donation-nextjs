@@ -17,6 +17,7 @@ import {
 } from "@lib/models";
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
+import { handleValidationError } from "@lib/utils/validationErrorHandler";
 import {
     bloodDonationEventSchema,
     timeScheduleSchema,
@@ -563,11 +564,7 @@ export async function storeEvent(formData) {
         logErrorToFile(err, "STORE EVENT");
         await transaction.rollback();
 
-        return {
-            success: false,
-            type: "server",
-            message: err || "Unknown error",
-        };
+        return handleValidationError(err);
     }
 }
 

@@ -26,12 +26,11 @@ export default async function page() {
                     {
                         path: "/portal/hosts/events/create",
                         icon: <CalendarPlus className="w-4" />,
-                        title: "Create New Blood Donation Event",
+                        title: "New Blood Donation Event",
                     },
                 ]}
             />
             <div className="p-2 md:px-5">
-
                 <CreateEventForm agency={agency.get({ plain: true })} />
             </div>
         </>

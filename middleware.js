@@ -10,10 +10,9 @@ export async function middleware(request) {
         },
     });
 
-    response.headers.set('x-current-path', request.nextUrl.pathname);
+    response.headers.set("x-current-path", request.nextUrl.pathname);
 
     return response;
-
 }
 
 // See "Matching Paths" below to learn more

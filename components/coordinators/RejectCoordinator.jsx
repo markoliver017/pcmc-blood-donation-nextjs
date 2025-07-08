@@ -97,7 +97,7 @@ export default function RejectCoordinator({
             >
                 <XIcon /> Reject
             </DialogTrigger>
-            <DialogContentNoX>
+            <DialogContentNoX className="dark:text-white">
                 <ToastContainer />
                 <DialogHeader>
                     <div

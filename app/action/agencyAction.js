@@ -19,6 +19,7 @@ import {
 } from "@lib/zod/agencySchema";
 import { Op } from "sequelize";
 import { sendNotificationAndEmail } from "@lib/notificationEmail.utils";
+import { handleValidationError } from "@lib/utils/validationErrorHandler";
 
 export async function fetchAgencies() {
     // await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -495,7 +496,7 @@ export async function storeAgency(formData) {
                 console.error("User email failed:", err);
             }
 
-             // 3. Notify all admins
+            // 3. Notify all admins
             try {
                 const adminRole = await Role.findOne({
                     where: { role_name: "Admin" },
@@ -577,11 +578,11 @@ export async function storeAgency(formData) {
                 "Agency registration completed successfully. Notifications are being processed in the background.",
         };
     } catch (err) {
-        console.log("storeAgency error:", err);
+        // console.log("storeAgency error:", err);
         logErrorToFile(err, "CREATE AGENCY");
         await transaction.rollback();
 
-        return { success: false, message: extractErrorMessage(err) };
+        return handleValidationError(err);
     }
 }
 
@@ -688,7 +689,6 @@ export async function updateAgencyStatus(formData) {
 
     const agencyCurrentStatus = agency.status;
 
-
     if (!agency) {
         return {
             success: false,
@@ -715,7 +715,7 @@ export async function updateAgencyStatus(formData) {
     if (!agency_head) {
         return {
             success: false,
-            message: "Database Error: Agency Head was Not found",
+            message: "Database Error: Agency Head was Not found.",
         };
     }
 
@@ -742,11 +742,22 @@ export async function updateAgencyStatus(formData) {
             userId: user.id,
             controller: "agencies",
             action: "UPDATE AGENCY STATUS",
-            details: `Agency status updated from "${agencyCurrentStatus}" to "${data.status}" for Agency ID#: ${updatedAgency.id} (${updatedAgency.name}). Agency Head: ${agency_head.first_name} ${agency_head.last_name} (${agency_head.email}). ${data.remarks ? `Remarks: "${data.remarks}"` : ''} Updated by: ${user?.name} (${user?.email})`,
+            details: `Agency status updated from "${agencyCurrentStatus}" to "${
+                data.status
+            }" for Agency ID#: ${updatedAgency.id} (${
+                updatedAgency.name
+            }). Agency Head: ${agency_head.first_name} ${
+                agency_head.last_name
+            } (${agency_head.email}). ${
+                data.remarks ? `Remarks: "${data.remarks}"` : ""
+            } Updated by: ${user?.name} (${user?.email})`,
         });
 
         // Handle notifications and emails for agency status changes (non-critical operations)
-        if (agencyCurrentStatus === "for approval" && data.status === "activated") {
+        if (
+            agencyCurrentStatus === "for approval" &&
+            data.status === "activated"
+        ) {
             (async () => {
                 // 1. Notify the agency head about approval
                 try {
@@ -781,7 +792,9 @@ export async function updateAgencyStatus(formData) {
                                 approval_date: new Date().toLocaleDateString(),
                                 system_name: "PCMC Pediatric Blood Center",
                                 support_email: "support@pcmc.gov.ph",
-                                domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                                domain_url:
+                                    process.env.NEXT_PUBLIC_APP_URL ||
+                                    "https://blood-donation.pcmc.gov.ph",
                                 approved_by: `${user?.email}`,
                             },
                         },
@@ -828,7 +841,10 @@ export async function updateAgencyStatus(formData) {
         }
 
         // Handle notifications and emails for agency rejection (non-critical operations)
-        if (agencyCurrentStatus === "for approval" && data.status === "rejected") {
+        if (
+            agencyCurrentStatus === "for approval" &&
+            data.status === "rejected"
+        ) {
             (async () => {
                 // 1. Notify the agency head about rejection
                 try {
@@ -843,7 +859,10 @@ export async function updateAgencyStatus(formData) {
                         },
                     });
                 } catch (err) {
-                    console.error("Agency head rejection notification failed:", err);
+                    console.error(
+                        "Agency head rejection notification failed:",
+                        err
+                    );
                 }
 
                 // 2. Send email to agency head using AGENCY_REJECTION template
@@ -862,10 +881,14 @@ export async function updateAgencyStatus(formData) {
                                 agency_contact: updatedAgency.contact_number,
                                 approval_status: "Rejected",
                                 approval_date: new Date().toLocaleDateString(),
-                                rejection_reason: data.remarks || "Application requirements not met",
+                                rejection_reason:
+                                    data.remarks ||
+                                    "Application requirements not met",
                                 system_name: "PCMC Pediatric Blood Center",
                                 support_email: "support@pcmc.gov.ph",
-                                domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                                domain_url:
+                                    process.env.NEXT_PUBLIC_APP_URL ||
+                                    "https://blood-donation.pcmc.gov.ph",
                                 rejected_by: `${user?.name}`,
                             },
                         },
@@ -897,7 +920,15 @@ export async function updateAgencyStatus(formData) {
                                 userIds: adminUsers.map((a) => a.id),
                                 notificationData: {
                                     subject: "Agency Application Rejected",
-                                    message: `Agency "${updatedAgency.name}" has been rejected by ${user?.name} (${user?.email}). ${data.remarks ? `Reason: ${data.remarks}` : ''}`,
+                                    message: `Agency "${
+                                        updatedAgency.name
+                                    }" has been rejected by ${user?.name} (${
+                                        user?.email
+                                    }). ${
+                                        data.remarks
+                                            ? `Reason: ${data.remarks}`
+                                            : ""
+                                    }`,
                                     type: "GENERAL",
                                     reference_id: updatedAgency.id,
                                     created_by: user.id,
@@ -917,18 +948,35 @@ export async function updateAgencyStatus(formData) {
             deactivated: "Agency Successfully Deactivated",
         };
         const text = {
-            rejected: `The agency "${updatedAgency.name}" has been rejected successfully. ${data.remarks ? `Reason: ${data.remarks}` : 'No specific reason provided.'} The agency head (${agency_head.first_name} ${agency_head.last_name}) will be notified of this decision.`,
+            rejected: `The agency "${
+                updatedAgency.name
+            }" has been rejected successfully. ${
+                data.remarks
+                    ? `Reason: ${data.remarks}`
+                    : "No specific reason provided."
+            } The agency head (${agency_head.first_name} ${
+                agency_head.last_name
+            }) will be notified of this decision.`,
             activated: `Congratulations! The agency "${updatedAgency.name}" has been successfully activated and is now operational in the blood donation system. Agency Head: ${agency_head.first_name} ${agency_head.last_name} (${agency_head.email}). The agency can now participate in blood donation events and manage their coordinators.`,
-            deactivated: `The agency "${updatedAgency.name}" has been successfully deactivated. Agency Head: ${agency_head.first_name} ${agency_head.last_name} (${agency_head.email}). The agency will no longer be able to participate in blood donation activities until reactivated. ${data.remarks ? `Reason: ${data.remarks}` : ''}`,
+            deactivated: `The agency "${
+                updatedAgency.name
+            }" has been successfully deactivated. Agency Head: ${
+                agency_head.first_name
+            } ${agency_head.last_name} (${
+                agency_head.email
+            }). The agency will no longer be able to participate in blood donation activities until reactivated. ${
+                data.remarks ? `Reason: ${data.remarks}` : ""
+            }`,
         };
 
         return {
             success: true,
             data: updatedAgency.get({ plain: true }),
             title: title[data.status] || "Agency Status Updated",
-            text: text[data.status] || `The agency "${updatedAgency.name}" status has been updated successfully. Agency Head: ${agency_head.first_name} ${agency_head.last_name} (${agency_head.email}).`,
+            text:
+                text[data.status] ||
+                `The agency "${updatedAgency.name}" status has been updated successfully. Agency Head: ${agency_head.first_name} ${agency_head.last_name} (${agency_head.email}).`,
         };
-        
     } catch (err) {
         logErrorToFile(err, "UPDATE AGENCY STATUS");
         await transaction.rollback();
@@ -1026,8 +1074,6 @@ export async function storeCoordinator(formData) {
 
         // Notifications and emails (non-blocking)
         (async () => {
-
-
             // 1. Send system notification and email to the registering coordinator (template only)
             try {
                 await sendNotificationAndEmail({
@@ -1122,7 +1168,7 @@ export async function storeCoordinator(formData) {
                             created_by: newUser.id,
                         },
                     });
-                    
+
                     await sendNotificationAndEmail({
                         emailData: {
                             to: agencyHead.email,
