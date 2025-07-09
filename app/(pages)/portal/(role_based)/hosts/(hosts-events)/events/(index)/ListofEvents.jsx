@@ -101,7 +101,7 @@ export default function ListofEvents() {
                 <Link
                     href="/portal/hosts/events/create"
                     className={clsx(
-                        "btn absolute right-5 bg-gradient-to-b from-red-700 to-red-500 text-white text-2xl font-bold px-4 py-6 rounded-md shadow-[7px_10px_2px_0px_rgba(0,_0,_0,_0.3)] dark:shadow-red-400/60 hover:from-pink-500 hover:to-purple-400 hover:ring transition duration-300",
+                        "btn absolute right-5 bg-gradient-to-b from-red-700 to-red-500 text-white text-2xl font-bold px-4 py-6 rounded-md shadow-[7px_5px_2px_0px_rgba(0,_0,_0,_0.3)] dark:shadow-red-400/60 hover:from-pink-500 hover:to-purple-400 hover:ring transition duration-300",
                         approvedEvents.length === 0 && "hidden"
                     )}
                 >
@@ -153,7 +153,7 @@ export default function ListofEvents() {
                             </p>
                             <div className="mt-3">
                                 <Link
-                                    className="btn  bg-gradient-to-b from-red-700 to-red-500 text-white hover:from-pink-500 hover:to-purple-400 hover:ring transition duration-300"
+                                    className="btn bg-gradient-to-b from-red-700 to-red-500 text-white hover:from-pink-500 hover:to-purple-400 hover:ring transition duration-300"
                                     href="/portal/hosts/events/create"
                                 >
                                     <MdBloodtype className="h-4 w-4" />

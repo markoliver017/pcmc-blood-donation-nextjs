@@ -4,55 +4,52 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import { Plus } from "lucide-react";
-import BloodRequestList from "./BloodRequestList";
-import CreateBloodRequestForm from "./CreateBloodRequestForm";
 import { Dialog, DialogContent, DialogOverlay } from "@components/ui/dialog";
 import { useQuery } from "@tanstack/react-query";
-import { fetchBloodRequests } from "@action/bloodRequestAction";
+import { fetchAnnouncements } from "@action/announcementAction";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { ToastContainer } from "react-toastify";
-import UpdateBloodRequestForm from "./UpdateBloodRequestForm";
-import { getAgencyId } from "@/action/hostEventAction";
 import Skeleton_line from "@components/ui/skeleton_line";
+import AnnouncementsList from "@components/admin/announcements/AnnouncementsList";
+import CreateAnnouncementForm from "@components/admin/announcements/CreateAnnouncementForm";
+import UpdateAnnouncementForm from "@components/admin/announcements/UpdateAnnouncementForm";
 
-export default function EmergencyRequestPage() {
+export default function AdminAnnouncementsPage() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-    const [bloodRequestId, setBloodRequestId] = useState(null);
+    const [announcementId, setAnnouncementId] = useState(null);
 
     const handleUpdate = (id) => {
-        setBloodRequestId(id);
+        setAnnouncementId(id);
         setIsUpdateModalOpen(true);
     };
 
-    const { data: response } = useQuery({
-        queryKey: ["blood-requests"],
-        queryFn: fetchBloodRequests,
+    const { data: response, isLoading } = useQuery({
+        queryKey: ["admin-announcements"],
+        queryFn: fetchAnnouncements,
     });
 
-    const { data: agency_id, isLoading: isLoadingAgencyId } = useQuery({
-        queryKey: ["agency_id"],
-        queryFn: getAgencyId,
-    });
+    const announcements = response?.success ? response.data : [];
 
-    const requests = response?.success ? response.data : [];
-
-    if (isLoadingAgencyId) return <Skeleton_line />;
+    if (isLoading) return <Skeleton_line />;
 
     // Calculate statistics
     const stats = {
-        pending: requests.filter((req) => req.status === "pending").length,
-        fulfilled: requests.filter((req) => req.status === "fulfilled").length,
-        expired: requests.filter((req) => req.status === "expired").length,
+        total: announcements.length,
+        public: announcements.filter((announcement) => announcement.is_public)
+            .length,
+        agency_specific: announcements.filter(
+            (announcement) => !announcement.is_public
+        ).length,
     };
 
     return (
         <div className="container mx-auto p-6 space-y-6">
             <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold">Emergency Blood Requests</h1>
+                <h1 className="text-2xl font-bold">Announcements Management</h1>
                 <Button onClick={() => setIsCreateModalOpen(true)}>
                     <Plus className="w-4 h-4 mr-2" />
-                    New Request
+                    New Announcement
                 </Button>
             </div>
 
@@ -60,57 +57,54 @@ export default function EmergencyRequestPage() {
                 <Card>
                     <CardHeader>
                         <h3 className="text-lg font-semibold">
-                            Pending Requests
+                            Total Announcements
                         </h3>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-orange-500">
-                            {stats.pending}
+                        <div className="text-3xl font-bold text-blue-500">
+                            {stats.total}
                         </div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader>
                         <h3 className="text-lg font-semibold">
-                            Fulfilled Requests
+                            Public Announcements
                         </h3>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-green-500">
-                            {stats.fulfilled}
+                            {stats.public}
                         </div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader>
                         <h3 className="text-lg font-semibold">
-                            Expired Requests
+                            Agency-Specific
                         </h3>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-red-500">
-                            {stats.expired}
+                        <div className="text-3xl font-bold text-orange-500">
+                            {stats.agency_specific}
                         </div>
                     </CardContent>
                 </Card>
             </div>
 
-            <BloodRequestList handleUpdate={handleUpdate} />
+            <AnnouncementsList handleUpdate={handleUpdate} />
 
             <Dialog
                 open={isCreateModalOpen}
                 onOpenChange={setIsCreateModalOpen}
             >
                 <DialogContent
-                    className="max-w-3xl max-h-[90vh] overflow-y-auto dark:text-white"
+                    className="max-w-4xl max-h-[90vh] overflow-y-auto dark:text-white"
                     onInteractOutside={(event) => event.preventDefault()}
                 >
+                    <DialogTitle className="hidden"></DialogTitle>
                     <ToastContainer />
-                    <DialogTitle className="text-xl font-bold">
-                        New Blood Request
-                    </DialogTitle>
-                    <CreateBloodRequestForm
-                        agency_id={agency_id}
+                    <CreateAnnouncementForm
                         onSuccess={() => setIsCreateModalOpen(false)}
                     />
                 </DialogContent>
@@ -121,15 +115,13 @@ export default function EmergencyRequestPage() {
                 onOpenChange={setIsUpdateModalOpen}
             >
                 <DialogContent
-                    className="max-w-3xl max-h-[90vh] overflow-y-auto dark:text-white"
+                    className="max-w-4xl max-h-[90vh] overflow-y-auto dark:text-white"
                     onInteractOutside={(event) => event.preventDefault()}
                 >
+                    <DialogTitle className="hidden"></DialogTitle>
                     <ToastContainer />
-                    <DialogTitle className="text-xl font-bold">
-                        Update Blood Request
-                    </DialogTitle>
-                    <UpdateBloodRequestForm
-                        bloodRequestId={bloodRequestId}
+                    <UpdateAnnouncementForm
+                        announcementId={announcementId}
                         onSuccess={() => setIsUpdateModalOpen(false)}
                     />
                 </DialogContent>

@@ -265,7 +265,7 @@ export const getSingleStyle = (mode) => {
             //select input where u type
             ...provided,
             color: "green",
-            backgroundColor: mode === "light" ? "#F9FAFB" : "#1D232A",
+            backgroundColor: mode === "light" ? "#F9FAFB" : "inherit",
         }),
         singleValue: (provided, { data }) => {
             //selected value displayed in the select input

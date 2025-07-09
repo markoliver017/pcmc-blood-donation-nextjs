@@ -50,6 +50,7 @@ const nextConfig = {
         },
         // nodeMiddleware: true,
     },
+
     // env: {
     //     host: "http://localhost:3000",
     //     SESSION_PASSWORD: "this-is-a-very-long-super-secret-password-123",

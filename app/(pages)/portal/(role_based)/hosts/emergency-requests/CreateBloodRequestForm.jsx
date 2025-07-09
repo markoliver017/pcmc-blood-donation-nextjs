@@ -35,8 +35,15 @@ import clsx from "clsx";
 import FormLogger from "@lib/utils/FormLogger";
 import { toastCatchError, toastError } from "@lib/utils/toastError.utils";
 import SweetAlert from "@components/ui/SweetAlert";
-import { uploadPicture } from "@/action/uploads";
-import { useState } from "react";
+import { uploadPdfFile, uploadPicture } from "@/action/uploads";
+import { useEffect, useRef, useState } from "react";
+
+import { Eye, Plus } from "lucide-react";
+import { BiExport, BiTrash, BiUpload } from "react-icons/bi";
+const PdfPreviewComponent = dynamic(
+    () => import("@components/reusable_components/PdfPreviewComponent"),
+    { ssr: false }
+);
 
 const CreatableSelectNoSSR = dynamic(() => import("react-select/creatable"), {
     ssr: false,
@@ -46,6 +53,7 @@ export default function CreateBloodRequestForm({ agency_id, onSuccess }) {
     const { resolvedTheme } = useTheme();
     const queryClient = useQueryClient();
     const [isUploading, setIsUploading] = useState(false);
+    const fileInputRef = useRef(null);
 
     const form = useForm({
         mode: "onChange",
@@ -63,13 +71,17 @@ export default function CreateBloodRequestForm({ agency_id, onSuccess }) {
             patient_date_of_birth: "",
             patient_gender: "male",
             is_registered_donor: true,
+            file_url: null,
+            file: null,
         },
     });
     const {
         watch,
         handleSubmit,
         setValue,
+        resetField,
         setError,
+        reset,
         formState: { errors, isDirty },
     } = form;
 
@@ -129,6 +141,14 @@ export default function CreateBloodRequestForm({ agency_id, onSuccess }) {
         },
     });
 
+    const handleDrop = (e) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file && file.type === "application/pdf") {
+            setValue("file", file, { shouldValidate: true });
+        }
+    };
+
     const onSubmit = async (formData) => {
         SweetAlert({
             title: "Submit Blood Request",
@@ -141,7 +161,7 @@ export default function CreateBloodRequestForm({ agency_id, onSuccess }) {
                 let uploadErrors = false;
                 if (formData.file && formData.file instanceof File) {
                     setIsUploading(true);
-                    const result = await uploadPicture(formData.file);
+                    const result = await uploadPdfFile(formData.file);
                     setIsUploading(false);
                     if (result?.success) {
                         formData.file_url = result.file_data?.url || null;
@@ -158,6 +178,17 @@ export default function CreateBloodRequestForm({ agency_id, onSuccess }) {
     };
 
     const watchIsRegisteredDonor = form.watch("is_registered_donor");
+    useEffect(() => {
+        if (!watchIsRegisteredDonor) {
+            setValue("user_id", null);
+        }
+    }, [watchIsRegisteredDonor]);
+
+    const uploaded_file = watch("file");
+    const file =
+        !errors?.file && uploaded_file
+            ? URL.createObjectURL(uploaded_file)
+            : null;
 
     if (isLoadingDonors) return <Skeleton_form />;
     // console.log("formData", watch());
@@ -167,7 +198,7 @@ export default function CreateBloodRequestForm({ agency_id, onSuccess }) {
             <form
                 id="form-modal"
                 onSubmit={handleSubmit(onSubmit)}
-                className="space-y-6"
+                className="space-y-6 dark:text-white"
             >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
@@ -429,6 +460,7 @@ export default function CreateBloodRequestForm({ agency_id, onSuccess }) {
                         </label>
                         <Input
                             type="number"
+                            placeholder="Number of units"
                             min="1"
                             {...form.register("no_of_units", {
                                 valueAsNumber: true,
@@ -449,7 +481,10 @@ export default function CreateBloodRequestForm({ agency_id, onSuccess }) {
                         <label className="text-sm font-medium">
                             Hospital Name
                         </label>
-                        <Input {...form.register("hospital_name")} />
+                        <Input
+                            placeholder="Name of the hospital"
+                            {...form.register("hospital_name")}
+                        />
                         <FieldError
                             field={form.formState.errors.hospital_name}
                         />
@@ -458,37 +493,94 @@ export default function CreateBloodRequestForm({ agency_id, onSuccess }) {
                         <label className="text-sm font-medium">
                             Diagnosis/Reason
                         </label>
-                        <Textarea {...form.register("diagnosis")} />
+                        <Textarea
+                            className="dark:bg-inherit"
+                            placeholder="Patient's diagnosis"
+                            {...form.register("diagnosis")}
+                        />
                         <FieldError field={form.formState.errors.diagnosis} />
                     </div>
                 </div>
-
 
                 {/* File Upload Field */}
                 <div className="space-y-2">
                     <InlineLabel>Attachment (PDF only)</InlineLabel>
                     <FormField
                         control={form.control}
-                        name="file_url"
+                        name="file"
                         render={({ field }) => (
                             <FormItem>
                                 <Input
                                     type="file"
+                                    className="hidden"
                                     accept="application/pdf"
-                                    onChange={e => {
+                                    ref={fileInputRef}
+                                    onChange={(e) => {
                                         const file = e.target.files[0];
                                         if (file) {
                                             field.onChange(file);
                                         }
                                     }}
                                 />
+                                {!file && (
+                                    <div
+                                        className={clsx(
+                                            "flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-md p-6 cursor-pointer hover:border-blue-400 transition",
+                                            {
+                                                "bg-green-50 border-green-400":
+                                                    file,
+                                            }
+                                        )}
+                                        onDrop={handleDrop}
+                                        onDragOver={(e) => e.preventDefault()}
+                                        onClick={() =>
+                                            fileInputRef.current.click()
+                                        }
+                                    >
+                                        <BiUpload className="text-3xl text-gray-400 mb-2" />
+                                        <p className="text-sm text-gray-500">
+                                            Drag and drop a PDF file here, or{" "}
+                                            <span className="underline">
+                                                click to select
+                                            </span>
+                                        </p>
+                                        {file && (
+                                            <p className="mt-2 text-sm text-green-700 font-medium">
+                                                {file.name}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
                                 {/* Show file name if already uploaded or selected */}
-                                {typeof field.value === "string" && field.value && (
-                                    <div className="text-xs text-green-600 dark:text-green-400 mt-1">PDF already uploaded: <a href={field.value} target="_blank" rel="noopener noreferrer" className="underline">View PDF</a></div>
+                                {file && (
+                                    <div className="flex justify-between">
+                                        <PdfPreviewComponent
+                                            pdfSrc={file}
+                                            triggerContent={
+                                                <>
+                                                    <BiExport />
+                                                    Preview -
+                                                    <span className="text-xs">
+                                                        {field?.value?.name ||
+                                                            "Preview"}
+                                                    </span>
+                                                </>
+                                            }
+                                        />
+                                        <button
+                                            type="button"
+                                            className="btn btn-outline btn-error btn-sm"
+                                            onClick={() => {
+                                                resetField("file");
+                                                resetField("file_url");
+                                            }}
+                                        >
+                                            <BiTrash />
+                                            Remove
+                                        </button>
+                                    </div>
                                 )}
-                                {field.value instanceof File && (
-                                    <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">Selected: {field.value.name}</div>
-                                )}
+
                                 <FieldError field={errors?.file_url} />
                             </FormItem>
                         )}
@@ -508,15 +600,19 @@ export default function CreateBloodRequestForm({ agency_id, onSuccess }) {
                     </Button>
                     <Button
                         type="submit"
+                        variant="outline"
                         disabled={!form.formState.isDirty || isPending}
-                        className="focus:ring-1 focus:ring-offset-2 focus:ring-blue-500"
+                        className=" focus:ring-1 focus:ring-offset-2 focus:ring-blue-500"
                     >
+                        <Plus />
                         {isPending ? "Creating..." : "Create Request"}
                     </Button>
                 </div>
             </form>
             {/* <FormLogger watch={watch} errors={errors} /> */}
-            <LoadingModal isLoading={isPending || isUploading}>Processing...</LoadingModal>
+            <LoadingModal isLoading={isPending || isUploading}>
+                Processing...
+            </LoadingModal>
         </Form>
     );
 }

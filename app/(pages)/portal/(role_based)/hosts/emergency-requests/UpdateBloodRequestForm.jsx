@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -35,21 +35,36 @@ import { toastCatchError, toastError } from "@lib/utils/toastError.utils";
 import SweetAlert from "@components/ui/SweetAlert";
 import FormLogger from "@lib/utils/FormLogger";
 import InlineLabel from "@components/form/InlineLabel";
-import { uploadPicture } from "@/action/uploads";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from "@components/ui/card";
+import { uploadPdfFile, uploadPicture } from "@/action/uploads";
+import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent,
+    CardFooter,
+    CardDescription,
+} from "@components/ui/card";
 import React from "react";
+import { BiExport, BiTrash, BiUpload } from "react-icons/bi";
+
+// Disable SSR for PdfPreviewComponent
+const PdfPreviewComponent = dynamic(
+    () => import("@components/reusable_components/PdfPreviewComponent"),
+    { ssr: false }
+);
 
 const CreatableSelectNoSSR = dynamic(() => import("react-select/creatable"), {
     ssr: false,
 });
 
 export default function UpdateBloodRequestForm({ bloodRequestId, onSuccess }) {
-
     // Fetch the blood request to update
     const { data: requestResponse, isLoading: isLoadingRequest } = useQuery({
         queryKey: ["blood-request", bloodRequestId],
         queryFn: () => fetchBloodRequest(bloodRequestId),
         enabled: !!bloodRequestId,
+        staleTime: 0,
+        cacheTime: 0,
     });
 
     const req = requestResponse?.data;
@@ -75,7 +90,6 @@ export default function UpdateBloodRequestForm({ bloodRequestId, onSuccess }) {
     });
 
     // Setup form
-    
 
     if (!requestResponse?.success) {
         return (
@@ -84,22 +98,24 @@ export default function UpdateBloodRequestForm({ bloodRequestId, onSuccess }) {
             </div>
         );
     }
-    
+
     if (isLoadingRequest || isLoadingDonors) return <Skeleton_form />;
 
-    return <BloodRequestForm
-                req={req}
-                donors={donors}
-                bloodTypes={bloodTypes}
-                onSuccess={onSuccess}
-            />;
+    return (
+        <BloodRequestForm
+            req={req}
+            donors={donors}
+            bloodTypes={bloodTypes}
+            onSuccess={onSuccess}
+        />
+    );
 }
-    
-function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
+
+function BloodRequestForm({ req, donors, bloodTypes, onSuccess }) {
     const { resolvedTheme } = useTheme();
     const queryClient = useQueryClient();
     const [isUploading, setIsUploading] = React.useState(false);
-
+    const fileInputRef = useRef(null);
 
     const form = useForm({
         mode: "onChange",
@@ -110,9 +126,7 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
             blood_component: req?.blood_component
                 ? String(req.blood_component)
                 : "",
-            blood_type_id: req?.blood_type_id
-                ? String(req.blood_type_id)
-                : "",
+            blood_type_id: req?.blood_type_id ? String(req.blood_type_id) : "",
             no_of_units: req?.no_of_units || "",
             diagnosis: req?.diagnosis || "",
             date: req?.date ? req.date.slice(0, 10) : "",
@@ -128,7 +142,6 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
             is_registered_donor: req?.user_id ? true : false,
             file_url: req?.file_url || null,
             file: null,
-                
         },
     });
     const {
@@ -136,10 +149,10 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
         handleSubmit,
         setValue,
         setError,
-        reset,
+        resetField,
+
         formState: { errors, isDirty },
     } = form;
-
 
     // Mutation for update
     const { mutate, isPending } = useMutation({
@@ -152,6 +165,9 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
         },
         onSuccess: (response) => {
             queryClient.invalidateQueries({ queryKey: ["blood-requests"] });
+            queryClient.invalidateQueries({
+                queryKey: ["blood-request", req.id],
+            });
             SweetAlert({
                 title: "Request Updated",
                 text: response.message || "Blood request updated successfully",
@@ -178,7 +194,28 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
     });
 
     const watchIsRegisteredDonor = watch("is_registered_donor");
-    
+    useEffect(() => {
+        if (!watchIsRegisteredDonor) {
+            setValue("user_id", null);
+        }
+    }, [watchIsRegisteredDonor]);
+
+    const uploaded_file = watch("file");
+    const uploaded_file_url = watch("file_url");
+    const file =
+        !errors?.file && uploaded_file
+            ? URL.createObjectURL(uploaded_file)
+            : uploaded_file_url || null;
+
+    console.log("file_url", watch("file_url"));
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file && file.type === "application/pdf") {
+            setValue("file", file, { shouldValidate: true });
+        }
+    };
 
     const onSubmit = async (formData) => {
         SweetAlert({
@@ -192,7 +229,7 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
                 let uploadErrors = false;
                 if (formData.file && formData.file instanceof File) {
                     setIsUploading(true);
-                    const result = await uploadPicture(formData.file);
+                    const result = await uploadPdfFile(formData.file);
                     setIsUploading(false);
                     if (result?.success) {
                         formData.file_url = result.file_data?.url || null;
@@ -209,10 +246,12 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
     };
 
     return (
-        <Card className="max-w-3xl mx-auto my-8 shadow-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
+        <Card className="my-8 shadow-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
             <CardHeader>
                 <CardTitle className="text-2xl">Update Blood Request</CardTitle>
-                <CardDescription>Update the details and attach a PDF if needed.</CardDescription>
+                <CardDescription>
+                    Update the details and attach a PDF if needed.
+                </CardDescription>
             </CardHeader>
             <CardContent>
                 <Form {...form}>
@@ -227,12 +266,12 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
                                 name="blood_component"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-
                                         <label className="text-sm font-medium">
                                             Blood Component
                                         </label>
                                         <Select
-                                            onValueChange={field.onChange} defaultValue={field.value}
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
                                             disabled={req?.status !== "pending"}
                                             tabIndex={1}
                                         >
@@ -243,13 +282,17 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
                                                 <SelectItem value="whole blood">
                                                     Whole Blood
                                                 </SelectItem>
-                                                <SelectItem value="plasma">Plasma</SelectItem>
+                                                <SelectItem value="plasma">
+                                                    Plasma
+                                                </SelectItem>
                                                 <SelectItem value="platelets">
                                                     Platelets
                                                 </SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <FieldError field={errors?.blood_component} />
+                                        <FieldError
+                                            field={errors?.blood_component}
+                                        />
                                     </FormItem>
                                 )}
                             />
@@ -263,7 +306,8 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
                                             Blood Type
                                         </label>
                                         <Select
-                                            onValueChange={field.onChange} defaultValue={field.value}
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
                                             disabled={req?.status !== "pending"}
                                             tabIndex={2}
                                         >
@@ -281,7 +325,9 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
                                                 ))}
                                             </SelectContent>
                                         </Select>
-                                        <FieldError field={errors?.blood_type_id} />
+                                        <FieldError
+                                            field={errors?.blood_type_id}
+                                        />
                                     </FormItem>
                                 )}
                             />
@@ -305,15 +351,22 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
                                                             : "radio-info"
                                                     )}
                                                     tabIndex={3}
-                                                    disabled={req?.status !== "pending"}
+                                                    disabled={
+                                                        req?.status !==
+                                                        "pending"
+                                                    }
                                                     value={true}
-                                                    checked={field.value === true}
+                                                    checked={
+                                                        field.value === true
+                                                    }
                                                     onChange={() =>
                                                         field.onChange(true)
                                                     }
                                                 />
                                                 <span
-                                                    className={clsx("label-text mr-2")}
+                                                    className={clsx(
+                                                        "label-text mr-2"
+                                                    )}
                                                 >
                                                     Yes
                                                 </span>
@@ -329,13 +382,17 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
                                                     )}
                                                     tabIndex={1}
                                                     value={false}
-                                                    checked={field.value === false}
+                                                    checked={
+                                                        field.value === false
+                                                    }
                                                     onChange={() =>
                                                         field.onChange(false)
                                                     }
                                                 />
                                                 <span
-                                                    className={clsx("label-text mr-2")}
+                                                    className={clsx(
+                                                        "label-text mr-2"
+                                                    )}
                                                 >
                                                     No
                                                 </span>
@@ -358,26 +415,33 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
                                         control={form.control}
                                         name="user_id"
                                         render={({
-                                            field: { onChange, value, name, ref },
+                                            field: {
+                                                onChange,
+                                                value,
+                                                name,
+                                                ref,
+                                            },
                                         }) => {
                                             const donorsOptions = donors?.map(
                                                 (donor) => ({
-                                                    value: donor?.user?.full_name,
-                                                    label: donor?.user?.full_name,
+                                                    value: donor?.user
+                                                        ?.full_name,
+                                                    label: donor?.user
+                                                        ?.full_name,
                                                     user_id: donor?.user?.id,
                                                 })
                                             );
                                             const selectedOption =
                                                 donorsOptions.find(
                                                     (option) =>
-                                                        option?.user_id === value
+                                                        option?.user_id ===
+                                                        value
                                                 ) || null;
                                             return (
                                                 <CreatableSelectNoSSR
                                                     name={name}
                                                     ref={ref}
                                                     value={selectedOption}
-                                                    
                                                     onChange={(option) => {
                                                         // Clear patient fields when donor is selected
                                                         if (option?.value) {
@@ -404,9 +468,17 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
                                                         resolvedTheme
                                                     )}
                                                     tabIndex={4}
-                                                    isOptionDisabled={() => req?.status !== "pending"}
-                                                    isClearable={req?.status === "pending"}
-                                                    isValidNewOption={() => false}
+                                                    isOptionDisabled={() =>
+                                                        req?.status !==
+                                                        "pending"
+                                                    }
+                                                    isClearable={
+                                                        req?.status ===
+                                                        "pending"
+                                                    }
+                                                    isValidNewOption={() =>
+                                                        false
+                                                    }
                                                     placeholder="Search for registered donors..."
                                                     options={donorsOptions}
                                                     className="react-select"
@@ -428,11 +500,14 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
                                         <label className="text-sm font-medium">
                                             Patient Name
                                         </label>
-                                        <Input {...form.register("patient_name")}
+                                        <Input
+                                            {...form.register("patient_name")}
                                             disabled={req?.status !== "pending"}
                                             tabIndex={5}
                                         />
-                                        <FieldError field={errors?.patient_name} />
+                                        <FieldError
+                                            field={errors?.patient_name}
+                                        />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium">
@@ -440,12 +515,16 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
                                         </label>
                                         <Input
                                             type="date"
-                                            {...form.register("patient_date_of_birth")}
+                                            {...form.register(
+                                                "patient_date_of_birth"
+                                            )}
                                             disabled={req?.status !== "pending"}
                                             tabIndex={6}
                                         />
                                         <FieldError
-                                            field={errors?.patient_date_of_birth}
+                                            field={
+                                                errors?.patient_date_of_birth
+                                            }
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -454,7 +533,10 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
                                         </label>
                                         <Select
                                             onValueChange={(value) =>
-                                                setValue("patient_gender", value)
+                                                setValue(
+                                                    "patient_gender",
+                                                    value
+                                                )
                                             }
                                             value={String(
                                                 watch("patient_gender") ?? ""
@@ -474,7 +556,9 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
                                                 </SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <FieldError field={errors?.patient_gender} />
+                                        <FieldError
+                                            field={errors?.patient_gender}
+                                        />
                                     </div>
                                 </>
                             )}
@@ -524,6 +608,7 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
                                     Diagnosis/Reason
                                 </label>
                                 <Textarea
+                                    className="dark:bg-inherit"
                                     {...form.register("diagnosis")}
                                     disabled={req?.status !== "pending"}
                                     tabIndex={11}
@@ -536,28 +621,87 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
                             <InlineLabel>Attachment (PDF only)</InlineLabel>
                             <FormField
                                 control={form.control}
-                                name="file_url"
+                                name="file"
                                 render={({ field }) => (
                                     <FormItem>
                                         <Input
                                             type="file"
+                                            className="hidden"
                                             accept="application/pdf"
-                                            onChange={e => {
+                                            ref={fileInputRef}
+                                            onChange={(e) => {
                                                 const file = e.target.files[0];
                                                 if (file) {
                                                     field.onChange(file);
                                                 }
                                             }}
-                                            disabled={req?.status !== "pending"}
-                                            tabIndex={12}
                                         />
+                                        {!file && (
+                                            <div
+                                                className={clsx(
+                                                    "flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-md p-6 cursor-pointer hover:border-blue-400 transition",
+                                                    {
+                                                        "bg-green-50 border-green-400":
+                                                            file,
+                                                    }
+                                                )}
+                                                onDrop={handleDrop}
+                                                onDragOver={(e) =>
+                                                    e.preventDefault()
+                                                }
+                                                onClick={() =>
+                                                    fileInputRef.current.click()
+                                                }
+                                            >
+                                                <BiUpload className="text-3xl text-gray-400 mb-2" />
+                                                <p className="text-sm text-gray-500">
+                                                    Drag and drop a PDF file
+                                                    here, or{" "}
+                                                    <span className="underline">
+                                                        click to select
+                                                    </span>
+                                                </p>
+                                                {file && (
+                                                    <p className="mt-2 text-sm text-green-700 font-medium">
+                                                        {file.name}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        )}
                                         {/* Show file name if already uploaded or selected */}
-                                        {typeof field.value === "string" && field.value && (
-                                            <div className="text-xs text-green-600 dark:text-green-400 mt-1">PDF already uploaded: <a href={field.value} target="_blank" rel="noopener noreferrer" className="underline">View PDF</a></div>
+                                        {file && (
+                                            <div className="flex flex-wrap justify-between">
+                                                <PdfPreviewComponent
+                                                    pdfSrc={file}
+                                                    triggerContent={
+                                                        <>
+                                                            <BiExport />
+                                                            Preview -
+                                                            <span className="text-xs max-w-56 truncate text-ellipsis">
+                                                                {field?.value
+                                                                    ?.name ||
+                                                                    uploaded_file_url}
+                                                            </span>
+                                                        </>
+                                                    }
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline btn-error btn-sm"
+                                                    onClick={() => {
+                                                        resetField("file");
+                                                        setValue(
+                                                            "file_url",
+                                                            null
+                                                        );
+                                                    }}
+                                                >
+                                                    <BiTrash />
+                                                    Remove
+                                                </button>
+                                            </div>
                                         )}
-                                        {field.value instanceof File && (
-                                            <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">Selected: {field.value.name}</div>
-                                        )}
+
                                         <FieldError field={errors?.file_url} />
                                     </FormItem>
                                 )}
@@ -575,16 +719,25 @@ function BloodRequestForm({req, donors, bloodTypes, onSuccess}){
                             </Button>
                             <Button
                                 type="submit"
-                                disabled={!isDirty || isPending || isUploading || req?.status !== "pending"}
+                                variant="outline"
+                                disabled={
+                                    !isDirty ||
+                                    isPending ||
+                                    isUploading ||
+                                    req?.status !== "pending"
+                                }
                                 tabIndex={13}
-                                className="focus:ring-1 focus:ring-offset-2 focus:ring-blue-500"
                             >
-                                {(isPending || isUploading) ? "Updating..." : "Update Request"}
+                                {isPending || isUploading
+                                    ? "Updating..."
+                                    : "Update Request"}
                             </Button>
                         </CardFooter>
                     </form>
                     {/* <FormLogger watch={watch} data={req} /> */}
-                    <LoadingModal isLoading={isPending || isUploading}>Processing...</LoadingModal>
+                    <LoadingModal isLoading={isPending || isUploading}>
+                        Processing...
+                    </LoadingModal>
                 </Form>
             </CardContent>
         </Card>

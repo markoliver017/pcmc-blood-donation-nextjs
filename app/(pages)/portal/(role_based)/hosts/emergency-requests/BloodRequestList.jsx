@@ -24,7 +24,10 @@ const getColumns = (handleUpdate) => {
     const queryClient = useQueryClient();
     const { mutate: cancelRequest, isPending: isCancelling } = useMutation({
         mutationFn: async (id) => {
-            const res = await updateBloodRequestStatus({ id, status: "cancelled" });
+            const res = await updateBloodRequestStatus({
+                id,
+                status: "cancelled",
+            });
             if (!res.success) throw res;
             return res;
         },
@@ -33,7 +36,10 @@ const getColumns = (handleUpdate) => {
             notify({ message: "Request cancelled successfully" });
         },
         onError: (error) => {
-            notify({ error: true, message: error?.message || "Failed to cancel request" });
+            notify({
+                error: true,
+                message: error?.message || "Failed to cancel request",
+            });
         },
     });
     return [
@@ -70,7 +76,8 @@ const getColumns = (handleUpdate) => {
         {
             accessorKey: "date",
             header: "Date Needed",
-            cell: ({ row }) => format(new Date(row.original.date), "MMM dd, yyyy"),
+            cell: ({ row }) =>
+                format(new Date(row.original.date), "MMM dd, yyyy"),
         },
         {
             accessorKey: "status",
@@ -103,8 +110,14 @@ const getColumns = (handleUpdate) => {
                             onClick={() => handleUpdate(id)}
                             className="flex items-center gap-1"
                         >
-                            {data.status !== "pending" ? <Eye className="w-4 h-4" /> : <Pencil className="w-4 h-4" />}
-                            <span className="hidden md:inline">{data.status !== "pending" ? "View" : "Update"}</span>
+                            {data.status !== "pending" ? (
+                                <Eye className="w-4 h-4" />
+                            ) : (
+                                <Pencil className="w-4 h-4" />
+                            )}
+                            <span className="hidden md:inline">
+                                {data.status !== "pending" ? "View" : "Update"}
+                            </span>
                         </Button>
                         <Button
                             size="sm"
@@ -137,6 +150,7 @@ export default function BloodRequestList({ handleUpdate }) {
     const { data: response, isLoading } = useQuery({
         queryKey: ["blood-requests"],
         queryFn: fetchBloodRequests,
+        stale: 0,
     });
 
     const requests = response?.success ? response.data : [];
@@ -146,7 +160,6 @@ export default function BloodRequestList({ handleUpdate }) {
         return <div className="text-center py-4">Loading...</div>;
     }
 
-
     if (!response?.success) {
         return (
             <div className="text-center py-4 text-red-500">
@@ -155,10 +168,8 @@ export default function BloodRequestList({ handleUpdate }) {
         );
     }
 
-    
-
     return (
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-6">
             <DataTable columns={columns} data={requests} />
         </div>
     );
