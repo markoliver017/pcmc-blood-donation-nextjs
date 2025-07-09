@@ -4,6 +4,7 @@ import { useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { debounce } from "lodash";
 import {
     Form,
     FormControl,
@@ -98,6 +99,7 @@ export default function UpdateAnnouncementForm({ announcementId, onSuccess }) {
         />
     );
 }
+
 function AnnouncementForm({ announcement, agencies, onSuccess }) {
     const queryClient = useQueryClient();
     const { resolvedTheme } = useTheme();
@@ -123,6 +125,8 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
         handleSubmit,
         setValue,
         setError,
+        getValues,
+        trigger,
         resetField,
         formState: { errors, isDirty },
     } = form;
@@ -130,7 +134,7 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
     // Mutation for update
     const { mutate, isPending } = useMutation({
         mutationFn: async (formData) => {
-            const res = await updateAnnouncement(announcementId, formData);
+            const res = await updateAnnouncement(announcement.id, formData);
             if (!res.success) {
                 throw res;
             }
@@ -142,15 +146,15 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
             });
             queryClient.invalidateQueries({ queryKey: ["announcements"] });
             queryClient.invalidateQueries({
-                queryKey: ["announcement", announcementId],
+                queryKey: ["announcement", announcement.id],
             });
-            SweetAlert({
-                title: "Announcement Updated",
-                text: response.message || "Announcement updated successfully",
-                icon: "success",
-                confirmButtonText: "Done",
-                onConfirm: () => onSuccess(),
-            });
+            // SweetAlert({
+            //     title: "Announcement Updated",
+            //     text: response.message || "Announcement updated successfully",
+            //     icon: "success",
+            //     confirmButtonText: "Done",
+            //     onConfirm: () => onSuccess(),
+            // });
         },
         onError: (error) => {
             if (error?.type === "validation" && error?.errorArr?.length) {
@@ -169,7 +173,7 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
         },
     });
 
-    const watchIsPublic = watch("is_public");
+
 
     // Handle file upload and form submission
     const handleDrop = (e) => {
@@ -179,6 +183,19 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
             setValue("file", file, { shouldValidate: true });
         }
     };
+
+    
+    const debouncedUpdate = debounce(
+        async (value, name, trigger, getValues, mutate) => {
+            
+            const isValid = await trigger(name);
+            if (isValid) {
+                const formData = getValues();
+                mutate(formData);
+            }
+        },
+        1000
+    );
 
     const onSubmit = async (formData) => {
         SweetAlert({
@@ -208,20 +225,32 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
         });
     };
 
+
+    const watchIsPublic = watch("is_public");
+    useEffect(() => {
+        if(watchIsPublic){
+            setValue("agency_id", null);
+        }
+    }, [watchIsPublic]);
+
     const uploaded_file = watch("file");
+    console.log("uploaded_file", uploaded_file);
     const uploaded_file_url = watch("file_url");
-    const file =
-        !errors?.file && uploaded_file
-            ? URL.createObjectURL(uploaded_file)
-            : uploaded_file_url || null;
+    let file = null;
+    if (!errors?.file && uploaded_file instanceof File) {
+        file = URL.createObjectURL(uploaded_file);
+    } else if (uploaded_file_url) {
+        file = uploaded_file_url;
+    }
 
     return (
         <Card className="mt-3 shadow-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
             <CardHeader>
-                <CardTitle className="text-2xl">Update Announcement</CardTitle>
-                <CardDescription>
-                    <span>Update the announcement details and content.</span>
-                    {isPending && (
+                <CardTitle className="text-2xl flex items-center gap-5">
+                    <span>
+                        Update Announcement
+                        </span>
+                                            {(isPending) && (
                         <span className="flex-items-center text-blue-500">
                             <span className="loading loading-bars loading-xs"></span>
                             <span className="italic  text-md">
@@ -229,14 +258,18 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
                             </span>
                         </span>
                     )}
+                        </CardTitle>
+                <CardDescription>
+                    <span>Update the announcement details and content.</span>
+
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <LoadingModal isLoading={isPending || isUploading}>
+                {/* <LoadingModal isLoading={isPending || isUploading}>
                     {isPending || isUploading
                         ? "Updating..."
                         : "Update Announcement"}
-                </LoadingModal>
+                </LoadingModal> */}
                 <Form {...form}>
                     <form
                         id="form-modal"
@@ -256,6 +289,16 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
                                         {...field}
                                         placeholder="Enter announcement title"
                                         className="w-full"
+                                        onChange={(e) => {
+                                            field.onChange(e); // make sure RHF still receives the change
+                                            debouncedUpdate(
+                                                e.target.value,
+                                                e.target.name,
+                                                trigger,
+                                                getValues,
+                                                mutate
+                                            );
+                                        }}
                                     />
                                     <FormMessage />
                                 </FormItem>
@@ -274,6 +317,15 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
                                         content={field.value}
                                         onContentChange={(content) => {
                                             field.onChange(content);
+                                                                                
+                                            debouncedUpdate(
+                                                content,
+                                                "body",
+                                                trigger,
+                                                getValues,
+                                                mutate
+                                            );
+                                    
                                         }}
                                     />
                                     <FormMessage />
@@ -290,8 +342,19 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
                                     <InlineLabel>Visibility</InlineLabel>
                                     <Select
                                         value={field.value ? "true" : "false"}
-                                        onValueChange={(value) =>
-                                            field.onChange(value === "true")
+                                        onValueChange={(value) => {
+                                            const fieldValue = value === "true"
+                                            field.onChange(fieldValue)
+                                            // if(fieldValue){
+                                                debouncedUpdate(
+                                                    fieldValue,
+                                                    "is_public",
+                                                    trigger,
+                                                    getValues,
+                                                    mutate
+                                                );
+                                            // }
+                                            }
                                         }
                                     >
                                         <SelectTrigger className="w-full">
@@ -338,21 +401,29 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
                                                     isClearable
                                                     isSearchable
                                                     onChange={(option) => {
+                                                        const fieldValue = option?.value || null
                                                         field.onChange(
-                                                            option?.value ||
-                                                                null
+                                                            fieldValue
                                                         );
+                                                        debouncedUpdate(
+                                                            fieldValue,
+                                                            "agency_id",
+                                                            trigger,
+                                                            getValues,
+                                                            mutate
+                                                        );
+                                                        
                                                     }}
                                                     value={
                                                         field.value
                                                             ? {
-                                                                  value: field.value,
-                                                                  label: agencies?.find(
-                                                                      (a) =>
-                                                                          a.id ===
-                                                                          field.value
-                                                                  )?.name,
-                                                              }
+                                                                value: field.value,
+                                                                label: agencies?.find(
+                                                                    (a) =>
+                                                                        a.id ===
+                                                                        field.value
+                                                                )?.name,
+                                                            }
                                                             : null
                                                     }
                                                 />
@@ -368,23 +439,23 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
                         <FormField
                             control={form.control}
                             name="file"
-                            render={({ field }) => {
+                            render={({ field: { onChange, value, ...field } }) => {
                                 const handleFileChange = async (e) => {
-                                    const file = e.target.files[0];
-                                    if (file) {
-                                        onChange(file); // Update RHF form state
-
-                                        // Optional: clear file_url before upload to show "uploading" state
-                                        setValue("file_url", null);
+                                    const uploadedFile = e.target.files[0];
+                                    console.log("uploadedFile>>>>>>>", uploadedFile)
+                                    if (uploadedFile) {
                                         setIsUploading(true);
+                                        onChange(uploadedFile); // Update RHF form state
+
                                         const result = await uploadPicture(
-                                            file
+                                            uploadedFile
                                         );
+                                        console.log("result", result);
                                         if (!result.success) {
                                             notify({
                                                 error: true,
                                                 message:
-                                                    "Upload failed: Please re-upload and try again!",
+                                                    result?.message || "Upload failed: Please re-upload and try again!",
                                             });
                                             setIsUploading(false);
                                             resetField("file");
@@ -394,7 +465,6 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
                                         const file_url =
                                             result.file_data?.url || null;
                                         setValue("file_url", file_url);
-
                                         // Optional: revalidate + auto-save
                                         const isValid = await trigger([
                                             "file",
@@ -416,6 +486,19 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
                                             Upload Image{" "}
                                         </InlineLabel>
                                         <div className="space-y-4">
+                                            <FormControl
+                                                ref={fileInputRef}
+                                                className="hidden"
+                                            >
+                                                <Input
+                                                    type="file"
+                                                    tabIndex={-1}
+                                                    onChange={
+                                                        handleFileChange
+                                                    }
+                                                    {...field}
+                                                />
+                                            </FormControl>
                                             {!file && (
                                                 <div
                                                     className={clsx(
@@ -429,19 +512,7 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
                                                         e.preventDefault()
                                                     }
                                                 >
-                                                    <FormControl
-                                                        ref={fileInputRef}
-                                                        className="hidden"
-                                                    >
-                                                        <Input
-                                                            type="file"
-                                                            tabIndex={-1}
-                                                            onChange={
-                                                                handleFileChange
-                                                            }
-                                                            {...field}
-                                                        />
-                                                    </FormControl>
+
                                                     <div className="space-y-2">
                                                         <BiUpload className="mx-auto h-8 w-8 text-gray-400" />
                                                         <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -494,6 +565,14 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
                                                                     "file_url",
                                                                     null
                                                                 );
+                                                                debouncedUpdate(
+                                                                    null,
+                                                                    "file_url",
+                                                                    trigger,
+                                                                    getValues,
+                                                                    mutate
+                                                                );
+                                                                
                                                                 if (
                                                                     fileInputRef.current
                                                                 ) {
@@ -516,7 +595,7 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
                             }}
                         />
 
-                        <CardFooter className="flex justify-end gap-2">
+                        <CardFooter className="hidden justify-end gap-2">
                             <Button
                                 type="button"
                                 variant="outline"
@@ -536,6 +615,7 @@ function AnnouncementForm({ announcement, agencies, onSuccess }) {
                         </CardFooter>
                     </form>
                 </Form>
+                {/* <FormLogger watch={watch} errors={errors} /> */}
             </CardContent>
         </Card>
     );

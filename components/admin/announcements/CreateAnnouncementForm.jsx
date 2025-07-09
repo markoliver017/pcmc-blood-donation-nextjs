@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -130,7 +130,7 @@ export default function CreateAnnouncementForm({ onSuccess }) {
         },
     });
 
-    const watchIsPublic = watch("is_public");
+    
 
     // Handle file upload and form submission
     const handleDrop = (e) => {
@@ -168,6 +168,13 @@ export default function CreateAnnouncementForm({ onSuccess }) {
             },
         });
     };
+
+    const watchIsPublic = watch("is_public");
+    useEffect(() => {
+        if(watchIsPublic){
+            resetField("agency_id");
+        }
+    }, [watchIsPublic]);
 
     const uploaded_file = watch("file");
     const uploaded_file_url = watch("file_url");
@@ -263,7 +270,8 @@ export default function CreateAnnouncementForm({ onSuccess }) {
                                             </SelectItem>
                                         </SelectContent>
                                     </Select>
-                                    <FieldError error={errors.is_public} />
+                                    <FieldError field={errors.is_public} />
+                                    <FieldError field={errors.agency_id} />
                                 </FormItem>
                             )}
                         />
@@ -297,25 +305,25 @@ export default function CreateAnnouncementForm({ onSuccess }) {
                                                     onChange={(option) => {
                                                         field.onChange(
                                                             option?.value ||
-                                                                null
+                                                            null
                                                         );
                                                     }}
                                                     value={
                                                         field.value
                                                             ? {
-                                                                  value: field.value,
-                                                                  label: agencies?.find(
-                                                                      (a) =>
-                                                                          a.id ===
-                                                                          field.value
-                                                                  )?.name,
-                                                              }
+                                                                value: field.value,
+                                                                label: agencies?.find(
+                                                                    (a) =>
+                                                                        a.id ===
+                                                                        field.value
+                                                                )?.name,
+                                                            }
                                                             : null
                                                     }
                                                 />
                                             )}
                                         />
-                                        <FormMessage />
+                                        {/* <FormMessage /> */}
                                     </FormItem>
                                 )}
                             />
@@ -325,7 +333,7 @@ export default function CreateAnnouncementForm({ onSuccess }) {
                         <FormField
                             control={form.control}
                             name="file"
-                            render={({ field }) => (
+                            render={({ field: { onChange, ...field } }) => (
                                 <FormItem>
                                     <InlineLabel
                                         required={false}
@@ -356,6 +364,7 @@ export default function CreateAnnouncementForm({ onSuccess }) {
                                                         const file =
                                                             e.target.files[0];
                                                         if (file) {
+                                                            onChange(file);
                                                             setValue(
                                                                 "file",
                                                                 file,
@@ -365,6 +374,7 @@ export default function CreateAnnouncementForm({ onSuccess }) {
                                                             );
                                                         }
                                                     }}
+
                                                 />
                                                 <div className="space-y-2">
                                                     <BiUpload className="mx-auto h-8 w-8 text-gray-400" />
