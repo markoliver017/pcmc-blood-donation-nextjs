@@ -63,31 +63,31 @@ export default async function RootLayout({ children, organizers }) {
                 <Providers>
                     <ToastContainer />
                     <ThemeProvider>
-                        <div className="flex dark:bg-black dark:text-slate-100">
-                            <Sidebar currentUser={currentUser} />
-                            {/* <div
+                        <TansactProviders>
+                            <div className="flex dark:bg-black dark:text-slate-100">
+                                <Sidebar currentUser={currentUser} />
+                                {/* <div
                                 id="main-container"
                                 className={clsx("flex flex-col flex-1 h-screen overflow-y-scroll",
                                 className
                                 )}
                                 > */}
-                            <MainWrapper>
-                                <Preloader />
-                                <HeaderNav currentUser={currentUser} />
-                                {/* <Header /> */}
-                                {/* <WrapperHead /> */}
-                                <TansactProviders>
+                                <MainWrapper>
+                                    <Preloader />
+                                    <HeaderNav currentUser={currentUser} />
+                                    {/* <Header /> */}
+                                    {/* <WrapperHead /> */}
                                     <main className="flex-1 ">
                                         {/* <ModalComponent>{modal}</ModalComponent> */}
                                         {organizers}
                                         {children}
                                     </main>
-                                </TansactProviders>
-                                <Footer />
-                            </MainWrapper>
+                                    <Footer />
+                                </MainWrapper>
 
-                            {/* </div> */}
-                        </div>
+                                {/* </div> */}
+                            </div>
+                        </TansactProviders>
                     </ThemeProvider>
                 </Providers>
             </body>

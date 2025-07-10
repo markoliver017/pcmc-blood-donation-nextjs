@@ -42,11 +42,12 @@ export default function ImagePreviewComponent({
                     <DialogTitle className="mb-4">Image Preview</DialogTitle>
                 </DialogHeader>
 
-                <div className="relative w-full h-[500px]">
+                <div className="relative w-full max-w-full min-h-[500px] max-h-[80vh] overflow-clip">
                     <Image
                         src={imgSrc}
                         alt="Event Image"
-                        fill
+                        width={1000}
+                        height={1000}
                         className="object-cover rounded-md"
                     />
                 </div>

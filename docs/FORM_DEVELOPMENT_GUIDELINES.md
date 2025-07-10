@@ -154,6 +154,549 @@ export default function EntityForm() {
     - Add validation and error handling
     - Implement success/error notifications
 
+## Update Form Development Patterns
+
+### 1. Update Form Structure
+
+```jsx
+"use client";
+
+import { useRef, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { debounce } from "lodash";
+import { updateEntitySchema } from "@lib/zod/entitySchema";
+import { fetchEntity, updateEntity } from "@action/entityAction";
+
+export default function UpdateEntityForm({ entityId }) {
+    // Fetch entity data
+    const { data: entity, isLoading: isLoadingEntity } = useQuery({
+        queryKey: ["entity", entityId],
+        queryFn: async () => {
+            const res = await fetchEntity(entityId);
+            if (!res.success) {
+                throw res;
+            }
+            return res.data;
+        },
+        enabled: !!entityId,
+    });
+
+    if (isLoadingEntity) return <Skeleton_form />;
+    if (!entity) return <div>Entity not found</div>;
+
+    return <EntityForm entity={entity} />;
+}
+
+function EntityForm({ entity }) {
+    const queryClient = useQueryClient();
+    const form = useForm({
+        mode: "onChange",
+        resolver: zodResolver(updateEntitySchema),
+        defaultValues: {
+            title: entity?.title || "",
+            body: entity?.body || "",
+            // Set other default values from entity
+        },
+    });
+
+    const { mutate, isPending } = useMutation({
+        mutationFn: async (formData) => {
+            const res = await updateEntity(entity.id, formData);
+            if (!res.success) {
+                throw res;
+            }
+            return res;
+        },
+        onSuccess: (response) => {
+            queryClient.invalidateQueries({ queryKey: ["entities"] });
+            queryClient.invalidateQueries({ queryKey: ["entity", entity.id] });
+            // Handle success
+        },
+        onError: (error) => {
+            // Handle error
+        },
+    });
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Update Entity</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <Form {...form}>
+                    <form>
+                        {/* Form fields with auto-save functionality */}
+                    </form>
+                </Form>
+            </CardContent>
+        </Card>
+    );
+}
+```
+
+### 2. Auto-Save Pattern with Debouncing
+
+```jsx
+import { debounce } from "lodash";
+
+function EntityForm({ entity }) {
+    const form = useForm({
+        mode: "onChange",
+        resolver: zodResolver(updateEntitySchema),
+        defaultValues: {
+            // Set defaults from entity
+        },
+    });
+
+    const { watch, handleSubmit, setValue, trigger, getValues } = form;
+
+    // Debounced auto-save function
+    const debouncedUpdate = debounce(
+        async (value, name, trigger, getValues, mutate) => {
+            const isValid = await trigger(name);
+            if (isValid) {
+                const formData = getValues();
+                mutate(formData);
+            }
+        },
+        1000 // 1 second delay
+    );
+
+    return (
+        <Form {...form}>
+            <form>
+                <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                        <FormItem>
+                            <InlineLabel>Title</InlineLabel>
+                            <Input
+                                {...field}
+                                onChange={(e) => {
+                                    field.onChange(e); // Update RHF state
+                                    debouncedUpdate(
+                                        e.target.value,
+                                        e.target.name,
+                                        trigger,
+                                        getValues,
+                                        mutate
+                                    );
+                                }}
+                            />
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </form>
+        </Form>
+    );
+}
+```
+
+### 3. File Upload with Preview in Update Forms
+
+```jsx
+function EntityForm({ entity }) {
+    const [isUploading, setIsUploading] = useState(false);
+    const fileInputRef = useRef(null);
+
+    const uploaded_file = watch("file");
+    const uploaded_file_url = watch("file_url");
+
+    // Determine which file to show (new upload or existing)
+    let file = null;
+    if (!errors?.file && uploaded_file instanceof File) {
+        file = URL.createObjectURL(uploaded_file);
+    } else if (uploaded_file_url) {
+        file = uploaded_file_url;
+    }
+
+    return (
+        <FormField
+            control={form.control}
+            name="file"
+            render={({ field: { onChange, value, ...field } }) => {
+                const handleFileChange = async (e) => {
+                    const uploadedFile = e.target.files[0];
+                    if (uploadedFile) {
+                        setIsUploading(true);
+                        onChange(uploadedFile); // Update RHF form state
+
+                        const result = await uploadPicture(uploadedFile);
+                        if (!result.success) {
+                            notify({
+                                error: true,
+                                message: result?.message || "Upload failed",
+                            });
+                            setIsUploading(false);
+                            resetField("file");
+                            return;
+                        }
+
+                        const file_url = result.file_data?.url || null;
+                        setValue("file_url", file_url);
+
+                        // Auto-save after successful upload
+                        const isValid = await trigger(["file", "file_url"]);
+                        if (isValid) {
+                            const formData = getValues();
+                            mutate(formData);
+                        }
+                        setIsUploading(false);
+                    }
+                };
+
+                return (
+                    <FormItem>
+                        <InlineLabel required={false} optional={true}>
+                            Upload Image
+                        </InlineLabel>
+                        <div className="space-y-4">
+                            {/* File input */}
+                            <FormControl ref={fileInputRef} className="hidden">
+                                <Input
+                                    type="file"
+                                    tabIndex={-1}
+                                    onChange={handleFileChange}
+                                    {...field}
+                                />
+                            </FormControl>
+
+                            {/* Upload area */}
+                            {!file && (
+                                <div className="border-2 border-dashed rounded-lg p-6 text-center">
+                                    <div className="space-y-2">
+                                        <BiUpload className="mx-auto h-8 w-8 text-gray-400" />
+                                        <p className="text-sm text-gray-600">
+                                            Drag and drop an image here, or{" "}
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    fileInputRef.current?.click()
+                                                }
+                                                className="text-blue-600 hover:text-blue-500"
+                                            >
+                                                browse
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Image preview */}
+                            {file && (
+                                <div className="flex items-center gap-2 justify-center border">
+                                    <div className="h-40 w-40">
+                                        <Image
+                                            src={file}
+                                            alt="Preview"
+                                            width={100}
+                                            height={100}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <ImagePreviewComponent
+                                            imgSrc={file}
+                                            className="btn-sm btn-outline"
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => {
+                                                resetField("file");
+                                                setValue("file_url", null);
+                                                debouncedUpdate(
+                                                    null,
+                                                    "file_url",
+                                                    trigger,
+                                                    getValues,
+                                                    mutate
+                                                );
+                                                if (fileInputRef.current) {
+                                                    fileInputRef.current.value =
+                                                        "";
+                                                }
+                                            }}
+                                        >
+                                            <BiTrash className="h-4 w-4" />
+                                            Remove
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        <FormMessage />
+                    </FormItem>
+                );
+            }}
+        />
+    );
+}
+```
+
+### 4. Conditional Fields in Update Forms
+
+```jsx
+function EntityForm({ entity }) {
+    const watchIsPublic = watch("is_public");
+
+    useEffect(() => {
+        if (watchIsPublic) {
+            setValue("agency_id", null);
+        }
+    }, [watchIsPublic]);
+
+    return (
+        <Form {...form}>
+            <form>
+                {/* Public/Private Toggle */}
+                <FormField
+                    control={form.control}
+                    name="is_public"
+                    render={({ field }) => (
+                        <FormItem>
+                            <InlineLabel>Visibility</InlineLabel>
+                            <Select
+                                value={field.value ? "true" : "false"}
+                                onValueChange={(value) => {
+                                    const fieldValue = value === "true";
+                                    field.onChange(fieldValue);
+                                    debouncedUpdate(
+                                        fieldValue,
+                                        "is_public",
+                                        trigger,
+                                        getValues,
+                                        mutate
+                                    );
+                                }}
+                            >
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select visibility" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="true">
+                                        Public (All Users)
+                                    </SelectItem>
+                                    <SelectItem value="false">
+                                        Private (Specific Agency)
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                {/* Conditional Agency Selection */}
+                {!watchIsPublic && (
+                    <FormField
+                        control={form.control}
+                        name="agency_id"
+                        render={({ field }) => (
+                            <FormItem>
+                                <InlineLabel>Select Agency</InlineLabel>
+                                <Controller
+                                    name="agency_id"
+                                    control={form.control}
+                                    render={({ field }) => (
+                                        <CreatableSelectNoSSR
+                                            {...field}
+                                            options={agencies?.map(
+                                                (agency) => ({
+                                                    value: agency.id,
+                                                    label: agency.name,
+                                                })
+                                            )}
+                                            onChange={(option) => {
+                                                const fieldValue =
+                                                    option?.value || null;
+                                                field.onChange(fieldValue);
+                                                debouncedUpdate(
+                                                    fieldValue,
+                                                    "agency_id",
+                                                    trigger,
+                                                    getValues,
+                                                    mutate
+                                                );
+                                            }}
+                                            value={
+                                                field.value
+                                                    ? {
+                                                          value: field.value,
+                                                          label: agencies?.find(
+                                                              (a) =>
+                                                                  a.id ===
+                                                                  field.value
+                                                          )?.name,
+                                                      }
+                                                    : null
+                                            }
+                                        />
+                                    )}
+                                />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                )}
+            </form>
+        </Form>
+    );
+}
+```
+
+### 5. Rich Text Editor Integration in Update Forms
+
+```jsx
+function EntityForm({ entity }) {
+    const tiptapRef = useRef(null);
+
+    return (
+        <FormField
+            control={form.control}
+            name="body"
+            render={({ field }) => (
+                <FormItem>
+                    <InlineLabel>Content</InlineLabel>
+                    <Tiptap
+                        ref={tiptapRef}
+                        content={field.value}
+                        onContentChange={(content) => {
+                            field.onChange(content);
+                            debouncedUpdate(
+                                content,
+                                "body",
+                                trigger,
+                                getValues,
+                                mutate
+                            );
+                        }}
+                    />
+                    <FormMessage />
+                </FormItem>
+            )}
+        />
+    );
+}
+```
+
+### 6. Loading States for Update Forms
+
+```jsx
+function EntityForm({ entity }) {
+    return (
+        <Card className="mt-3 shadow-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
+            <CardHeader>
+                <CardTitle className="text-2xl flex items-center gap-5">
+                    <span>Update Entity</span>
+                    {isPending && (
+                        <span className="flex-items-center text-blue-500">
+                            <span className="loading loading-bars loading-xs"></span>
+                            <span className="italic text-md">Updating...</span>
+                        </span>
+                    )}
+                </CardTitle>
+                <CardDescription>
+                    <span>Update the entity details and content.</span>
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Form {...form}>
+                    <form>{/* Form fields */}</form>
+                </Form>
+            </CardContent>
+        </Card>
+    );
+}
+```
+
+### 7. Query Invalidation for Update Forms
+
+```jsx
+const { mutate, isPending } = useMutation({
+    mutationFn: async (formData) => {
+        const res = await updateEntity(entity.id, formData);
+        if (!res.success) {
+            throw res;
+        }
+        return res;
+    },
+    onSuccess: (response) => {
+        // Invalidate related queries
+        queryClient.invalidateQueries({ queryKey: ["entities"] });
+        queryClient.invalidateQueries({ queryKey: ["entity", entity.id] });
+        queryClient.invalidateQueries({ queryKey: ["admin-entities"] });
+
+        // Optional: Show success message
+        // SweetAlert({
+        //     title: "Entity Updated",
+        //     text: response.message || "Entity updated successfully",
+        //     icon: "success",
+        //     confirmButtonText: "Done",
+        // });
+    },
+    onError: (error) => {
+        if (error?.type === "validation" && error?.errorArr?.length) {
+            toastError(error);
+        } else if (
+            error?.type === "catch_validation_error" &&
+            error?.errors?.length
+        ) {
+            toastCatchError(error, setError);
+        } else {
+            notify({
+                error: true,
+                message: error?.message || "Failed to update entity",
+            });
+        }
+    },
+});
+```
+
+### 8. Update Form Best Practices
+
+1. **Auto-Save Implementation**
+
+    - Use debouncing to prevent excessive API calls
+    - Validate fields before auto-saving
+    - Show loading indicators during auto-save
+    - Handle auto-save errors gracefully
+
+2. **File Upload Handling**
+
+    - Support both new uploads and existing files
+    - Show preview for both uploaded and existing files
+    - Handle upload errors and provide retry options
+    - Auto-save after successful upload
+
+3. **Conditional Field Management**
+
+    - Use `useEffect` to clear dependent fields
+    - Update form state when conditions change
+    - Maintain data consistency across conditional fields
+
+4. **Loading State Management**
+
+    - Show loading states for both initial load and updates
+    - Use skeleton components for initial loading
+    - Display progress indicators for ongoing operations
+
+5. **Error Handling**
+
+    - Handle validation errors at field level
+    - Show server errors with appropriate messages
+    - Provide clear error recovery options
+
+6. **Query Management**
+    - Invalidate all related queries after updates
+    - Use optimistic updates when appropriate
+    - Maintain data consistency across components
+
 ## Best Practices
 
 1. **Importing Shadcn/UI Components**

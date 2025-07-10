@@ -20,6 +20,7 @@ import {
 import { Op } from "sequelize";
 import { sendNotificationAndEmail } from "@lib/notificationEmail.utils";
 import { handleValidationError } from "@lib/utils/validationErrorHandler";
+import { getAgencyId } from "./hostEventAction";
 
 export async function fetchAgencies() {
     // await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -122,6 +123,103 @@ export async function fetchAgency(id) {
     } catch (error) {
         console.error(error);
         return extractErrorMessage(error);
+    }
+}
+
+export async function fetchAgencyById(id) {
+    try {
+        const agency = await Agency.findOne({
+            where: {
+                id: id,
+            },
+            include: [
+                {
+                    model: User,
+                    as: "head",
+                    attributes: {
+                        exclude: [
+                            "password",
+                            "email_verified",
+                            "prefix",
+                            "suffix",
+                            "createdAt",
+                            "updatedAt",
+                            "updated_by",
+                        ],
+                    },
+                },
+                {
+                    model: User,
+                    as: "coordinators",
+                    attributes: {
+                        exclude: [
+                            "password",
+                            "email_verified",
+                            "prefix",
+                            "suffix",
+                            "createdAt",
+                            "updatedAt",
+                            "updated_by",
+                        ],
+                    },
+                    through: { attributes: ["contact_number"] },
+                },
+            ],
+        });
+
+        return {
+            success: true,
+            data: formatSeqObj(agency),
+        };
+    } catch (error) {
+        console.error(error);
+        return {
+            success: false,
+            message: extractErrorMessage(error),
+        };
+    }
+}
+
+export async function fetchAgencyByRole() {
+    const agencyId = await getAgencyId();
+    if (!agencyId || agencyId.success === false) {
+        return {
+            success: false,
+            message: agencyId.message,
+        };
+    }
+
+    try {
+        const agency = await Agency.findByPk(agencyId, {
+            include: [
+                {
+                    model: User,
+                    as: "head",
+                    attributes: {
+                        exclude: [
+                            "password",
+                            "email_verified",
+                            "prefix",
+                            "suffix",
+                            "createdAt",
+                            "updatedAt",
+                            "updated_by",
+                        ],
+                    },
+                },
+            ],
+        });
+
+        return {
+            success: true,
+            data: formatSeqObj(agency),
+        };
+    } catch (error) {
+        console.error(error);
+        return {
+            success: false,
+            message: extractErrorMessage(error),
+        };
     }
 }
 

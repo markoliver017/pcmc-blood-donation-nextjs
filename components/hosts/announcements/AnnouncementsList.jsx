@@ -32,7 +32,7 @@ const getColumns = (handleUpdate, handleView) => {
             },
             onSuccess: () => {
                 queryClient.invalidateQueries({
-                    queryKey: ["admin-announcements"],
+                    queryKey: ["host-announcements"],
                 });
                 queryClient.invalidateQueries({ queryKey: ["announcements"] });
                 notify({ message: "Announcement deleted successfully" });
@@ -63,24 +63,6 @@ const getColumns = (handleUpdate, handleView) => {
             },
         },
         {
-            accessorKey: "agency.name",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Agency" />
-            ),
-            cell: ({ row }) => {
-                const agency = row.original.agency;
-                return agency ? (
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                        {agency.name}
-                    </span>
-                ) : (
-                    <span className="text-sm text-gray-400 dark:text-gray-500">
-                        Global
-                    </span>
-                );
-            },
-        },
-        {
             accessorKey: "is_public",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Visibility" />
@@ -97,23 +79,6 @@ const getColumns = (handleUpdate, handleView) => {
                     >
                         {isPublic ? "Public" : "Agency"}
                     </Badge>
-                );
-            },
-        },
-        {
-            accessorKey: "user.full_name",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Created By" />
-            ),
-            cell: ({ row }) => {
-                const user = row.original.user;
-                return user ? (
-                    <span className="text-sm">
-                        {user.full_name ||
-                            `${user.first_name} ${user.last_name}`}
-                    </span>
-                ) : (
-                    <span className="text-sm text-gray-400">Unknown</span>
                 );
             },
         },
@@ -154,6 +119,7 @@ const getColumns = (handleUpdate, handleView) => {
             cell: ({ row }) => {
                 const data = row.original;
                 const id = data.id;
+                const isPublic = data.is_public;
                 return (
                     <div className="flex gap-2">
                         <Button
@@ -165,36 +131,44 @@ const getColumns = (handleUpdate, handleView) => {
                             <Eye className="w-4 h-4" />
                             <span className="hidden md:inline">View</span>
                         </Button>
-                        <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleUpdate(id)}
-                            className="flex items-center gap-1"
-                        >
-                            <Pencil className="w-4 h-4" />
-                            <span className="hidden md:inline">Edit</span>
-                        </Button>
-                        <Button
-                            size="sm"
-                            variant="destructive"
-                            disabled={isDeleting}
-                            onClick={() => {
-                                SweetAlert({
-                                    title: "Delete Announcement?",
-                                    text: `Are you sure you want to delete "${data.title}"? This action cannot be undone.`,
-                                    icon: "warning",
-                                    showCancelButton: true,
-                                    confirmButtonText: "Yes, delete",
-                                    cancelButtonText: "Cancel",
-                                    onConfirm: () =>
-                                        deleteAnnouncementMutation(id),
-                                });
-                            }}
-                            className="flex items-center gap-1"
-                        >
-                            <Trash2 className="w-4 h-4" />
-                            <span className="hidden md:inline">Delete</span>
-                        </Button>
+                        {!isPublic && (
+                            <>
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleUpdate(id)}
+                                    className="flex items-center gap-1"
+                                >
+                                    <Pencil className="w-4 h-4" />
+                                    <span className="hidden md:inline">
+                                        Edit
+                                    </span>
+                                </Button>
+                                <Button
+                                    size="sm"
+                                    variant="destructive"
+                                    disabled={isDeleting}
+                                    onClick={() => {
+                                        SweetAlert({
+                                            title: "Delete Announcement?",
+                                            text: `Are you sure you want to delete "${data.title}"? This action cannot be undone.`,
+                                            icon: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonText: "Yes, delete",
+                                            cancelButtonText: "Cancel",
+                                            onConfirm: () =>
+                                                deleteAnnouncementMutation(id),
+                                        });
+                                    }}
+                                    className="flex items-center gap-1"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                    <span className="hidden md:inline">
+                                        Delete
+                                    </span>
+                                </Button>
+                            </>
+                        )}
                     </div>
                 );
             },
@@ -202,9 +176,9 @@ const getColumns = (handleUpdate, handleView) => {
     ];
 };
 
-export default function AnnouncementsList({ handleUpdate, handleView }) {
+export default function HostAnnouncementsList({ handleUpdate, handleView }) {
     const { data: response, isLoading } = useQuery({
-        queryKey: ["admin-announcements"],
+        queryKey: ["host-announcements"],
         queryFn: fetchAnnouncements,
         staleTime: 0,
     });
@@ -232,7 +206,7 @@ export default function AnnouncementsList({ handleUpdate, handleView }) {
                         No Announcements
                     </h3>
                     <p className="text-gray-500">
-                        No announcements have been created yet. Create your
+                        You haven't created any announcements yet. Create your
                         first announcement to get started.
                     </p>
                 </div>

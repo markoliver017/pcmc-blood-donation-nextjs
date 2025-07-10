@@ -13,14 +13,27 @@ import Skeleton_line from "@components/ui/skeleton_line";
 import AnnouncementsList from "@components/admin/announcements/AnnouncementsList";
 import CreateAnnouncementForm from "@components/admin/announcements/CreateAnnouncementForm";
 import UpdateAnnouncementForm from "@components/admin/announcements/UpdateAnnouncementForm";
+import ViewAnnouncementModal from "@components/admin/announcements/ViewAnnouncementModal";
 
 export default function AdminAnnouncementsPage() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [announcementId, setAnnouncementId] = useState(null);
 
     const handleUpdate = (id) => {
         setAnnouncementId(id);
+        setIsUpdateModalOpen(true);
+    };
+
+    const handleView = (id) => {
+        setAnnouncementId(id);
+        setIsViewModalOpen(true);
+    };
+
+    const handleEditFromView = (announcement) => {
+        setAnnouncementId(announcement.id);
+        setIsViewModalOpen(false);
         setIsUpdateModalOpen(true);
     };
 
@@ -92,7 +105,10 @@ export default function AdminAnnouncementsPage() {
                 </Card>
             </div>
 
-            <AnnouncementsList handleUpdate={handleUpdate} />
+            <AnnouncementsList
+                handleUpdate={handleUpdate}
+                handleView={handleView}
+            />
 
             <Dialog
                 open={isCreateModalOpen}
@@ -120,12 +136,17 @@ export default function AdminAnnouncementsPage() {
                 >
                     <DialogTitle className="hidden"></DialogTitle>
                     <ToastContainer />
-                    <UpdateAnnouncementForm
-                        announcementId={announcementId}
-                        onSuccess={() => setIsUpdateModalOpen(false)}
-                    />
+                    <UpdateAnnouncementForm announcementId={announcementId} />
                 </DialogContent>
             </Dialog>
+
+            {/* View Announcement Modal */}
+            <ViewAnnouncementModal
+                announcementId={announcementId}
+                isOpen={isViewModalOpen}
+                onClose={() => setIsViewModalOpen(false)}
+                onEdit={handleEditFromView}
+            />
         </div>
     );
 }

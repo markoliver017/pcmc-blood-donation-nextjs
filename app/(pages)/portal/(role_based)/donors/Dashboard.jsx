@@ -9,7 +9,7 @@ import {
 } from "@components/ui/card";
 import { CalendarArrowUp, CalendarCheck2, CheckCircle } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { MdBloodtype } from "react-icons/md";
@@ -22,8 +22,24 @@ import {
 import DashboardEventCardList from "@components/dashboard/DashboardEventCardList";
 import Skeleton_line from "@components/ui/skeleton_line";
 import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+import WidgetEventCalendar from "@components/organizers/WidgetEventCalendar";
+import AnnouncementsFeed from "@components/donors/announcements/AnnouncementsFeed";
+import ViewAnnouncementModal from "@components/donors/announcements/ViewAnnouncementModal";
 
 export default function Dashboard() {
+    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+    const [selectedAnnouncementId, setSelectedAnnouncementId] = useState(null);
+
+    const handleViewAnnouncement = (announcementId) => {
+        setSelectedAnnouncementId(announcementId);
+        setIsViewModalOpen(true);
+    };
+
+    const handleCloseViewModal = () => {
+        setIsViewModalOpen(false);
+        setSelectedAnnouncementId(null);
+    };
+
     const { data: dashboard, isLoading: dashboardIsLoading } = useQuery({
         queryKey: ["donor-dashboard"],
         queryFn: async () => {
@@ -162,18 +178,11 @@ export default function Dashboard() {
 
             {/* Main Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Calendar */}
+                {/* Announcements */}
                 <div className="lg:col-span-2">
-                    <Card className="w-full h-full">
-                        <CardHeader>
-                            <CardTitle className="text-xl">
-                                Event Calendar
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <AllEventCalendar />
-                        </CardContent>
-                    </Card>
+                    <AnnouncementsFeed
+                        onViewAnnouncement={handleViewAnnouncement}
+                    />
                 </div>
 
                 {/* Action Panel */}
@@ -185,6 +194,9 @@ export default function Dashboard() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-6">
+                            <div>
+                                <WidgetEventCalendar />
+                            </div>
                             <div>
                                 <Link
                                     href="/portal/donors/events?tab=ongoing"
@@ -242,6 +254,13 @@ export default function Dashboard() {
                     </Card>
                 </div>
             </div>
+
+            {/* Announcement View Modal */}
+            <ViewAnnouncementModal
+                announcementId={selectedAnnouncementId}
+                isOpen={isViewModalOpen}
+                onClose={handleCloseViewModal}
+            />
         </div>
     );
 }

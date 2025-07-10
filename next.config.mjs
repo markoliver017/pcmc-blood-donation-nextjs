@@ -46,7 +46,7 @@ const nextConfig = {
     },
     experimental: {
         serverActions: {
-            bodySizeLimit: "2mb",
+            bodySizeLimit: "10mb",
         },
         // nodeMiddleware: true,
     },

@@ -60,7 +60,7 @@ const Tiptap = forwardRef(
             },
             editorProps: {
                 attributes: {
-                    class: "px-4 py-2 bg-white dark:bg-inherit text-gray-900 dark:text-gray-50 min-h-[80px] border border-gray-300 rounded",
+                    class: "px-4 py-2 bg-white dark:bg-inherit text-gray-900 dark:text-gray-50 min-h-[80px] border border-gray-300 dark:border-gray-700 rounded",
                     tabIndex: "3",
                 },
             },
@@ -135,7 +135,7 @@ const Tiptap = forwardRef(
         if (!editor) return null;
 
         return (
-            <div className="border rounded p-4">
+            <div className="border dark:border-gray-700 rounded p-4">
                 <div className="mb-4 flex items-center gap-2">
                     {/* Bold */}
                     <button

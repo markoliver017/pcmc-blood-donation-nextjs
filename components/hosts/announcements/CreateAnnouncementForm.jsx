@@ -8,21 +8,13 @@ import { Form, FormField, FormItem, FormMessage } from "@components/ui/form";
 import { Input } from "@components/ui/input";
 import { Button } from "@components/ui/button";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@components/ui/select";
-import { createAnnouncementSchema } from "@lib/zod/announcementSchema";
-import FieldError from "@components/form/FieldError";
+    agencyAnnouncementSchema,
+    announcementSchema,
+    createAnnouncementSchema,
+} from "@lib/zod/announcementSchema";
 import DisplayValidationErrors from "@components/form/DisplayValidationErrors";
 import notify from "@components/ui/notify";
 import LoadingModal from "@components/layout/LoadingModal";
-import { useTheme } from "next-themes";
-import dynamic from "next/dynamic";
-import { getSingleStyle } from "@/styles/select-styles";
-import { fetchAgencies } from "@action/agencyAction";
 import { storeAnnouncement } from "@action/announcementAction";
 import Skeleton_form from "@components/ui/Skeleton_form";
 import clsx from "clsx";
@@ -39,22 +31,17 @@ import {
     CardDescription,
 } from "@components/ui/card";
 import React from "react";
-import { BiExport, BiTrash, BiUpload } from "react-icons/bi";
-import { Controller } from "react-hook-form";
+import { BiTrash, BiUpload } from "react-icons/bi";
 import Tiptap from "@components/reusable_components/Tiptap";
 import ImagePreviewComponent from "@components/reusable_components/ImagePreviewComponent";
-import { Eye, Plus } from "lucide-react";
-import Image from "next/image";
 import { MdPublish } from "react-icons/md";
+import Image from "next/image";
+import { getAgencyId } from "@/action/hostEventAction";
+import { fetchAgencyByRole } from "@/action/agencyAction";
+import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import FormLogger from "@lib/utils/FormLogger";
 
-// Disable SSR for CreatableSelect
-const CreatableSelectNoSSR = dynamic(() => import("react-select/creatable"), {
-    ssr: false,
-});
-
-export default function CreateAnnouncementForm({ onSuccess }) {
-    const { resolvedTheme } = useTheme();
+export default function CreateAnnouncementForm({ agency, onSuccess }) {
     const queryClient = useQueryClient();
     const [isUploading, setIsUploading] = React.useState(false);
     const fileInputRef = useRef(null);
@@ -62,12 +49,11 @@ export default function CreateAnnouncementForm({ onSuccess }) {
 
     const form = useForm({
         mode: "onChange",
-        resolver: zodResolver(createAnnouncementSchema),
+        resolver: zodResolver(announcementSchema),
         defaultValues: {
             title: "",
             body: "",
-            is_public: false,
-            agency_id: null,
+            is_public: false, // Default to false for hosts/organizers
             file_url: null,
             file: null,
         },
@@ -82,14 +68,6 @@ export default function CreateAnnouncementForm({ onSuccess }) {
         formState: { errors, isDirty },
     } = form;
 
-    // Fetch agencies for admin selection
-    const { data: agencies, isLoading: isLoadingAgencies } = useQuery({
-        queryKey: ["agencies"],
-        queryFn: fetchAgencies,
-        staleTime: 5 * 60 * 1000,
-        cacheTime: 10 * 60 * 1000,
-    });
-
     // Mutation for create
     const { mutate, isPending } = useMutation({
         mutationFn: async (formData) => {
@@ -101,7 +79,7 @@ export default function CreateAnnouncementForm({ onSuccess }) {
         },
         onSuccess: (response) => {
             queryClient.invalidateQueries({
-                queryKey: ["admin-announcements"],
+                queryKey: ["host-announcements"],
             });
             queryClient.invalidateQueries({ queryKey: ["announcements"] });
             SweetAlert({
@@ -166,13 +144,6 @@ export default function CreateAnnouncementForm({ onSuccess }) {
         });
     };
 
-    const watchIsPublic = watch("is_public");
-    useEffect(() => {
-        if (watchIsPublic) {
-            resetField("agency_id");
-        }
-    }, [watchIsPublic]);
-
     const uploaded_file = watch("file");
     const uploaded_file_url = watch("file_url");
     const file =
@@ -180,18 +151,15 @@ export default function CreateAnnouncementForm({ onSuccess }) {
             ? URL.createObjectURL(uploaded_file)
             : uploaded_file_url || null;
 
-    if (isLoadingAgencies) return <Skeleton_form />;
-
-    if (!agencies) return <div>No agencies found</div>;
+    if (!agency) return <div>Agency information not available</div>;
 
     return (
-        <Card className="mt-3 shadow-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
+        <Card className="mt-5 shadow-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
             <CardHeader>
-                <CardTitle className="text-2xl">
-                    Create New Announcement
-                </CardTitle>
+                <CardTitle className="text-2xl">New Announcement</CardTitle>
                 <CardDescription>
-                    Create a new announcement for the blood donation portal.
+                    Create a new announcement for your agency. This announcement
+                    will be visible only to your agency's donors
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -206,6 +174,26 @@ export default function CreateAnnouncementForm({ onSuccess }) {
                     >
                         <DisplayValidationErrors />
 
+                        {/* Agency Information Display (read-only) */}
+                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-md border">
+                            <div className="w-32 h-32 flex-none">
+                                <CustomAvatar
+                                    avatar={
+                                        agency?.file_url ||
+                                        "/default_company_avatar.png"
+                                    }
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-sm font-medium">
+                                    {agency?.name}
+                                </p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                    {agency?.agency_address}
+                                </p>
+                            </div>
+                        </div>
                         {/* Title Field */}
                         <FormField
                             control={form.control}
@@ -241,90 +229,6 @@ export default function CreateAnnouncementForm({ onSuccess }) {
                                 </FormItem>
                             )}
                         />
-
-                        {/* Public/Private Toggle */}
-                        <FormField
-                            control={form.control}
-                            name="is_public"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <InlineLabel>Visibility</InlineLabel>
-                                    <Select
-                                        value={field.value ? "true" : "false"}
-                                        onValueChange={(value) =>
-                                            field.onChange(value === "true")
-                                        }
-                                    >
-                                        <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="Select visibility" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="true">
-                                                Public (All Users)
-                                            </SelectItem>
-                                            <SelectItem value="false">
-                                                Private (Specific Agency)
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FieldError field={errors.is_public} />
-                                    <FieldError field={errors.agency_id} />
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Agency Selection (only if not public) */}
-                        {!watchIsPublic && (
-                            <FormField
-                                control={form.control}
-                                name="agency_id"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <InlineLabel>Select Agency</InlineLabel>
-                                        <Controller
-                                            name="agency_id"
-                                            control={form.control}
-                                            render={({ field }) => (
-                                                <CreatableSelectNoSSR
-                                                    {...field}
-                                                    options={agencies?.map(
-                                                        (agency) => ({
-                                                            value: agency.id,
-                                                            label: agency.name,
-                                                        })
-                                                    )}
-                                                    placeholder="Select an agency..."
-                                                    styles={getSingleStyle(
-                                                        resolvedTheme
-                                                    )}
-                                                    isClearable
-                                                    isSearchable
-                                                    onChange={(option) => {
-                                                        field.onChange(
-                                                            option?.value ||
-                                                                null
-                                                        );
-                                                    }}
-                                                    value={
-                                                        field.value
-                                                            ? {
-                                                                  value: field.value,
-                                                                  label: agencies?.find(
-                                                                      (a) =>
-                                                                          a.id ===
-                                                                          field.value
-                                                                  )?.name,
-                                                              }
-                                                            : null
-                                                    }
-                                                />
-                                            )}
-                                        />
-                                        {/* <FormMessage /> */}
-                                    </FormItem>
-                                )}
-                            />
-                        )}
 
                         {/* Image Upload */}
                         <FormField
@@ -437,11 +341,11 @@ export default function CreateAnnouncementForm({ onSuccess }) {
                                             </div>
                                         )}
                                     </div>
-                                    <FieldError field={errors.file} />
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
-                        <CardFooter className="border-t  py-2 flex justify-end gap-2">
+                        <CardFooter className="border-t py-2 flex justify-end gap-2">
                             <Button
                                 type="button"
                                 variant="outline"
@@ -461,6 +365,7 @@ export default function CreateAnnouncementForm({ onSuccess }) {
                         </CardFooter>
                     </form>
                 </Form>
+                {/* <FormLogger watch={watch} errors={errors} /> */}
             </CardContent>
         </Card>
     );

@@ -17,6 +17,7 @@ import {
     Role,
     sequelize,
     User,
+    Announcement,
 } from "@lib/models";
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
@@ -1661,4 +1662,60 @@ export async function notifyRegistrationOpen(donor) {
         success: true,
         message: "Send Successfully to :" + donor,
     };
+}
+
+export async function getDonorAnnouncements(limit = 5) {
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+
+    const { user } = session;
+    const donor = await Donor.findOne({
+        where: { user_id: user.id, status: "activated" },
+    });
+
+    if (!donor) {
+        return {
+            success: false,
+            message: "Donor profile not found.",
+        };
+    }
+
+    try {
+        const announcements = await Announcement.findAll({
+            where: {
+                [Op.or]: [{ agency_id: donor.agency_id }, { is_public: true }],
+            },
+            include: [
+                {
+                    model: User,
+                    as: "user",
+                    attributes: [
+                        "id",
+                        "first_name",
+                        "last_name",
+                        "full_name",
+                        "name",
+                        "image",
+                    ],
+                },
+                {
+                    model: Agency,
+                    as: "agency",
+                    attributes: ["id", "name", "file_url"],
+                },
+            ],
+            order: [["createdAt", "DESC"]],
+            limit: limit,
+        });
+
+        return { success: true, data: formatSeqObj(announcements) };
+    } catch (error) {
+        console.error(error);
+        return { success: false, message: extractErrorMessage(error) };
+    }
 }

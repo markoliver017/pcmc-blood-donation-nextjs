@@ -14,21 +14,10 @@ import {
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
 import { Button } from "@components/ui/button";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@components/ui/select";
 import { updateAnnouncementSchema } from "@lib/zod/announcementSchema";
 import DisplayValidationErrors from "@components/form/DisplayValidationErrors";
 import notify from "@components/ui/notify";
 import LoadingModal from "@components/layout/LoadingModal";
-import { useTheme } from "next-themes";
-import dynamic from "next/dynamic";
-import { getSingleStyle } from "@/styles/select-styles";
-import { fetchAgencies } from "@action/agencyAction";
 import {
     updateAnnouncement,
     fetchAnnouncement,
@@ -48,19 +37,14 @@ import {
     CardDescription,
 } from "@components/ui/card";
 import React from "react";
-import { BiExport, BiTrash, BiUpload } from "react-icons/bi";
-import { Controller } from "react-hook-form";
+import { BiTrash, BiUpload } from "react-icons/bi";
 import Tiptap from "@components/reusable_components/Tiptap";
 import ImagePreviewComponent from "@components/reusable_components/ImagePreviewComponent";
-import { Eye } from "lucide-react";
 import { MdPublish } from "react-icons/md";
 import Image from "next/image";
+import { fetchAgencyByRole } from "@/action/agencyAction";
+import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import FormLogger from "@lib/utils/FormLogger";
-
-// Disable SSR for CreatableSelect
-const CreatableSelectNoSSR = dynamic(() => import("react-select/creatable"), {
-    ssr: false,
-});
 
 export default function UpdateAnnouncementForm({ announcementId }) {
     // Fetch announcement data
@@ -76,27 +60,22 @@ export default function UpdateAnnouncementForm({ announcementId }) {
         enabled: !!announcementId,
     });
 
-    // Fetch agencies for admin selection
-    const { data: agencies, isLoading: isLoadingAgencies } = useQuery({
-        queryKey: ["agencies"],
-        queryFn: fetchAgencies,
-        staleTime: 5 * 60 * 1000,
-        cacheTime: 10 * 60 * 1000,
-    });
-
-    // Mutation for update
-
-    if (isLoadingAnnouncement || isLoadingAgencies) return <Skeleton_form />;
+    if (isLoadingAnnouncement) return <Skeleton_form />;
 
     if (!announcement) return <div>Announcement not found</div>;
-    if (!agencies) return <div>No agencies found</div>;
+    if (!announcement?.agency)
+        return <div>Agency information not available</div>;
 
-    return <AnnouncementForm announcement={announcement} agencies={agencies} />;
+    return (
+        <AnnouncementForm
+            announcement={announcement}
+            agency={announcement?.agency}
+        />
+    );
 }
 
-function AnnouncementForm({ announcement, agencies }) {
+function AnnouncementForm({ announcement, agency }) {
     const queryClient = useQueryClient();
-    const { resolvedTheme } = useTheme();
     const [isUploading, setIsUploading] = React.useState(false);
     const fileInputRef = useRef(null);
     const tiptapRef = useRef(null);
@@ -107,8 +86,7 @@ function AnnouncementForm({ announcement, agencies }) {
         defaultValues: {
             title: announcement?.title || "",
             body: announcement?.body || "",
-            is_public: announcement?.is_public || false,
-            agency_id: announcement?.agency_id || null,
+            is_public: announcement?.is_public || false, // Keep existing value
             file_url: announcement?.file_url || null,
             file: null,
         },
@@ -136,19 +114,12 @@ function AnnouncementForm({ announcement, agencies }) {
         },
         onSuccess: (response) => {
             queryClient.invalidateQueries({
-                queryKey: ["admin-announcements"],
+                queryKey: ["host-announcements"],
             });
             queryClient.invalidateQueries({ queryKey: ["announcements"] });
             queryClient.invalidateQueries({
                 queryKey: ["announcement", announcement.id],
             });
-            // SweetAlert({
-            //     title: "Announcement Updated",
-            //     text: response.message || "Announcement updated successfully",
-            //     icon: "success",
-            //     confirmButtonText: "Done",
-            //     onConfirm: () => onSuccess(),
-            // });
         },
         onError: (error) => {
             if (error?.type === "validation" && error?.errorArr?.length) {
@@ -187,43 +158,7 @@ function AnnouncementForm({ announcement, agencies }) {
         1000
     );
 
-    // const onSubmit = async (formData) => {
-    //     SweetAlert({
-    //         title: "Update Announcement",
-    //         text: "Are you sure you want to update this announcement?",
-    //         icon: "question",
-    //         showCancelButton: true,
-    //         confirmButtonText: "Update",
-    //         cancelButtonText: "Cancel",
-    //         onConfirm: async () => {
-    //             let uploadErrors = false;
-    //             if (formData.file && formData.file instanceof File) {
-    //                 setIsUploading(true);
-    //                 const result = await uploadPicture(formData.file);
-    //                 setIsUploading(false);
-    //                 if (result?.success) {
-    //                     formData.file_url = result.file_data?.url || null;
-    //                     setValue("file_url", result.file_data?.url);
-    //                 } else {
-    //                     uploadErrors = true;
-    //                     notify({ error: true, message: result.message });
-    //                 }
-    //             }
-    //             if (uploadErrors) return;
-    //             mutate(formData);
-    //         },
-    //     });
-    // };
-
-    const watchIsPublic = watch("is_public");
-    useEffect(() => {
-        if (watchIsPublic) {
-            setValue("agency_id", null);
-        }
-    }, [watchIsPublic]);
-
     const uploaded_file = watch("file");
-    console.log("uploaded_file", uploaded_file);
     const uploaded_file_url = watch("file_url");
     let file = null;
     if (!errors?.file && uploaded_file instanceof File) {
@@ -233,16 +168,14 @@ function AnnouncementForm({ announcement, agencies }) {
     }
 
     return (
-        <Card className="mt-3 shadow-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
+        <Card className="mt-5 shadow-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
             <CardHeader>
                 <CardTitle className="text-2xl flex items-center gap-5">
                     <span>Update Announcement</span>
-                    {isPending && (
+                    {(isPending || isUploading) && (
                         <span className="flex-items-center text-blue-500">
                             <span className="loading loading-bars loading-xs"></span>
-                            <span className="italic  text-md">
-                                Updating ...
-                            </span>
+                            <span className="italic text-md">Updating...</span>
                         </span>
                     )}
                 </CardTitle>
@@ -251,19 +184,30 @@ function AnnouncementForm({ announcement, agencies }) {
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                {/* <LoadingModal isLoading={isPending || isUploading}>
-                    {isPending || isUploading
-                        ? "Updating..."
-                        : "Update Announcement"}
-                </LoadingModal> */}
                 <Form {...form}>
-                    <form
-                        id="form-modal"
-                        className="space-y-6"
-                        // onSubmit={handleSubmit(onSubmit)}
-                    >
+                    <form id="form-modal" className="space-y-6 ">
                         <DisplayValidationErrors />
 
+                        {/* Agency Information Display (read-only) */}
+                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-md border dark:border-gray-700">
+                            <div className="w-32 h-32 flex-none">
+                                <CustomAvatar
+                                    avatar={
+                                        agency?.file_url ||
+                                        "/default_company_avatar.png"
+                                    }
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-sm font-medium">
+                                    {agency?.name}
+                                </p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                    {agency?.agency_address}
+                                </p>
+                            </div>
+                        </div>
                         {/* Title Field */}
                         <FormField
                             control={form.control}
@@ -276,7 +220,7 @@ function AnnouncementForm({ announcement, agencies }) {
                                         placeholder="Enter announcement title"
                                         className="w-full"
                                         onChange={(e) => {
-                                            field.onChange(e); // make sure RHF still receives the change
+                                            field.onChange(e);
                                             debouncedUpdate(
                                                 e.target.value,
                                                 e.target.name,
@@ -303,7 +247,6 @@ function AnnouncementForm({ announcement, agencies }) {
                                         content={field.value}
                                         onContentChange={(content) => {
                                             field.onChange(content);
-
                                             debouncedUpdate(
                                                 content,
                                                 "body",
@@ -318,108 +261,6 @@ function AnnouncementForm({ announcement, agencies }) {
                             )}
                         />
 
-                        {/* Public/Private Toggle */}
-                        <FormField
-                            control={form.control}
-                            name="is_public"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <InlineLabel>Visibility</InlineLabel>
-                                    <Select
-                                        value={field.value ? "true" : "false"}
-                                        onValueChange={(value) => {
-                                            const fieldValue = value === "true";
-                                            field.onChange(fieldValue);
-                                            // if(fieldValue){
-                                            debouncedUpdate(
-                                                fieldValue,
-                                                "is_public",
-                                                trigger,
-                                                getValues,
-                                                mutate
-                                            );
-                                            // }
-                                        }}
-                                    >
-                                        <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="Select visibility" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="true">
-                                                Public (All Users)
-                                            </SelectItem>
-                                            <SelectItem value="false">
-                                                Private (Specific Agency)
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Agency Selection (only if not public) */}
-                        {!watchIsPublic && (
-                            <FormField
-                                control={form.control}
-                                name="agency_id"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <InlineLabel>Select Agency</InlineLabel>
-                                        <Controller
-                                            name="agency_id"
-                                            control={form.control}
-                                            render={({ field }) => (
-                                                <CreatableSelectNoSSR
-                                                    {...field}
-                                                    options={agencies?.map(
-                                                        (agency) => ({
-                                                            value: agency.id,
-                                                            label: agency.name,
-                                                        })
-                                                    )}
-                                                    placeholder="Select an agency..."
-                                                    styles={getSingleStyle(
-                                                        resolvedTheme
-                                                    )}
-                                                    isClearable
-                                                    isSearchable
-                                                    onChange={(option) => {
-                                                        const fieldValue =
-                                                            option?.value ||
-                                                            null;
-                                                        field.onChange(
-                                                            fieldValue
-                                                        );
-                                                        debouncedUpdate(
-                                                            fieldValue,
-                                                            "agency_id",
-                                                            trigger,
-                                                            getValues,
-                                                            mutate
-                                                        );
-                                                    }}
-                                                    value={
-                                                        field.value
-                                                            ? {
-                                                                  value: field.value,
-                                                                  label: agencies?.find(
-                                                                      (a) =>
-                                                                          a.id ===
-                                                                          field.value
-                                                                  )?.name,
-                                                              }
-                                                            : null
-                                                    }
-                                                />
-                                            )}
-                                        />
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        )}
-
                         {/* Image Upload */}
                         <FormField
                             control={form.control}
@@ -429,18 +270,13 @@ function AnnouncementForm({ announcement, agencies }) {
                             }) => {
                                 const handleFileChange = async (e) => {
                                     const uploadedFile = e.target.files[0];
-                                    console.log(
-                                        "uploadedFile>>>>>>>",
-                                        uploadedFile
-                                    );
                                     if (uploadedFile) {
                                         setIsUploading(true);
-                                        onChange(uploadedFile); // Update RHF form state
+                                        onChange(uploadedFile);
 
                                         const result = await uploadPicture(
                                             uploadedFile
                                         );
-                                        console.log("result", result);
                                         if (!result.success) {
                                             notify({
                                                 error: true,
@@ -456,7 +292,6 @@ function AnnouncementForm({ announcement, agencies }) {
                                         const file_url =
                                             result.file_data?.url || null;
                                         setValue("file_url", file_url);
-                                        // Optional: revalidate + auto-save
                                         const isValid = await trigger([
                                             "file",
                                             "file_url",
@@ -526,7 +361,7 @@ function AnnouncementForm({ announcement, agencies }) {
 
                                             {/* Image Preview */}
                                             {file && (
-                                                <div className="flex items-center gap-2 justify-center border">
+                                                <div className="flex items-center gap-2 justify-center border dark:border-gray-700 rounded-lg">
                                                     <div className="h-40 w-40">
                                                         <Image
                                                             src={file}
@@ -582,28 +417,9 @@ function AnnouncementForm({ announcement, agencies }) {
                                 );
                             }}
                         />
-
-                        {/* <CardFooter className="hidden justify-end gap-2">
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={onSuccess}
-                                disabled={isPending}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                variant="outline"
-                                disabled={isPending || !isDirty}
-                            >
-                                <MdPublish />
-                                Publish
-                            </Button>
-                        </CardFooter> */}
                     </form>
                 </Form>
-                {/* <FormLogger watch={watch} errors={errors} /> */}
+                <FormLogger watch={watch} errors={errors} />
             </CardContent>
         </Card>
     );

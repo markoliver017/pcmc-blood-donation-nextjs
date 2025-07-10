@@ -9,6 +9,7 @@ import {
     AgencyCoordinator,
     sequelize,
     User,
+    Donor,
 } from "@lib/models";
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
@@ -156,8 +157,20 @@ export async function fetchAnnouncement(id) {
                             { is_public: true },
                         ],
                     };
-                } else {
-                    whereClause = { id, is_public: true };
+                }
+            } else if (user.role_name === "Donor") {
+                const donor = await Donor.findOne({
+                    where: { user_id: user.id, status: "activated" },
+                });
+
+                if (donor && donor.agency) {
+                    whereClause = {
+                        id,
+                        [Op.or]: [
+                            { agency_id: donor.agency_id },
+                            { is_public: true },
+                        ],
+                    };
                 }
             } else {
                 whereClause = { id, is_public: true };
@@ -175,7 +188,16 @@ export async function fetchAnnouncement(id) {
                 {
                     model: Agency,
                     as: "agency",
-                    attributes: ["id", "name"],
+                    attributes: [
+                        "id",
+                        "name",
+                        "agency_address",
+                        "address",
+                        "barangay",
+                        "city_municipality",
+                        "province",
+                        "file_url",
+                    ],
                 },
             ],
         });
@@ -220,23 +242,6 @@ export async function storeAnnouncement(formData) {
         }
 
         console.log("storeAnnouncement formData received on server", formData);
-        const parsed = createAnnouncementSchema.safeParse(formData);
-
-        if (!parsed.success) {
-            const fieldErrors = parsed.error.flatten().fieldErrors;
-            return {
-                success: false,
-                type: "validation",
-                message: "Please check your input and try again.",
-                errorObj: parsed.error.flatten().fieldErrors,
-                errorArr: Object.values(fieldErrors).flat(),
-            };
-        }
-
-        const { data } = parsed;
-
-        // Auto-assign user_id and agency_id based on role
-        data.user_id = user.id;
 
         if (user.role_name === "Agency Administrator") {
             const agency = await Agency.findOne({
@@ -251,7 +256,7 @@ export async function storeAnnouncement(formData) {
                 };
             }
 
-            data.agency_id = agency.id;
+            formData.agency_id = agency.id;
         } else if (user.role_name === "Organizer") {
             const coordinator = await AgencyCoordinator.findOne({
                 where: { user_id: user.id, status: "activated" },
@@ -272,8 +277,26 @@ export async function storeAnnouncement(formData) {
                 };
             }
 
-            data.agency_id = coordinator.agency.id;
+            formData.agency_id = coordinator.agency.id;
         }
+
+        const parsed = createAnnouncementSchema.safeParse(formData);
+
+        if (!parsed.success) {
+            const fieldErrors = parsed.error.flatten().fieldErrors;
+            return {
+                success: false,
+                type: "validation",
+                message: "Please check your input and try again.",
+                errorObj: parsed.error.flatten().fieldErrors,
+                errorArr: Object.values(fieldErrors).flat(),
+            };
+        }
+
+        const { data } = parsed;
+
+        // Auto-assign user_id and agency_id based on role
+        data.user_id = user.id;
 
         const transaction = await sequelize.transaction();
 

@@ -172,8 +172,7 @@ export async function getAllEventsByAgency() {
         logErrorToFile(err, "getAllEventsByAgency ERROR");
         return {
             success: false,
-            type: "server",
-            message: err || "Unknown error",
+            message: extractErrorMessage(err),
         };
     }
 }

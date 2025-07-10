@@ -5,8 +5,10 @@
 This plan outlines the step-by-step implementation of the Announcements feature for the PCMC Pediatric Blood Center portal. The feature will support three user roles:
 
 -   **Admin**: Can create public announcements visible to all users and agency-specific announcements
--   **Agency Administrators**: Can create announcements visible only to their assigned donors
+-   **Agency Administrators (Hosts)**: Can create announcements visible only to their assigned donors
 -   **Organizers (Agency Coordinators)**: Can create announcements visible only to their assigned donors
+
+**Note**: Agency Administrators and Organizers share the same announcements interface and functionality since they have the same access level and permissions within their respective agencies.
 
 ## Implementation Checklist
 
@@ -59,59 +61,64 @@ This plan outlines the step-by-step implementation of the Announcements feature 
     -   [x] Include agency selection for private announcements
     -   [x] Add form validation and error handling
 
--   [ ] **Step 2.4**: Create admin announcement view component
-    -   [ ] Create `components/admin/announcements/ViewAnnouncementModal.jsx`
-    -   [ ] Display announcement details with rich formatting
-    -   [ ] Show associated agency information
-    -   [ ] Include image preview if available
+-   [x] **Step 2.4**: Create admin announcement view component
+    -   [x] Create `components/admin/announcements/ViewAnnouncementModal.jsx`
+    -   [x] Display announcement details with rich formatting
+    -   [x] Show associated agency information
+    -   [x] Include image preview if available
+    -   [x] Integrate ViewAnnouncementModal into admin announcements page
+    -   [x] Add view functionality to AnnouncementsList component
+    -   [x] Implement seamless transition from view to edit mode
 
-### Phase 3: Host/Organizer Announcements Page
+### Phase 3: Host/Organizer Announcements Page (Shared Implementation)
 
--   [ ] **Step 3.1**: Create host announcements page structure
+**Note**: This implementation serves both "Agency Administrator" (hosts) and "Organizer" (agency coordinators) roles since they have the same functionality and access level.
 
-    -   [ ] Update `app/(pages)/portal/(role_based)/hosts/announcements/page.jsx`
-    -   [ ] Add page header with "Create Announcement" button
-    -   [ ] Add statistics cards (Total, Public, Agency-specific)
-    -   [ ] Add announcements list component
+-   [x] **Step 3.1**: Create host/organizer announcements page structure
 
--   [ ] **Step 3.2**: Create host announcements list component
+    -   [x] Update `app/(pages)/portal/(role_based)/hosts/announcements/page.jsx`
+    -   [x] Add page header with "Create Announcement" button
+    -   [x] Add statistics cards (Total, Public, Agency-specific)
+    -   [x] Add placeholder for announcements list component
+    -   [x] **Functionality**: Works for both Agency Administrators and Organizers
 
-    -   [ ] Create `components/hosts/announcements/AnnouncementsList.jsx`
-    -   [ ] Implement data table with columns: Title, Public, Created, Actions
-    -   [ ] Add edit and delete action buttons
-    -   [ ] Add search functionality
-    -   [ ] Implement pagination if needed
+-   [x] **Step 3.2**: Create host/organizer announcements list component
 
--   [ ] **Step 3.3**: Create host announcement form components
+    -   [x] Create `components/hosts/announcements/AnnouncementsList.jsx`
+    -   [x] Implement data table with columns: Title, Visibility, Created, Attachment, Actions
+    -   [x] Add view, edit and delete action buttons
+    -   [x] Integrate with host announcements page
+    -   [x] Use host-specific query key for data fetching
+    -   [x] **Functionality**: Works for both Agency Administrators and Organizers
+
+-   [ ] **Step 3.3**: Create host/organizer announcement form components
     -   [ ] Create `components/hosts/announcements/CreateAnnouncementForm.jsx`
     -   [ ] Create `components/hosts/announcements/UpdateAnnouncementForm.jsx`
     -   [ ] Include fields: Title, Body, Public/Private toggle, File upload
-    -   [ ] Auto-assign agency_id based on current user's agency
+    -   [ ] Auto-assign agency_id based on current user's agency (works for both roles)
     -   [ ] Implement form validation and error handling
+    -   [ ] **Functionality**: Works for both Agency Administrators and Organizers
 
-### Phase 4: Organizer Announcements Page
+### Phase 4: Role-Based Access Control (RBAC) Implementation
 
--   [ ] **Step 4.1**: Create organizer announcements page structure
+-   [ ] **Step 4.1**: Implement role-based data filtering in server actions
 
-    -   [ ] Update `app/(pages)/portal/(role_based)/organizers/announcements/page.jsx`
-    -   [ ] Add page header with "Create Announcement" button
-    -   [ ] Add statistics cards (Total, Public, Agency-specific)
-    -   [ ] Add announcements list component
+    -   [ ] Update `fetchAnnouncements()` to filter by user role and agency
+    -   [ ] Agency Administrators: See their agency's announcements + public ones
+    -   [ ] Organizers: See their agency's announcements + public ones (via coordinator relationship)
+    -   [ ] Ensure proper authorization checks
 
--   [ ] **Step 4.2**: Create organizer announcements list component
+-   [ ] **Step 4.2**: Add role-based UI adaptations
 
-    -   [ ] Create `components/organizers/announcements/AnnouncementsList.jsx`
-    -   [ ] Implement data table with columns: Title, Public, Created, Actions
-    -   [ ] Add edit and delete action buttons
-    -   [ ] Add search functionality
-    -   [ ] Implement pagination if needed
+    -   [ ] Update page title based on user role ("My Announcements" vs "Agency Announcements")
+    -   [ ] Adjust empty state messages for different roles
+    -   [ ] Ensure proper navigation access for both roles
 
--   [ ] **Step 4.3**: Create organizer announcement form components
-    -   [ ] Create `components/organizers/announcements/CreateAnnouncementForm.jsx`
-    -   [ ] Create `components/organizers/announcements/UpdateAnnouncementForm.jsx`
-    -   [ ] Include fields: Title, Body, Public/Private toggle, File upload
-    -   [ ] Auto-assign agency_id based on current user's agency (via coordinator)
-    -   [ ] Implement form validation and error handling
+-   [ ] **Step 4.3**: Test role-based functionality
+    -   [ ] Test Agency Administrator access and permissions
+    -   [ ] Test Organizer access and permissions
+    -   [ ] Verify data isolation between different agencies
+    -   [ ] Test public announcement visibility for both roles
 
 ### Phase 5: Form Implementation Details
 
