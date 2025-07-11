@@ -44,13 +44,18 @@ export default function SelectRegisterDrawer({ open, setOpen }) {
             color: "hover:ring-green-400",
         },
     ];
-    const filteredOptions = options.filter(opt =>
+    const filteredOptions = options.filter((opt) =>
         opt.title.toLowerCase().includes(search.toLowerCase())
     );
     return (
         <>
             <DrawerState direction="bottom" open={open} onOpenChange={setOpen}>
-                <DrawerContent role="dialog" aria-modal="true" aria-label="Registration Options Drawer" className="dark:bg-neutral-900 dark:text-slate-100 rounded-t-3xl transition-all duration-300 px-4 py-6 min-h-[60vh]">
+                <DrawerContent
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Registration Options Drawer"
+                    className="dark:bg-neutral-900 dark:text-slate-100 rounded-t-3xl transition-all duration-300 px-4 py-6 min-h-[60vh]"
+                >
                     <DrawerTitle></DrawerTitle>
                     {/* Optional: Divider at the top */}
                     <div className="w-16 h-1 bg-gradient-to-r from-red-400 via-yellow-400 to-blue-400 rounded-full mb-4 mx-auto opacity-70" />
@@ -59,10 +64,14 @@ export default function SelectRegisterDrawer({ open, setOpen }) {
                         <div className="w-full flex flex-col items-center mb-4">
                             <div className="flex items-center gap-2 mb-2">
                                 <UserPlus className="h-7 w-7 text-red-500 drop-shadow" />
-                                <span className="text-2xl md:text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight drop-shadow">Register an Account</span>
+                                <span className="text-2xl md:text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight drop-shadow">
+                                    Register an Account
+                                </span>
                             </div>
                             <p className="text-base md:text-lg text-slate-600 dark:text-slate-300 text-center max-w-xl font-medium">
-                                Please select the type of account you want to register for the PCMC Pediatric Blood Center Portal.
+                                Please select the type of account you want to
+                                register for the PCMC Pediatric Blood Center
+                                Portal.
                             </p>
                         </div>
                         {/* Search Input/Button */}
@@ -73,11 +82,15 @@ export default function SelectRegisterDrawer({ open, setOpen }) {
                                     placeholder="Search registration options..."
                                     className="w-full bg-transparent text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 font-medium"
                                     value={search}
-                                    onChange={e => setSearch(e.target.value)}
+                                    onChange={(e) => setSearch(e.target.value)}
                                     aria-label="Search registration options"
                                 />
                             </label>
-                            <button type="button" className="btn btn-primary flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-blue-400 font-semibold" aria-label="Search">
+                            <button
+                                type="button"
+                                className="btn btn-primary flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-blue-400 font-semibold"
+                                aria-label="Search"
+                            >
                                 <Search className="h-4 w-4" />
                                 Search
                             </button>
@@ -98,10 +111,14 @@ export default function SelectRegisterDrawer({ open, setOpen }) {
                                         role="button"
                                         aria-label={`Register as ${opt.title}`}
                                     >
-                                        <Card className={`rounded-xl cursor-pointer hover:ring-2 group shadow-lg transition-all duration-300 bg-white/90 dark:bg-slate-800/90 border border-blue-100 dark:border-slate-700 flex flex-col items-center ${opt.color} focus-visible:ring-4 focus-visible:ring-blue-400`}> 
+                                        <Card
+                                            className={`rounded-xl cursor-pointer hover:ring-2 group shadow-lg transition-all duration-300 bg-white/90 dark:bg-slate-800/90 border border-blue-100 dark:border-slate-700 flex flex-col items-center ${opt.color} focus-visible:ring-4 focus-visible:ring-blue-400`}
+                                        >
                                             <CardHeader className="flex flex-col items-center gap-2 pt-6">
                                                 {opt.icon}
-                                                <CardTitle className="text-lg md:text-xl font-bold text-slate-800 dark:text-white tracking-tight drop-shadow">{opt.title}</CardTitle>
+                                                <CardTitle className="text-lg md:text-xl font-bold text-slate-800 dark:text-white tracking-tight drop-shadow">
+                                                    {opt.title}
+                                                </CardTitle>
                                             </CardHeader>
                                             <CardContent className="flex flex-col items-center pb-6">
                                                 <Image
@@ -130,7 +147,10 @@ export default function SelectRegisterDrawer({ open, setOpen }) {
                             </Link>
                         </div>
                         <DrawerFooter className="flex flex-col items-center mt-2">
-                            <DrawerClose className="btn btn-primary btn-lg flex items-center gap-2 px-8 py-3 rounded-full shadow focus-visible:ring-2 focus-visible:ring-blue-400 font-bold" aria-label="Close registration drawer">
+                            <DrawerClose
+                                className="btn btn-primary btn-lg flex items-center gap-2 px-8 py-3 rounded-full shadow focus-visible:ring-2 focus-visible:ring-blue-400 font-bold"
+                                aria-label="Close registration drawer"
+                            >
                                 <X className="h-5 w-5" />
                                 Close
                             </DrawerClose>

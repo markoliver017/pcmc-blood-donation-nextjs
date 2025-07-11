@@ -18,7 +18,6 @@ import { BiBuildings } from "react-icons/bi";
 import ForApprovalEventList from "./(admin-events)/events/(index)/ForApprovalEventList";
 import ForApprovalAgencyList from "./(agencies)/agencies/(index)/ForApprovalAgencyList";
 import { fetchAgencyByStatus } from "@/action/agencyAction";
-import { getLastDonationExamData } from "@/action/donorAction";
 
 export default function Dashboard() {
     const { data: dashboard, isLoading: dashboardIsLoading } = useQuery({
@@ -43,11 +42,11 @@ export default function Dashboard() {
         staleTime: 5 * 60 * 1000,
         cacheTime: 5 * 60 * 1000,
     });
-    const { data } = useQuery({
-        queryKey: ["getLastDonationExamStatus"],
-        queryFn: async () =>
-            getLastDonationExamData("354043dd-2394-42a6-8b7f-3e954d5835ce"),
-    });
+    // const { data } = useQuery({
+    //     queryKey: ["getLastDonationExamStatus"],
+    //     queryFn: async () =>
+    //         getLastDonationExamData("354043dd-2394-42a6-8b7f-3e954d5835ce"),
+    // });
 
     return (
         <div className="space-y-6">

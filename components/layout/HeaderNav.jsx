@@ -18,6 +18,7 @@ import {
     FileSliders,
     Home,
     HomeIcon,
+    Info,
     LogOut,
     PhoneCall,
     SquareMenu,
@@ -75,7 +76,10 @@ const HeaderNav = ({ currentUser }) => {
                                 PCMC PedBC - MBD Portal
                             </h1>
                             <h1 className="hidden md:inline-block text-lg md:text-base font-extrabold italic leading-tight">
-                                PCMC Pediatric Blood Center <br /> <span className="font-normal">Mobile Blood Donation Portal</span>
+                                PCMC Pediatric Blood Center <br />{" "}
+                                <span className="font-normal">
+                                    Mobile Blood Donation Portal
+                                </span>
                             </h1>
                         </div>
                     </Link>
@@ -92,7 +96,16 @@ const HeaderNav = ({ currentUser }) => {
                             </li>
                             <li className="hidden md:block">
                                 <Link
-                                    href="#"
+                                    href="/about-us"
+                                    className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
+                                >
+                                    <Info className="h-4" />
+                                    About Us
+                                </Link>
+                            </li>
+                            <li className="hidden lg:block">
+                                <Link
+                                    href="/why-donate"
                                     className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
                                 >
                                     <Droplet className="h-4" />
@@ -101,32 +114,41 @@ const HeaderNav = ({ currentUser }) => {
                             </li>
                             <li className="hidden lg:block">
                                 <Link
-                                    href="#"
+                                    href="/donation-process"
+                                    className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
+                                >
+                                    <Text className="h-4" />
+                                    Donation Process
+                                </Link>
+                            </li>
+                            <li className="hidden xl:block">
+                                <Link
+                                    href="/eligibility-requirements"
                                     className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
                                 >
                                     <Text className="h-4" />
                                     Eligibility Requirements
                                 </Link>
                             </li>
-                            <li className="hidden xl:block">
+                            <li className="hidden 2xl:block">
                                 <Link
-                                    href="#"
+                                    href="/success-stories"
                                     className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
                                 >
                                     <MdAmpStories className="h-4" />
                                     Success Stories
                                 </Link>
                             </li>
-                            <li className="hidden xl:block">
+                            <li className="hidden 2xl:block">
                                 <Link
-                                    href="#"
+                                    href="/contact-us"
                                     className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
                                 >
                                     <PhoneCall className="h-4" />
                                     Contact Us
                                 </Link>
                             </li>
-                            <li className="block xl:hidden">
+                            <li className="block 2xl:hidden">
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button
@@ -155,43 +177,61 @@ const HeaderNav = ({ currentUser }) => {
                                         {/* <Link href={`/`}> */}
                                         <DropdownMenuItem className="block md:hidden p-3 shadow-xs">
                                             <Link
-                                                href="#"
+                                                href="/"
                                                 className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
                                             >
                                                 <Home className="h-4" />
                                                 Home
                                             </Link>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem className="block md:hidden p-3 shadow-xs">
+                                        <DropdownMenuItem className="block lg:hidden p-3 shadow-xs">
                                             <Link
-                                                href="#"
+                                                href="/about-us"
+                                                className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
+                                            >
+                                                <Home className="h-4" />
+                                                About Us
+                                            </Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem className="block lg:hidden p-3 shadow-xs">
+                                            <Link
+                                                href="/why-donate"
                                                 className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
                                             >
                                                 <Droplet className="h-4" />
                                                 Why Donate
                                             </Link>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem className="block lg:hidden p-3 shadow-xs">
+                                        <DropdownMenuItem className="block xl:hidden p-3 shadow-xs">
                                             <Link
-                                                href="#"
+                                                href="/donation-process"
                                                 className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
                                             >
-                                                <Calendar className="h-4" />
-                                                Upcoming Events
+                                                <Text className="h-4" />
+                                                Donation Process
                                             </Link>
                                         </DropdownMenuItem>
                                         <DropdownMenuItem className="block xl:hidden p-3 shadow-xs">
                                             <Link
-                                                href="#"
+                                                href="/eligibility-requirements"
+                                                className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
+                                            >
+                                                <Text className="h-4" />
+                                                Eligibility Requirements
+                                            </Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem className="block 2xl:hidden p-3 shadow-xs">
+                                            <Link
+                                                href="/success-stories"
                                                 className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
                                             >
                                                 <MdAmpStories className="h-4" />
                                                 Success Stories
                                             </Link>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem className="block xl:hidden p-3 shadow-xs">
+                                        <DropdownMenuItem className="block 2xl:hidden p-3 shadow-xs">
                                             <Link
-                                                href="#"
+                                                href="/contact-us"
                                                 className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
                                             >
                                                 <PhoneCall className="h-4" />

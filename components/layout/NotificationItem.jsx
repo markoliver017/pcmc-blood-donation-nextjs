@@ -101,41 +101,43 @@ export default function NotificationItem({ notification, onAction }) {
 
     return (
         <Card
-            className={`transition-all duration-200 cursor-pointer ${
+            className={`transition-all duration-300 cursor-pointer group ${
                 notification.is_read
-                    ? "bg-gray-50 dark:bg-gray-900"
-                    : "bg-white dark:bg-gray-800 border-l-4 border-l-blue-500"
-            } ${isHovered ? "shadow-md" : ""}`}
+                    ? "bg-gray-50/80 dark:bg-gray-900/80 hover:bg-gray-100/80 dark:hover:bg-gray-800/80"
+                    : "bg-white dark:bg-gray-800 border-l-8 border-l-blue-500 dark:border-l-blue-200  shadow-sm hover:shadow-md"
+            } ${
+                isHovered ? "scale-[1.02] shadow-lg" : ""
+            } hover:border-gray-200 dark:hover:border-gray-700`}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onClick={handleAction}
         >
             <CardContent className="p-4">
                 <div className="flex items-start gap-3">
-                    {/* Icon */}
+                    {/* Enhanced Icon */}
                     <div
-                        className={`p-2 rounded-full ${
+                        className={`p-2.5 rounded-xl transition-all duration-200 group-hover:scale-110 ${
                             config.color === "blue"
-                                ? "bg-blue-100 dark:bg-blue-900/20"
+                                ? "bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30"
                                 : config.color === "green"
-                                ? "bg-green-100 dark:bg-green-900/20"
+                                ? "bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900/30 dark:to-green-800/30"
                                 : config.color === "orange"
-                                ? "bg-orange-100 dark:bg-orange-900/20"
+                                ? "bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30"
                                 : config.color === "purple"
-                                ? "bg-purple-100 dark:bg-purple-900/20"
+                                ? "bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/30 dark:to-purple-800/30"
                                 : config.color === "cyan"
-                                ? "bg-cyan-100 dark:bg-cyan-900/20"
+                                ? "bg-gradient-to-br from-cyan-100 to-cyan-200 dark:from-cyan-900/30 dark:to-cyan-800/30"
                                 : config.color === "red"
-                                ? "bg-red-100 dark:bg-red-900/20"
+                                ? "bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/30 dark:to-red-800/30"
                                 : config.color === "gray"
-                                ? "bg-gray-100 dark:bg-gray-900/20"
+                                ? "bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900/30 dark:to-gray-800/30"
                                 : config.color === "slate"
-                                ? "bg-slate-100 dark:bg-slate-900/20"
-                                : "bg-gray-100 dark:bg-gray-900/20"
+                                ? "bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900/30 dark:to-slate-800/30"
+                                : "bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900/30 dark:to-gray-800/30"
                         }`}
                     >
                         <IconComponent
-                            className={`w-4 h-4 ${
+                            className={`w-4 h-4 transition-colors duration-200 ${
                                 config.color === "blue"
                                     ? "text-blue-600 dark:text-blue-400"
                                     : config.color === "green"
@@ -157,20 +159,26 @@ export default function NotificationItem({ notification, onAction }) {
                         />
                     </div>
 
-                    {/* Content */}
+                    {/* Enhanced Content */}
                     <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
                             <div className="flex-1">
-                                <h4 className="font-medium text-sm text-gray-900 dark:text-gray-100 line-clamp-2">
+                                <h4
+                                    className={`font-semibold text-sm line-clamp-2 transition-colors duration-200 ${
+                                        notification.is_read
+                                            ? "text-gray-700 dark:text-gray-300"
+                                            : "text-gray-900 dark:text-white"
+                                    }`}
+                                >
                                     {notification.subject}
                                 </h4>
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
                                     {notification.message}
                                 </p>
-                                <div className="flex items-center gap-2 mt-2">
+                                <div className="flex items-center gap-2 mt-3">
                                     <Badge
                                         variant={config.badge}
-                                        className="text-xs"
+                                        className="text-xs px-2 py-0.5 transition-all duration-200 hover:scale-105"
                                     >
                                         {config.label}
                                     </Badge>
@@ -179,12 +187,12 @@ export default function NotificationItem({ notification, onAction }) {
                                         "appointments_collections_general" && (
                                         <Badge
                                             variant="outline"
-                                            className="text-xs"
+                                            className="text-xs px-2 py-0.5 bg-gray-50 dark:bg-gray-800"
                                         >
                                             {notification.type}
                                         </Badge>
                                     )}
-                                    <span className="text-xs text-gray-400">
+                                    <span className="text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full">
                                         {format(
                                             new Date(notification.createdAt),
                                             "MMM dd, HH:mm"
@@ -193,19 +201,22 @@ export default function NotificationItem({ notification, onAction }) {
                                 </div>
                             </div>
 
-                            {/* Actions */}
+                            {/* Enhanced Actions */}
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        className="opacity-0 hover:opacity-100 transition-opacity"
+                                        className="opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-700"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         <MoreVertical className="w-4 h-4" />
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
+                                <DropdownMenuContent
+                                    align="end"
+                                    className="w-48"
+                                >
                                     {!notification.is_read && (
                                         <DropdownMenuItem
                                             onClick={(e) => {
@@ -215,6 +226,7 @@ export default function NotificationItem({ notification, onAction }) {
                                             disabled={
                                                 markAsReadMutation.isPending
                                             }
+                                            className="text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20"
                                         >
                                             <Check className="w-4 h-4 mr-2" />
                                             Mark as read
@@ -226,7 +238,7 @@ export default function NotificationItem({ notification, onAction }) {
                                             handleDelete();
                                         }}
                                         disabled={deleteMutation.isPending}
-                                        className="text-red-600"
+                                        className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                                     >
                                         <Trash2 className="w-4 h-4 mr-2" />
                                         Delete
@@ -235,13 +247,13 @@ export default function NotificationItem({ notification, onAction }) {
                             </DropdownMenu>
                         </div>
 
-                        {/* Action Button */}
+                        {/* Enhanced Action Button */}
                         {config.actionUrl && config.actionUrl !== "#" && (
                             <div className="mt-3">
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    className="w-full"
+                                    className="w-full hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-200"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         handleAction();

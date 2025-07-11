@@ -4,8 +4,18 @@ import { motion } from "framer-motion";
 import MainSlider from "./Slider";
 import { useState } from "react";
 import SelectRegisterDrawer from "./SelectRegisterDrawer";
-import { Handshake } from "lucide-react";
+import {
+    Handshake,
+    Heart,
+    Users,
+    Clock,
+    CheckCircle,
+    MapPin,
+    Phone,
+    Mail,
+} from "lucide-react";
 import { GiCycle } from "react-icons/gi";
+import Link from "next/link";
 
 export default function Page() {
     const [openRegister, setOpenRegister] = useState(false);
@@ -36,7 +46,6 @@ export default function Page() {
                         supply for children and families in need. Every drop
                         counts.
                     </p>
-                    {/* TODO: Link this CTA to registration or info section */}
                     <div className="flex gap-5">
                         <button
                             type="button"
@@ -45,17 +54,20 @@ export default function Page() {
                         >
                             <Handshake className="h-10 w-10" /> Join Us
                         </button>
-                        <button
-                            type="button"
-                            className="cursor-pointer flex-items-center text-blue-900 bg-[rgba(255,255,255,0.9)] rounded-2xl p-5 border shadow-[5px_5px_0px_0px_rgba(0,_0,_0,_0.5),inset_6px_6px_1px_1px_rgba(0,_0,_0,_0.3)] shadow-blue-800 hover:ring-1 hover:font-semibold"
-                        >
-                            <GiCycle className="h-10 w-10" /> Donation Process
-                        </button>
+                        <Link href="/donation-process">
+                            <button
+                                type="button"
+                                className="cursor-pointer flex-items-center text-blue-900 bg-[rgba(255,255,255,0.9)] rounded-2xl p-5 border shadow-[5px_5px_0px_0px_rgba(0,_0,_0,_0.5),inset_6px_6px_1px_1px_rgba(0,_0,_0,_0.3)] shadow-blue-800 hover:ring-1 hover:font-semibold"
+                            >
+                                <GiCycle className="h-10 w-10" /> Donation
+                                Process
+                            </button>
+                        </Link>
                     </div>
                 </div>
             </header>
 
-            {/* Overview Section */}
+            {/* Streamlined Overview Section */}
             <section className="max-w-screen-xl w-full mx-auto flex flex-col lg:flex-row gap-10 items-center shadow p-6 rounded-xl bg-white/80 dark:bg-slate-800/80 mb-16">
                 <motion.div
                     initial={{ opacity: 0, x: -60 }}
@@ -66,37 +78,104 @@ export default function Page() {
                 >
                     <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                         <span className="inline-block align-middle">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c2.04 0 3.81 1.23 4.5 3.09C12.69 4.23 14.46 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-8 w-8 text-red-500"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c2.04 0 3.81 1.23 4.5 3.09C12.69 4.23 14.46 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                                />
+                            </svg>
                         </span>
-                        Overview
+                        Welcome to PCMC Pediatric Blood Center
                     </h2>
+                    <p className="text-lg text-slate-700 dark:text-slate-200 mb-4">
+                        We are committed to saving and improving the lives of
+                        children in need by empowering volunteer blood donors.
+                        Our mobile platform makes blood donation simple,
+                        accessible and meaningful – bridging compassion with
+                        action.
+                    </p>
                     <ul className="space-y-3 mb-4">
                         <li className="flex items-start gap-3">
                             <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-red-100 dark:bg-red-900">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3" /></svg>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-5 w-5 text-red-500"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M12 8v4l3 3"
+                                    />
+                                </svg>
                             </span>
-                            <span>Blood donation saves lives every day, providing hope and healing to those in need. <span className="font-semibold">Your generosity makes a difference.</span></span>
+                            <span>
+                                Blood donation saves lives every day, providing
+                                hope and healing to those in need.
+                            </span>
                         </li>
                         <li className="flex items-start gap-3">
                             <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m4 0h-1V8h-1m-4 8h.01" /></svg>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-5 w-5 text-blue-500"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M13 16h-1v-4h-1m4 0h-1V8h-1m-4 8h.01"
+                                    />
+                                </svg>
                             </span>
-                            <span>Our center ensures every donation is safe, secure, and reaches those who need it most.</span>
+                            <span>
+                                Our center ensures every donation is safe,
+                                secure, and reaches those who need it most.
+                            </span>
                         </li>
                         <li className="flex items-start gap-3">
                             <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-green-100 dark:bg-green-900">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-5 w-5 text-green-500"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
                             </span>
-                            <span>Join a community of heroes—donate blood and help us build a healthier future for all.</span>
+                            <span>
+                                Join a community of heroes—donate blood and help
+                                us build a healthier future for all.
+                            </span>
                         </li>
                     </ul>
                     <div className="text-right">
-                        {/* Step 3 - Make this button visually distinct and link to details */}
-                        <a href="#details" className="inline-block">
-                            <button className="btn btn-primary btn-lg shadow-lg px-8 py-3 text-lg animate-bounce">
-                                Read More ...
+                        <Link href="/about-us">
+                            <button className="btn btn-primary btn-lg shadow-lg px-8 py-3 text-lg hover:scale-105 transition-transform">
+                                Learn More About Us
                             </button>
-                        </a>
+                        </Link>
                     </div>
                 </motion.div>
 
@@ -109,7 +188,7 @@ export default function Page() {
                 >
                     <Image
                         src="/slide1.png"
-                        alt="Overview Image"
+                        alt="PCMC Pediatric Blood Center"
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-700 opacity-80"
                     />
@@ -119,105 +198,317 @@ export default function Page() {
                 </motion.div>
             </section>
 
-            {/* Mission Section */}
-            <section className="max-w-screen-xl w-full mx-auto space-y-8 mb-16">
+            {/* Page Preview Sections */}
+            <section className="max-w-screen-xl w-full mx-auto space-y-12 mb-16">
                 <motion.div
                     initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                     viewport={{ once: true, amount: 0.2 }}
-                    className="relative px-4 py-10 bg-gradient-to-br from-red-50 via-white to-blue-50 dark:from-red-900 dark:via-slate-900 dark:to-blue-900 rounded-2xl shadow-lg border border-red-100 dark:border-red-800"
+                    className="text-center"
                 >
-                    <div className="flex flex-col items-center">
-                        <h2 className="text-3xl sm:text-4xl font-extrabold text-center text-red-700 dark:text-red-300 mb-2 flex items-center gap-3">
-                            <span className="inline-block align-middle animate-pulse">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c2.04 0 3.81 1.23 4.5 3.09C12.69 4.23 14.46 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg>
-                            </span>
-                            Our Mission
-                        </h2>
-                        <div className="w-24 h-1 bg-gradient-to-r from-red-400 via-yellow-400 to-blue-400 rounded-full mb-4" />
-                        <motion.p
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.2 }}
-                            viewport={{ once: true }}
-                            className="text-center max-w-3xl mx-auto text-slate-700 dark:text-slate-200 mb-2 text-lg sm:text-xl font-semibold drop-shadow"
-                        >
-                            We unite our community to give hope, health, and second chances—one drop at a time. Every donation is a promise of life for a child in need.
-                        </motion.p>
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mb-4">
+                        Explore Our Services
+                    </h2>
+                    <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+                        Discover everything you need to know about blood
+                        donation and how you can make a difference.
+                    </p>
+                </motion.div>
+
+                {/* About Us Preview */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+                >
+                    <div className="flex flex-col lg:flex-row">
+                        <div className="lg:w-1/3 relative h-64 lg:h-auto">
+                            <Image
+                                src="/blood-donation-img1.jpg"
+                                alt="About PCMC"
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
+                        <div className="lg:w-2/3 p-6 lg:p-8">
+                            <div className="flex items-center gap-3 mb-4">
+                                <Heart className="h-8 w-8 text-red-500" />
+                                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                                    About Us
+                                </h3>
+                            </div>
+                            <p className="text-slate-600 dark:text-slate-300 mb-4">
+                                Learn about PCMC Pediatric Blood Center's
+                                mission, history, and commitment to saving
+                                children's lives through blood donation.
+                            </p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                                <span className="px-3 py-1 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-full text-sm">
+                                    Our Mission
+                                </span>
+                                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm">
+                                    History
+                                </span>
+                                <span className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full text-sm">
+                                    Team
+                                </span>
+                            </div>
+                            <Link href="/about-us">
+                                <button className="btn btn-outline btn-primary">
+                                    Learn More About Us
+                                </button>
+                            </Link>
+                        </div>
                     </div>
                 </motion.div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                    {[
-                        {
-                            title: "Donation Drives",
-                            icon: (
-                                <span className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900 mb-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3" /></svg>
-                                </span>
-                            ),
-                            desc: "Join our regular blood drives and help us reach more patients in need. Every event is a chance to save lives.",
-                            image: "/blood-donation-img-4.jpg",
-                            button: "Donation Drives",
-                        },
-                        {
-                            title: "Blood Donor App",
-                            icon: (
-                                <span className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900 mb-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 7.165 6 9.388 6 12v2.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
-                                </span>
-                            ),
-                            desc: "Track your donations, book appointments, and stay updated—all from your phone. Giving blood has never been easier.",
-                            image: "/mobile-app.jpeg",
-                            button: "Blood Donor App",
-                        },
-                        {
-                            title: "Education & Awareness",
-                            icon: (
-                                <span className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-green-100 dark:bg-green-900 mb-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 20h9" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m0 0H3" /></svg>
-                                </span>
-                            ),
-                            desc: "Learn about the importance of blood donation and how you can make a lasting impact in your community.",
-                            image: "/blood-donation-img1.jpg",
-                            button: "Learn More",
-                        },
-                    ].map((item, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: i * 0.2 }}
-                            viewport={{ once: true, amount: 0.3 }}
-                            className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-md group transition-all duration-700 hover:scale-105 hover:shadow-xl hover:ring-2 hover:ring-red-400 dark:hover:ring-red-600 cursor-pointer w-full"
-                        >
-                            <div className="relative h-60 w-full flex items-center justify-center">
-                                <Image
-                                    src={item.image}
-                                    alt={item.title}
-                                    fill
-                                    className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
-                                />
-                                <div className="absolute top-4 left-4 z-10">
-                                    {item.icon}
-                                </div>
-                            </div>
-                            <div className="p-4 text-center">
-                                <h3 className="text-xl font-bold mb-2 flex items-center justify-center gap-2">
-                                    {item.title}
+
+                {/* Why Donate Preview */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.1 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+                >
+                    <div className="flex flex-col lg:flex-row-reverse">
+                        <div className="lg:w-1/3 relative h-64 lg:h-auto">
+                            <Image
+                                src="/blood-donation-img-4.jpg"
+                                alt="Why Donate"
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
+                        <div className="lg:w-2/3 p-6 lg:p-8">
+                            <div className="flex items-center gap-3 mb-4">
+                                <Users className="h-8 w-8 text-blue-500" />
+                                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                                    Why Donate
                                 </h3>
-                                <p className="mb-4 text-slate-600 dark:text-slate-300 text-sm min-h-[48px]">{item.desc}</p>
-                                <button className="btn btn-outline btn-primary w-full transition-all duration-300 group-hover:bg-primary group-hover:text-white">
-                                    {item.button}
-                                </button>
-                                <SelectRegisterDrawer
-                                    open={openRegister}
-                                    setOpen={setOpenRegister}
-                                />
                             </div>
-                        </motion.div>
-                    ))}
-                </div>
+                            <p className="text-slate-600 dark:text-slate-300 mb-4">
+                                Discover the impact of your donation and the
+                                five compelling reasons why blood donation
+                                matters for children and families.
+                            </p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                                <span className="px-3 py-1 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-full text-sm">
+                                    Save Lives
+                                </span>
+                                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm">
+                                    Health Benefits
+                                </span>
+                                <span className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full text-sm">
+                                    Community Impact
+                                </span>
+                            </div>
+                            <Link href="/why-donate">
+                                <button className="btn btn-outline btn-primary">
+                                    Discover Why to Donate
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* Donation Process Preview */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+                >
+                    <div className="flex flex-col lg:flex-row">
+                        <div className="lg:w-1/3 relative h-64 lg:h-auto">
+                            <Image
+                                src="/mobile-app.jpeg"
+                                alt="Donation Process"
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
+                        <div className="lg:w-2/3 p-6 lg:p-8">
+                            <div className="flex items-center gap-3 mb-4">
+                                <Clock className="h-8 w-8 text-green-500" />
+                                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                                    Donation Process
+                                </h3>
+                            </div>
+                            <p className="text-slate-600 dark:text-slate-300 mb-4">
+                                Follow our simple 7-step donation process. From
+                                registration to recovery, we make blood donation
+                                safe and comfortable.
+                            </p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                                <span className="px-3 py-1 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-full text-sm">
+                                    7 Steps
+                                </span>
+                                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm">
+                                    Mobile App
+                                </span>
+                                <span className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full text-sm">
+                                    Safety First
+                                </span>
+                            </div>
+                            <Link href="/donation-process">
+                                <button className="btn btn-outline btn-primary">
+                                    View Donation Process
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* Eligibility Requirements Preview */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+                >
+                    <div className="flex flex-col lg:flex-row-reverse">
+                        <div className="lg:w-1/3 relative h-64 lg:h-auto">
+                            <Image
+                                src="/blood-donation-img-4.jpg"
+                                alt="Eligibility Requirements"
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
+                        <div className="lg:w-2/3 p-6 lg:p-8">
+                            <div className="flex items-center gap-3 mb-4">
+                                <CheckCircle className="h-8 w-8 text-green-500" />
+                                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                                    Eligibility Requirements
+                                </h3>
+                            </div>
+                            <p className="text-slate-600 dark:text-slate-300 mb-4">
+                                Check if you're eligible to donate blood. Learn
+                                about age requirements, health criteria, and
+                                donation frequency guidelines.
+                            </p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                                <span className="px-3 py-1 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-full text-sm">
+                                    Age Requirements
+                                </span>
+                                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm">
+                                    Health Criteria
+                                </span>
+                                <span className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full text-sm">
+                                    Frequency
+                                </span>
+                            </div>
+                            <Link href="/eligibility-requirements">
+                                <button className="btn btn-outline btn-primary">
+                                    Check Eligibility
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* Success Stories Preview */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.4 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+                >
+                    <div className="flex flex-col lg:flex-row">
+                        <div className="lg:w-1/3 relative h-64 lg:h-auto">
+                            <Image
+                                src="/blood-donation-img1.jpg"
+                                alt="Success Stories"
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
+                        <div className="lg:w-2/3 p-6 lg:p-8">
+                            <div className="flex items-center gap-3 mb-4">
+                                <Heart className="h-8 w-8 text-red-500" />
+                                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                                    Success Stories
+                                </h3>
+                            </div>
+                            <p className="text-slate-600 dark:text-slate-300 mb-4">
+                                Read inspiring stories from donors and
+                                recipients. See the real impact of blood
+                                donation in our community.
+                            </p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                                <span className="px-3 py-1 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-full text-sm">
+                                    Donor Stories
+                                </span>
+                                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm">
+                                    Recipient Stories
+                                </span>
+                                <span className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full text-sm">
+                                    Community Impact
+                                </span>
+                            </div>
+                            <Link href="/success-stories">
+                                <button className="btn btn-outline btn-primary">
+                                    Read Success Stories
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* Contact Us Preview */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.5 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+                >
+                    <div className="flex flex-col lg:flex-row-reverse">
+                        <div className="lg:w-1/3 relative h-64 lg:h-auto">
+                            <Image
+                                src="/blood-donation-img-4.jpg"
+                                alt="Contact Us"
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
+                        <div className="lg:w-2/3 p-6 lg:p-8">
+                            <div className="flex items-center gap-3 mb-4">
+                                <MapPin className="h-8 w-8 text-blue-500" />
+                                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                                    Contact Us
+                                </h3>
+                            </div>
+                            <p className="text-slate-600 dark:text-slate-300 mb-4">
+                                Get in touch with us. Find our location, contact
+                                information, and office hours. We're here to
+                                help.
+                            </p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                                <span className="px-3 py-1 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-full text-sm">
+                                    Location
+                                </span>
+                                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm">
+                                    Contact Info
+                                </span>
+                                <span className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full text-sm">
+                                    Office Hours
+                                </span>
+                            </div>
+                            <Link href="/contact-us">
+                                <button className="btn btn-outline btn-primary">
+                                    Get in Touch
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
+                </motion.div>
             </section>
 
             {/* Announcements Section */}
@@ -231,25 +522,48 @@ export default function Page() {
                 >
                     <div className="relative mx-auto max-w-3xl bg-gradient-to-r from-red-100 via-yellow-50 to-blue-100 dark:from-red-900 dark:via-slate-800 dark:to-blue-900 rounded-2xl shadow-xl flex flex-col md:flex-row items-center gap-6 px-8 py-8 border-2 border-red-300 dark:border-red-700">
                         <div className="flex-shrink-0 flex items-center justify-center h-20 w-20 rounded-full bg-red-200 dark:bg-red-800 shadow-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-red-600 dark:text-red-300 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m4 0h-1V8h-1m-4 8h.01" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3" /></svg>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-12 w-12 text-red-600 dark:text-red-300 animate-pulse"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M13 16h-1v-4h-1m4 0h-1V8h-1m-4 8h.01"
+                                />
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 8v4l3 3"
+                                />
+                            </svg>
                         </div>
                         <div className="flex-1 text-center md:text-left">
                             <h2 className="text-2xl font-bold text-red-700 dark:text-red-300 mb-2 flex items-center gap-2 justify-center md:justify-start">
                                 <span>📢</span> Important Announcement
                             </h2>
                             <p className="text-slate-800 dark:text-slate-200 mb-4 text-base md:text-lg font-medium">
-                                New community blood drives are launching this month! Check your Blood Donor App for schedules and locations near you. <span className="font-semibold">Be a hero—donate today!</span>
+                                New community blood drives are launching this
+                                month! Check your Blood Donor App for schedules
+                                and locations near you.{" "}
+                                <span className="font-semibold">
+                                    Be a hero—donate today!
+                                </span>
                             </p>
-                            <a href="#" className="inline-block">
+                            <Link href="/donation-process">
                                 <button className="btn btn-primary btn-sm px-6 py-2 shadow-md hover:scale-105 transition-transform">
                                     View Events
                                 </button>
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </motion.div>
             </section>
-            {/* TODO: Step 7 - Add navigation bar and footer */}
         </main>
     );
 }

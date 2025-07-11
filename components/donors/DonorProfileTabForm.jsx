@@ -37,6 +37,7 @@ import {
 } from "@/action/locationAction";
 import LocationFields from "@components/organizers/LocationFields";
 import { updateDonor } from "@/action/donorAction";
+import ImagePreviewComponent from "@components/reusable_components/ImagePreviewComponent";
 
 const fetchCountries = async () => {
     const res = await fetch(process.env.NEXT_PUBLIC_NATIONALITY_API_URL);
@@ -259,13 +260,15 @@ export default function DonorProfileTabForm({ donor }) {
                                         className="w-[250px] h-[250px]"
                                     />
                                     <div className="flex justify-center gap-2">
-                                        <Link
-                                            href={avatar}
-                                            className="btn"
-                                            target="_blank"
-                                        >
-                                            <Eye /> View ID
-                                        </Link>
+                                        <ImagePreviewComponent
+                                            imgSrc={avatar}
+                                            triggerContent={
+                                                <>
+                                                    <Eye /> View ID
+                                                </>
+                                            }
+                                        />
+
                                         <button
                                             onClick={handleImageClick}
                                             type="button"
@@ -441,6 +444,7 @@ export default function DonorProfileTabForm({ donor }) {
                                         )}
                                     >
                                         <Phone className="h-3" />
+                                        +63
                                         <input
                                             type="text"
                                             tabIndex={4}

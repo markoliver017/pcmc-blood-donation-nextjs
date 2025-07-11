@@ -32,8 +32,7 @@ export default function NotificationComponent() {
     const { data: session } = useSession();
     const queryClient = useQueryClient();
 
-    console.log("session", session);
-    // Fetch notifications
+    // Fetch notifications with optimized configuration
     const {
         data: notificationsData,
         isLoading: notificationsLoading,
@@ -43,14 +42,19 @@ export default function NotificationComponent() {
         queryFn: () => getUserNotifications(1, 50),
         enabled: !!session,
         staleTime: 1000 * 30, // 30 seconds
+        gcTime: 1000 * 60 * 5, // 5 minutes
+        refetchOnWindowFocus: false,
+        refetchOnMount: true,
     });
 
-    // Fetch unread count
+    // Fetch unread count with optimized configuration
     const { data: unreadCountData, refetch: refetchUnreadCount } = useQuery({
         queryKey: ["unread-count"],
         queryFn: getUnreadNotificationCount,
         enabled: !!session,
         staleTime: 1000 * 10, // 10 seconds
+        gcTime: 1000 * 60 * 2, // 2 minutes
+        refetchOnWindowFocus: false,
     });
 
     const unreadCount = unreadCountData?.success ? unreadCountData.data : 0;
@@ -63,7 +67,6 @@ export default function NotificationComponent() {
         notifications,
         session?.user?.role_name || "Admin"
     );
-    console.log("groupedNotifications", groupedNotifications);
 
     // Mark all as read mutation
     const markAllAsReadMutation = useMutation({
@@ -110,32 +113,76 @@ export default function NotificationComponent() {
         return () => clearInterval(interval);
     }, [isOpen, refetchNotifications, refetchUnreadCount]);
 
+    // Keyboard navigation support
+    const handleKeyDown = (e) => {
+        if (e.key === "Escape" && isOpen) {
+            setIsOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
+    }, [isOpen]);
+
     return (
         <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
-                <button className="relative rounded-full p-2 group transition-all duration-700 hover:cursor-pointer">
-                    <Bell className="h-6 w-6 text-yellow-800 group-hover:scale-125 group-hover:text-yellow-600 transition-transform duration-700" />
+                <button
+                    className="relative rounded-full p-2 group transition-all duration-300 hover:cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+                    aria-label={`${unreadCount} unread notifications`}
+                    aria-expanded={isOpen}
+                    aria-haspopup="dialog"
+                >
+                    <div className="relative">
+                        <Bell className="h-6 w-6 text-yellow-800 group-hover:scale-110 group-hover:text-yellow-600 transition-all duration-300" />
 
-                    {/* Badge for unread notifications */}
-                    {unreadCount > 0 && (
-                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                            {unreadCount > 99 ? "99+" : unreadCount}
-                        </span>
-                    )}
+                        {/* Enhanced Badge for unread notifications */}
+                        {unreadCount > 0 && (
+                            <span
+                                className={`absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1 shadow-lg border-2 border-white dark:border-gray-900 ${
+                                    unreadCount > 0 ? "animate-pulse" : ""
+                                }`}
+                            >
+                                {unreadCount > 99 ? "99+" : unreadCount}
+                            </span>
+                        )}
+
+                        {/* Pulse ring effect for unread notifications */}
+                        {unreadCount > 0 && (
+                            <span className="absolute -top-1 -right-1 w-8 h-8 rounded-full bg-red-400 opacity-20 animate-ping"></span>
+                        )}
+                    </div>
                 </button>
             </PopoverTrigger>
 
-            <PopoverContent className="w-96 p-0 max-h-[600px] overflow-hidden">
-                {/* Header */}
-                <div className="p-4 border-b dark:border-gray-700">
+            <PopoverContent className=" p-0 max-h-[80vh] overflow-hidden bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 shadow-2xl rounded-2xl w-96 sm:w-80 md:w-96 lg:w-140">
+                {/* Enhanced Header */}
+                <div className="p-4 border-b border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-gray-50/50 to-gray-100/50 dark:from-gray-800/50 dark:to-gray-900/50">
                     <div className="flex items-center justify-between">
-                        <h3 className="font-semibold text-lg">Notifications</h3>
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center">
+                                <Bell className="w-4 h-4 text-white" />
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-lg text-gray-900 dark:text-white">
+                                    Notifications
+                                </h3>
+                                {unreadCount > 0 && (
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                        {unreadCount} unread notification
+                                        {unreadCount !== 1 ? "s" : ""}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
                         <div className="flex items-center gap-2">
                             <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={handleRefresh}
                                 disabled={notificationsLoading}
+                                className="hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                             >
                                 <RefreshCw
                                     className={`w-4 h-4 ${
@@ -151,6 +198,7 @@ export default function NotificationComponent() {
                                     size="sm"
                                     onClick={handleMarkAllAsRead}
                                     disabled={markAllAsReadMutation.isPending}
+                                    className="hover:bg-green-100 dark:hover:bg-green-900/20 text-green-600 dark:text-green-400 transition-colors"
                                 >
                                     <Check className="w-4 h-4" />
                                 </Button>
@@ -160,20 +208,34 @@ export default function NotificationComponent() {
                 </div>
 
                 {/* Content */}
-                <div className="max-h-[500px] overflow-y-auto">
+                <div className="max-h-[500px] sm:max-h-[400px] md:max-h-[500px] overflow-y-auto">
                     {notificationsLoading ? (
-                        <div className="p-4 space-y-3">
+                        <div className="p-4 space-y-4">
                             {[1, 2, 3].map((i) => (
-                                <Skeleton key={i} className="h-20 w-full" />
+                                <div key={i} className="animate-pulse">
+                                    <div className="flex items-start space-x-3">
+                                        <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                                        <div className="flex-1 space-y-2">
+                                            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                                            <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                                            <div className="flex space-x-2">
+                                                <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
+                                                <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     ) : notifications.length === 0 ? (
                         <div className="p-8 text-center">
-                            <Bell className="w-12 h-12 mx-auto mb-2 text-gray-400" />
-                            <p className="text-gray-500">
+                            <div className="w-16 h-16 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Bell className="w-8 h-8 text-gray-400" />
+                            </div>
+                            <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
                                 No notifications yet
-                            </p>
-                            <p className="text-sm text-gray-400">
+                            </h4>
+                            <p className="text-gray-500 dark:text-gray-400 text-sm">
                                 We'll notify you when there's something new
                             </p>
                         </div>
@@ -183,11 +245,17 @@ export default function NotificationComponent() {
                             onValueChange={setActiveTab}
                             className="w-full"
                         >
-                            <TabsList className="grid w-full grid-cols-2">
-                                <TabsTrigger value="all">
+                            <TabsList className="grid w-full grid-cols-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+                                <TabsTrigger
+                                    value="all"
+                                    className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm data-[state=active]:text-gray-900 dark:data-[state=active]:text-white transition-all duration-200 rounded-md"
+                                >
                                     All ({notifications.length})
                                 </TabsTrigger>
-                                <TabsTrigger value="unread">
+                                <TabsTrigger
+                                    value="unread"
+                                    className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:shadow-sm data-[state=active]:text-gray-900 dark:data-[state=active]:text-white transition-all duration-200 rounded-md"
+                                >
                                     Unread ({unreadCount})
                                 </TabsTrigger>
                             </TabsList>
@@ -239,13 +307,13 @@ export default function NotificationComponent() {
                     )}
                 </div>
 
-                {/* Footer */}
+                {/* Enhanced Footer */}
                 {notifications.length > 0 && (
-                    <div className="p-4 border-t dark:border-gray-700">
+                    <div className="p-4 border-t border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-gray-50/30 to-gray-100/30 dark:from-gray-800/30 dark:to-gray-900/30">
                         <Button
                             variant="outline"
                             size="sm"
-                            className="w-full"
+                            className="w-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                             onClick={() => {
                                 // Navigate to full notifications page
                                 window.location.href = "/portal/notifications";

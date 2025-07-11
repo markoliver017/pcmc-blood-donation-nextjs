@@ -268,13 +268,13 @@ export default function NewOrganizerForm({ role_name }) {
                     </CardDescription>
                 </CardHeader>
                 <CardContent id="form-modal">
-                    <button
+                    {/* <button
                         type="button"
                         className="btn"
                         onClick={async () => sendEmail(form.getValues())}
                     >
                         Send Email
-                    </button>
+                    </button> */}
                     <Form {...form}>
                         {isError && (
                             <div className="alert alert-error text-gray-700 mb-5">

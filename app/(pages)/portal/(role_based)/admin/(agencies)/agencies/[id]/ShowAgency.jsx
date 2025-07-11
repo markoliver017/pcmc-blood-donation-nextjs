@@ -1,6 +1,8 @@
 "use client";
 import { fetchAgency } from "@/action/agencyAction";
 import { getUser } from "@/action/userAction";
+import RejectDialog from "@components/organizers/RejectDialog";
+import VerifyAgency from "@components/organizers/VerifyAgency";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import { Button } from "@components/ui/button";
 import {
@@ -22,12 +24,16 @@ import {
 } from "@components/ui/table";
 import { formatFormalName } from "@lib/utils/string.utils";
 import { useQuery } from "@tanstack/react-query";
-import { Pencil } from "lucide-react";
+import { CheckIcon, Pencil } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function ShowAgency({ agencyId }) {
     const router = useRouter();
+    const { data: session } = useSession();
+    console.log("session", session);
+
     const { data: agency } = useQuery({
         queryKey: ["agency", agencyId],
         queryFn: async () => await fetchAgency(agencyId),
@@ -47,7 +53,7 @@ export default function ShowAgency({ agencyId }) {
     return (
         <Card className="mt-2 p-5 h-full">
             <CardHeader>
-                <CardTitle className="flex items-center gap-5">
+                <CardTitle className="flex items-center justify-between gap-5">
                     <div className="text-4xl">{agency.name}</div>
                     <Button
                         onClick={() => router.push(`./${agency.id}/edit`)}
@@ -56,6 +62,23 @@ export default function ShowAgency({ agencyId }) {
                     >
                         <Pencil />
                     </Button>
+                    {session && session?.user.role_name === "Admin" && (
+                        <div className="flex gap-2">
+                            <VerifyAgency
+                                agencyData={{
+                                    id: agencyId,
+                                    status: "activated",
+                                }}
+                                label="Approve"
+                                className="btn btn-success"
+                                icon={<CheckIcon />}
+                            />
+                            <RejectDialog
+                                agencyId={agencyId}
+                                className="btn-error"
+                            />
+                        </div>
+                    )}
                 </CardTitle>
                 <CardDescription>Agency Information</CardDescription>
             </CardHeader>

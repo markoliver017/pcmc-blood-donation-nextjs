@@ -17,6 +17,7 @@ import ModalComponent from "./ModalComponent";
 import { headers } from "next/headers";
 import clsx from "clsx";
 import MainWrapper from "@components/layout/MainWrapper";
+import BackToTop from "@components/pages/shared/BackToTop";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -83,6 +84,7 @@ export default async function RootLayout({ children, organizers }) {
                                         {children}
                                     </main>
                                     <Footer />
+                                    <BackToTop />
                                 </MainWrapper>
 
                                 {/* </div> */}

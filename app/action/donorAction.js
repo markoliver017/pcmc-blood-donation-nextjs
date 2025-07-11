@@ -554,6 +554,9 @@ export async function updateDonor(formData) {
 
     const transaction = await sequelize.transaction();
 
+    data.is_data_verified = false;
+    data.data_verified_by = null;
+
     try {
         const updatedDonor = await donor.update(data, {
             transaction,

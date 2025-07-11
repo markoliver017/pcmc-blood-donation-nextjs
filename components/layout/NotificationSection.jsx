@@ -33,47 +33,63 @@ export default function NotificationSection({
 
     return (
         <div className="space-y-2">
-            {/* Section Header */}
+            {/* Enhanced Section Header */}
             <div
-                className="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                className="flex items-center justify-between p-3 gap-5 cursor-pointer hover:bg-gray-50/80 dark:hover:bg-gray-800/80 rounded-lg transition-all duration-200 group border border-transparent hover:border-gray-200 dark:hover:border-gray-700"
                 onClick={() => setExpanded(!expanded)}
             >
-                <div className="flex items-center gap-2">
-                    <span className="text-lg">{iconMap[config.icon]}</span>
-                    <span className="font-medium text-sm">{config.label}</span>
-                    {unreadCount > 0 && (
-                        <Badge variant="destructive" className="text-xs">
-                            {unreadCount}
-                        </Badge>
-                    )}
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white text-sm font-bold">
+                        {iconMap[config.icon]}
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className="font-semibold text-sm text-gray-900 dark:text-white">
+                            {config.label}
+                        </span>
+                        {unreadCount > 0 && (
+                            <Badge
+                                variant="destructive"
+                                className="text-xs px-2 py-0.5 bg-gradient-to-r from-red-500 to-red-600"
+                            >
+                                {unreadCount}
+                            </Badge>
+                        )}
+                    </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-500">
+                <div className="flex items-center gap-3">
+                    <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full">
                         {notifications.length} notification
                         {notifications.length !== 1 ? "s" : ""}
                     </span>
-                    {expanded ? (
-                        <ChevronDown className="w-4 h-4" />
-                    ) : (
-                        <ChevronRight className="w-4 h-4" />
-                    )}
+                    <div className="w-6 h-6 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-gray-200 dark:group-hover:bg-gray-700 transition-colors">
+                        {expanded ? (
+                            <ChevronDown className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                        ) : (
+                            <ChevronRight className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                        )}
+                    </div>
                 </div>
             </div>
 
-            {/* Section Content */}
+            {/* Enhanced Section Content */}
             {expanded && (
-                <div className="space-y-2 pl-4">
-                    {notifications.map((notification) => (
-                        <NotificationItem
+                <div className="space-y-2 pl-4 animate-in slide-in-from-top-2 duration-200">
+                    {notifications.map((notification, index) => (
+                        <div
                             key={notification.id}
-                            notification={notification}
-                            onAction={onAction}
-                        />
+                            className="animate-in slide-in-from-left-2 duration-200"
+                            style={{ animationDelay: `${index * 50}ms` }}
+                        >
+                            <NotificationItem
+                                notification={notification}
+                                onAction={onAction}
+                            />
+                        </div>
                     ))}
                 </div>
             )}
 
-            <Separator />
+            <Separator className="bg-gray-200/50 dark:bg-gray-700/50" />
         </div>
     );
 }
