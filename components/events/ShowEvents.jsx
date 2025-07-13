@@ -16,7 +16,7 @@ import {
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
-import { Command, Eye, MenuSquare, MoreHorizontal, Pencil } from "lucide-react";
+import { CheckIcon, Command, Eye, MenuSquare, MoreHorizontal, Pencil } from "lucide-react";
 import { Table, TableBody, TableCell, TableRow } from "@components/ui/table";
 import { calculateAge, formatFormalName } from "@lib/utils/string.utils";
 import { useQuery } from "@tanstack/react-query";
@@ -31,6 +31,8 @@ import Link from "next/link";
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
 import Skeleton_line from "@components/ui/skeleton_line";
+import VerifyEvent from "./VerifyEvent";
+import RejectEvent from "./RejectEvent";
 
 export default function ShowEvents({ eventId }) {
     const session = useSession();
@@ -114,6 +116,50 @@ export default function ShowEvents({ eventId }) {
                                 ) : (
                                     ""
                                 )}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
+                    {(currentRole == "Admin") && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button>
+                                    <span className="sr-only">Open menu</span>
+                                    <MenuSquare className="h-4 w-4" />
+                                    <span className="hidden md:inline-block">
+                                        Action
+                                    </span>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuLabel className="flex items-center space-x-2">
+                                    <Command className="w-3 h-3" />
+                                    <span>Actions</span>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+
+                                {event.status == "for approval" ? (
+                                    <>
+                                        <DropdownMenuItem className="flex items-center space-x-2">
+                                            <VerifyEvent
+                                                eventData={{
+                                                    id: event.id,
+                                                    status: "approved",
+                                                }}
+                                                label="Approve"
+                                                className="btn btn-ghost btn-success"
+                                                formClassName="w-full"
+                                                icon={<CheckIcon />}
+                                            />
+                                        </DropdownMenuItem>
+                                        <RejectEvent
+                                            eventId={event.id}
+                                            className="w-full btn btn-ghost btn-error"
+                                        />
+                                    </>
+                                ) : (
+                                    ""
+                                )}
+
                             </DropdownMenuContent>
                         </DropdownMenu>
                     )}

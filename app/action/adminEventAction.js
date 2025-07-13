@@ -25,6 +25,44 @@ import {
 import moment from "moment";
 import { Op } from "sequelize";
 
+async function updatePastEventStatuses() {
+    const today = new Date();
+
+    // 1. Approved & Ongoing -> Completed
+    await BloodDonationEvent.update(
+        { registration_status: "completed" },
+        {
+            where: {
+                date: { [Op.lt]: today },
+                status: "approved",
+                registration_status: "ongoing",
+            },
+        }
+    );
+
+    // 2. Not Approved & Not Started -> Closed
+    await BloodDonationEvent.update(
+        { registration_status: "closed", remarks: "Event has been closed due to past date." },
+        {
+            where: {
+                date: { [Op.lt]: today },
+                registration_status: "not started",
+            },
+        }
+    );
+
+    // 3. Past For Approval Events -> Rejected & Closed
+    await BloodDonationEvent.update(
+        { status: "rejected", registration_status: "closed", remarks: "Event has been closed due to past date." },
+        {
+            where: {
+                date: { [Op.lt]: today },
+                status: "for approval",
+            },
+        }
+    );
+}
+
 export async function getAdminDashboard() {
     const session = await auth();
     if (!session) {
@@ -432,6 +470,7 @@ export async function getAgencyId() {
 
 /* use in allDataEvents components event calendar */
 export async function getAllEvents() {
+    await updatePastEventStatuses();
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     try {

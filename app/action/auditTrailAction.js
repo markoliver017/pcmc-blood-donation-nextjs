@@ -5,6 +5,7 @@ import { AuditTrail, User } from "@lib/models";
 import { Op } from "sequelize";
 import { logAuditTrail } from "@lib/audit_trails.utils";
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
+import { formatSeqObj } from "@lib/utils/object.utils";
 
 // Zod schemas
 const fetchAuditTrailsSchema = z.object({
@@ -15,6 +16,7 @@ const fetchAuditTrailsSchema = z.object({
             user_id: z.string().uuid().optional(),
             controller: z.string().optional(),
             action: z.string().optional(),
+            user_email: z.string().optional(),
             is_error: z.boolean().optional(),
             date_from: z.string().optional(), // ISO date
             date_to: z.string().optional(), // ISO date
@@ -40,34 +42,84 @@ export async function fetchAuditTrails(input) {
                 ? fetchAuditTrailsSchema.parse(input)
                 : { page: 1, pageSize: 20, filters: {}, search: "" };
         const where = {};
+        const searchConditions = [];
+        
         // Filters
         if (filters) {
-            if (filters.user_id) where.user_id = filters.user_id;
-            if (filters.controller) where.controller = filters.controller;
-            if (filters.action) where.action = filters.action;
-            if (typeof filters.is_error === "boolean")
+            if (filters.user_id && filters.user_id !== "All") {
+                where.user_id = filters.user_id;
+            }
+            if (filters.controller && filters.controller !== "All") {
+                where.controller = filters.controller;
+            }
+            if (filters.action && filters.action !== "All") {
+                where.action = filters.action;
+            }
+            if (typeof filters.is_error === "boolean") {
                 where.is_error = filters.is_error;
+            }
+
+            
             if (filters.date_from || filters.date_to) {
                 where.createdAt = {};
-                if (filters.date_from)
+                if (filters.date_from) {
                     where.createdAt[Op.gte] = new Date(filters.date_from);
-                if (filters.date_to)
-                    where.createdAt[Op.lte] = new Date(filters.date_to);
+                }
+                if (filters.date_to) {
+                const dateToString = filters.date_to.length <= 10
+                    ? `${filters.date_to}T23:59:59`
+                    : filters.date_to;
+                    where.createdAt[Op.lte] = new Date(dateToString);
+                }
             }
         }
+
         // Search (details, stack_trace, user email)
         if (search && search.trim()) {
             const s = `%${search.trim()}%`;
-            where[Op.or] = [
-                { details: { [Op.iLike]: s } },
-                { stack_trace: { [Op.iLike]: s } },
-            ];
+            searchConditions.push(
+                { details: { [Op.like]: s } },
+                { stack_trace: { [Op.like]: s } },
+                { '$user.email$': { [Op.like]: s } }
+            );
         }
+
+        // User email filter (separate from search)
+        if (filters?.user_email && filters.user_email.trim()) {
+            searchConditions.push({
+                '$user.email$': { [Op.like]: `%${filters.user_email.trim()}%` }
+            });
+        }
+        console.log("filters", filters);
+        console.log("searchConditions", searchConditions);
+        console.log("where", where);
+
+        // Combine search conditions with other filters
+        if (searchConditions.length > 0) {
+            if (Object.keys(where).length > 0) {
+                // We have both filters and search - use AND logic
+                where[Op.and] = [
+                    { ...where },
+                    { [Op.or]: searchConditions }
+                ];
+                // Remove the original properties since we're using AND
+                Object.keys(where).forEach(key => {
+                    if (key !== Op.and) {
+                        delete where[key];
+                    }
+                });
+            } else {
+                // Only search conditions - use OR logic
+                where[Op.or] = searchConditions;
+            }
+        }
+
         const { count, rows } = await AuditTrail.findAndCountAll({
             where,
             include: [
                 {
                     model: User,
+                    as: "user",
                     attributes: ["id", "email", "first_name", "last_name"],
                 },
             ],
@@ -75,9 +127,10 @@ export async function fetchAuditTrails(input) {
             offset: (page - 1) * pageSize,
             limit: pageSize,
         });
+
         return {
             success: true,
-            data: rows,
+            data: formatSeqObj(rows),
             total: count,
             page,
             pageSize,
@@ -120,6 +173,7 @@ export async function fetchAuditTrailById(input) {
             include: [
                 {
                     model: User,
+                    as: "user",
                     attributes: ["id", "email", "first_name", "last_name"],
                 },
             ],
@@ -133,7 +187,7 @@ export async function fetchAuditTrailById(input) {
         }
         return {
             success: true,
-            data: auditTrail,
+            data: formatSeqObj(auditTrail),
         };
     } catch (error) {
         if (error instanceof z.ZodError) {

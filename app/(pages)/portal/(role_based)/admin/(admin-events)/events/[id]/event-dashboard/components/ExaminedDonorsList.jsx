@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import UpdateStatusModal from "./UpdateStatusModal";
 
-export default function ExaminedDonorsList({ eventId, appointments }) {
+export default function ExaminedDonorsList({ eventId, appointments, onManageAppointment }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -244,13 +244,9 @@ export default function ExaminedDonorsList({ eventId, appointments }) {
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                onClick={() => {
-                                                    // TODO: Navigate to donor details
-                                                    console.log(
-                                                        "View donor details:",
-                                                        appointment.id
-                                                    );
-                                                }}
+                                                onClick={() =>
+                                                    onManageAppointment(appointment)
+                                                }
                                             >
                                                 <Eye className="h-4 w-4" />
                                             </Button>

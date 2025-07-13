@@ -1,15 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
-import { Key, Mail } from "lucide-react";
+import { EyeIcon, Key, Mail } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { IoMdLogIn } from "react-icons/io";
 import { set, useForm } from "react-hook-form";
 import notify from "@components/ui/notify";
 import { toast } from "react-toastify";
 
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import {  useRouter, useSearchParams } from "next/navigation";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { FaGoogle } from "react-icons/fa";
 
@@ -18,9 +19,15 @@ const credentials = {
     password: "User@1234",
 };
 
-export default function LoginForm({ showHeader = true, showProvidersSection = false }) {
+export default function LoginForm({ showHeader = true, showProvidersSection = false, onClose = () => {} }) {
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    //?callbackUrl=/portal/admin/profile
+    const callbackUrl = searchParams.get('callbackUrl') || "/portal";
+
     const [isLoading, setIsLoading] = useState({});
+    const [showPasswordReset, setShowPasswordReset] = useState(false);
     const {
         register,
         watch,
@@ -45,7 +52,7 @@ export default function LoginForm({ showHeader = true, showProvidersSection = fa
             debugEmail: email,
             password,
             redirect: false,
-            callbackUrl: "/portal", // redirect after login
+            callbackUrl, // redirect after login
         });
 
         if (res.ok && res.error == undefined) {
@@ -117,7 +124,7 @@ export default function LoginForm({ showHeader = true, showProvidersSection = fa
                     <label className="input border focus-within:shadow-md focus-within:shadow-red-300 w-full mt-1 flex items-center gap-2">
                         <Key className="h-4 text-blue-500" />
                         <input
-                            type="password"
+                            type={showPasswordReset ? "text" : "password"}
                             {...register("password", {
                                 required: "Password is required.",
                                 validate: (value) => {
@@ -130,12 +137,27 @@ export default function LoginForm({ showHeader = true, showProvidersSection = fa
                             minLength="8"
                             className="bg-transparent flex-1 outline-none"
                         />
+                        <button className="btn btn-ghost btn-sm" onClick={() => setShowPasswordReset(!showPasswordReset)}>
+                            <EyeIcon className="h-4 text-blue-500" />
+                        </button>
                     </label>
                     <p className="text-red-500 text-sm min-h-[1.5em]">
                         {errors.password && (
                             <span>{errors.password?.message}</span>
                         )}
                     </p>
+                    <div className="flex justify-end mt-1">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                onClose();
+                                router.push("/auth/forgot-password")
+                            }}
+                            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors"
+                        >
+                            Forgot Password?
+                        </button>
+                    </div>
                 </div>
                 <div className="flex flex-col  gap-2 mt-2">
                     <label className="flex max-w-max items-center gap-2 cursor-pointer">

@@ -93,7 +93,7 @@ export default function ForApprovalEventList({
                                         <SquareMenu className="h-4 w-4" />
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
+                                <DropdownMenuContent align="start">
                                     <DropdownMenuLabel className="flex items-center space-x-2">
                                         <Command className="w-3 h-3" />
                                         <span>Actions</span>
@@ -124,7 +124,7 @@ export default function ForApprovalEventList({
                                     >
                                         <DropdownMenuItem className="space-x-2 btn btn-ghost btn-primary">
                                             <Eye className="w-4 h-4" />
-                                            <span>Show</span>
+                                            <span>Details</span>
                                         </DropdownMenuItem>
                                     </Link>
                                     {/* <Link

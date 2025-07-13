@@ -283,6 +283,7 @@ export default function EventDashboardClient({ eventId }) {
                 <ExaminedDonorsList
                     eventId={eventId}
                     appointments={getAppointmentsByStatus("examined")}
+                    onManageAppointment={handleManageAppointment}
                 />
             ),
         },
@@ -294,6 +295,7 @@ export default function EventDashboardClient({ eventId }) {
                 <CollectedDonorsList
                     eventId={eventId}
                     appointments={getAppointmentsByStatus("collected")}
+                    onManageAppointment={handleManageAppointment}
                 />
             ),
         },
@@ -310,6 +312,7 @@ export default function EventDashboardClient({ eventId }) {
                         ...(deferred_donors || []),
                         ...getAppointmentsByStatus("no show"),
                     ]}
+                    onManageAppointment={handleManageAppointment}
                 />
             ),
         },
@@ -320,6 +323,7 @@ export default function EventDashboardClient({ eventId }) {
             component: (
                 <CancelledDonorsList
                     appointments={getAppointmentsByStatus("cancelled")}
+                    onManageAppointment={handleManageAppointment}
                 />
             ),
         },

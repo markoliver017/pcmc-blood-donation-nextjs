@@ -1,23 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAuditTrails } from "@/action/auditTrailAction";
 import { Card, CardHeader, CardTitle, CardContent } from "@components/ui/card";
 import LoadingModal from "@components/layout/LoadingModal";
 import notify from "@components/ui/notify";
 import Skeleton from "@components/ui/skeleton";
+import AuditTrailFilters from "@components/admin/audit-trails/AuditTrailFilters";
+import AuditTrailPagination from "@components/admin/audit-trails/AuditTrailPagination";
+import AuditTrailDetailModal from "@components/admin/audit-trails/AuditTrailDetailModal";
+import { Button } from "@components/ui/button";
+import { Eye } from "lucide-react";
+import Skeleton_line from "@components/ui/skeleton_line";
 
 export default function AuditTrailsPage() {
     // Pagination and filters state
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(20);
-    // TODO: Add filters/search state
+    const [filters, setFilters] = useState({});
+    const [search, setSearch] = useState("");
+    const [selectedAuditTrailId, setSelectedAuditTrailId] = useState(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
     // Fetch audit trails
     const { data, isLoading, isError, error, refetch } = useQuery({
-        queryKey: ["audit-trails", page, pageSize],
-        queryFn: () => fetchAuditTrails({ page, pageSize }),
+        queryKey: ["audit-trails", page, pageSize, filters, search],
+        queryFn: () => fetchAuditTrails({ page, pageSize, filters, search }),
         keepPreviousData: true,
     });
 
@@ -26,16 +35,59 @@ export default function AuditTrailsPage() {
         notify({ error: true, message: error.message });
     }
 
-    if (isLoading) return <Skeleton />;
+    // Handle filter changes
+    const handleFiltersChange = useCallback((newFilters) => {
+        setFilters(newFilters);
+        setPage(1); // Reset to first page when filters change
+    }, []);
+
+    // Handle search changes
+    const handleSearchChange = useCallback((newSearch) => {
+        setSearch(newSearch);
+        setPage(1); // Reset to first page when search changes
+    }, []);
+
+    // Handle page changes
+    const handlePageChange = useCallback((newPage) => {
+        setPage(newPage);
+    }, []);
+
+    // Handle page size changes
+    const handlePageSizeChange = useCallback((newPageSize) => {
+        setPageSize(newPageSize);
+        setPage(1); // Reset to first page when page size changes
+    }, []);
+
+    // Handle detail modal
+    const handleViewDetails = useCallback((auditTrailId) => {
+        setSelectedAuditTrailId(auditTrailId);
+        setIsDetailModalOpen(true);
+    }, []);
+
+    const handleCloseDetailModal = useCallback(() => {
+        setIsDetailModalOpen(false);
+        setSelectedAuditTrailId(null);
+    }, []);
+
+    // Calculate total pages
+    const totalPages = data?.success ? Math.ceil(data.total / pageSize) : 0;
 
     return (
         <div className="container mx-auto py-8">
+            {/* Filters Component */}
+            <AuditTrailFilters
+                filters={filters}
+                onFiltersChange={handleFiltersChange}
+                onSearchChange={handleSearchChange}
+                search={search}
+                isLoading={isLoading}
+            />
+
             <Card>
                 <CardHeader>
                     <CardTitle className="text-2xl font-bold">
                         Audit Trails
                     </CardTitle>
-                    {/* TODO: Add AuditTrailFilters here */}
                 </CardHeader>
                 <CardContent>
                     {/* Loading State */}
@@ -73,6 +125,15 @@ export default function AuditTrailsPage() {
                                     <th className="px-4 py-2"></th>
                                 </tr>
                             </thead>
+                            {isLoading && !data ? (
+                                <tbody>
+                                    <tr>
+                                        <td colSpan={9} className="text-center py-8 text-gray-400">
+                                            <Skeleton_line />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            ) : (
                             <tbody>
                                 {data?.success && data.data.length > 0 ? (
                                     data.data.map((log) => (
@@ -90,14 +151,14 @@ export default function AuditTrailsPage() {
                                                 ).toLocaleString()}
                                             </td>
                                             <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200">
-                                                {log.User
+                                                {log.user
                                                     ? `${
-                                                          log.User.first_name ||
+                                                          log.user.first_name ||
                                                           ""
                                                       } ${
-                                                          log.User.last_name ||
+                                                          log.user.last_name ||
                                                           ""
-                                                      } (${log.User.email})`
+                                                      } (${log.user.email})`
                                                     : "-"}
                                             </td>
                                             <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200">
@@ -137,10 +198,15 @@ export default function AuditTrailsPage() {
                                                     : ""}
                                             </td>
                                             <td className="px-4 py-2 whitespace-nowrap text-right">
-                                                {/* TODO: Add View Details button/modal */}
-                                                <button className="btn btn-xs btn-outline">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => handleViewDetails(log.id)}
+                                                    className="flex items-center gap-1"
+                                                >
+                                                    <Eye className="h-3 w-3" />
                                                     View
-                                                </button>
+                                                </Button>
                                             </td>
                                         </tr>
                                     ))
@@ -157,11 +223,31 @@ export default function AuditTrailsPage() {
                                     </tr>
                                 )}
                             </tbody>
+                            )}
                         </table>
                     </div>
-                    {/* TODO: Add pagination controls */}
+
+                    {/* Pagination */}
+                    {data?.success && data.data.length > 0 && (
+                        <AuditTrailPagination
+                            currentPage={page}
+                            totalPages={totalPages}
+                            pageSize={pageSize}
+                            totalItems={data.total}
+                            onPageChange={handlePageChange}
+                            onPageSizeChange={handlePageSizeChange}
+                            isLoading={isLoading}
+                        />
+                    )}
                 </CardContent>
             </Card>
+
+            {/* Details Modal */}
+            <AuditTrailDetailModal
+                isOpen={isDetailModalOpen}
+                onClose={handleCloseDetailModal}
+                auditTrailId={selectedAuditTrailId}
+            />
         </div>
     );
 }

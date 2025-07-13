@@ -10,6 +10,7 @@ import {
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
 import {
+    CheckCircle,
     CheckIcon,
     Command,
     Eye,
@@ -214,6 +215,14 @@ export const eventColumns = (setIsLoading) => [
                 regStatusBadge = (
                     <div className="badge p-2 font-semibold text-xs badge-primary">
                         <GiOpenBook />{" "}
+                        {formatFormalName(data.registration_status)}
+                    </div>
+                );
+            }
+            if (data.registration_status == "completed") {
+                regStatusBadge = (
+                    <div className="badge p-2 font-semibold text-xs badge-success">
+                        <CheckCircle className="w-4 h-4" />{" "}
                         {formatFormalName(data.registration_status)}
                     </div>
                 );

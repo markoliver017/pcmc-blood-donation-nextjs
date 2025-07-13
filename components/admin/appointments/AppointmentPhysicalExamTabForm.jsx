@@ -43,6 +43,7 @@ import { FaTemperatureHigh } from "react-icons/fa";
 import { physicalExaminationSchema } from "@lib/zod/physicalExaminationSchema";
 import { z } from "zod";
 import { storeUpdatePhysicalExam } from "@/action/physicalExamAction";
+import { ToastContainer } from "react-toastify";
 
 export default function AppointmentPhysicalExamTabForm({ appointment }) {
     const { resolvedTheme } = useTheme();
@@ -54,14 +55,23 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                 appointment?.id,
                 formData
             );
+            console.log("Response", res);
             if (!res.success) {
                 throw res;
             }
             return res;
         },
         onSuccess: (res) => {
+            
             // Invalidate the posts query to refetch the updated list
             queryClient.invalidateQueries({ queryKey: ["appointment"] });
+            queryClient.invalidateQueries({
+                queryKey: ["event-dashboard"],
+            });
+            queryClient.invalidateQueries({
+                queryKey: ["event-statistics"],
+            });
+
             SweetAlert({
                 title: "Physical Examination",
                 text: res?.message || "Submission successful!",
@@ -70,6 +80,7 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
             });
         },
         onError: (error) => {
+            console.log("Response error", error);
             // Handle validation errors
             if (error?.type === "validation" && error?.errorArr.length) {
                 toastError(error);
@@ -151,6 +162,7 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
 
     return (
         <Form {...form}>
+            <ToastContainer />
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 id="form-modal"

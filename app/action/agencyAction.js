@@ -48,6 +48,31 @@ export async function fetchAgencies() {
     }
 }
 
+export async function fetchAllAgencies() {
+    try {
+        const agencies = await Agency.findAll({
+            attributes: ["id", "name", "status"],
+            where: {
+                status: {
+                    [Op.not]: "for approval",
+                },
+            },
+            order: [["name", "ASC"]],
+        });
+
+        return {
+            success: true,
+            data: formatSeqObj(agencies),
+        };
+    } catch (error) {
+        console.error(error);
+        return {
+            success: false,
+            message: extractErrorMessage(error),
+        };
+    }
+}
+
 export async function fetchVerifiedAgencies() {
     // await new Promise((resolve) => setTimeout(resolve, 1000));
     try {

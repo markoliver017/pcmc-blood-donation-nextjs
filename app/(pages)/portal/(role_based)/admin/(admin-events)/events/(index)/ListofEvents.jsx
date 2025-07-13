@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { eventColumns } from "./eventColumns";
 import {
     getAllAgencyOptions,
@@ -27,6 +27,9 @@ import {
 import { MdUpcoming } from "react-icons/md";
 import { Card } from "@components/ui/card";
 import EventsDashboard from "@components/admin/events/EventsDashboard";
+import { Tabs as ViewModeTabs, TabsList as ViewModeTabsList, TabsTrigger as ViewModeTabsTrigger, TabsContent as ViewModeTabsContent } from "@components/ui/tabs";
+import AdminEventCard from "@components/events/AdminEventCard";
+import EventFilterBar from "@components/admin/events/EventFilterBar";
 
 export default function ListofEvents() {
     const router = useRouter();
@@ -102,6 +105,104 @@ export default function ListofEvents() {
         staleTime: 0,
     });
 
+    // Add view mode state for each tab
+    const [ongoingViewMode, setOngoingViewMode] = useState("table");
+    const [upcomingViewMode, setUpcomingViewMode] = useState("table");
+    const [allViewMode, setAllViewMode] = useState("table");
+    const [forApprovalViewMode, setForApprovalViewMode] = useState("table");
+
+    // Add filter state for each tab
+    const [ongoingFilters, setOngoingFilters] = useState({});
+    const [upcomingFilters, setUpcomingFilters] = useState({});
+    const [allFilters, setAllFilters] = useState({});
+    const [forApprovalFilters, setForApprovalFilters] = useState({});
+
+    // Status options for filter
+    const statusOptions = [
+        { value: "ongoing", label: "Ongoing" },
+        { value: "not started", label: "Not Started" },
+        { value: "completed", label: "Completed" },
+        { value: "cancelled", label: "Cancelled" },
+        // { value: "for approval", label: "For Approval" },
+    ];
+
+    // Handler for card actions
+    const handleViewDetails = (event) => {
+        router.push(`/portal/admin/events/${event.id}`);
+    };
+    const handleEdit = (event) => {
+        router.push(`/portal/admin/events/${event.id}/edit`);
+    };
+
+
+    // Filter function
+    const filterEvents = (events, filters) => {
+        if (!events || !filters) return events;
+
+        return events.filter((event) => {
+            // Search filter
+            if (filters.search) {
+                const searchTerm = filters.search.toLowerCase();
+                const searchableFields = [
+                    event.title,
+                    event.agency?.name,
+                    event.location,
+                    event.description,
+                ].filter(Boolean);
+                
+                if (!searchableFields.some(field => 
+                    field.toLowerCase().includes(searchTerm)
+                )) {
+                    return false;
+                }
+            }
+
+            // Date range filter
+            if (filters.dateRange?.from || filters.dateRange?.to) {
+                const eventDate = new Date(event.date);
+                if (filters.dateRange.from && eventDate < new Date(filters.dateRange.from)) {
+                    return false;
+                }
+                if (filters.dateRange.to && eventDate > new Date(filters.dateRange.to)) {
+                    return false;
+                }
+            }
+
+
+            // Agency filter
+            if (filters.agency_id && event.agency_id !== filters.agency_id) {
+                return false;
+            }
+
+            return true;
+        });
+    };
+
+    // Apply filters to events
+    const ongoingEvents = useMemo(() => {
+        if(!presentEvents) return;
+        const filtered = presentEvents.filter(
+            (event) => event?.registration_status === "ongoing"
+        );
+        return filterEvents(filtered, ongoingFilters);
+    }, [presentEvents, ongoingFilters]);
+
+    const upcomingEvents = useMemo(() => {
+        if(!presentEvents) return;
+        const filtered = presentEvents.filter(
+            (event) => event?.registration_status === "not started"
+        );
+        return filterEvents(filtered, upcomingFilters);
+    }, [presentEvents, upcomingFilters]);
+
+    const allEvents = useMemo(() => {
+        return filterEvents(events, allFilters);
+    }, [events, allFilters]);
+
+    const filteredForApprovalEvents = useMemo(() => {
+        return filterEvents(forApprovalEvents, forApprovalFilters);
+    }, [forApprovalEvents, forApprovalFilters]);
+
     if (isError)
         return (
             <div className="alert alert-error">
@@ -137,14 +238,6 @@ export default function ListofEvents() {
 
     if (isLoading || presentEventsLoading || isLoadingAgency)
         return <Skeleton />;
-
-    const ongoingEvents = presentEvents.filter(
-        (event) => event?.registration_status === "ongoing"
-    );
-
-    const upcomingEvents = presentEvents.filter(
-        (event) => event?.registration_status === "not started"
-    );
 
     return (
         <>
@@ -222,59 +315,183 @@ export default function ListofEvents() {
                     <EventsDashboard />
                 </TabsContent>
 
+                {/* Ongoing Tab Content */}
                 <TabsContent value="ongoing">
-                    {!ongoingEvents?.length ? (
-                        <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
-                            <Calendar className="w-12 h-12 mb-4 text-primary" />
-                            <h2 className="text-xl font-semibold">
-                                No Ongoing Events
-                            </h2>
-                            <p className="text-gray-500 mt-2">
-                                You're all caught up! 🎉
-                            </p>
-                        </Card>
+                    <EventFilterBar
+                        onChange={setOngoingFilters}
+                        statusOptions={statusOptions}
+                    />
+                    <div className="flex justify-end mb-2">
+                        <ViewModeTabs value={ongoingViewMode} onValueChange={setOngoingViewMode} className="w-max">
+                            <ViewModeTabsList>
+                                <ViewModeTabsTrigger value="table">Table View</ViewModeTabsTrigger>
+                                <ViewModeTabsTrigger value="card">Card View</ViewModeTabsTrigger>
+                            </ViewModeTabsList>
+                        </ViewModeTabs>
+                    </div>
+                    {ongoingViewMode === "table" ? (
+                        !ongoingEvents?.length ? (
+                            <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
+                                <Calendar className="w-12 h-12 mb-4 text-primary" />
+                                <h2 className="text-xl font-semibold">
+                                    {Object.keys(ongoingFilters).length > 0 ? "No Events Match Your Filters" : "No Ongoing Events"}
+                                </h2>
+                                <p className="text-gray-500 mt-2">
+                                    {Object.keys(ongoingFilters).length > 0 ? "Try adjusting your filters to see more results." : "You're all caught up! 🎉"}
+                                </p>
+                            </Card>
+                        ) : (
+                            <BloodDrivesDatatable
+                                data={ongoingEvents || []}
+                                columns={presentEventColumns(setModalIsLoading)}
+                                isLoading={presentEventsLoading}
+                                agencyOptions={agencyOptions || []}
+                            />
+                        )
                     ) : (
-                        <BloodDrivesDatatable
-                            data={ongoingEvents || []}
-                            columns={presentEventColumns(setModalIsLoading)}
-                            isLoading={presentEventsLoading}
-                            agencyOptions={agencyOptions || []}
-                        />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {ongoingEvents?.length ? ongoingEvents.map(event => (
+                                <AdminEventCard
+                                    key={event.id}
+                                    event={event}
+                                    onView={handleViewDetails}
+                                    onEdit={handleEdit}
+                                />
+                            )) : (
+                                <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
+                                    <Calendar className="w-12 h-12 mb-4 text-primary" />
+                                    <h2 className="text-xl font-semibold">
+                                        {Object.keys(ongoingFilters).length > 0 ? "No Events Match Your Filters" : "No Ongoing Events"}
+                                    </h2>
+                                    <p className="text-gray-500 mt-2">
+                                        {Object.keys(ongoingFilters).length > 0 ? "Try adjusting your filters to see more results." : "You're all caught up! 🎉"}
+                                    </p>
+                                </Card>
+                            )}
+                        </div>
                     )}
                 </TabsContent>
+
+                {/* Repeat similar structure for Upcoming, All, For-Approval tabs */}
                 <TabsContent value="upcoming">
-                    {!upcomingEvents.length ? (
-                        <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
-                            <Calendar className="w-12 h-12 mb-4 text-primary" />
-                            <h2 className="text-xl font-semibold">
-                                No Upcoming Events
-                            </h2>
-                            <p className="text-gray-500 mt-2">
-                                You're all caught up! 🎉
-                            </p>
-                        </Card>
+                    <EventFilterBar
+                        onChange={setUpcomingFilters}
+                        statusOptions={statusOptions}
+                    />
+                    <div className="flex justify-end mb-2">
+                        <ViewModeTabs value={upcomingViewMode} onValueChange={setUpcomingViewMode} className="w-max">
+                            <ViewModeTabsList>
+                                <ViewModeTabsTrigger value="table">Table View</ViewModeTabsTrigger>
+                                <ViewModeTabsTrigger value="card">Card View</ViewModeTabsTrigger>
+                            </ViewModeTabsList>
+                        </ViewModeTabs>
+                    </div>
+                    {upcomingViewMode === "table" ? (
+                        !upcomingEvents.length ? (
+                            <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
+                                <Calendar className="w-12 h-12 mb-4 text-primary" />
+                                <h2 className="text-xl font-semibold">
+                                    {Object.keys(upcomingFilters).length > 0 ? "No Events Match Your Filters" : "No Upcoming Events"}
+                                </h2>
+                                <p className="text-gray-500 mt-2">
+                                    {Object.keys(upcomingFilters).length > 0 ? "Try adjusting your filters to see more results." : "You're all caught up! 🎉"}
+                                </p>
+                            </Card>
+                        ) : (
+                            <BloodDrivesDatatable
+                                data={upcomingEvents || []}
+                                columns={presentEventColumns(setModalIsLoading)}
+                                isLoading={presentEventsLoading}
+                                agencyOptions={agencyOptions || []}
+                            />
+                        )
                     ) : (
-                        <BloodDrivesDatatable
-                            data={upcomingEvents || []}
-                            columns={presentEventColumns(setModalIsLoading)}
-                            isLoading={presentEventsLoading}
-                            agencyOptions={agencyOptions || []}
-                        />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {upcomingEvents?.length ? upcomingEvents.map(event => (
+                                <AdminEventCard
+                                    key={event.id}
+                                    event={event}
+                                    onView={handleViewDetails}
+                                    onEdit={handleEdit}
+                                />
+                            )) : (
+                                <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
+                                    <Calendar className="w-12 h-12 mb-4 text-primary" />
+                                    <h2 className="text-xl font-semibold">
+                                        {Object.keys(upcomingFilters).length > 0 ? "No Events Match Your Filters" : "No Upcoming Events"}
+                                    </h2>
+                                    <p className="text-gray-500 mt-2">
+                                        {Object.keys(upcomingFilters).length > 0 ? "Try adjusting your filters to see more results." : "You're all caught up! 🎉"}
+                                    </p>
+                                </Card>
+                            )}
+                        </div>
                     )}
                 </TabsContent>
                 <TabsContent value="all">
-                    <BloodDrivesDatatable
-                        data={events || []}
-                        columns={eventColumns(setModalIsLoading)}
-                        isLoading={isLoading}
-                        agencyOptions={agencyOptions || []}
+                    <EventFilterBar
+                        onChange={setAllFilters}
+                        statusOptions={statusOptions}
                     />
+                    <div className="flex justify-end mb-2">
+                        <ViewModeTabs value={allViewMode} onValueChange={setAllViewMode} className="w-max">
+                            <ViewModeTabsList>
+                                <ViewModeTabsTrigger value="table">Table View</ViewModeTabsTrigger>
+                                <ViewModeTabsTrigger value="card">Card View</ViewModeTabsTrigger>
+                            </ViewModeTabsList>
+                        </ViewModeTabs>
+                    </div>
+                    {allViewMode === "table" ? (
+                        !allEvents?.length ? (
+                            <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
+                                <Calendar className="w-12 h-12 mb-4 text-primary" />
+                                <h2 className="text-xl font-semibold">
+                                    {Object.keys(allFilters).length > 0 ? "No Events Match Your Filters" : "No Events Found"}
+                                </h2>
+                                <p className="text-gray-500 mt-2">
+                                    {Object.keys(allFilters).length > 0 ? "Try adjusting your filters to see more results." : "No events found in the database."}
+                                </p>
+                            </Card>
+                        ) : (
+                            <BloodDrivesDatatable
+                                data={allEvents || []}
+                                columns={eventColumns(setModalIsLoading)}
+                                isLoading={isLoading}
+                                agencyOptions={agencyOptions || []}
+                            />
+                        )
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {allEvents?.length ? allEvents.map(event => (
+                                <AdminEventCard
+                                    key={event.id}
+                                    event={event}
+                                    onView={handleViewDetails}
+                                    onEdit={handleEdit}
+                                />
+                            )) : (
+                                <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
+                                    <Calendar className="w-12 h-12 mb-4 text-primary" />
+                                    <h2 className="text-xl font-semibold">
+                                        {Object.keys(allFilters).length > 0 ? "No Events Match Your Filters" : "No Events Found"}
+                                    </h2>
+                                    <p className="text-gray-500 mt-2">
+                                        {Object.keys(allFilters).length > 0 ? "Try adjusting your filters to see more results." : "No events found in the database."}
+                                    </p>
+                                </Card>
+                            )}
+                        </div>
+                    )}
                 </TabsContent>
 
                 <TabsContent value="for-approval">
+                    <EventFilterBar
+                        onChange={setForApprovalFilters}
+                        statusOptions={statusOptions}
+                    />
                     <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 p-3 w-full">
                         <ForApprovalEventList
-                            events={forApprovalEvents}
+                            events={filteredForApprovalEvents}
                             eventsIsFetching={eventsIsFetching}
                         />
                     </div>

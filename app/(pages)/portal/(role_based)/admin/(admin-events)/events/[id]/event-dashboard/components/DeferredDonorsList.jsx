@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import moment from "moment";
 
-export default function DeferredDonorsList({ appointments }) {
+export default function DeferredDonorsList({ appointments, onManageAppointment }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [filterType, setFilterType] = useState("all"); // all, deferred, no_show
 
@@ -302,10 +302,9 @@ export default function DeferredDonorsList({ appointments }) {
                                         <Button
                                             variant="outline"
                                             size="sm"
-                                            onClick={() =>
-                                                handleViewDetails(appointment)
-                                            }
-                                            disabled
+                                                                                    onClick={() =>
+                                            onManageAppointment(appointment)
+                                        }
                                             className="flex items-center gap-1"
                                         >
                                             <FileText className="h-3 w-3" />
@@ -313,20 +312,7 @@ export default function DeferredDonorsList({ appointments }) {
                                                 Details
                                             </span>
                                         </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            disabled
-                                            onClick={() => {
-                                                // TODO: Navigate to donor details
-                                                console.log(
-                                                    "View donor details:",
-                                                    appointment.id
-                                                );
-                                            }}
-                                        >
-                                            <Eye className="h-4 w-4" />
-                                        </Button>
+                                        
                                     </div>
                                 </div>
 

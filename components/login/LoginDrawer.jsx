@@ -63,7 +63,7 @@ export default function LoginDrawer() {
                                         Sign in to your account to access the<br/> PCMC Pediatric Blood Center Portal.
                                     </p>
                                 </div>
-                                <LoginForm showHeader={false} showProvidersSection={true} />
+                                <LoginForm showHeader={false} showProvidersSection={true} onClose={() => drawerRef.current.close()} />
                             </div>
                         </div>
                         <button

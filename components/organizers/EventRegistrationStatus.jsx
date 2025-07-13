@@ -18,20 +18,23 @@ export default function EventRegistrationStatus({
     data,
     formClassName = "",
     setIsLoading,
+    className = ""
 }) {
-    let registration_status = "ongoing";
-    let confirmText = `Are you sure you want to <b>OPEN</b> the registration for <b><i>"${data?.title}"</i></b>? All registered donors will be notified.`;
-    let label = "Open the Registration";
-    let icon = <GiOpenBook />;
-    let className = "btn btn-ghost btn-success";
 
-    if (data?.registration_status == "ongoing") {
-        registration_status = "completed";
-        confirmText = `Are you sure you want to <b>CLOSE</b> now the registration for <b><i>"${data?.title}"</i></b>?`;
-        label = "Close the Registration";
-        icon = <XIcon />;
-        className = "btn btn-ghost btn-warning";
-    }
+        let registration_status = "ongoing";
+        let confirmText = `Are you sure you want to <b>OPEN</b> the registration for <b><i>"${data?.title}"</i></b>? All registered donors will be notified.`;
+        let label = "Open the Registration";
+        let icon = <GiOpenBook />;
+        className = className ? className : "btn btn-ghost btn-success";
+
+        if (data?.registration_status == "ongoing") {
+            registration_status = "completed";
+            confirmText = `Are you sure you want to <b>CLOSE</b> now the registration for <b><i>"${data?.title}"</i></b>?`;
+            label = "Close the Registration";
+            icon = <XIcon className="w-4 h-4" />;
+            className = className ? className : "btn btn-ghost btn-warning";
+        }
+    
 
     const queryClient = useQueryClient();
 

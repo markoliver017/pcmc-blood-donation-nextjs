@@ -81,12 +81,12 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
 
     const currentDate = new Date();
     const eventDate = new Date(appointment?.event?.date);
-    if (currentDate < eventDate) {
-        return {
-            success: false,
-            message: "You cannot conduct a physical exam for a future event.",
-        };
-    }
+    // if (currentDate < eventDate) {
+    //     return {
+    //         success: false,
+    //         message: "You cannot conduct a physical exam for a future event.",
+    //     };
+    // }
 
     /* check if the event physical exam is the latest appointment of the donor
     if yes then update the donor last physical exam and last donation event  */

@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import moment from "moment";
 
-export default function CollectedDonorsList({ eventId, appointments }) {
+export default function CollectedDonorsList({ eventId, appointments, onManageAppointment }) {
     const [searchTerm, setSearchTerm] = useState("");
 
     const filteredAppointments = appointments.filter((appointment) => {
@@ -195,6 +195,7 @@ export default function CollectedDonorsList({ eventId, appointments }) {
                                             )
                                         }
                                         className="flex items-center gap-1"
+                                        disabled
                                     >
                                         <Download className="h-3 w-3" />
                                         <span className="hidden sm:inline">
@@ -205,7 +206,7 @@ export default function CollectedDonorsList({ eventId, appointments }) {
                                         variant="outline"
                                         size="sm"
                                         onClick={() =>
-                                            handleViewDetails(appointment)
+                                            onManageAppointment(appointment)
                                         }
                                         className="flex items-center gap-1"
                                     >
@@ -214,19 +215,7 @@ export default function CollectedDonorsList({ eventId, appointments }) {
                                             Details
                                         </span>
                                     </Button>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => {
-                                            // TODO: Navigate to donor details
-                                            console.log(
-                                                "View donor details:",
-                                                appointment.id
-                                            );
-                                        }}
-                                    >
-                                        <Eye className="h-4 w-4" />
-                                    </Button>
+                                    
                                 </div>
                             </div>
 
