@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Quote, Heart, Star } from "lucide-react";
+import Link from "next/link";
 
 export default function ImpactStories() {
     const stories = [
@@ -137,19 +138,20 @@ export default function ImpactStories() {
                             throughout our community.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <a
-                                href="https://mail.google.com/mail/?view=cm&fs=1&to=pedbc-support@pcmc.gov.ph&su=Successfully Donated&body=Your message here"
-                                target="_blank"
+                            <Link
+                                // href="https://mail.google.com/mail/?view=cm&fs=1&to=pedbc-support@pcmc.gov.ph&su=Successfully Donated&body=Your message here"
+                                href="/contact-us"
+                                // target="_blank"
                                 className="btn btn-primary btn-lg px-8 py-3 text-lg font-semibold"
                             >
                                 Share Your Story
-                            </a>
-                            <button
-                                href="#stories"
+                            </Link>
+                            <Link
+                                href="/success-stories"
                                 className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold"
                             >
                                 Read More Stories
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </motion.div>

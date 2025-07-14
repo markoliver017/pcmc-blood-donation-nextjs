@@ -9,7 +9,7 @@ export default function HeroSection() {
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <Image
-                    src="/pcmc-building.png"
+                    src="/slide-main-4.png"
                     alt="PCMC Pediatric Blood Center Building"
                     fill
                     className="object-cover"
@@ -38,7 +38,7 @@ export default function HeroSection() {
                     <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed">
                         We are committed to saving and improving the lives of
                         children in need by empowering volunteer blood donors.
-                        Our mobile platform makes blood donation simple,
+                        Our platform makes blood donation simple,
                         accessible and meaningful.
                     </p>
 
@@ -91,13 +91,27 @@ export default function HeroSection() {
                         className="flex flex-col sm:flex-row gap-4 justify-center"
                     >
                         <a
-                            href="#overview"
+                            href="#our-journey"
+                            onClick={e => {
+                                e.preventDefault();
+                                const el = document.getElementById('our-journey');
+                                if (el) {
+                                    el.scrollIntoView({ behavior: 'smooth' });
+                                }
+                            }}
                             className="btn btn-primary btn-lg px-8 py-3 text-lg font-semibold"
                         >
                             <Book /> Learn More
                         </a>
                         <a
-                            href="#mission"
+                            href="#overview"
+                            onClick={e => {
+                                e.preventDefault();
+                                const el = document.getElementById('overview');
+                                if (el) {
+                                    el.scrollIntoView({ behavior: 'smooth' });
+                                }
+                            }}
                             className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-red-600"
                         >
                             Our Mission

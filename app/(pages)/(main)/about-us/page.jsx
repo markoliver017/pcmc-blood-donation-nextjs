@@ -56,7 +56,7 @@ export default function AboutUsPage() {
                         is a user-friendly, secure digital platform designed to
                         connect volunteer blood donors with pediatric patients
                         in need. Focused on convenience, safety, and community
-                        engagement, this mobile portal enables donors to easily
+                        engagement, this portal enables donors to easily
                         register, schedule, and track their donations, while
                         providing critical updates about pediatric blood needs.
                     </p>

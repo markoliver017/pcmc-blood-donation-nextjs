@@ -56,7 +56,7 @@ const colorClasses = {
 
 export default function TimelineSection() {
     return (
-        <AnimatedSection className="max-w-screen-xl w-full mx-auto mb-16">
+        <AnimatedSection id="our-journey" className="max-w-screen-xl w-full mx-auto mb-16">
             <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}

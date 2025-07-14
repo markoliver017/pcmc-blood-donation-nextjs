@@ -198,6 +198,16 @@ export default function LoginForm({ showHeader = true, showProvidersSection = fa
                         </>
                     )}
                 </button>
+                <div className="flex justify-center mt-2">
+                    <button type="button" 
+                        onClick={() => {
+                            onClose();
+                            router.push("/register")
+                        }}
+                        className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors">
+                        Don't have an account? <span className="font-semibold">Register here</span>
+                    </button>
+                </div>
             </form>
             {showProvidersSection && (
                 <div className="w-full flex flex-col items-center mt-6">

@@ -9,7 +9,7 @@ import {
     Award,
 } from "lucide-react";
 
-export default function HealthBenefits() {
+export default function HealthBenefits({ onOpenRegister }) {
     const benefits = [
         {
             icon: Heart,
@@ -216,7 +216,9 @@ export default function HealthBenefits() {
                                 </div>
                             </div>
                         </div>
-                        <button className="btn btn-white btn-lg px-8 py-3 text-lg font-semibold text-green-600 hover:bg-gray-100">
+                        <button
+                            onClick={onOpenRegister}
+                        className="btn btn-white btn-lg px-8 py-3 text-lg font-semibold text-green-600 hover:bg-gray-100">
                             Start Your Health Journey
                         </button>
                     </div>

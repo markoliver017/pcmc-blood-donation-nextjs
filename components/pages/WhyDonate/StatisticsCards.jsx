@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { Heart, Users, Clock, Award, TrendingUp, Globe } from "lucide-react";
 
-export default function StatisticsCards() {
+export default function StatisticsCards({ onOpenRegister }) {
     const stats = [
         {
             icon: Heart,
@@ -143,7 +143,9 @@ export default function StatisticsCards() {
                             lives. Your donation could be the difference between
                             life and death for a child in need.
                         </p>
-                        <button className="btn btn-primary btn-lg px-8 py-3 text-lg font-semibold">
+                        <button
+                            onClick={onOpenRegister}
+                            className="btn btn-primary btn-lg px-8 py-3 text-lg font-semibold">
                             Donate Now
                         </button>
                     </div>

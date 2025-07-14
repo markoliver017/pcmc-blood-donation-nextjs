@@ -13,9 +13,20 @@ import {
     MapPin,
     Phone,
     Mail,
+    HeartPulse,
+    Syringe,
+    Globe,
+    LogIn,
+    Signature,
+    Pen,
+    Megaphone,
 } from "lucide-react";
 import { GiCycle } from "react-icons/gi";
 import Link from "next/link";
+import { FaHandHolding, FaRegistered } from "react-icons/fa";
+import { BiRegistered } from "react-icons/bi";
+import { PiSignpostDuotone } from "react-icons/pi";
+import { MdBloodtype } from "react-icons/md";
 
 export default function Page() {
     const [openRegister, setOpenRegister] = useState(false);
@@ -33,10 +44,11 @@ export default function Page() {
                     <MainSlider />
                 </div>
                 {/* Overlay for text readability */}
-                <div
+                {/* <div
                     className="absolute inset-0 bg-black/60 dark:bg-black/60 z-10 pointer-events-none"
                     aria-hidden="true"
-                />
+                /> */}
+                <div className="absolute inset-0 bg-gradient-to-r from-red-900/65 dark:from-red-900/85 via-blue-800/65 dark:via-blue-800/75 to-yellow-900/60 dark:to-yellow-900/80 z-10 pointer-events-none" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-20 px-4 w-full">
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white drop-shadow-lg mb-4">
                         Donate Blood, Save Lives
@@ -76,7 +88,7 @@ export default function Page() {
                     viewport={{ once: true, amount: 0.3 }}
                     className="flex-1 text-justify text-slate-700 dark:text-slate-200 space-y-4"
                 >
-                    <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                    <h2 className="text-4xl text-left font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                         <span className="inline-block align-middle">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -95,30 +107,20 @@ export default function Page() {
                         </span>
                         Welcome to PCMC Pediatric Blood Center
                     </h2>
-                    <p className="text-lg text-slate-700 dark:text-slate-200 mb-4">
+                    {/* <p className="text-lg text-slate-700 dark:text-slate-200 mb-4">
                         We are committed to saving and improving the lives of
                         children in need by empowering volunteer blood donors.
                         Our mobile platform makes blood donation simple,
                         accessible and meaningful – bridging compassion with
                         action.
+                    </p> */}
+                    <p className="text-lg text-slate-700 dark:text-slate-200 mb-4 text-justify">
+                        We are dedicated to saving and improving the lives of children by empowering volunteer blood donors. Our platform makes blood donation information accessible, meaningful, and easy to engage with — turning compassion into action.
                     </p>
                     <ul className="space-y-3 mb-4">
                         <li className="flex items-start gap-3">
-                            <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-red-100 dark:bg-red-900">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-5 w-5 text-red-500"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M12 8v4l3 3"
-                                    />
-                                </svg>
+                            <span className="inline-flex items-center justify-center h-8 w-12 rounded-full bg-red-100 dark:bg-red-900">
+                                <Syringe className="w-4 h-4" />
                             </span>
                             <span>
                                 Blood donation saves lives every day, providing
@@ -126,21 +128,8 @@ export default function Page() {
                             </span>
                         </li>
                         <li className="flex items-start gap-3">
-                            <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-5 w-5 text-blue-500"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M13 16h-1v-4h-1m4 0h-1V8h-1m-4 8h.01"
-                                    />
-                                </svg>
+                            <span className="inline-flex items-center justify-center h-8 w-12 rounded-full bg-blue-100 dark:bg-blue-900">
+                                <FaHandHolding />
                             </span>
                             <span>
                                 Our center ensures every donation is safe,
@@ -148,21 +137,8 @@ export default function Page() {
                             </span>
                         </li>
                         <li className="flex items-start gap-3">
-                            <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-green-100 dark:bg-green-900">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-5 w-5 text-green-500"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M5 13l4 4L19 7"
-                                    />
-                                </svg>
+                            <span className="inline-flex items-center justify-center h-8 w-12 rounded-full bg-green-100 dark:bg-green-900">
+                                <Globe />
                             </span>
                             <span>
                                 Join a community of heroes—donate blood and help
@@ -227,7 +203,7 @@ export default function Page() {
                     <div className="flex flex-col lg:flex-row">
                         <div className="lg:w-1/3 relative h-64 lg:h-auto">
                             <Image
-                                src="/blood-donation-img1.jpg"
+                                src="/donation-drive-7.jpg"
                                 alt="About PCMC"
                                 fill
                                 className="object-cover"
@@ -276,7 +252,7 @@ export default function Page() {
                     <div className="flex flex-col lg:flex-row-reverse">
                         <div className="lg:w-1/3 relative h-64 lg:h-auto">
                             <Image
-                                src="/blood-donation-img-4.jpg"
+                                src="/donation-drive-6.JPG"
                                 alt="Why Donate"
                                 fill
                                 className="object-cover"
@@ -325,7 +301,7 @@ export default function Page() {
                     <div className="flex flex-col lg:flex-row">
                         <div className="lg:w-1/3 relative h-64 lg:h-auto">
                             <Image
-                                src="/mobile-app.jpeg"
+                                src="/donation-drive-1.JPG"
                                 alt="Donation Process"
                                 fill
                                 className="object-cover"
@@ -423,7 +399,7 @@ export default function Page() {
                     <div className="flex flex-col lg:flex-row">
                         <div className="lg:w-1/3 relative h-64 lg:h-auto">
                             <Image
-                                src="/blood-donation-img1.jpg"
+                                src="/donation-drive-3.JPG"
                                 alt="Success Stories"
                                 fill
                                 className="object-cover"
@@ -472,7 +448,7 @@ export default function Page() {
                     <div className="flex flex-col lg:flex-row-reverse">
                         <div className="lg:w-1/3 relative h-64 lg:h-auto">
                             <Image
-                                src="/blood-donation-img-4.jpg"
+                                src="/pcmc-hospital-bg.jpg"
                                 alt="Contact Us"
                                 fill
                                 className="object-cover"
@@ -509,10 +485,8 @@ export default function Page() {
                         </div>
                     </div>
                 </motion.div>
-            </section>
-
-            {/* Announcements Section */}
-            <section className="max-w-screen-xl w-full mx-auto py-10 mb-16 flex justify-center">
+                
+                {/* Announcements Section */}
                 <motion.div
                     initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -520,50 +494,44 @@ export default function Page() {
                     viewport={{ once: true, amount: 0.2 }}
                     className="w-full"
                 >
-                    <div className="relative mx-auto max-w-3xl bg-gradient-to-r from-red-100 via-yellow-50 to-blue-100 dark:from-red-900 dark:via-slate-800 dark:to-blue-900 rounded-2xl shadow-xl flex flex-col md:flex-row items-center gap-6 px-8 py-8 border-2 border-red-300 dark:border-red-700">
+                    <div className="relative mx-auto bg-gradient-to-r from-red-100 via-yellow-50 to-blue-100 dark:from-red-900 dark:via-slate-800 dark:to-blue-900 rounded-2xl shadow-xl flex flex-col md:flex-row items-center gap-6 px-8 py-8 border-2 border-red-300 dark:border-red-700">
                         <div className="flex-shrink-0 flex items-center justify-center h-20 w-20 rounded-full bg-red-200 dark:bg-red-800 shadow-lg">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-12 w-12 text-red-600 dark:text-red-300 animate-pulse"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M13 16h-1v-4h-1m4 0h-1V8h-1m-4 8h.01"
-                                />
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M12 8v4l3 3"
-                                />
-                            </svg>
+                            <MdBloodtype className="h-12 w-12" />
                         </div>
                         <div className="flex-1 text-center md:text-left">
                             <h2 className="text-2xl font-bold text-red-700 dark:text-red-300 mb-2 flex items-center gap-2 justify-center md:justify-start">
                                 <span>📢</span> Important Announcement
                             </h2>
-                            <p className="text-slate-800 dark:text-slate-200 mb-4 text-base md:text-lg font-medium">
-                                New community blood drives are launching this
-                                month! Check your Blood Donor App for schedules
-                                and locations near you.{" "}
-                                <span className="font-semibold">
-                                    Be a hero—donate today!
+                            <p className="text-slate-800 text-justify dark:text-slate-200 mb-4 text-base md:text-lg font-medium">
+                                New community blood drives are launching this month in collaboration with our partner agencies. These events are exclusively available to registered employees. Kindly coordinate with your agency's blood drive coordinator for schedules and registration.{" "}
+                                <span className="font-semibold italic block">
+                                    Be a hero—donate today and help save lives.
                                 </span>
                             </p>
-                            <Link href="/donation-process">
-                                <button className="btn btn-primary btn-sm px-6 py-2 shadow-md hover:scale-105 transition-transform">
-                                    View Events
-                                </button>
+                            <div className="space-x-4">
+
+                            <Link href="/login">
+                            <button
+                            type="button" className="btn btn-success btn-lg px-6 py-2 shadow-md hover:scale-105 transition-transform">
+                                <LogIn /> Sign In
+                            </button>
                             </Link>
+                            <button
+                                onClick={() => setOpenRegister(true)}
+                                type="button" className="btn btn-primary btn-lg px-6 py-2 shadow-md hover:scale-105 transition-transform">
+                                <Pen className="h-4 w-4" /> Register Now
+                            </button>
+                            </div>
+                            
                         </div>
                     </div>
                 </motion.div>
             </section>
+
+
+
+            
+            
         </main>
     );
 }

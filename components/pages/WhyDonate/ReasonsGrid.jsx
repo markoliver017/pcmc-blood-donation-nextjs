@@ -1,8 +1,9 @@
 "use client";
 import { motion } from "framer-motion";
 import { Heart, Shield, Users, Award, Star } from "lucide-react";
+import Link from "next/link";
 
-export default function ReasonsGrid() {
+export default function ReasonsGrid({ onOpenRegister }) {
     const reasons = [
         {
             icon: Heart,
@@ -119,7 +120,7 @@ export default function ReasonsGrid() {
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="space-y-2 flex flex-wrap gap-5 justify-center">
                                 <h4 className="font-semibold text-gray-900 dark:text-white text-sm uppercase tracking-wide">
                                     Key Benefits:
                                 </h4>
@@ -164,12 +165,15 @@ export default function ReasonsGrid() {
                             healthier community.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <button className="btn btn-white btn-lg px-8 py-3 text-lg font-semibold text-red-600 hover:bg-gray-100">
+                            <button
+                            type="button"
+                            onClick={onOpenRegister}
+                            className="btn btn-white btn-lg px-8 py-3 text-lg font-semibold text-red-600 hover:bg-gray-100">
                                 Start Donating
                             </button>
-                            <button className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-red-600">
+                            <Link href="/donation-process" className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-red-600">
                                 Learn More
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </motion.div>

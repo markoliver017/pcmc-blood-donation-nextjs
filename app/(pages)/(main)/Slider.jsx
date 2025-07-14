@@ -33,7 +33,7 @@ export default function MainSlider() {
                             alt="Philippine Children's Medical Center"
                             title="Philippine Children's Medical Center"
                         />
-                        <p className="absolute top-10 left-10 z-50 bg-white/70 p-4 rounded w-120 dark:text-slate-600 transform transition-transform duration-700 group-hover:-translate-x-2 group-hover:scale-[1.01]">
+                        {/* <p className="absolute top-10 left-10 z-50 bg-white/70 p-4 rounded w-120 dark:text-slate-600 transform transition-transform duration-700 group-hover:-translate-x-2 group-hover:scale-[1.01]">
                             Lorem ipsum dolor sit amet consectetur adipisicing
                             elit. Odit temporibus laborum cum inventore
                             molestiae nisi tempora nostrum rem praesentium ea
@@ -49,7 +49,7 @@ export default function MainSlider() {
                             vel eius veniam quisquam ex totam repellat, facilis
                             dolorum ipsam, impedit soluta obcaecati nesciunt
                             quibusdam!
-                        </p>
+                        </p> */}
                     </div>
                     <div className="h-140 relative group  transition-all duration-700 hover:cursor-pointer">
                         <Image

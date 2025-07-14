@@ -26,11 +26,20 @@ export default function Preloader() {
                 >
                     {/* Linear Gradient Background */}
                     <div
-                        className="bg-white"
+                        className="absolute inset-0 w-full h-full z-10"
                         style={{
-                            position: "absolute",
-                            width: "100%",
-                            height: "100%",
+                            backgroundImage: "url('/bg-loader.jpg')",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundRepeat: "no-repeat",
+                        }}
+                    />
+                    {/* Overlay */}
+                    <div
+                        className="absolute inset-0 w-full h-full z-20"
+                        style={{
+                            background: "rgba(0,0,0,0.7)", // adjust opacity/color as needed
+                            pointerEvents: "none"
                         }}
                     />
                     {/* Website Logo at top-left */}
@@ -49,7 +58,7 @@ export default function Preloader() {
                     {/* Animated Loading Text */}
 
                     <motion.div
-                        className="text-2xl w-96 h-96  flex justify-center items-center font-semibold text-blue-500 relative "
+                        className="text-2xl w-96 h-96  flex justify-center items-center font-semibold text-blue-500 relative z-20"
                         initial={{ scale: 1 }}
                         animate={{ scale: [1, 1.1, 1] }}
                         transition={{ repeat: Infinity, duration: 1 }}

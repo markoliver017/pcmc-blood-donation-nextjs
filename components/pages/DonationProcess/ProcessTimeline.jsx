@@ -8,52 +8,58 @@ import {
     RefreshCw,
     CheckCircle,
     Heart,
+    UserPlus,
+    CalendarCheck,
 } from "lucide-react";
 
 export default function ProcessTimeline() {
     const steps = [
         {
             number: 1,
-            icon: UserCheck,
-            title: "Registration & Check-in",
+            icon: UserPlus, // consider changing the icon to emphasize signup
+            title: "Account Registration & Verification",
             description:
-                "Complete registration form and provide identification. Our staff will verify your eligibility and create your donor profile.",
-            duration: "5-10 minutes",
+                "Begin by creating your donor account in the portal. Provide your agency details and necessary personal information. Once submitted, your registration will be reviewed for approval.",
+            duration: "3–5 minutes",
             details: [
-                "Fill out registration form",
-                "Provide valid ID",
-                "Verify eligibility criteria",
+                "Create an account and select your agency.",
+                "Fill out the required personal and contact information.",
+                "Submit for verification. You’ll receive an email notification upon approval.",
             ],
             color: "blue",
         },
         {
             number: 2,
-            icon: ClipboardList,
-            title: "Health Screening",
+            icon: CalendarCheck, // or any calendar icon you use
+            title: "Appointment Booking",
             description:
-                "Complete a confidential health questionnaire and brief physical examination to ensure you're healthy to donate.",
-            duration: "10-15 minutes",
+                "Once approved, log in to the portal and book an appointment with your agency’s upcoming blood drive. Review consent terms and finalize your booking.",
+            duration: "2-5 minutes",
             details: [
-                "Health questionnaire",
-                "Blood pressure check",
-                "Hemoglobin test",
+                "Log in to your approved donor account.",
+                "View available blood drives based on your agency.",
+                "Confirm consent to donate and agree to data privacy policy.",
+                "Receive an appointment confirmation via email.",
             ],
-            color: "green",
+            color: "blue",
         },
         {
             number: 3,
-            icon: Stethoscope,
-            title: "Medical Review",
+            icon: ClipboardList,
+            title: "Check-in & Health Screening",
             description:
-                "A healthcare professional will review your health information and answer any questions you may have.",
-            duration: "5 minutes",
+                "Upon arrival at the blood service facility or event venue, present a valid ID to confirm your appointment. You'll complete a quick health questionnaire and undergo a brief medical screening to ensure you're fit to donate.",
+            duration: "10-15 minutes",
             details: [
-                "Medical history review",
-                "Question & answer session",
-                "Final clearance",
+                "Present valid ID and confirmed appointment",
+                "Health questionnaire",
+                "Vital signs check (blood pressure, pulse, hemoglobin levels)",
+                "Final medical screening by a qualified staff member. If eligible, proceed to donation; if not, receive guidance and rescheduling support",
+                
             ],
-            color: "purple",
+            color: "green",
         },
+        
         {
             number: 4,
             icon: Droplets,
@@ -62,9 +68,10 @@ export default function ProcessTimeline() {
                 "The actual donation process takes about 8-10 minutes. You'll be comfortably seated while blood is collected.",
             duration: "8-10 minutes",
             details: [
-                "Sterile needle insertion",
-                "Blood collection",
                 "Comfortable seating",
+                "Sterile needle insertion",
+                "Blood collection. Approx. 1 pint (470 mL)",
+                "Special labeling and routing for pediatric use based on compatibility and urgency"
             ],
             color: "red",
         },

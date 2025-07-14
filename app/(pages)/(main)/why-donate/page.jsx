@@ -29,19 +29,19 @@ export default function WhyDonatePage() {
             /> */}
 
             {/* Hero Section */}
-            <HeroSection />
+            <HeroSection onOpenRegister={() => setOpenRegister(true)} />
 
             {/* Statistics Cards */}
-            <StatisticsCards />
+            <StatisticsCards onOpenRegister={() => setOpenRegister(true)} />
 
             {/* Reasons Grid */}
-            <ReasonsGrid />
+            <ReasonsGrid onOpenRegister={() => setOpenRegister(true)} />
 
             {/* Impact Stories */}
-            <ImpactStories />
+            <ImpactStories onOpenRegister={() => setOpenRegister(true)} />
 
             {/* Health Benefits */}
-            <HealthBenefits />
+            <HealthBenefits onOpenRegister={() => setOpenRegister(true)} />
 
             {/* Call to Action */}
             <CallToAction
