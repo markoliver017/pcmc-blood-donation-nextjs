@@ -47,12 +47,12 @@ export default function ForApprovalCoordinatorList() {
             {coordinators.map((coor) => (
                 <Card
                     key={coor.id}
-                    className="hover:ring-2 hover:ring-blue-400 group transition shadow-lg/40"
+                    className="hover:ring-2 hover:ring-blue-400 group transition shadow-lg/40 "
                 >
                     <CardHeader>
                         <CardTitle className="flex flex-wrap justify-between">
                             <span className="text-xl">{coor.agency.name}</span>
-                            <span className="text-sm text-slate-600">
+                            <span className="text-sm text-slate-600 dark:text-slate-300">
                                 {moment(coor.createdAt).format("MMM DD, YYYY")}
                             </span>
                         </CardTitle>
@@ -71,14 +71,14 @@ export default function ForApprovalCoordinatorList() {
                             />
                         </div>
                         <div className="md:flex-1 flex flex-col gap-2">
-                            <span className="text-lg text-slate-800 font-semibold">
+                            <span className="text-lg text-slate-800 dark:text-slate-200 font-semibold">
                                 {coor.user.full_name}
                             </span>
                             <span className="text-blue-700 italic">
                                 {coor.user.email.toLowerCase()}
                             </span>
-                            <span className=" text-slate-700 italic">
-                                {coor.contact_number}
+                            <span className=" text-slate-700 dark:text-slate-200 italic">
+                                +63{coor.contact_number}
                             </span>
                         </div>
                     </CardContent>

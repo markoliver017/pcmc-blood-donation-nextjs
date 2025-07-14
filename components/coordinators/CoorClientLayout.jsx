@@ -1,7 +1,7 @@
 "use client";
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
-import { Building, Users2 } from "lucide-react";
+import { Users2, Users2Icon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function CoorClientLayout({ children, approval }) {
@@ -24,7 +24,7 @@ export default function CoorClientLayout({ children, approval }) {
         return (
             <>
                 <WrapperHeadMain
-                    icon={<Building />}
+                    icon={<Users2Icon />}
                     pageTitle={
                         currentTab == "all"
                             ? "List of Coordinators"

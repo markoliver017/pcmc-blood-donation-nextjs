@@ -17,6 +17,7 @@ import {
     FormMessage,
 } from "@components/ui/form";
 import SweetAlert from "@components/ui/SweetAlert";
+import { DialogContent } from "@radix-ui/react-dialog";
 
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -84,7 +85,6 @@ export default function RejectDialog({ agencyId, className = "btn-error" }) {
 
     return (
         <Dialog
-            // id="form-rejection-modal"
             open={open}
             onOpenChange={(value) => {
                 // Only allow closing through specific logic, not outside clicks
@@ -101,7 +101,7 @@ export default function RejectDialog({ agencyId, className = "btn-error" }) {
             >
                 <XIcon /> Reject
             </DialogTrigger>
-            <DialogContentNoX
+            <DialogContent
                 className="dark:text-white"
                 onClick={(e) => e.stopPropagation()}
             >
@@ -169,7 +169,7 @@ export default function RejectDialog({ agencyId, className = "btn-error" }) {
                         </form>
                     </Form>
                 </DialogHeader>
-            </DialogContentNoX>
+            </DialogContent>
         </Dialog>
     );
 }

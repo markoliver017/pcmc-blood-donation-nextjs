@@ -66,6 +66,14 @@ export const adminCoordinatorColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Contact" />
         ),
+        cell: ({ row }) => {
+            const data = row.original;
+            return (
+                <span className="text-slate-700 dark:text-slate-200 italic">
+                    +63{data.contact_number}
+                </span>
+            );
+        },
         filterFn: "columnFilter",
     },
 

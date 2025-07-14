@@ -2,11 +2,10 @@ import { useRef } from "react";
 import { toast } from "react-toastify";
 import { notifyRegistrationOpen } from "@/action/donorAction";
 
-export const NotifyEventRegistration = ({
-    donors = ["oliver", "neo", "vane"],
-}) => {
+export const NotifyEventRegistration = ({ donorsData, eventData }) => {
     const toastId = useRef(null);
     const failedDonors = useRef([]);
+    const donors = donorsData || [];
 
     const notify = () => {
         toastId.current = toast.info(
@@ -18,21 +17,25 @@ export const NotifyEventRegistration = ({
         );
         donors.forEach((donor, index) => {
             (async () => {
-                const res = await notifyRegistrationOpen(donor);
+                const res = await notifyRegistrationOpen(donor, eventData);
                 if (!res.success) {
                     failedDonors.current.push(donor);
                     toast.update(toastId.current, {
-                        render: `Sending... ${index + 1} out of ${
-                            donors.length
-                        } (Failed: ${failedDonors.current.length})`,
+                        render: `Sending ${donor?.user?.full_name}... ${
+                            index + 1
+                        } out of ${donors.length} (Failed: ${
+                            failedDonors.current.length
+                        })`,
                         type: "error",
                         autoClose: false,
                     });
                 } else {
                     toast.update(toastId.current, {
-                        render: `Sending... ${index + 1} out of ${
-                            donors.length
-                        } (Failed: ${failedDonors.current.length})`,
+                        render: `Sending  ${donor?.user?.full_name}... ${
+                            index + 1
+                        } out of ${donors.length} (Failed: ${
+                            failedDonors.current.length
+                        })`,
                         type: "info",
                         autoClose: false,
                     });
@@ -86,7 +89,7 @@ export const NotifyEventRegistration = ({
         );
         failedDonorNotif.forEach((donor, index) => {
             (async () => {
-                const res = await notifyRegistrationOpen(donor);
+                const res = await notifyRegistrationOpen(donor, eventData);
                 if (!res.success) {
                     toast.update(newToastId, {
                         render: `Resending... ${index + 1} out of ${
@@ -116,10 +119,13 @@ export const NotifyEventRegistration = ({
     };
 
     return (
-        <div className="p-2">
-            <button type="button" className="btn btn-neutral" onClick={notify}>
-                Send Emails
-            </button>
-        </div>
+        <button
+            type="button"
+            className="btn btn-ghost btn-block"
+            disabled={!donorsData}
+            onClick={notify}
+        >
+            Notify Donors ({donorsData?.length})
+        </button>
     );
 };

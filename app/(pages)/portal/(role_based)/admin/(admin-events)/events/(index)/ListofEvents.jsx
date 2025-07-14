@@ -27,7 +27,12 @@ import {
 import { MdUpcoming } from "react-icons/md";
 import { Card } from "@components/ui/card";
 import EventsDashboard from "@components/admin/events/EventsDashboard";
-import { Tabs as ViewModeTabs, TabsList as ViewModeTabsList, TabsTrigger as ViewModeTabsTrigger, TabsContent as ViewModeTabsContent } from "@components/ui/tabs";
+import {
+    Tabs as ViewModeTabs,
+    TabsList as ViewModeTabsList,
+    TabsTrigger as ViewModeTabsTrigger,
+    TabsContent as ViewModeTabsContent,
+} from "@components/ui/tabs";
 import AdminEventCard from "@components/events/AdminEventCard";
 import EventFilterBar from "@components/admin/events/EventFilterBar";
 
@@ -109,7 +114,6 @@ export default function ListofEvents() {
     const [ongoingViewMode, setOngoingViewMode] = useState("table");
     const [upcomingViewMode, setUpcomingViewMode] = useState("table");
     const [allViewMode, setAllViewMode] = useState("table");
-    const [forApprovalViewMode, setForApprovalViewMode] = useState("table");
 
     // Add filter state for each tab
     const [ongoingFilters, setOngoingFilters] = useState({});
@@ -134,7 +138,6 @@ export default function ListofEvents() {
         router.push(`/portal/admin/events/${event.id}/edit`);
     };
 
-
     // Filter function
     const filterEvents = (events, filters) => {
         if (!events || !filters) return events;
@@ -149,10 +152,12 @@ export default function ListofEvents() {
                     event.location,
                     event.description,
                 ].filter(Boolean);
-                
-                if (!searchableFields.some(field => 
-                    field.toLowerCase().includes(searchTerm)
-                )) {
+
+                if (
+                    !searchableFields.some((field) =>
+                        field.toLowerCase().includes(searchTerm)
+                    )
+                ) {
                     return false;
                 }
             }
@@ -160,14 +165,19 @@ export default function ListofEvents() {
             // Date range filter
             if (filters.dateRange?.from || filters.dateRange?.to) {
                 const eventDate = new Date(event.date);
-                if (filters.dateRange.from && eventDate < new Date(filters.dateRange.from)) {
+                if (
+                    filters.dateRange.from &&
+                    eventDate < new Date(filters.dateRange.from)
+                ) {
                     return false;
                 }
-                if (filters.dateRange.to && eventDate > new Date(filters.dateRange.to)) {
+                if (
+                    filters.dateRange.to &&
+                    eventDate > new Date(filters.dateRange.to)
+                ) {
                     return false;
                 }
             }
-
 
             // Agency filter
             if (filters.agency_id && event.agency_id !== filters.agency_id) {
@@ -180,7 +190,7 @@ export default function ListofEvents() {
 
     // Apply filters to events
     const ongoingEvents = useMemo(() => {
-        if(!presentEvents) return;
+        if (!presentEvents) return;
         const filtered = presentEvents.filter(
             (event) => event?.registration_status === "ongoing"
         );
@@ -188,7 +198,7 @@ export default function ListofEvents() {
     }, [presentEvents, ongoingFilters]);
 
     const upcomingEvents = useMemo(() => {
-        if(!presentEvents) return;
+        if (!presentEvents) return;
         const filtered = presentEvents.filter(
             (event) => event?.registration_status === "not started"
         );
@@ -317,27 +327,40 @@ export default function ListofEvents() {
 
                 {/* Ongoing Tab Content */}
                 <TabsContent value="ongoing">
+                    <div className="flex justify-end mb-2">
+                        <ViewModeTabs
+                            value={ongoingViewMode}
+                            onValueChange={setOngoingViewMode}
+                            className="w-max"
+                        >
+                            <ViewModeTabsList>
+                                <ViewModeTabsTrigger value="table">
+                                    Table View
+                                </ViewModeTabsTrigger>
+                                <ViewModeTabsTrigger value="card">
+                                    Card View
+                                </ViewModeTabsTrigger>
+                            </ViewModeTabsList>
+                        </ViewModeTabs>
+                    </div>
                     <EventFilterBar
                         onChange={setOngoingFilters}
                         statusOptions={statusOptions}
                     />
-                    <div className="flex justify-end mb-2">
-                        <ViewModeTabs value={ongoingViewMode} onValueChange={setOngoingViewMode} className="w-max">
-                            <ViewModeTabsList>
-                                <ViewModeTabsTrigger value="table">Table View</ViewModeTabsTrigger>
-                                <ViewModeTabsTrigger value="card">Card View</ViewModeTabsTrigger>
-                            </ViewModeTabsList>
-                        </ViewModeTabs>
-                    </div>
+
                     {ongoingViewMode === "table" ? (
                         !ongoingEvents?.length ? (
                             <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
                                 <Calendar className="w-12 h-12 mb-4 text-primary" />
                                 <h2 className="text-xl font-semibold">
-                                    {Object.keys(ongoingFilters).length > 0 ? "No Events Match Your Filters" : "No Ongoing Events"}
+                                    {Object.keys(ongoingFilters).length > 0
+                                        ? "No Events Match Your Filters"
+                                        : "No Ongoing Events"}
                                 </h2>
                                 <p className="text-gray-500 mt-2">
-                                    {Object.keys(ongoingFilters).length > 0 ? "Try adjusting your filters to see more results." : "You're all caught up! 🎉"}
+                                    {Object.keys(ongoingFilters).length > 0
+                                        ? "Try adjusting your filters to see more results."
+                                        : "You're all caught up! 🎉"}
                                 </p>
                             </Card>
                         ) : (
@@ -350,21 +373,28 @@ export default function ListofEvents() {
                         )
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {ongoingEvents?.length ? ongoingEvents.map(event => (
-                                <AdminEventCard
-                                    key={event.id}
-                                    event={event}
-                                    onView={handleViewDetails}
-                                    onEdit={handleEdit}
-                                />
-                            )) : (
+                            {ongoingEvents?.length ? (
+                                ongoingEvents.map((event) => (
+                                    <AdminEventCard
+                                        key={event.id}
+                                        event={event}
+                                        onView={handleViewDetails}
+                                        onEdit={handleEdit}
+                                        setIsLoading={setModalIsLoading}
+                                    />
+                                ))
+                            ) : (
                                 <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
                                     <Calendar className="w-12 h-12 mb-4 text-primary" />
                                     <h2 className="text-xl font-semibold">
-                                        {Object.keys(ongoingFilters).length > 0 ? "No Events Match Your Filters" : "No Ongoing Events"}
+                                        {Object.keys(ongoingFilters).length > 0
+                                            ? "No Events Match Your Filters"
+                                            : "No Ongoing Events"}
                                     </h2>
                                     <p className="text-gray-500 mt-2">
-                                        {Object.keys(ongoingFilters).length > 0 ? "Try adjusting your filters to see more results." : "You're all caught up! 🎉"}
+                                        {Object.keys(ongoingFilters).length > 0
+                                            ? "Try adjusting your filters to see more results."
+                                            : "You're all caught up! 🎉"}
                                     </p>
                                 </Card>
                             )}
@@ -374,27 +404,40 @@ export default function ListofEvents() {
 
                 {/* Repeat similar structure for Upcoming, All, For-Approval tabs */}
                 <TabsContent value="upcoming">
+                    <div className="flex justify-end mb-2">
+                        <ViewModeTabs
+                            value={upcomingViewMode}
+                            onValueChange={setUpcomingViewMode}
+                            className="w-max"
+                        >
+                            <ViewModeTabsList>
+                                <ViewModeTabsTrigger value="table">
+                                    Table View
+                                </ViewModeTabsTrigger>
+                                <ViewModeTabsTrigger value="card">
+                                    Card View
+                                </ViewModeTabsTrigger>
+                            </ViewModeTabsList>
+                        </ViewModeTabs>
+                    </div>
                     <EventFilterBar
                         onChange={setUpcomingFilters}
                         statusOptions={statusOptions}
                     />
-                    <div className="flex justify-end mb-2">
-                        <ViewModeTabs value={upcomingViewMode} onValueChange={setUpcomingViewMode} className="w-max">
-                            <ViewModeTabsList>
-                                <ViewModeTabsTrigger value="table">Table View</ViewModeTabsTrigger>
-                                <ViewModeTabsTrigger value="card">Card View</ViewModeTabsTrigger>
-                            </ViewModeTabsList>
-                        </ViewModeTabs>
-                    </div>
+
                     {upcomingViewMode === "table" ? (
                         !upcomingEvents.length ? (
                             <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
                                 <Calendar className="w-12 h-12 mb-4 text-primary" />
                                 <h2 className="text-xl font-semibold">
-                                    {Object.keys(upcomingFilters).length > 0 ? "No Events Match Your Filters" : "No Upcoming Events"}
+                                    {Object.keys(upcomingFilters).length > 0
+                                        ? "No Events Match Your Filters"
+                                        : "No Upcoming Events"}
                                 </h2>
                                 <p className="text-gray-500 mt-2">
-                                    {Object.keys(upcomingFilters).length > 0 ? "Try adjusting your filters to see more results." : "You're all caught up! 🎉"}
+                                    {Object.keys(upcomingFilters).length > 0
+                                        ? "Try adjusting your filters to see more results."
+                                        : "You're all caught up! 🎉"}
                                 </p>
                             </Card>
                         ) : (
@@ -407,21 +450,28 @@ export default function ListofEvents() {
                         )
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {upcomingEvents?.length ? upcomingEvents.map(event => (
-                                <AdminEventCard
-                                    key={event.id}
-                                    event={event}
-                                    onView={handleViewDetails}
-                                    onEdit={handleEdit}
-                                />
-                            )) : (
+                            {upcomingEvents?.length ? (
+                                upcomingEvents.map((event) => (
+                                    <AdminEventCard
+                                        key={event.id}
+                                        event={event}
+                                        onView={handleViewDetails}
+                                        onEdit={handleEdit}
+                                        setIsLoading={setModalIsLoading}
+                                    />
+                                ))
+                            ) : (
                                 <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
                                     <Calendar className="w-12 h-12 mb-4 text-primary" />
                                     <h2 className="text-xl font-semibold">
-                                        {Object.keys(upcomingFilters).length > 0 ? "No Events Match Your Filters" : "No Upcoming Events"}
+                                        {Object.keys(upcomingFilters).length > 0
+                                            ? "No Events Match Your Filters"
+                                            : "No Upcoming Events"}
                                     </h2>
                                     <p className="text-gray-500 mt-2">
-                                        {Object.keys(upcomingFilters).length > 0 ? "Try adjusting your filters to see more results." : "You're all caught up! 🎉"}
+                                        {Object.keys(upcomingFilters).length > 0
+                                            ? "Try adjusting your filters to see more results."
+                                            : "You're all caught up! 🎉"}
                                     </p>
                                 </Card>
                             )}
@@ -429,27 +479,39 @@ export default function ListofEvents() {
                     )}
                 </TabsContent>
                 <TabsContent value="all">
+                    <div className="flex justify-end mb-2">
+                        <ViewModeTabs
+                            value={allViewMode}
+                            onValueChange={setAllViewMode}
+                            className="w-max"
+                        >
+                            <ViewModeTabsList>
+                                <ViewModeTabsTrigger value="table">
+                                    Table View
+                                </ViewModeTabsTrigger>
+                                <ViewModeTabsTrigger value="card">
+                                    Card View
+                                </ViewModeTabsTrigger>
+                            </ViewModeTabsList>
+                        </ViewModeTabs>
+                    </div>
                     <EventFilterBar
                         onChange={setAllFilters}
                         statusOptions={statusOptions}
                     />
-                    <div className="flex justify-end mb-2">
-                        <ViewModeTabs value={allViewMode} onValueChange={setAllViewMode} className="w-max">
-                            <ViewModeTabsList>
-                                <ViewModeTabsTrigger value="table">Table View</ViewModeTabsTrigger>
-                                <ViewModeTabsTrigger value="card">Card View</ViewModeTabsTrigger>
-                            </ViewModeTabsList>
-                        </ViewModeTabs>
-                    </div>
                     {allViewMode === "table" ? (
                         !allEvents?.length ? (
                             <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
                                 <Calendar className="w-12 h-12 mb-4 text-primary" />
                                 <h2 className="text-xl font-semibold">
-                                    {Object.keys(allFilters).length > 0 ? "No Events Match Your Filters" : "No Events Found"}
+                                    {Object.keys(allFilters).length > 0
+                                        ? "No Events Match Your Filters"
+                                        : "No Events Found"}
                                 </h2>
                                 <p className="text-gray-500 mt-2">
-                                    {Object.keys(allFilters).length > 0 ? "Try adjusting your filters to see more results." : "No events found in the database."}
+                                    {Object.keys(allFilters).length > 0
+                                        ? "Try adjusting your filters to see more results."
+                                        : "No events found in the database."}
                                 </p>
                             </Card>
                         ) : (
@@ -462,21 +524,28 @@ export default function ListofEvents() {
                         )
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {allEvents?.length ? allEvents.map(event => (
-                                <AdminEventCard
-                                    key={event.id}
-                                    event={event}
-                                    onView={handleViewDetails}
-                                    onEdit={handleEdit}
-                                />
-                            )) : (
+                            {allEvents?.length ? (
+                                allEvents.map((event) => (
+                                    <AdminEventCard
+                                        key={event.id}
+                                        event={event}
+                                        onView={handleViewDetails}
+                                        onEdit={handleEdit}
+                                        setIsLoading={setModalIsLoading}
+                                    />
+                                ))
+                            ) : (
                                 <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
                                     <Calendar className="w-12 h-12 mb-4 text-primary" />
                                     <h2 className="text-xl font-semibold">
-                                        {Object.keys(allFilters).length > 0 ? "No Events Match Your Filters" : "No Events Found"}
+                                        {Object.keys(allFilters).length > 0
+                                            ? "No Events Match Your Filters"
+                                            : "No Events Found"}
                                     </h2>
                                     <p className="text-gray-500 mt-2">
-                                        {Object.keys(allFilters).length > 0 ? "Try adjusting your filters to see more results." : "No events found in the database."}
+                                        {Object.keys(allFilters).length > 0
+                                            ? "Try adjusting your filters to see more results."
+                                            : "No events found in the database."}
                                     </p>
                                 </Card>
                             )}

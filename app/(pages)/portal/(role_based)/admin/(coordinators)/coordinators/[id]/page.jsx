@@ -7,8 +7,9 @@ import ShowAgency from "@role_based/admin/(agencies)/agencies/[id]/ShowAgency";
 import InterceptModal from "@components/layout/InterceptModal";
 import { getCoordinatorById } from "@/action/coordinatorAction";
 import ShowCoordinator from "@components/coordinators/ShowCoordinator";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, User, Users, Users2 } from "lucide-react";
 import Link from "next/link";
+import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 
 export default async function Page({ params }) {
     const { id } = await params;
@@ -21,6 +22,22 @@ export default async function Page({ params }) {
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
+            <WrapperHeadMain
+                icon={<Users />}
+                pageTitle="Coordinator Details"
+                breadcrumbs={[
+                    {
+                        path: "/portal/admin/coordinators",
+                        icon: <Users2 className="w-4" />,
+                        title: "List of Coordinators",
+                    },
+                    {
+                        path: `/portal/admin/coordinators/${id}`,
+                        icon: <User className="w-4" />,
+                        title: "Coordinator Details",
+                    },
+                ]}
+            />
             <div className="w-full h-full md:w-8/10 2xl:w-3/4 mx-auto relative">
                 <Link
                     href="/portal/admin/coordinators"

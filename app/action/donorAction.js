@@ -1651,20 +1651,111 @@ export async function getLastDonationDateDonated(user_id) {
     }
 }
 
-export async function notifyRegistrationOpen(donor) {
-    console.log(donor);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    if (donor == "oliver") {
+export async function notifyRegistrationOpen(donor, eventData = null) {
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    if (!donor || !donor?.user) {
         return {
             success: false,
-            message: "Send Successfully to :" + donor,
+            type: "error_notify_email",
+            message: "Sending failed. Donor not found.",
+            data: donor,
         };
     }
 
-    return {
-        success: true,
-        message: "Send Successfully to :" + donor,
-    };
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+
+    try {
+        // Send system notification to donor
+        try {
+            await sendNotificationAndEmail({
+                userIds: donor.user.id,
+                notificationData: {
+                    subject: "New Blood Donation Event Available",
+                    message: eventData
+                        ? `A new blood donation event "${eventData.title}" is now open for registration. Check your email for details.`
+                        : "A new blood donation event is now open for registration. Check your email for details.",
+                    type: "NEW_EVENT",
+                    reference_id: eventData?.id || null,
+                    created_by: session.user.id,
+                },
+            });
+        } catch (err) {
+            console.error("Donor notification failed:", err);
+        }
+
+        // Send email notification to donor
+        if (eventData) {
+            try {
+                await sendNotificationAndEmail({
+                    emailData: {
+                        to: donor.user.email,
+                        templateCategory: "EVENT_DONOR_INVITATION",
+                        templateData: {
+                            event_name: eventData.title,
+                            event_date: new Date(
+                                eventData.date
+                            ).toLocaleDateString(),
+                            event_time: eventData.time_schedules?.[0]
+                                ? `${eventData.time_schedules[0].time_start} - ${eventData.time_schedules[0].time_end}`
+                                : "TBD",
+                            agency_name: eventData?.agency?.name,
+                            event_location: eventData?.agency?.agency_address,
+                            event_organizer:
+                                eventData.requester?.name || "Event Organizer",
+                            system_name:
+                                process.env.NEXT_PUBLIC_SYSTEM_NAME ||
+                                "PCMC Pediatric Blood Center",
+                            support_email:
+                                process.env.NEXT_PUBLIC_SUPPORT_EMAIL ||
+                                "mark.roman@pcmc.gov.ph",
+                            domain_url:
+                                process.env.NEXT_PUBLIC_APP_URL ||
+                                "https://blood-donation.pcmc.gov.ph",
+                        },
+                    },
+                });
+            } catch (err) {
+                console.error("Event invitation email failed:", err);
+            }
+        }
+
+        // Audit trail logging
+        try {
+            await logAuditTrail({
+                userId: session.user.id,
+                controller: "events",
+                action: "NOTIFY_DONORS",
+                details: `Event invitation sent to donor ${
+                    donor.user.full_name
+                } (${donor.user.email}) for event: ${
+                    eventData?.title || "Unknown Event"
+                }`,
+            });
+        } catch (err) {
+            console.error("Audit trail failed:", err);
+        }
+
+        return {
+            success: true,
+            message: "Send Successfully to " + donor?.user?.full_name,
+            data: donor,
+        };
+    } catch (err) {
+        console.error("Notification process failed:", err);
+        return {
+            success: false,
+            type: "error_notify_email",
+            message: "Sending failed. Please try again.",
+            data: donor,
+        };
+    }
 }
 
 export async function getDonorAnnouncements(limit = 5) {

@@ -232,7 +232,6 @@ export default function CreateEventForm({ agency }) {
                 onSubmit={handleSubmit(onSubmit)}
                 className="p-5 shadow border rounded-2xl"
             >
-                <NotifyEventRegistration />
                 <Card className="md:p-4 bg-slate-100 p-3">
                     <CardHeader className="text-2xl font-bold">
                         <CardTitle className="flex justify-between">

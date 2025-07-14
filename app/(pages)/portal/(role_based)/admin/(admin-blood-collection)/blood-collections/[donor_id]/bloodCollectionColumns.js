@@ -1,6 +1,6 @@
 // import { Checkbox } from "@components/ui/checkbox";
 import DataTableColumnHeader from "@components/reusable_components/DataTableColumnHeader";
-import Image from "next/image";
+
 // import {
 //     DropdownMenu,
 //     DropdownMenuContent,

@@ -6,6 +6,7 @@ import LoadingModal from "@components/layout/LoadingModal";
 import { Form } from "@components/ui/form";
 import notify from "@components/ui/notify";
 import SweetAlert from "@components/ui/SweetAlert";
+import { notifyDonors } from "@lib/utils/notifyDonors.utils";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
@@ -18,23 +19,22 @@ export default function EventRegistrationStatus({
     data,
     formClassName = "",
     setIsLoading,
-    className = ""
+    className = "",
 }) {
+    const event = data;
+    let registration_status = "ongoing";
+    let confirmText = `Are you sure you want to <b>OPEN</b> the registration for <b><i>"${data?.title}"</i></b>? All registered donors will be notified.`;
+    let label = "Open the Registration";
+    let icon = <GiOpenBook />;
+    className = className ? className : "btn btn-ghost btn-success";
 
-        let registration_status = "ongoing";
-        let confirmText = `Are you sure you want to <b>OPEN</b> the registration for <b><i>"${data?.title}"</i></b>? All registered donors will be notified.`;
-        let label = "Open the Registration";
-        let icon = <GiOpenBook />;
-        className = className ? className : "btn btn-ghost btn-success";
-
-        if (data?.registration_status == "ongoing") {
-            registration_status = "completed";
-            confirmText = `Are you sure you want to <b>CLOSE</b> now the registration for <b><i>"${data?.title}"</i></b>?`;
-            label = "Close the Registration";
-            icon = <XIcon className="w-4 h-4" />;
-            className = className ? className : "btn btn-ghost btn-warning";
-        }
-    
+    if (data?.registration_status == "ongoing") {
+        registration_status = "completed";
+        confirmText = `Are you sure you want to <b>CLOSE</b> now the registration for <b><i>"${data?.title}"</i></b>?`;
+        label = "Close the Registration";
+        icon = <XIcon className="w-4 h-4" />;
+        className = className ? className : "btn btn-ghost btn-warning";
+    }
 
     const queryClient = useQueryClient();
 
@@ -53,13 +53,29 @@ export default function EventRegistrationStatus({
             queryClient.invalidateQueries({ queryKey: ["all_events"] });
             queryClient.invalidateQueries({ queryKey: ["present_events"] });
 
-            SweetAlert({
-                title: data?.title,
-                text: data?.text,
-                icon: "info",
-                confirmButtonText: "Done",
-                onConfirm: reset,
-            });
+            if (registration_status == "ongoing") {
+                SweetAlert({
+                    title: data?.title,
+                    text: data?.text,
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "Notify Donors",
+                    cancelButtonText: "Done",
+                    onConfirm: () => {
+                        if (registration_status == "ongoing") {
+                            notifyDonors(event?.agency?.donors || [], event);
+                        }
+                    },
+                });
+            } else {
+                SweetAlert({
+                    title: data?.title,
+                    text: data?.text,
+                    icon: "success",
+                    confirmButtonText: "Done",
+                });
+            }
+            reset();
         },
         onError: (error) => {
             setIsLoading(false);

@@ -139,6 +139,39 @@ export async function getAllEventsByAgency() {
                 {
                     model: Agency,
                     as: "agency",
+                    include: [
+                        {
+                            model: Donor,
+                            as: "donors",
+                            attributes: [
+                                "id",
+                                "user_id",
+                                "blood_type_id",
+                                "date_of_birth",
+                                "contact_number",
+                            ],
+                            where: {
+                                status: "activated",
+                            },
+                            include: {
+                                model: User,
+                                as: "user",
+                                attributes: [
+                                    "id",
+                                    "first_name",
+                                    "last_name",
+                                    "email",
+                                    "name",
+                                    "full_name",
+                                    "image",
+                                ],
+                                required: true,
+                                where: {
+                                    is_active: true,
+                                },
+                            },
+                        },
+                    ],
                 },
                 {
                     model: EventTimeSchedule,
