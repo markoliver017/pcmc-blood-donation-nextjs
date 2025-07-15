@@ -42,7 +42,12 @@ export default async function page({ params }) {
                     },
                 ]}
             />
-            <CoordinatorRegisterPage agency={agency} agency_id={agency_id} />
+            <div className="w-full h-full xl:w-8/10 2xl:w-7/10 mx-auto p-2 sm:p-5 relative">
+                <CoordinatorRegisterPage
+                    agency={agency}
+                    agency_id={agency_id}
+                />
+            </div>
         </>
     );
 }

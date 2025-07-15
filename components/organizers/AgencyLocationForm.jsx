@@ -28,9 +28,7 @@ import FieldError from "@components/form/FieldError";
 import { useTheme } from "next-themes";
 import { useQuery } from "@tanstack/react-query";
 
-import {
-    CardContent
-} from "@components/ui/card";
+import { CardContent } from "@components/ui/card";
 import Skeleton_form from "@components/ui/Skeleton_form";
 
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
@@ -183,9 +181,7 @@ export default function AgencyLocationForm({ details, onNext }) {
                                         {
                                             label: "Luzon Provinces",
                                             options: city_provinces
-                                                .filter(
-                                                    (loc) => !loc.is_ncr
-                                                )
+                                                .filter((loc) => !loc.is_ncr)
                                                 .map((loc) => ({
                                                     value: loc.name,
                                                     label: loc.name,
@@ -197,9 +193,7 @@ export default function AgencyLocationForm({ details, onNext }) {
 
                                     const selectedOption =
                                         cityProvincesOptions
-                                            .flatMap(
-                                                (group) => group.options
-                                            )
+                                            .flatMap((group) => group.options)
                                             .find(
                                                 (option) =>
                                                     option.value === value
@@ -252,21 +246,14 @@ export default function AgencyLocationForm({ details, onNext }) {
                                     control={control}
                                     name="city_municipality"
                                     render={({
-                                        field: {
-                                            onChange,
-                                            value,
-                                            name,
-                                            ref,
-                                        },
+                                        field: { onChange, value, name, ref },
                                     }) => {
                                         const cityMunicipalityOptions =
-                                            cities_municipalities.map(
-                                                (cm) => ({
-                                                    label: cm.name,
-                                                    value: cm.name,
-                                                    code: cm.code,
-                                                })
-                                            );
+                                            cities_municipalities.map((cm) => ({
+                                                label: cm.name,
+                                                value: cm.name,
+                                                code: cm.code,
+                                            }));
                                         const selectedOption =
                                             cityMunicipalityOptions.find(
                                                 (option) =>
@@ -278,9 +265,7 @@ export default function AgencyLocationForm({ details, onNext }) {
                                                 ref={ref}
                                                 placeholder="City/Municipality"
                                                 value={selectedOption}
-                                                onChange={(
-                                                    selectedOption
-                                                ) => {
+                                                onChange={(selectedOption) => {
                                                     setValue(
                                                         "selected_city_municipality_option",
                                                         selectedOption
@@ -292,9 +277,7 @@ export default function AgencyLocationForm({ details, onNext }) {
                                                             : null
                                                     );
                                                 }}
-                                                isValidNewOption={() =>
-                                                    false
-                                                }
+                                                isValidNewOption={() => false}
                                                 options={
                                                     cityMunicipalityOptions
                                                 }
@@ -327,19 +310,15 @@ export default function AgencyLocationForm({ details, onNext }) {
                                     control={control}
                                     name="barangay"
                                     render={({
-                                        field: {
-                                            onChange,
-                                            value,
-                                            name,
-                                            ref,
-                                        },
+                                        field: { onChange, value, name, ref },
                                     }) => {
-                                        const barangayOptions =
-                                            barangays.map((brgy) => ({
+                                        const barangayOptions = barangays.map(
+                                            (brgy) => ({
                                                 label: brgy.name,
                                                 value: brgy.name,
                                                 code: brgy.code,
-                                            }));
+                                            })
+                                        );
                                         const selectedOption =
                                             barangayOptions.find(
                                                 (option) =>
@@ -351,18 +330,14 @@ export default function AgencyLocationForm({ details, onNext }) {
                                                 ref={ref}
                                                 placeholder="Barangay"
                                                 value={selectedOption}
-                                                onChange={(
-                                                    selectedOption
-                                                ) => {
+                                                onChange={(selectedOption) => {
                                                     onChange(
                                                         selectedOption
                                                             ? selectedOption.value
                                                             : null
                                                     );
                                                 }}
-                                                isValidNewOption={() =>
-                                                    false
-                                                }
+                                                isValidNewOption={() => false}
                                                 options={barangayOptions}
                                                 styles={getSingleStyle(
                                                     resolvedTheme
@@ -385,9 +360,7 @@ export default function AgencyLocationForm({ details, onNext }) {
                             tabIndex={-1}
                         >
                             <IoArrowUndoCircle />{" "}
-                            <span className="hidden sm:inline-block">
-                                Back
-                            </span>
+                            <span className="hidden sm:inline-block">Back</span>
                         </button>
                         <button
                             type="button"
@@ -396,14 +369,11 @@ export default function AgencyLocationForm({ details, onNext }) {
                             tabIndex="6"
                         >
                             <MdNextPlan />{" "}
-                            <span className="hidden sm:inline-block">
-                                Next
-                            </span>
+                            <span className="hidden sm:inline-block">Next</span>
                         </button>
                     </div>
                 </div>
             </CardContent>
         </FormCardComponent>
-
     );
 }

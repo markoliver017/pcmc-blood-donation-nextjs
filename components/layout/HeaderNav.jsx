@@ -18,11 +18,13 @@ import {
     FileSliders,
     Home,
     HomeIcon,
+    House,
     Info,
     LogOut,
     PhoneCall,
     SquareMenu,
     Text,
+    TextSelect,
     User,
     UserCog2Icon,
     UserRoundCheck,
@@ -35,10 +37,13 @@ import { signOut } from "next-auth/react";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import { MdAmpStories, MdEmail } from "react-icons/md";
 import NotificationComponent from "./NotificationComponent";
+import { usePathname } from "next/navigation";
+import clsx from "clsx";
 
 const HeaderNav = ({ currentUser }) => {
     let isLoggedIn = false;
     const { status, data } = useSession();
+    const pathname = usePathname();
 
     if (status == "authenticated") {
         isLoggedIn = true;
@@ -88,7 +93,10 @@ const HeaderNav = ({ currentUser }) => {
                             <li className="hidden md:block">
                                 <Link
                                     href="/"
-                                    className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
+                                    className={clsx(
+                                        "p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200",
+                                        pathname === "/" && "bg-blue-200/50"
+                                    )}
                                 >
                                     <Home className="h-4" />
                                     Home
@@ -97,7 +105,11 @@ const HeaderNav = ({ currentUser }) => {
                             <li className="hidden md:block">
                                 <Link
                                     href="/about-us"
-                                    className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
+                                    className={clsx(
+                                        "p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200",
+                                        pathname === "/about-us" &&
+                                            "bg-blue-200/50"
+                                    )}
                                 >
                                     <Info className="h-4" />
                                     About Us
@@ -106,7 +118,11 @@ const HeaderNav = ({ currentUser }) => {
                             <li className="hidden lg:block">
                                 <Link
                                     href="/why-donate"
-                                    className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
+                                    className={clsx(
+                                        "p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200",
+                                        pathname === "/why-donate" &&
+                                            "bg-blue-200/50"
+                                    )}
                                 >
                                     <Droplet className="h-4" />
                                     Why Donate
@@ -115,7 +131,11 @@ const HeaderNav = ({ currentUser }) => {
                             <li className="hidden lg:block">
                                 <Link
                                     href="/donation-process"
-                                    className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
+                                    className={clsx(
+                                        "p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200",
+                                        pathname === "/donation-process" &&
+                                            "bg-blue-200/50"
+                                    )}
                                 >
                                     <Text className="h-4" />
                                     Donation Process
@@ -124,7 +144,12 @@ const HeaderNav = ({ currentUser }) => {
                             <li className="hidden xl:block">
                                 <Link
                                     href="/eligibility-requirements"
-                                    className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
+                                    className={clsx(
+                                        "p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200",
+                                        pathname ===
+                                            "/eligibility-requirements" &&
+                                            "bg-blue-200/50"
+                                    )}
                                 >
                                     <Text className="h-4" />
                                     Eligibility Requirements
@@ -133,7 +158,11 @@ const HeaderNav = ({ currentUser }) => {
                             <li className="hidden 2xl:block">
                                 <Link
                                     href="/success-stories"
-                                    className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
+                                    className={clsx(
+                                        "p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200",
+                                        pathname === "/success-stories" &&
+                                            "bg-blue-200/50"
+                                    )}
                                 >
                                     <MdAmpStories className="h-4" />
                                     Success Stories
@@ -142,7 +171,11 @@ const HeaderNav = ({ currentUser }) => {
                             <li className="hidden 2xl:block">
                                 <Link
                                     href="/contact-us"
-                                    className="p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200"
+                                    className={clsx(
+                                        "p-3 rounded-xl flex items-center gap-1 hover:bg-blue-200/60 dark:hover:bg-sky-900/40 focus-visible:ring-2 focus-visible:ring-blue-400 transition-all duration-200",
+                                        pathname === "/contact-us" &&
+                                            "bg-blue-200/50"
+                                    )}
                                 >
                                     <PhoneCall className="h-4" />
                                     Contact Us
@@ -170,12 +203,18 @@ const HeaderNav = ({ currentUser }) => {
                                         align="start"
                                         className="rounded-xl shadow-lg bg-white dark:bg-slate-900 border border-blue-200 dark:border-sky-800"
                                     >
-                                        <DropdownMenuLabel className="flex items-center gap-2 space-x-2">
+                                        <DropdownMenuLabel className="flex items-center gap-2 space-x-2 py-2">
                                             <Command className="w-3 h-3" />
                                             Navigate
                                         </DropdownMenuLabel>
                                         {/* <Link href={`/`}> */}
-                                        <DropdownMenuItem className="block md:hidden p-3 shadow-xs">
+                                        <DropdownMenuItem
+                                            className={clsx(
+                                                "block md:hidden p-3 shadow-xs ",
+                                                pathname === "/" &&
+                                                    "bg-blue-400/50"
+                                            )}
+                                        >
                                             <Link
                                                 href="/"
                                                 className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
@@ -184,16 +223,28 @@ const HeaderNav = ({ currentUser }) => {
                                                 Home
                                             </Link>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem className="block lg:hidden p-3 shadow-xs">
+                                        <DropdownMenuItem
+                                            className={clsx(
+                                                "block md:hidden p-3 shadow-xs ",
+                                                pathname === "/about-us" &&
+                                                    "bg-blue-400/50"
+                                            )}
+                                        >
                                             <Link
                                                 href="/about-us"
                                                 className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
                                             >
-                                                <Home className="h-4" />
+                                                <TextSelect className="h-4" />
                                                 About Us
                                             </Link>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem className="block lg:hidden p-3 shadow-xs">
+                                        <DropdownMenuItem
+                                            className={clsx(
+                                                "block lg:hidden p-3 shadow-xs ",
+                                                pathname === "/why-donate" &&
+                                                    "bg-blue-400/50"
+                                            )}
+                                        >
                                             <Link
                                                 href="/why-donate"
                                                 className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
@@ -202,7 +253,14 @@ const HeaderNav = ({ currentUser }) => {
                                                 Why Donate
                                             </Link>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem className="block xl:hidden p-3 shadow-xs">
+                                        <DropdownMenuItem
+                                            className={clsx(
+                                                "block xl:hidden p-3 shadow-xs ",
+                                                pathname ===
+                                                    "/donation-process" &&
+                                                    "bg-blue-400/50"
+                                            )}
+                                        >
                                             <Link
                                                 href="/donation-process"
                                                 className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
@@ -211,7 +269,14 @@ const HeaderNav = ({ currentUser }) => {
                                                 Donation Process
                                             </Link>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem className="block xl:hidden p-3 shadow-xs">
+                                        <DropdownMenuItem
+                                            className={clsx(
+                                                "block xl:hidden p-3 shadow-xs ",
+                                                pathname ===
+                                                    "/eligibility-requirements" &&
+                                                    "bg-blue-400/50"
+                                            )}
+                                        >
                                             <Link
                                                 href="/eligibility-requirements"
                                                 className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
@@ -220,7 +285,14 @@ const HeaderNav = ({ currentUser }) => {
                                                 Eligibility Requirements
                                             </Link>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem className="block 2xl:hidden p-3 shadow-xs">
+                                        <DropdownMenuItem
+                                            className={clsx(
+                                                "block 2xl:hidden p-3 shadow-xs ",
+                                                pathname ===
+                                                    "/success-stories" &&
+                                                    "bg-blue-400/50"
+                                            )}
+                                        >
                                             <Link
                                                 href="/success-stories"
                                                 className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
@@ -229,7 +301,13 @@ const HeaderNav = ({ currentUser }) => {
                                                 Success Stories
                                             </Link>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem className="block 2xl:hidden p-3 shadow-xs">
+                                        <DropdownMenuItem
+                                            className={clsx(
+                                                "block 2xl:hidden p-3 shadow-xs ",
+                                                pathname === "/contact-us" &&
+                                                    "bg-blue-400/50"
+                                            )}
+                                        >
                                             <Link
                                                 href="/contact-us"
                                                 className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
