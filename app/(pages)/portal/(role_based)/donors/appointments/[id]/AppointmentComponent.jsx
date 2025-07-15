@@ -122,15 +122,8 @@ export default function AppointmentComponent({ id }) {
                     Back
                 </button>
                 <LoadingModal imgSrc="/loader_3.gif" isLoading={isLoading} />
-                <EventCard
-                    event={event}
-                    onFinish={handleProcessedBooking}
-                    onLoad={onLoad}
-                    isRegistrationOpen={true}
-                    isAlreadyBooked={isAlreadyBooked}
-                    appointmentId={id}
-                />
-                {/* <pre>
+            {/* Appointment Details */}
+            {/* <pre>
                 {JSON.stringify(event, null, 3)}
             </pre> */}
             </div>
