@@ -4,7 +4,7 @@
 /** @type {import('sequelize-cli').Migration} */
 export async function up(queryInterface) {
     await queryInterface.bulkInsert(
-        "Roles",
+        "roles",
         [
             {
                 role_name: "Admin",
@@ -47,5 +47,5 @@ export async function up(queryInterface) {
 }
 
 export async function down(queryInterface) {
-    await queryInterface.bulkDelete("Roles", null, {});
+    await queryInterface.bulkDelete("roles", null, {});
 }
