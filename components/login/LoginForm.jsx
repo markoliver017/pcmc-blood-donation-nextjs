@@ -15,8 +15,8 @@ import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { FaGoogle } from "react-icons/fa";
 
 const credentials = {
-    email: "admin@email.com",
-    password: "User@1234",
+    email: "",
+    password: "",
 };
 
 export default function LoginForm({
@@ -53,7 +53,7 @@ export default function LoginForm({
         const { email, password } = data;
         const res = await signIn("credentials", {
             email,
-            debugEmail: email,
+            // debugEmail: email,
             password,
             redirect: false,
             callbackUrl, // redirect after login
