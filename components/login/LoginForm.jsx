@@ -10,7 +10,7 @@ import notify from "@components/ui/notify";
 import { toast } from "react-toastify";
 
 import { signIn } from "next-auth/react";
-import {  useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { FaGoogle } from "react-icons/fa";
 
@@ -19,12 +19,16 @@ const credentials = {
     password: "User@1234",
 };
 
-export default function LoginForm({ showHeader = true, showProvidersSection = false, onClose = () => {} }) {
+export default function LoginForm({
+    showHeader = true,
+    showProvidersSection = false,
+    onClose = () => {},
+}) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
     //?callbackUrl=/portal/admin/profile
-    const callbackUrl = searchParams.get('callbackUrl') || "/portal";
+    const callbackUrl = searchParams.get("callbackUrl") || "/portal";
 
     const [isLoading, setIsLoading] = useState({});
     const [showPasswordReset, setShowPasswordReset] = useState(false);
@@ -90,11 +94,15 @@ export default function LoginForm({ showHeader = true, showProvidersSection = fa
                         <h2 className="text-center font-geist-sans font-bold text-xl mt-1 leading-tight text-red-700 dark:text-red-300">
                             PCMC Pediatric Blood Center
                         </h2>
-                        <span className="text-base text-slate-600 dark:text-slate-300">Member Login</span>
+                        <span className="text-base text-slate-600 dark:text-slate-300">
+                            Member Login
+                        </span>
                     </div>
                 )}
                 <div>
-                    <label className="fieldset-label font-semibold">Email</label>
+                    <label className="fieldset-label font-semibold">
+                        Email
+                    </label>
                     <label className="w-full border focus-within:shadow-md focus-within:shadow-red-400 input mt-1 flex items-center gap-2">
                         <Mail className="h-4 text-blue-500" />
                         <input
@@ -120,7 +128,9 @@ export default function LoginForm({ showHeader = true, showProvidersSection = fa
                     </p>
                 </div>
                 <div>
-                    <label className="fieldset-label font-semibold">Password</label>
+                    <label className="fieldset-label font-semibold">
+                        Password
+                    </label>
                     <label className="input border focus-within:shadow-md focus-within:shadow-red-300 w-full mt-1 flex items-center gap-2">
                         <Key className="h-4 text-blue-500" />
                         <input
@@ -137,7 +147,12 @@ export default function LoginForm({ showHeader = true, showProvidersSection = fa
                             minLength="8"
                             className="bg-transparent flex-1 outline-none"
                         />
-                        <button className="btn btn-ghost btn-sm" onClick={() => setShowPasswordReset(!showPasswordReset)}>
+                        <button
+                            className="btn btn-ghost btn-sm"
+                            onClick={() =>
+                                setShowPasswordReset(!showPasswordReset)
+                            }
+                        >
                             <EyeIcon className="h-4 text-blue-500" />
                         </button>
                     </label>
@@ -151,7 +166,7 @@ export default function LoginForm({ showHeader = true, showProvidersSection = fa
                             type="button"
                             onClick={() => {
                                 onClose();
-                                router.push("/auth/forgot-password")
+                                router.push("/auth/forgot-password");
                             }}
                             className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors"
                         >
@@ -166,21 +181,34 @@ export default function LoginForm({ showHeader = true, showProvidersSection = fa
                             {...register("rememberMe")}
                             className="border checkbox checkbox-primary"
                         />
-                        <span className="text-sm text-slate-600 dark:text-slate-300">Remember Me</span>
+                        <span className="text-sm text-slate-600 dark:text-slate-300">
+                            Remember Me
+                        </span>
                     </label>
                     <label className="flex max-w-max items-center gap-2 cursor-pointer">
                         <input
                             type="checkbox"
-                            {...register("agreeTerms", { required: "You must agree to the terms and conditions." })}
+                            {...register("agreeTerms", {
+                                required:
+                                    "You must agree to the terms and conditions.",
+                            })}
                             className="border checkbox checkbox-primary"
                         />
                         <span className="text-sm text-slate-600 dark:text-slate-300">
-                            I agree to the <a href="#" className="underline hover:text-blue-600">Terms & Conditions</a>
+                            I agree to the{" "}
+                            <a
+                                href="#"
+                                className="underline hover:text-blue-600"
+                            >
+                                Terms & Conditions
+                            </a>
                         </span>
                     </label>
                 </div>
                 <p className="text-red-500 text-sm min-h-[1.5em]">
-                    {errors.agreeTerms && <span>{errors.agreeTerms?.message}</span>}
+                    {errors.agreeTerms && (
+                        <span>{errors.agreeTerms?.message}</span>
+                    )}
                 </p>
                 <button
                     disabled={isAnyLoading}
@@ -199,13 +227,16 @@ export default function LoginForm({ showHeader = true, showProvidersSection = fa
                     )}
                 </button>
                 <div className="flex justify-center mt-2">
-                    <button type="button" 
+                    <button
+                        type="button"
                         onClick={() => {
                             onClose();
-                            router.push("/register")
+                            router.push("/register");
                         }}
-                        className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors">
-                        Don't have an account? <span className="font-semibold">Register here</span>
+                        className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors"
+                    >
+                        Don't have an account?{" "}
+                        <span className="font-semibold">Register here</span>
                     </button>
                 </div>
             </form>
@@ -213,17 +244,23 @@ export default function LoginForm({ showHeader = true, showProvidersSection = fa
                 <div className="w-full flex flex-col items-center mt-6">
                     <div className="flex items-center w-full mb-4">
                         <div className="flex-1 h-px bg-blue-200 dark:bg-slate-700" />
-                        <span className="mx-3 text-slate-400 dark:text-slate-500 text-sm">or sign in with</span>
+                        <span className="mx-3 text-slate-400 dark:text-slate-500 text-sm">
+                            or sign in with
+                        </span>
                         <div className="flex-1 h-px bg-blue-200 dark:bg-slate-700" />
                     </div>
                     <div className="flex flex-col gap-3 w-full">
                         <button
                             disabled={isAnyLoading}
                             className="flex items-center justify-center gap-3 w-full py-3 rounded-lg bg-white border border-blue-200 dark:bg-slate-800 dark:border-slate-700 shadow hover:bg-blue-50 dark:hover:bg-slate-700 text-blue-700 dark:text-blue-200 font-semibold text-base transition-all"
-                            onClick={() => {
-                                signIn("google", { callbackUrl: "/portal" });
-                                setIsLoading((prev) => ({ ...prev, google: true }));
-                            }}
+                            // onClick={() => {
+                            //     signIn("google", { callbackUrl: "/portal" });
+                            //     setIsLoading((prev) => ({
+                            //         ...prev,
+                            //         google: true,
+                            //     }));
+                            // }}
+                            onClick={() => alert("Works only in Production")}
                         >
                             {isLoading?.google ? (
                                 <>
@@ -240,8 +277,20 @@ export default function LoginForm({ showHeader = true, showProvidersSection = fa
                         <button
                             disabled={isAnyLoading}
                             className="flex items-center justify-center gap-3 w-full py-3 rounded-lg bg-[#1A77F2] border border-blue-700 shadow hover:bg-blue-800 text-white font-semibold text-base transition-all"
+                            onClick={() => alert("Works only in Production")}
                         >
-                            <svg aria-label="Facebook logo" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path fill="white" d="M8 12h5V8c0-6 4-7 11-6v5c-4 0-5 0-5 3v2h5l-1 6h-4v12h-6V18H8z"></path></svg>
+                            <svg
+                                aria-label="Facebook logo"
+                                width="20"
+                                height="20"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 32 32"
+                            >
+                                <path
+                                    fill="white"
+                                    d="M8 12h5V8c0-6 4-7 11-6v5c-4 0-5 0-5 3v2h5l-1 6h-4v12h-6V18H8z"
+                                ></path>
+                            </svg>
                             Continue with Facebook
                         </button>
                     </div>

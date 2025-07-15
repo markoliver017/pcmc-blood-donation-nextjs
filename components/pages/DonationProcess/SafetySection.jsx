@@ -218,14 +218,14 @@ export default function SafetySection() {
                             incidents and maintained the highest accreditation
                             standards in the industry.
                         </p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <button className="btn btn-primary btn-lg px-8 py-3 text-lg font-semibold">
                                 Learn More About Safety
                             </button>
                             <button className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold">
                                 View Safety Protocols
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                 </motion.div>
             </div>

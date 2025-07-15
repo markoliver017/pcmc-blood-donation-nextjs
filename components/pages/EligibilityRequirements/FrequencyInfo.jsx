@@ -1,8 +1,9 @@
 "use client";
 import { motion } from "framer-motion";
 import { Calendar, Clock, Heart, Shield } from "lucide-react";
+import Link from "next/link";
 
-export default function FrequencyInfo() {
+export default function FrequencyInfo({ onOpenRegister }) {
     const frequencyData = [
         {
             type: "Whole Blood",
@@ -57,7 +58,7 @@ export default function FrequencyInfo() {
         {
             title: "Track Your Donations",
             description:
-                "Use our mobile portal to track your donation history and get reminders for your next eligible date.",
+                "Use our platform to track your donation history and get reminders for your next eligible date.",
             icon: Calendar,
         },
         {
@@ -217,12 +218,18 @@ export default function FrequencyInfo() {
                             donation types as you become a regular donor.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <button className="btn btn-primary btn-lg px-8 py-3 text-lg font-semibold">
+                            <button
+                                onClick={onOpenRegister}
+                                className="btn btn-primary btn-lg px-8 py-3 text-lg font-semibold"
+                            >
                                 Schedule Your First Donation
                             </button>
-                            <button className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold">
-                                Learn More About Donation Types
-                            </button>
+                            <Link
+                                href="/login"
+                                className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold"
+                            >
+                                Already have an account?
+                            </Link>
                         </div>
                     </div>
                 </motion.div>

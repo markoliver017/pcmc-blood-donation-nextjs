@@ -34,13 +34,13 @@ export default function SuccessStoriesPage() {
             <StoriesGrid />
 
             {/* Testimonials */}
-            <TestimonialCard />
+            <TestimonialCard onOpenRegister={() => setOpenRegister(true)} />
 
             {/* Impact Metrics */}
-            <ImpactMetrics />
+            <ImpactMetrics onOpenRegister={() => setOpenRegister(true)} />
 
             {/* Community Spotlight */}
-            <CommunitySpotlight />
+            <CommunitySpotlight onOpenRegister={() => setOpenRegister(true)} />
 
             {/* Call to Action */}
             <CallToAction
@@ -52,7 +52,7 @@ export default function SuccessStoriesPage() {
                 }}
                 secondaryButton={{
                     text: "Learn More",
-                    href: "/why-donate",
+                    href: "/contact-us",
                 }}
                 className="bg-gradient-to-r from-purple-600 to-pink-600 text-white"
             />

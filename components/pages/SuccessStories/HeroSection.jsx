@@ -9,7 +9,7 @@ export default function HeroSection() {
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <Image
-                    src="/blood-donation-img-4.jpg"
+                    src="/donation-drive-9.jpg"
                     alt="Success Stories - Blood Donation Impact"
                     fill
                     className="object-cover"
@@ -91,12 +91,26 @@ export default function HeroSection() {
                     >
                         <a
                             href="#stories"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                const el = document.getElementById("stories");
+                                if (el) {
+                                    el.scrollIntoView({ behavior: "smooth" });
+                                }
+                            }}
                             className="btn btn-primary btn-lg px-8 py-3 text-lg font-semibold"
                         >
                             Read Stories
                         </a>
                         <a
                             href="#impact"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                const el = document.getElementById("impact");
+                                if (el) {
+                                    el.scrollIntoView({ behavior: "smooth" });
+                                }
+                            }}
                             className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-green-600"
                         >
                             View Impact

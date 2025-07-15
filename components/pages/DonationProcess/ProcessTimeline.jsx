@@ -10,9 +10,11 @@ import {
     Heart,
     UserPlus,
     CalendarCheck,
+    CheckCircle2,
 } from "lucide-react";
+import Link from "next/link";
 
-export default function ProcessTimeline() {
+export default function ProcessTimeline({ onOpenRegister }) {
     const steps = [
         {
             number: 1,
@@ -55,11 +57,10 @@ export default function ProcessTimeline() {
                 "Health questionnaire",
                 "Vital signs check (blood pressure, pulse, hemoglobin levels)",
                 "Final medical screening by a qualified staff member. If eligible, proceed to donation; if not, receive guidance and rescheduling support",
-                
             ],
             color: "green",
         },
-        
+
         {
             number: 4,
             icon: Droplets,
@@ -71,7 +72,7 @@ export default function ProcessTimeline() {
                 "Comfortable seating",
                 "Sterile needle insertion",
                 "Blood collection. Approx. 1 pint (470 mL)",
-                "Special labeling and routing for pediatric use based on compatibility and urgency"
+                "Special labeling and routing for pediatric use based on compatibility and urgency",
             ],
             color: "red",
         },
@@ -94,13 +95,9 @@ export default function ProcessTimeline() {
             icon: CheckCircle,
             title: "Post-Donation Care",
             description:
-                "Receive care instructions and information about when you can donate again. Your donation is processed and tested.",
+                "Receive care instructions via email and information about when you can donate again.",
             duration: "5 minutes",
-            details: [
-                "Care instructions",
-                "Next donation date",
-                "Contact information",
-            ],
+            details: ["Care instructions", "Next donation date"],
             color: "teal",
         },
         {
@@ -237,6 +234,7 @@ export default function ProcessTimeline() {
                                                             ]
                                                         }`}
                                                     />
+                                                    <CheckCircle2 className="text-green-500" />
                                                     {detail}
                                                 </li>
                                             )
@@ -265,12 +263,18 @@ export default function ProcessTimeline() {
                             used to save lives within days.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <button className="btn btn-primary btn-lg px-8 py-3 text-lg font-semibold">
+                            <button
+                                onClick={onOpenRegister}
+                                className="btn btn-primary btn-lg px-8 py-3 text-lg font-semibold"
+                            >
                                 Schedule Your Donation
                             </button>
-                            <button className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold">
-                                Learn About Safety
-                            </button>
+                            <Link
+                                href="/eligibility-requirements"
+                                className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold"
+                            >
+                                Learn More
+                            </Link>
                         </div>
                     </div>
                 </motion.div>

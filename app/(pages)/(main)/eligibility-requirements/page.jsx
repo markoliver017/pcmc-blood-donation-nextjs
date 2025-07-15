@@ -44,19 +44,19 @@ export default function EligibilityRequirementsPage() {
             <EligibilityQuiz />
 
             {/* Donation Frequency Information */}
-            <FrequencyInfo />
+            <FrequencyInfo onOpenRegister={() => setOpenRegister(true)} />
 
             {/* Call to Action */}
             <CallToAction
                 title="Ready to Check Your Eligibility?"
                 subtitle="Take our quick eligibility quiz and start your journey as a blood donor. Your donation could save a child's life today."
                 primaryButton={{
-                    text: "Start Eligibility Check",
+                    text: "Sign Up Now",
                     onClick: () => setOpenRegister(true),
                 }}
                 secondaryButton={{
                     text: "Learn More",
-                    href: "/donation-process",
+                    href: "/success-stories",
                 }}
                 className="bg-gradient-to-r from-green-600 to-blue-600 text-white"
             />

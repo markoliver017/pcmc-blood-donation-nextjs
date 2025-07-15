@@ -54,7 +54,7 @@ export default function CallToAction({
             />
 
             <motion.section
-                className={`${containerClasses[variant]} ${className}`}
+                className={`${containerClasses[variant]} ${className} mb-5`}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}

@@ -1,5 +1,5 @@
 "use client";
-import { BreadcrumbNav, CallToAction } from "@components/pages/shared";
+import { CallToAction } from "@components/pages/shared";
 import HeroSection from "@components/pages/AboutUs/HeroSection";
 import MissionSection from "@components/pages/AboutUs/MissionSection";
 import FeaturesGrid from "@components/pages/AboutUs/FeaturesGrid";

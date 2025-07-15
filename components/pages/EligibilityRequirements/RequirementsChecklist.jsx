@@ -25,7 +25,7 @@ export default function RequirementsChecklist() {
                 { text: "No active infections or illnesses", required: true },
                 { text: "Normal blood pressure", required: true },
                 {
-                    text: "Hemoglobin level of at least 12.5 g/dL",
+                    text: "Hemoglobin level of at least 12.5(female)/13.5(male) - 18.0 g/dL ",
                     required: true,
                 },
             ],

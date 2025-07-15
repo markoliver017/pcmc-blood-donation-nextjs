@@ -10,7 +10,7 @@ import {
     Calendar,
 } from "lucide-react";
 
-export default function ImpactMetrics() {
+export default function ImpactMetrics({ onOpenRegister }) {
     const [counts, setCounts] = useState({
         livesSaved: 0,
         totalDonations: 0,
@@ -252,11 +252,11 @@ export default function ImpactMetrics() {
                             that saves a life today.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <button className="btn btn-white btn-lg px-8 py-3 text-lg font-semibold text-green-600 hover:bg-gray-100">
+                            <button
+                                onClick={onOpenRegister}
+                                className="btn btn-white btn-lg px-8 py-3 text-lg font-semibold text-green-600 hover:bg-gray-100"
+                            >
                                 Schedule Your Donation
-                            </button>
-                            <button className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-green-600">
-                                Learn More About Impact
                             </button>
                         </div>
                     </div>

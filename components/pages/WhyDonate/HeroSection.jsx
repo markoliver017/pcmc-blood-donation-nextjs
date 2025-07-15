@@ -102,11 +102,11 @@ export default function HeroSection({ onOpenRegister }) {
                         </button>
                         <a
                             href="#reasons"
-                                                        onClick={e => {
+                            onClick={(e) => {
                                 e.preventDefault();
-                                const el = document.getElementById('reasons');
+                                const el = document.getElementById("reasons");
                                 if (el) {
-                                    el.scrollIntoView({ behavior: 'smooth' });
+                                    el.scrollIntoView({ behavior: "smooth" });
                                 }
                             }}
                             className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-red-600"

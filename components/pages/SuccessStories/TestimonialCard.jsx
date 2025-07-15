@@ -3,8 +3,9 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
+import Link from "next/link";
 
-export default function TestimonialCard() {
+export default function TestimonialCard({ onOpenRegister }) {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const testimonials = [
@@ -82,7 +83,7 @@ export default function TestimonialCard() {
     };
 
     return (
-        <section className="py-16 bg-white dark:bg-gray-900">
+        <section id="testimonials" className="py-16 bg-white dark:bg-gray-900">
             <div className="max-w-6xl mx-auto px-4">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -259,12 +260,18 @@ export default function TestimonialCard() {
                             child in need.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <button className="btn btn-white btn-lg px-8 py-3 text-lg font-semibold text-blue-600 hover:bg-gray-100">
+                            <button
+                                onClick={onOpenRegister}
+                                className="btn btn-white btn-lg px-8 py-3 text-lg font-semibold text-blue-600 hover:bg-gray-100"
+                            >
                                 Become a Donor
                             </button>
-                            <button className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-blue-600">
+                            <Link
+                                href="/contact-us#contact-form"
+                                className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-blue-600"
+                            >
                                 Share Your Experience
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </motion.div>

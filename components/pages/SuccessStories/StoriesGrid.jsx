@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Heart, Calendar, MapPin, User } from "lucide-react";
+import Link from "next/link";
 
 export default function StoriesGrid() {
     const stories = [
@@ -183,10 +184,25 @@ export default function StoriesGrid() {
                             donors make in our community.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <button className="btn btn-white btn-lg px-8 py-3 text-lg font-semibold text-green-600 hover:bg-gray-100">
+                            <Link
+                                href="/contact-us#contact-form"
+                                className="btn btn-white btn-lg px-8 py-3 text-lg font-semibold text-green-600 hover:bg-gray-100"
+                            >
                                 Share Your Story
-                            </button>
-                            <button className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-green-600">
+                            </Link>
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    const el =
+                                        document.getElementById("testimonials");
+                                    if (el) {
+                                        el.scrollIntoView({
+                                            behavior: "smooth",
+                                        });
+                                    }
+                                }}
+                                className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-green-600"
+                            >
                                 View More Stories
                             </button>
                         </div>

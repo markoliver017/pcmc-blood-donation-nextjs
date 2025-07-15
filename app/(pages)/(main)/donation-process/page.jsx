@@ -1,12 +1,11 @@
 "use client";
-import { motion } from "framer-motion";
 import {
     HeroSection,
     ProcessTimeline,
     FAQSection,
     SafetySection,
 } from "@components/pages/DonationProcess";
-import { BreadcrumbNav, CallToAction } from "@components/pages/shared";
+import { CallToAction } from "@components/pages/shared";
 import SelectRegisterDrawer from "../SelectRegisterDrawer";
 import useRegistration from "@components/pages/shared/useRegistration";
 
@@ -32,16 +31,16 @@ export default function DonationProcessPage() {
             /> */}
 
             {/* Hero Section */}
-            <HeroSection />
+            <HeroSection onOpenRegister={() => setOpenRegister(true)} />
 
             {/* Process Timeline */}
-            <ProcessTimeline />
+            <ProcessTimeline onOpenRegister={() => setOpenRegister(true)} />
 
             {/* Safety Section */}
-            <SafetySection />
+            <SafetySection onOpenRegister={() => setOpenRegister(true)} />
 
             {/* FAQ Section */}
-            <FAQSection />
+            <FAQSection onOpenRegister={() => setOpenRegister(true)} />
 
             {/* Call to Action */}
             <CallToAction

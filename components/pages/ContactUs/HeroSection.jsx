@@ -9,7 +9,7 @@ export default function HeroSection() {
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <Image
-                    src="/donation-drive-9.jpg"
+                    src="/contact-us.jpg"
                     alt="Contact Us - PCMC Pediatric Blood Center"
                     fill
                     className="object-cover"
@@ -91,12 +91,32 @@ export default function HeroSection() {
                     >
                         <a
                             href="#contact-form"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                const element =
+                                    document.getElementById("contact-form");
+                                if (element) {
+                                    element.scrollIntoView({
+                                        behavior: "smooth",
+                                    });
+                                }
+                            }}
                             className="btn btn-primary btn-lg px-8 py-3 text-lg font-semibold"
                         >
                             Send Message
                         </a>
                         <a
                             href="#contact-info"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                const element =
+                                    document.getElementById("contact-info");
+                                if (element) {
+                                    element.scrollIntoView({
+                                        behavior: "smooth",
+                                    });
+                                }
+                            }}
                             className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-teal-600"
                         >
                             View Contact Info

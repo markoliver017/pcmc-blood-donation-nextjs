@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
-import { AlertTriangle, Clock, Shield, Heart } from "lucide-react";
+import { AlertTriangle, Clock, Shield, Heart, Phone } from "lucide-react";
+import Link from "next/link";
 
 export default function MedicalRequirements() {
     const medicalConditions = [
@@ -198,12 +199,16 @@ export default function MedicalRequirements() {
                             your eligibility safely.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <button className="btn btn-white btn-lg px-8 py-3 text-lg font-semibold text-blue-600 hover:bg-gray-100">
-                                Contact Medical Staff
-                            </button>
-                            <button className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-blue-600">
+                            <Link
+                                href="/contact-us"
+                                className="btn btn-white btn-lg px-8 py-3 text-lg font-semibold text-blue-600 hover:bg-gray-100"
+                            >
+                                <Phone className="w-6 h-6 mr-2" />
+                                Contact Us
+                            </Link>
+                            {/* <button className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-blue-600">
                                 Schedule Consultation
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                 </motion.div>

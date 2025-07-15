@@ -293,15 +293,27 @@ export default function OfficeHours() {
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <a
                                 href="#contact-form"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    const element =
+                                        document.getElementById("contact-form");
+                                    if (element) {
+                                        element.scrollIntoView({
+                                            behavior: "smooth",
+                                        });
+                                    }
+                                }}
                                 className="btn btn-white btn-lg px-8 py-3 text-lg font-semibold text-teal-600 hover:bg-gray-100"
                             >
                                 Schedule Appointment
                             </a>
                             <a
-                                href="tel:+639284795154"
+                                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}&su=Support%20Request&body=Hi%20Support%20Team%2C%0A%0AI%20need%20help%20with...`}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-teal-600"
                             >
-                                Call to Confirm
+                                Email Us
                             </a>
                         </div>
                     </div>

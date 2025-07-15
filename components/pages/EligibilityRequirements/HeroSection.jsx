@@ -9,7 +9,7 @@ export default function HeroSection() {
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <Image
-                    src="/coordinator-img.jpeg"
+                    src="/image-2.jpg"
                     alt="Blood Donation Eligibility Requirements"
                     fill
                     className="object-cover"
@@ -91,12 +91,28 @@ export default function HeroSection() {
                     >
                         <a
                             href="#eligibility-quiz"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                const el =
+                                    document.getElementById("eligibility-quiz");
+                                if (el) {
+                                    el.scrollIntoView({ behavior: "smooth" });
+                                }
+                            }}
                             className="btn btn-primary btn-lg px-8 py-3 text-lg font-semibold"
                         >
                             Check Your Eligibility
                         </a>
                         <a
                             href="#requirements"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                const el =
+                                    document.getElementById("requirements");
+                                if (el) {
+                                    el.scrollIntoView({ behavior: "smooth" });
+                                }
+                            }}
                             className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-blue-600"
                         >
                             View Requirements

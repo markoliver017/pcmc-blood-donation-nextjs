@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Clock, Shield, Heart, CheckCircle } from "lucide-react";
 
-export default function HeroSection() {
+export default function HeroSection({ onOpenRegister }) {
     return (
         <section className="relative min-h-[500px] lg:min-h-[600px] flex items-center justify-center overflow-hidden">
             {/* Background Image */}
@@ -89,11 +89,21 @@ export default function HeroSection() {
                         transition={{ duration: 0.8, delay: 0.4 }}
                         className="flex flex-col sm:flex-row gap-4 justify-center"
                     >
-                        <button className="btn btn-primary btn-lg px-8 py-3 text-lg font-semibold">
+                        <button
+                            onClick={onOpenRegister}
+                            className="btn btn-primary btn-lg px-8 py-3 text-lg font-semibold"
+                        >
                             Start Your Journey
                         </button>
                         <a
                             href="#process"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                const el = document.getElementById("process");
+                                if (el) {
+                                    el.scrollIntoView({ behavior: "smooth" });
+                                }
+                            }}
                             className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-blue-600"
                         >
                             View All Steps

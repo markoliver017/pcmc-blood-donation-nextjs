@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Users, Building, Heart, Award, Calendar, MapPin } from "lucide-react";
 
-export default function CommunitySpotlight() {
+export default function CommunitySpotlight({ onOpenRegister }) {
     const communityPartners = [
         {
             name: "Philippine Red Cross",
@@ -310,10 +310,16 @@ export default function CommunitySpotlight() {
                             involved and make a difference.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <button className="btn btn-white btn-lg px-8 py-3 text-lg font-semibold text-blue-600 hover:bg-gray-100">
+                            <button
+                                onClick={onOpenRegister}
+                                className="btn btn-white btn-lg px-8 py-3 text-lg font-semibold text-blue-600 hover:bg-gray-100"
+                            >
                                 Become a Volunteer
                             </button>
-                            <button className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-blue-600">
+                            <button
+                                onClick={onOpenRegister}
+                                className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-blue-600"
+                            >
                                 Partner With Us
                             </button>
                         </div>
