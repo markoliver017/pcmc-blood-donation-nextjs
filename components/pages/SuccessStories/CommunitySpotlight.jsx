@@ -46,7 +46,7 @@ export default function CommunitySpotlight({ onOpenRegister }) {
             location: "PCMC Campus",
             participants: "500+ donors",
             impact: "1,200 units collected",
-            image: "/donation-drive-1.jpg",
+            image: "/donation-drive-1.JPG",
         },
         {
             title: "Youth Donor Campaign",
@@ -54,7 +54,7 @@ export default function CommunitySpotlight({ onOpenRegister }) {
             location: "Local High Schools",
             participants: "300+ students",
             impact: "600 units collected",
-            image: "/donation-drive-2.jpg",
+            image: "/donation-drive-2.JPG",
         },
         {
             title: "Corporate Blood Drive",
@@ -62,7 +62,7 @@ export default function CommunitySpotlight({ onOpenRegister }) {
             location: "Business Districts",
             participants: "200+ employees",
             impact: "400 units collected",
-            image: "/donation-drive-3.jpg",
+            image: "/donation-drive-3.JPG",
         },
     ];
 

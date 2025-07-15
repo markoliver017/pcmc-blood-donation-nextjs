@@ -11,7 +11,7 @@ export default function StoriesGrid() {
             title: "Little Maria's Second Chance",
             excerpt:
                 "A 3-year-old girl with leukemia received multiple blood transfusions during her treatment. Today, she's cancer-free and starting kindergarten.",
-            image: "/donation-drive-1.jpg",
+            image: "/donation-drive-1.JPG",
             category: "Pediatric Cancer",
             date: "December 2024",
             location: "PCMC Pediatric Blood Center",
@@ -23,7 +23,7 @@ export default function StoriesGrid() {
             title: "Emergency Surgery Success",
             excerpt:
                 "A premature baby needed emergency surgery and received blood from 8 different donors. The baby is now healthy and thriving.",
-            image: "/donation-drive-2.jpg",
+            image: "/donation-drive-2.JPG",
             category: "Neonatal Care",
             date: "November 2024",
             location: "PCMC NICU",
@@ -35,7 +35,7 @@ export default function StoriesGrid() {
             title: "Community Hero Donor",
             excerpt:
                 "John, a regular donor for 10 years, has donated over 50 times. His blood has helped save countless children's lives.",
-            image: "/donation-drive-3.jpg",
+            image: "/donation-drive-3.JPG",
             category: "Regular Donor",
             date: "Ongoing",
             location: "Mobile Blood Drives",
@@ -47,7 +47,7 @@ export default function StoriesGrid() {
             title: "Blood Drive Miracle",
             excerpt:
                 "A school blood drive collected 200 units, which were immediately used to help children in emergency situations.",
-            image: "/donation-drive-4.jpg",
+            image: "/donation-drive-4.JPG",
             category: "Community Event",
             date: "October 2024",
             location: "Local High School",
@@ -59,7 +59,7 @@ export default function StoriesGrid() {
             title: "Rare Blood Type Match",
             excerpt:
                 "A child with a rare blood type found a perfect match through our donor network. The transfusion was successful.",
-            image: "/donation-drive-5.jpg",
+            image: "/donation-drive-5.JPG",
             category: "Rare Blood Type",
             date: "September 2024",
             location: "PCMC Blood Bank",
@@ -71,7 +71,7 @@ export default function StoriesGrid() {
             title: "Platelet Donation Success",
             excerpt:
                 "A cancer patient received platelet donations from multiple donors, helping them through chemotherapy treatment.",
-            image: "/donation-drive-6.jpg",
+            image: "/donation-drive-6.JPG",
             category: "Cancer Treatment",
             date: "August 2024",
             location: "PCMC Oncology",

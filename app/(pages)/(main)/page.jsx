@@ -115,7 +115,11 @@ export default function Page() {
                         action.
                     </p> */}
                     <p className="text-lg text-slate-700 dark:text-slate-200 mb-4 text-justify">
-                        We are dedicated to saving and improving the lives of children by empowering volunteer blood donors. Our platform makes blood donation information accessible, meaningful, and easy to engage with — turning compassion into action.
+                        We are dedicated to saving and improving the lives of
+                        children by empowering volunteer blood donors. Our
+                        platform makes blood donation information accessible,
+                        meaningful, and easy to engage with — turning compassion
+                        into action.
                     </p>
                     <ul className="space-y-3 mb-4">
                         <li className="flex items-start gap-3">
@@ -203,7 +207,7 @@ export default function Page() {
                     <div className="flex flex-col lg:flex-row">
                         <div className="lg:w-1/3 relative h-64 lg:h-auto">
                             <Image
-                                src="/donation-drive-7.jpg"
+                                src="/donation-drive-7.JPG"
                                 alt="About PCMC"
                                 fill
                                 className="object-cover"
@@ -485,7 +489,7 @@ export default function Page() {
                         </div>
                     </div>
                 </motion.div>
-                
+
                 {/* Announcements Section */}
                 <motion.div
                     initial={{ opacity: 0, y: 50 }}
@@ -503,35 +507,37 @@ export default function Page() {
                                 <span>📢</span> Important Announcement
                             </h2>
                             <p className="text-slate-800 text-justify dark:text-slate-200 mb-4 text-base md:text-lg font-medium">
-                                New community blood drives are launching this month in collaboration with our partner agencies. These events are exclusively available to registered employees. Kindly coordinate with your agency's blood drive coordinator for schedules and registration.{" "}
+                                New community blood drives are launching this
+                                month in collaboration with our partner
+                                agencies. These events are exclusively available
+                                to registered employees. Kindly coordinate with
+                                your agency's blood drive coordinator for
+                                schedules and registration.{" "}
                                 <span className="font-semibold italic block">
                                     Be a hero—donate today and help save lives.
                                 </span>
                             </p>
                             <div className="space-x-4">
-
-                            <Link href="/login">
-                            <button
-                            type="button" className="btn btn-success btn-lg px-6 py-2 shadow-md hover:scale-105 transition-transform">
-                                <LogIn /> Sign In
-                            </button>
-                            </Link>
-                            <button
-                                onClick={() => setOpenRegister(true)}
-                                type="button" className="btn btn-primary btn-lg px-6 py-2 shadow-md hover:scale-105 transition-transform">
-                                <Pen className="h-4 w-4" /> Register Now
-                            </button>
+                                <Link href="/login">
+                                    <button
+                                        type="button"
+                                        className="btn btn-success btn-lg px-6 py-2 shadow-md hover:scale-105 transition-transform"
+                                    >
+                                        <LogIn /> Sign In
+                                    </button>
+                                </Link>
+                                <button
+                                    onClick={() => setOpenRegister(true)}
+                                    type="button"
+                                    className="btn btn-primary btn-lg px-6 py-2 shadow-md hover:scale-105 transition-transform"
+                                >
+                                    <Pen className="h-4 w-4" /> Register Now
+                                </button>
                             </div>
-                            
                         </div>
                     </div>
                 </motion.div>
             </section>
-
-
-
-            
-            
         </main>
     );
 }

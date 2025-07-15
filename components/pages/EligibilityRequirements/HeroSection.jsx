@@ -9,7 +9,7 @@ export default function HeroSection() {
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <Image
-                    src="/image-2.jpg"
+                    src="/image-2.JPG"
                     alt="Blood Donation Eligibility Requirements"
                     fill
                     className="object-cover"
