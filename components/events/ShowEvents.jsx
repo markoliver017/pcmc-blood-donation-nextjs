@@ -16,7 +16,14 @@ import {
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
-import { CheckIcon, Command, Eye, MenuSquare, MoreHorizontal, Pencil } from "lucide-react";
+import {
+    CheckIcon,
+    Command,
+    Eye,
+    MenuSquare,
+    MoreHorizontal,
+    Pencil,
+} from "lucide-react";
 import { Table, TableBody, TableCell, TableRow } from "@components/ui/table";
 import { calculateAge, formatFormalName } from "@lib/utils/string.utils";
 import { useQuery } from "@tanstack/react-query";
@@ -57,9 +64,11 @@ export default function ShowEvents({ eventId }) {
 
     let regStatusClass = "badge-error";
     if (registration_status == "ongoing") {
-        regStatusClass = "badge-success";
+        regStatusClass = "badge-primary";
     } else if (registration_status == "not started") {
         regStatusClass = "badge-warning";
+    } else if (registration_status == "completed") {
+        regStatusClass = "badge-success";
     }
 
     if (session.status === "loading") return <Skeleton_line />;
@@ -76,92 +85,54 @@ export default function ShowEvents({ eventId }) {
 
                     {(currentRole == "Organizer" ||
                         currentRole == "Agency Administrator") && (
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button>
-                                    <span className="sr-only">Open menu</span>
-                                    <MenuSquare className="h-4 w-4" />
-                                    <span className="hidden md:inline-block">
-                                        Action
-                                    </span>
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuLabel className="flex items-center space-x-2">
-                                    <Command className="w-3 h-3" />
-                                    <span>Actions</span>
-                                </DropdownMenuLabel>
-                                <DropdownMenuSeparator />
+                        <div className="flex-items-center">
+                            {event.status == "for approval" ? (
+                                <Link
+                                    href={`/portal/hosts/events/${event.id}/edit`}
+                                >
+                                    <button className="btn btn-warning">
+                                        <Pencil className="w-4 h-4" />
+                                        <span>Edit</span>
+                                    </button>
+                                </Link>
+                            ) : (
+                                ""
+                            )}
 
-                                {event.status == "for approval" ? (
-                                    <Link
-                                        href={`/portal/hosts/events/${event.id}/edit`}
-                                    >
-                                        <DropdownMenuItem className="flex items-center space-x-2">
-                                            <Pencil className="w-4 h-4" />
-                                            <span>Edit</span>
-                                        </DropdownMenuItem>
-                                    </Link>
-                                ) : (
-                                    ""
-                                )}
-
-                                {event.status == "approved" ? (
-                                    <DropdownMenuItem>
-                                        <EventRegistrationStatus
-                                            data={event}
-                                            setIsLoading={setIsLoading}
-                                        />
-                                    </DropdownMenuItem>
-                                ) : (
-                                    ""
-                                )}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                            {event.status == "approved" ? (
+                                <EventRegistrationStatus
+                                    data={event}
+                                    setIsLoading={setIsLoading}
+                                    className="btn btn-warning"
+                                />
+                            ) : (
+                                ""
+                            )}
+                        </div>
                     )}
-                    {(currentRole == "Admin") && (
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button>
-                                    <span className="sr-only">Open menu</span>
-                                    <MenuSquare className="h-4 w-4" />
-                                    <span className="hidden md:inline-block">
-                                        Action
-                                    </span>
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuLabel className="flex items-center space-x-2">
-                                    <Command className="w-3 h-3" />
-                                    <span>Actions</span>
-                                </DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-
-                                {event.status == "for approval" ? (
-                                    <>
-                                        <DropdownMenuItem className="flex items-center space-x-2">
-                                            <VerifyEvent
-                                                eventData={{
-                                                    id: event.id,
-                                                    status: "approved",
-                                                }}
-                                                label="Approve"
-                                                className="btn btn-ghost btn-success"
-                                                formClassName="w-full"
-                                                icon={<CheckIcon />}
-                                            />
-                                        </DropdownMenuItem>
-                                        <RejectEvent
-                                            eventId={event.id}
-                                            className="w-full btn btn-ghost btn-error"
-                                        />
-                                    </>
-                                ) : (
-                                    ""
-                                )}
-
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                    {currentRole == "Admin" && (
+                        <div className="flex-items-center">
+                            {event.status == "for approval" ? (
+                                <>
+                                    <VerifyEvent
+                                        eventData={{
+                                            id: event.id,
+                                            status: "approved",
+                                        }}
+                                        label="Approve"
+                                        className="btn btn-success"
+                                        formClassName="w-full"
+                                        icon={<CheckIcon />}
+                                    />
+                                    <RejectEvent
+                                        eventId={event.id}
+                                        className="btn btn-error"
+                                    />
+                                </>
+                            ) : (
+                                ""
+                            )}
+                        </div>
                     )}
                 </CardDescription>
             </CardHeader>

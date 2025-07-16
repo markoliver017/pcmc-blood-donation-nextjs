@@ -14,7 +14,15 @@ import { DataTable } from "@components/events/Datatable";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
-import { Calendar, CalendarCheck, Check, Text, BarChart3 } from "lucide-react";
+import {
+    Calendar,
+    CalendarCheck,
+    Check,
+    Text,
+    BarChart3,
+    CreditCard,
+    TableIcon,
+} from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import ForApprovalEventList from "./ForApprovalEventList";
 import Skeleton from "@components/ui/skeleton";
@@ -35,6 +43,7 @@ import {
 } from "@components/ui/tabs";
 import AdminEventCard from "@components/events/AdminEventCard";
 import EventFilterBar from "@components/admin/events/EventFilterBar";
+import { GiCard3Diamonds } from "react-icons/gi";
 
 export default function ListofEvents() {
     const router = useRouter();
@@ -111,9 +120,9 @@ export default function ListofEvents() {
     });
 
     // Add view mode state for each tab
-    const [ongoingViewMode, setOngoingViewMode] = useState("table");
-    const [upcomingViewMode, setUpcomingViewMode] = useState("table");
-    const [allViewMode, setAllViewMode] = useState("table");
+    const [ongoingViewMode, setOngoingViewMode] = useState("card");
+    const [upcomingViewMode, setUpcomingViewMode] = useState("card");
+    const [allViewMode, setAllViewMode] = useState("card");
 
     // Add filter state for each tab
     const [ongoingFilters, setOngoingFilters] = useState({});
@@ -327,18 +336,26 @@ export default function ListofEvents() {
 
                 {/* Ongoing Tab Content */}
                 <TabsContent value="ongoing">
-                    <div className="flex justify-end mb-2">
+                    <div className="flex justify-end mt-5">
                         <ViewModeTabs
                             value={ongoingViewMode}
                             onValueChange={setOngoingViewMode}
-                            className="w-max"
+                            className="flex gap-2 bg-muted/60 p-1 rounded-full shadow-sm w-max mx-auto mb-3"
                         >
                             <ViewModeTabsList>
-                                <ViewModeTabsTrigger value="table">
-                                    Table View
-                                </ViewModeTabsTrigger>
-                                <ViewModeTabsTrigger value="card">
+                                <ViewModeTabsTrigger
+                                    value="card"
+                                    className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-purple-700 hover:bg-purple-100 focus-visible:ring-2 focus-visible:ring-purple-400"
+                                >
+                                    <CreditCard />
                                     Card View
+                                </ViewModeTabsTrigger>
+                                <ViewModeTabsTrigger
+                                    value="table"
+                                    className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-blue-700 hover:bg-blue-100 focus-visible:ring-2 focus-visible:ring-blue-400"
+                                >
+                                    <TableIcon />
+                                    Table View
                                 </ViewModeTabsTrigger>
                             </ViewModeTabsList>
                         </ViewModeTabs>
@@ -372,7 +389,7 @@ export default function ListofEvents() {
                             />
                         )
                     ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="space-y-4">
                             {ongoingEvents?.length ? (
                                 ongoingEvents.map((event) => (
                                     <AdminEventCard
@@ -404,18 +421,26 @@ export default function ListofEvents() {
 
                 {/* Repeat similar structure for Upcoming, All, For-Approval tabs */}
                 <TabsContent value="upcoming">
-                    <div className="flex justify-end mb-2">
+                    <div className="flex justify-end mt-5">
                         <ViewModeTabs
                             value={upcomingViewMode}
                             onValueChange={setUpcomingViewMode}
-                            className="w-max"
+                            className="flex gap-2 bg-muted/60 p-1 rounded-full shadow-sm w-max mx-auto mb-3"
                         >
                             <ViewModeTabsList>
-                                <ViewModeTabsTrigger value="table">
-                                    Table View
-                                </ViewModeTabsTrigger>
-                                <ViewModeTabsTrigger value="card">
+                                <ViewModeTabsTrigger
+                                    value="card"
+                                    className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-purple-700 hover:bg-purple-100 focus-visible:ring-2 focus-visible:ring-purple-400"
+                                >
+                                    <CreditCard />
                                     Card View
+                                </ViewModeTabsTrigger>
+                                <ViewModeTabsTrigger
+                                    value="table"
+                                    className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-blue-700 hover:bg-blue-100 focus-visible:ring-2 focus-visible:ring-blue-400"
+                                >
+                                    <TableIcon />
+                                    Table View
                                 </ViewModeTabsTrigger>
                             </ViewModeTabsList>
                         </ViewModeTabs>
@@ -449,7 +474,7 @@ export default function ListofEvents() {
                             />
                         )
                     ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="space-y-4">
                             {upcomingEvents?.length ? (
                                 upcomingEvents.map((event) => (
                                     <AdminEventCard
@@ -479,18 +504,26 @@ export default function ListofEvents() {
                     )}
                 </TabsContent>
                 <TabsContent value="all">
-                    <div className="flex justify-end mb-2">
+                    <div className="flex justify-end mt-5">
                         <ViewModeTabs
                             value={allViewMode}
                             onValueChange={setAllViewMode}
-                            className="w-max"
+                            className="flex gap-2 bg-muted/60 p-1 rounded-full shadow-sm w-max mx-auto mb-3"
                         >
                             <ViewModeTabsList>
-                                <ViewModeTabsTrigger value="table">
-                                    Table View
-                                </ViewModeTabsTrigger>
-                                <ViewModeTabsTrigger value="card">
+                                <ViewModeTabsTrigger
+                                    value="card"
+                                    className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-purple-700 hover:bg-purple-100 focus-visible:ring-2 focus-visible:ring-purple-400"
+                                >
+                                    <CreditCard />
                                     Card View
+                                </ViewModeTabsTrigger>
+                                <ViewModeTabsTrigger
+                                    value="table"
+                                    className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-blue-700 hover:bg-blue-100 focus-visible:ring-2 focus-visible:ring-blue-400"
+                                >
+                                    <TableIcon />
+                                    Table View
                                 </ViewModeTabsTrigger>
                             </ViewModeTabsList>
                         </ViewModeTabs>
@@ -523,7 +556,7 @@ export default function ListofEvents() {
                             />
                         )
                     ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="space-y-4">
                             {allEvents?.length ? (
                                 allEvents.map((event) => (
                                     <AdminEventCard

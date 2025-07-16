@@ -28,6 +28,7 @@ import {
 import { updateAppointmentStatus } from "@action/adminEventAction";
 import notify from "@components/ui/notify";
 import { FaExclamationCircle } from "react-icons/fa";
+import { ToastContainer } from "react-toastify";
 
 export default function UpdateStatusModal({
     isOpen,
@@ -86,12 +87,17 @@ export default function UpdateStatusModal({
             handleClose();
         },
         onError: (error) => {
-            notify({
-                error: true,
-                message:
-                    error?.message ||
-                    "An error occurred while updating the status",
-            });
+            console.log("error on updateStatusMutation", error);
+            notify(
+                {
+                    error: true,
+                    message:
+                        error?.message ||
+                        "An error occurred while updating the status",
+                },
+                "warning",
+                "top-right"
+            );
         },
     });
 
@@ -159,6 +165,7 @@ export default function UpdateStatusModal({
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
             <DialogContent className="sm:max-w-[500px]">
+                <ToastContainer />
                 <DialogHeader>
                     <DialogTitle>Update Donor Status</DialogTitle>
                     <DialogDescription>
@@ -329,7 +336,7 @@ export default function UpdateStatusModal({
                         >
                             {updateStatusMutation.isPending
                                 ? "Updating..."
-                                : "Update Status"}
+                                : "Update Statuses"}
                         </Button>
                     </DialogFooter>
                 </form>

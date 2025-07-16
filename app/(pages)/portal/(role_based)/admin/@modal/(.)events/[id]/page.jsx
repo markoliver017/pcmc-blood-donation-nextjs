@@ -5,7 +5,8 @@ import {
 } from "@tanstack/react-query";
 import InterceptModal from "@components/layout/InterceptModal";
 import { getEventsById } from "@/action/hostEventAction";
-import ShowEvents from "@components/events/ShowEvents";
+// import ShowEvents from "@components/events/ShowEvents";
+import ShowEvents1 from "@components/events/ShowEvents";
 
 export default async function Page({ params }) {
     const { id } = await params;
@@ -20,7 +21,7 @@ export default async function Page({ params }) {
         <InterceptModal>
             <HydrationBoundary state={dehydrate(queryClient)}>
                 <div className="w-full md:w-9/10 2xl:w-8-10 mx-auto shadow-lg">
-                    <ShowEvents eventId={id} />
+                    <ShowEvents1 eventId={id} />
                 </div>
             </HydrationBoundary>
         </InterceptModal>

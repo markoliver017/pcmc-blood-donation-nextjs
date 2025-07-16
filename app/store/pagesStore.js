@@ -169,14 +169,14 @@ export const usePagesStore = create((set) => ({
             is_role_based: true,
             has_child: false,
         },
-        {
-            title: "View Donor Card",
-            path: "/donor-card",
-            icon: <CardStackIcon />,
-            roles: ["Donor"],
-            is_role_based: true,
-            has_child: false,
-        },
+        // {
+        //     title: "View Donor Card",
+        //     path: "/donor-card",
+        //     icon: <CardStackIcon />,
+        //     roles: ["Donor"],
+        //     is_role_based: true,
+        //     has_child: false,
+        // },
         {
             title: "Announcements",
             path: "/announcements",

@@ -6,6 +6,7 @@ import { logErrorToFile } from "@lib/logger.server";
 import {
     Agency,
     AgencyCoordinator,
+    BloodDonationCollection,
     BloodDonationEvent,
     BloodType,
     Donor,
@@ -406,6 +407,10 @@ export async function getAllAppointmentsByDonor() {
                             as: "blood_type",
                         },
                     ],
+                },
+                {
+                    model: BloodDonationCollection,
+                    as: "blood_collection",
                 },
             ],
         });

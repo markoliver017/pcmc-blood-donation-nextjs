@@ -93,13 +93,13 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
 
     const lastExam = await getLastDonationExamData(donor?.user_id);
     if (lastExam.success) {
-        lastExaminationDate = new Date(lastExam.last_donation_data.date);
+        lastExaminationDate = new Date(lastExam.last_donation_data?.date);
     }
     const isEventAfterEqualLastDonationDate = isNaN(
-        lastExaminationDate.getTime()
+        lastExaminationDate?.getTime()
     )
         ? true
-        : eventDate.getTime() >= lastExaminationDate.getTime();
+        : eventDate.getTime() >= lastExaminationDate?.getTime();
 
     const transaction = await sequelize.transaction();
 

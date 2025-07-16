@@ -6,9 +6,10 @@ import {
 import { ArrowLeft, CalendarCheck } from "lucide-react";
 import Link from "next/link";
 import { getEventsById } from "@/action/hostEventAction";
-import ShowEvents from "@components/events/ShowEvents";
+
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 import { IoInformation } from "react-icons/io5";
+import ShowEvents1 from "@components/events/ShowEvents";
 
 export default async function Page({ params }) {
     const { id } = await params;
@@ -52,7 +53,7 @@ export default async function Page({ params }) {
                         </span>{" "}
                     </button>
                 </Link>
-                <ShowEvents eventId={id} />
+                <ShowEvents1 eventId={id} />
             </div>
         </HydrationBoundary>
     );
