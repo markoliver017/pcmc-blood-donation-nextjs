@@ -62,13 +62,13 @@ export default function NewUserBasicInfoForm({
                     error: true,
                     message: "Please provide the required information..",
                 },
-                "warning"
+                "warning",
             );
         }
     };
 
     const uploaded_avatar = watch("profile_picture");
-    console.log("uploaded_avatar", uploaded_avatar);
+    
     const avatar =
         !errors?.profile_picture && uploaded_avatar
             ? URL.createObjectURL(uploaded_avatar)

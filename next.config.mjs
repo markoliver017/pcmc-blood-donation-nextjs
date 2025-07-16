@@ -53,8 +53,10 @@ const nextConfig = {
         serverActions: {
             bodySizeLimit: "10mb",
         },
+        webpackMemoryOptimizations: true,
         // nodeMiddleware: true,
     },
+    
 
     // env: {
     //     host: "http://localhost:3000",
@@ -63,30 +65,6 @@ const nextConfig = {
     //     NEXTAUTH_SECRET: "this-is-a-very-long-super-secret-password-123",
     //     DB_PASSWORD: "root",
     //     AUTH_SECRET: "aw3UOdK3jUmLJGgbx3lMIczkKnOVFS/06Sk84l5+N2k=",
-    // },
-    // productionBrowserSourceMaps: true,
-    // compiler: {
-    //     removeConsole: false,
-    // },
-    // typescript: {
-    //     ignoreBuildErrors: true,
-    // },
-    // eslint: {
-    //     ignoreDuringBuilds: true,
-    // },
-    // webpack: (config, { isServer }) => {
-    //     if (!isServer) {
-    //         config.resolve.fallback = {
-    //             fs: false,
-    //             net: false,
-    //             tls: false,
-    //             mysql2: false,
-    //         };
-    //     }
-    //     return config;
-    // },
-    // experimental: {
-    //     turbo: false,
     // },
 };
 

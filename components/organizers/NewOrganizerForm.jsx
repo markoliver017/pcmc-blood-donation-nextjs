@@ -122,17 +122,23 @@ export default function NewOrganizerForm({ role_name }) {
         onError: (error) => {
             if (error?.type === "validation" && error?.errorArr.length) {
                 toastError(error);
+                
             } else if (
                 error?.type === "catch_validation_error" &&
                 error?.errors?.length
             ) {
                 toastCatchError(error, setError);
+                
             } else {
-                // Handle server errors
+                setError("root", {
+                    type: "custom",
+                    message: error?.message || "Unknown error",
+                });
                 notify({
                     error: true,
                     message: error?.message,
                 });
+                alert(error?.message )
             }
         },
     });
@@ -202,6 +208,10 @@ export default function NewOrganizerForm({ role_name }) {
                         setValue("file_url", result.file_data?.url);
                     } else {
                         uploadErrors = true;
+                        setError("root", {
+                            type: "custom",
+                            message: result.message,
+                        });
                         notify({
                             error: true,
                             message: result.message,
@@ -217,6 +227,10 @@ export default function NewOrganizerForm({ role_name }) {
                         setValue("image", result.file_data?.url);
                     } else {
                         uploadErrors = true;
+                        setError("root", {
+                            type: "custom",
+                            message: result.message,
+                        });
                         notify({
                             error: true,
                             message: result.message,
@@ -267,7 +281,7 @@ export default function NewOrganizerForm({ role_name }) {
                         </div>
                     </CardDescription>
                 </CardHeader>
-                <CardContent id="form-modal">
+                <CardContent>
                     {/* <button
                         type="button"
                         className="btn"
@@ -276,11 +290,7 @@ export default function NewOrganizerForm({ role_name }) {
                         Send Email
                     </button> */}
                     <Form {...form}>
-                        {isError && (
-                            <div className="alert alert-error text-gray-700 mb-5">
-                                Error: {error.message}
-                            </div>
-                        )}
+
                         <form onSubmit={handleSubmit(onSubmit)}>
                             {sectionNo == 0 ? (
                                 <NewUserBasicInfoForm
@@ -334,6 +344,11 @@ export default function NewOrganizerForm({ role_name }) {
                                                 <DisplayValidationErrors
                                                     errors={errors}
                                                 />
+                                                {/* {isError && (
+                                                    <div className="alert alert-error text-gray-700 mb-5">
+                                                        Error: {error.message}
+                                                    </div>
+                                                )} */}
                                             </CardDescription>
                                         </CardHeader>
                                         <CardContent>

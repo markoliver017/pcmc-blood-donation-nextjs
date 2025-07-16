@@ -53,7 +53,8 @@ export default function NewUserCredentialsForm({ details, onNext }) {
                     error: true,
                     message: "Please provide the required information..",
                 },
-                "warning"
+                "warning",
+                "top-center"
             );
         }
     };

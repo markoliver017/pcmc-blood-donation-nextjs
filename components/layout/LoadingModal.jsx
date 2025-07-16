@@ -2,10 +2,9 @@
 
 import {
     Dialog,
-    DialogOverlay,
     DialogHeader,
     DialogTitle,
-    DialogContentNoX,
+    DialogContentNoToast,
 } from "@components/ui/dialog";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -18,7 +17,7 @@ export default function LoadingModal({ imgSrc = "/loader_2.gif", isLoading }) {
             open={isLoading}
             modal={true}
         >
-            <DialogContentNoX
+            <DialogContentNoToast
                 onInteractOutside={(event) => event.preventDefault()}
                 className="w-120 h-96 overflow-y-scroll"
                 tabIndex={-1}
@@ -44,7 +43,7 @@ export default function LoadingModal({ imgSrc = "/loader_2.gif", isLoading }) {
                         Processing ...
                     </motion.span>
                 </div>
-            </DialogContentNoX>
+            </DialogContentNoToast>
 
         </Dialog>
         //   <DialogContent>
