@@ -14,6 +14,7 @@ import {
     PhysicalExamination,
     sequelize,
     User,
+    Role,
 } from "@lib/models";
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
@@ -24,6 +25,7 @@ import {
 } from "@lib/zod/bloodDonationSchema";
 import { addDays, format, subDays } from "date-fns";
 import { ForeignKeyConstraintError, Op } from "sequelize";
+import { sendNotificationAndEmail } from "@lib/notificationEmail.utils";
 // import { logAuditTrail } from "@lib/audit_trails.utils";
 
 export async function getAgencyId() {
@@ -580,6 +582,70 @@ export async function storeEvent(formData) {
         }
 
         await transaction.commit();
+
+        // Notifications and emails (non-blocking)
+        (async () => {
+            try {
+                // Find all admin users
+                const adminRole = await Role.findOne({ where: { role_name: "Admin" } });
+                if (adminRole) {
+                    const adminUsers = await User.findAll({
+                        include: [
+                            {
+                                model: Role,
+                                as: "roles",
+                                where: { id: adminRole.id },
+                                through: { attributes: [] },
+                            },
+                        ],
+                    });
+                    if (adminUsers.length > 0) {
+                        // System notification to all admins
+                        try {
+                            await sendNotificationAndEmail({
+                                userIds: adminUsers.map((a) => a.id),
+                                notificationData: {
+                                    subject: `New Blood Donation Event Created`,
+                                    message: `A new blood donation event ("${newEvent.title}") has been created and is pending approval.`,
+                                    type: "BLOOD_DRIVE_APPROVAL",
+                                    reference_id: newEvent.id,
+                                    created_by: user.id,
+                                },
+                            });
+                        } catch (err) {
+                            console.error("Admin system notification failed:", err);
+                        }
+                        // Email notification to all admins
+                        for (const adminUser of adminUsers) {
+                            try {
+                                await sendNotificationAndEmail({
+                                    emailData: {
+                                        to: adminUser.email,
+                                        templateCategory: "EVENT_CREATION",
+                                        templateData: {
+                                            event_name: newEvent.title,
+                                            event_title: newEvent.title,
+                                            event_date: newEvent.date,
+                                            event_location: agency?.agency_address || "",
+                                            agency_name: agency?.name || "",
+                                            event_description: newEvent.description || "",
+                                            event_organizer: user.name || user.email,
+                                            system_name: "PCMC Pediatric Blood Center",
+                                            support_email: "support@pcmc.gov.ph",
+                                            domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                                        },
+                                    },
+                                });
+                            } catch (err) {
+                                console.error(`Admin email notification failed for ${adminUser.email}:`, err);
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error("Admin notification/email block failed:", err);
+            }
+        })();
 
         await logAuditTrail({
             userId: user.id,

@@ -276,7 +276,7 @@ export async function updateCoordinatorStatus(formData) {
                                     notificationData: {
                                         subject: "A coordinator application was approved",
                                         message: `A coordinator - ${coordinator?.full_name || coordinator?.name} (${coordinator?.email}) was approved by ${user?.name} (${user?.email}).`,
-                                        type: "GENERAL",
+                                        type: "COORDINATOR_STATUS_UPDATE",
                                         reference_id: updatedCoordinator?.id,
                                         created_by: user?.id,
                                     },
@@ -348,7 +348,7 @@ export async function updateCoordinatorStatus(formData) {
                                     notificationData: {
                                         subject: "A coordinator application was rejected",
                                         message: `A coordinator - ${coordinator?.full_name || coordinator?.name} (${coordinator?.email}) was rejected by ${user?.name} (${user?.email}).`,
-                                        type: "GENERAL",
+                                        type: "COORDINATOR_STATUS_UPDATE",
                                         reference_id: updatedCoordinator?.id,
                                         created_by: user?.id,
                                     },
@@ -408,7 +408,7 @@ export async function updateCoordinatorStatus(formData) {
                                     notificationData: {
                                         subject: "A coordinator account was deactivated",
                                         message: `A coordinator - ${coordinator?.full_name || coordinator?.name} (${coordinator?.email}) was deactivated by ${user?.name} (${user?.email}).`,
-                                        type: "GENERAL",
+                                        type: "COORDINATOR_STATUS_UPDATE",
                                         reference_id: updatedCoordinator?.id,
                                         created_by: user?.id,
                                     },
@@ -466,7 +466,7 @@ export async function updateCoordinatorStatus(formData) {
                                     notificationData: {
                                         subject: "A coordinator account was reactivated",
                                         message: `A coordinator - ${coordinator?.full_name || coordinator?.name} (${coordinator?.email}) was reactivated by ${user?.name} (${user?.email}).`,
-                                        type: "GENERAL",
+                                        type: "COORDINATOR_STATUS_UPDATE",
                                         reference_id: updatedCoordinator?.id,
                                         created_by: user?.id,
                                     },

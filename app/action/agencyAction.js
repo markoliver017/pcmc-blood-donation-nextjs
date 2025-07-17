@@ -950,7 +950,7 @@ export async function updateAgencyStatus(formData) {
                                 notificationData: {
                                     subject: "Agency Approved",
                                     message: `Agency "${updatedAgency.name}" has been approved and activated by ${user?.name} (${user?.email}).`,
-                                    type: "GENERAL",
+                                    type: "AGENCY_STATUS_UPDATE",
                                     reference_id: updatedAgency.id,
                                     created_by: user.id,
                                 },
@@ -969,26 +969,8 @@ export async function updateAgencyStatus(formData) {
             data.status === "rejected"
         ) {
             (async () => {
-                // 1. Notify the agency head about rejection
-                try {
-                    await sendNotificationAndEmail({
-                        userIds: agency_head.id,
-                        notificationData: {
-                            subject: "Agency Application Rejected",
-                            message: `Your agency "${updatedAgency.name}" application has been rejected. Please check your email for details.`,
-                            type: "GENERAL",
-                            reference_id: updatedAgency.id,
-                            created_by: user.id,
-                        },
-                    });
-                } catch (err) {
-                    console.error(
-                        "Agency head rejection notification failed:",
-                        err
-                    );
-                }
-
-                // 2. Send email to agency head using AGENCY_REJECTION template
+               
+                // 1. Send email to agency head using AGENCY_REJECTION template
                 try {
                     await sendNotificationAndEmail({
                         emailData: {
@@ -1020,7 +1002,7 @@ export async function updateAgencyStatus(formData) {
                     console.error("Agency rejection email failed:", err);
                 }
 
-                // 3. Notify all admins about the rejection
+                // 2. Notify all admins about the rejection
                 try {
                     const adminRole = await Role.findOne({
                         where: { role_name: "Admin" },
@@ -1052,7 +1034,7 @@ export async function updateAgencyStatus(formData) {
                                             ? `Reason: ${data.remarks}`
                                             : ""
                                     }`,
-                                    type: "GENERAL",
+                                    type: "AGENCY_STATUS_UPDATE",
                                     reference_id: updatedAgency.id,
                                     created_by: user.id,
                                 },
@@ -1261,7 +1243,7 @@ export async function storeCoordinator(formData) {
                                 }) has registered and is pending approval for agency (${
                                     agency?.name || newCoordinator.agency_id
                                 }).`,
-                                type: "GENERAL",
+                                type: "COORDINATOR_REGISTRATION",
                                 reference_id: newCoordinator.id,
                                 created_by: newUser.id,
                             },

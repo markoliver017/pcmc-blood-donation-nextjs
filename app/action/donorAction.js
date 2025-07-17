@@ -299,7 +299,7 @@ export async function storeDonor(formData) {
                                 }) has registered and is pending approval for agency (${
                                     agency?.name || newDonor.agency_id
                                 }).`,
-                                type: "GENERAL",
+                                type: "DONOR_REGISTRATION",
                                 reference_id: newDonor.id,
                                 created_by: newUser.id,
                             },
@@ -928,7 +928,7 @@ export async function updateDonorStatus(formData) {
                                     }) has been activated for agency (${
                                         agency?.name || updatedDonor.agency_id
                                     }).`,
-                                    type: "GENERAL",
+                                    type: "DONOR_STATUS_UPDATE",
                                     reference_id: updatedDonor.id,
                                     created_by: user.id,
                                 },
@@ -981,7 +981,7 @@ export async function updateDonorStatus(formData) {
                                 notificationData: {
                                     subject: "Donor Account Activated",
                                     message: `A donor (${user_donor.first_name} ${user_donor.last_name}) has been activated for your agency (${agency.name}).`,
-                                    type: "GENERAL",
+                                    type: "DONOR_STATUS_UPDATE",
                                     reference_id: updatedDonor.id,
                                     created_by: user.id,
                                 },
@@ -1071,7 +1071,7 @@ export async function updateDonorStatus(formData) {
                                     }) has been rejected for agency (${
                                         agency?.name || updatedDonor.agency_id
                                     }).`,
-                                    type: "GENERAL",
+                                    type: "DONOR_STATUS_UPDATE",
                                     reference_id: updatedDonor.id,
                                     created_by: user.id,
                                 },
@@ -1124,7 +1124,7 @@ export async function updateDonorStatus(formData) {
                                 notificationData: {
                                     subject: "Donor Application Rejected",
                                     message: `A donor (${user_donor.first_name} ${user_donor.last_name}) has been rejected for your agency (${agency.name}).`,
-                                    type: "GENERAL",
+                                    type: "DONOR_STATUS_UPDATE",
                                     reference_id: updatedDonor.id,
                                     created_by: user.id,
                                 },
@@ -1199,7 +1199,7 @@ export async function updateDonorStatus(formData) {
                                     }) has been deactivated for agency (${
                                         agency?.name || updatedDonor.agency_id
                                     }).`,
-                                    type: "GENERAL",
+                                    type: "DONOR_STATUS_UPDATE",
                                     reference_id: updatedDonor.id,
                                     created_by: user.id,
                                 },
@@ -1274,7 +1274,7 @@ export async function updateDonorStatus(formData) {
                                     }) has been reactivated for agency (${
                                         agency?.name || updatedDonor.agency_id
                                     }).`,
-                                    type: "GENERAL",
+                                    type: "DONOR_STATUS_UPDATE",
                                     reference_id: updatedDonor.id,
                                     created_by: user.id,
                                 },
