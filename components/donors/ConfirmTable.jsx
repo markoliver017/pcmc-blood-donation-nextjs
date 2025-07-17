@@ -81,7 +81,9 @@ export default function ConfirmTable({ watch }) {
 
                 <tr className="hover:bg-base-300">
                     <th width="20%">Civil Status:</th>
-                    <td>{formatFormalName(watch("civil_status") || "Single")}</td>
+                    <td>
+                        {formatFormalName(watch("civil_status") || "Single")}
+                    </td>
                 </tr>
 
                 <tr className="hover:bg-base-300">
@@ -139,9 +141,10 @@ export default function ConfirmTable({ watch }) {
                 <tr className="hover:bg-base-300">
                     <th>Last Donation Date:</th>
                     <td>
-                        {watch("last_donation_date") && moment(watch("last_donation_date")).format(
-                            "MMM DD, YYYY"
-                        )}
+                        {watch("donation_history_donation_date") &&
+                            moment(
+                                watch("donation_history_donation_date")
+                            ).format("MMM DD, YYYY")}
                     </td>
                 </tr>
                 <tr className="hover:bg-base-300">

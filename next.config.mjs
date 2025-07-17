@@ -54,9 +54,10 @@ const nextConfig = {
             bodySizeLimit: "10mb",
         },
         webpackMemoryOptimizations: true,
+        optimizePackageImports: ["icon-library"],
+        preloadEntriesOnStart: false,
         // nodeMiddleware: true,
     },
-    
 
     // env: {
     //     host: "http://localhost:3000",

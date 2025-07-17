@@ -522,7 +522,7 @@ export default function DonorProfileTabForm({ donor }) {
                             <div className="pl-3 space-y-2 mt-2">
                                 <FormField
                                     control={control}
-                                    name="last_donation_date"
+                                    name="donation_history_donation_date"
                                     render={({ field }) => (
                                         <FormItem>
                                             <InlineLabel required={false}>
@@ -532,7 +532,7 @@ export default function DonorProfileTabForm({ donor }) {
                                             <label
                                                 className={clsx(
                                                     "input w-full mt-1",
-                                                    errors?.last_donation_date
+                                                    errors?.donation_history_donation_date
                                                         ? "input-error"
                                                         : "input-info"
                                                 )}
@@ -548,7 +548,7 @@ export default function DonorProfileTabForm({ donor }) {
                                             </label>
                                             <FieldError
                                                 field={
-                                                    errors?.last_donation_date
+                                                    errors?.donation_history_donation_date
                                                 }
                                             />
                                         </FormItem>
@@ -612,8 +612,8 @@ export default function DonorProfileTabForm({ donor }) {
                     </div>
                 </Card>
             </form>
-            {/* <FormLogger watch={watch} errors={errors} />
-            <pre>
+            <FormLogger watch={watch} errors={errors} />
+            {/*<pre>
                 <b>Govt ID File: </b> {JSON.stringify(govtIdFile)}
             </pre> */}
         </Form>

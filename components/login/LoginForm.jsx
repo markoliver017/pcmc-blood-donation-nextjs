@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { EyeIcon, Key, Mail } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+
 import { IoMdLogIn } from "react-icons/io";
 import { set, useForm } from "react-hook-form";
 import notify from "@components/ui/notify";
@@ -13,6 +13,7 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { FaGoogle } from "react-icons/fa";
+import Link from "next/link";
 
 const credentials = {
     email: "",
@@ -196,12 +197,13 @@ export default function LoginForm({
                         />
                         <span className="text-sm text-slate-600 dark:text-slate-300">
                             I agree to the{" "}
-                            <a
-                                href="#"
+                            <Link
+                                href="/legal"
+                                target="_blank"
                                 className="underline hover:text-blue-600"
                             >
                                 Terms & Conditions
-                            </a>
+                            </Link>
                         </span>
                     </label>
                 </div>

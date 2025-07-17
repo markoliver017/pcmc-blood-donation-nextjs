@@ -51,7 +51,7 @@ export default function DonorBloodDonationInfoForm({ details, onNext }) {
         if (isRegularDonor) {
             validateFields.push(
                 "blood_type_id",
-                "last_donation_date",
+                "donation_history_donation_date",
                 "blood_service_facility"
             );
         }
@@ -74,7 +74,7 @@ export default function DonorBloodDonationInfoForm({ details, onNext }) {
         if (isRegular) return;
         resetField("blood_type_id");
         setValue("blood_type_label", "");
-        resetField("last_donation_date");
+        resetField("donation_history_donation_date");
         resetField("blood_service_facility");
     }, [isRegular]);
 
@@ -210,7 +210,7 @@ export default function DonorBloodDonationInfoForm({ details, onNext }) {
                     />
                     <FormField
                         control={control}
-                        name="last_donation_date"
+                        name="donation_history_donation_date"
                         render={({ field }) => (
                             <FormItem>
                                 <InlineLabel required={isRegular}>
@@ -220,7 +220,7 @@ export default function DonorBloodDonationInfoForm({ details, onNext }) {
                                 <label
                                     className={clsx(
                                         "input w-full mt-1",
-                                        errors?.last_donation_date
+                                        errors?.donation_history_donation_date
                                             ? "input-error"
                                             : "input-info"
                                     )}
@@ -236,7 +236,9 @@ export default function DonorBloodDonationInfoForm({ details, onNext }) {
                                     />
                                 </label>
                                 <FieldError
-                                    field={errors?.last_donation_date}
+                                    field={
+                                        errors?.donation_history_donation_date
+                                    }
                                 />
                             </FormItem>
                         )}

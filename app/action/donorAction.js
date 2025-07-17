@@ -31,6 +31,7 @@ import {
 import { donorBasicInformationSchema } from "@lib/zod/userSchema";
 import moment from "moment";
 import { Op } from "sequelize";
+import { handleValidationError } from "@lib/utils/validationErrorHandler";
 
 export async function getApprovedEventsByAgency() {
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -159,7 +160,12 @@ export async function storeDonor(formData) {
 
     const { data } = parsed;
 
-    console.log("data parsed", data);
+    // Convert empty strings in parsed data to null
+    Object.keys(data).forEach((key) => {
+        if (data[key] === "") {
+            data[key] = null;
+        }
+    });
 
     const existingUser = await User.findOne({
         where: { email: data.email },
@@ -403,7 +409,8 @@ export async function storeDonor(formData) {
         logErrorToFile(err, "CREATE DONOR");
         await transaction.rollback();
 
-        return { success: false, message: extractErrorMessage(err) };
+        return handleValidationError(err);
+        // return { success: false, message: extractErrorMessage(err) };
     }
 }
 
