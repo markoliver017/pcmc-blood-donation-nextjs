@@ -44,6 +44,7 @@ import ConfirmTable from "./ConfirmTable";
 import { donorRegistrationWithUser } from "@lib/zod/donorSchema";
 import { storeDonor } from "@/action/donorAction";
 import Link from "next/link";
+import { toastCatchError, toastError } from "@lib/utils/toastError.utils";
 
 const form_sections = [
     {
@@ -80,6 +81,7 @@ const form_sections = [
 
 export default function NewDonorForm({ role_name, agency_id }) {
     const router = useRouter();
+    const [isUploading, setIsUploading] = useState(false);
 
     const { data: user_role, isLoading: user_role_loading } = useQuery({
         queryKey: ["role", role_name],
@@ -97,8 +99,9 @@ export default function NewDonorForm({ role_name, agency_id }) {
         data: newDonorData,
         mutate,
         isPending,
-        error,
+        error: mutationError,
         isError,
+        setError,
     } = useMutation({
         mutationFn: async (formData) => {
             const res = await storeDonor(formData);
@@ -122,41 +125,22 @@ export default function NewDonorForm({ role_name, agency_id }) {
         },
         onError: (error) => {
             if (error?.type === "validation" && error?.errorArr.length) {
-                let detailContent = "";
-                const { errorArr: details, message } = error;
-
-                detailContent = (
-                    <ul className="list-disc list-inside">
-                        {details.map((err, index) => (
-                            <li key={index}>{err}</li>
-                        ))}
-                    </ul>
-                );
-                notify({
-                    error: true,
-                    message: (
-                        <div tabIndex={0} className="collapse">
-                            <input type="checkbox" />
-                            <div className="collapse-title font-semibold">
-                                {message}
-                                <br />
-                                <small className="link link-warning">
-                                    See details
-                                </small>
-                            </div>
-                            <div className="collapse-content text-sm">
-                                {detailContent}
-                            </div>
-                        </div>
-                    ),
-                });
+                toastError(error);
+            } else if (
+                error?.type === "catch_validation_error" &&
+                error?.errors?.length
+            ) {
+                toastCatchError(error, setError);
             } else {
-                // Handle server errors
-
+                setError("root", {
+                    type: "custom",
+                    message: error?.message || "Unknown error",
+                });
                 notify({
                     error: true,
                     message: error?.message,
                 });
+                alert(error?.message);
             }
         },
     });
@@ -197,6 +181,7 @@ export default function NewDonorForm({ role_name, agency_id }) {
             blood_type_id: "",
             blood_type_label: "",
             last_donation_date: "",
+            donation_history_donation_date: "",
             blood_service_facility: "",
             comments: "",
             readEligibilityReq: false,
@@ -225,26 +210,51 @@ export default function NewDonorForm({ role_name, agency_id }) {
             cancelButtonText: "Cancel",
             onConfirm: async () => {
                 /* if no file_url but theres an uploaded file proceed to upload picture*/
+                let uploadErrors = false;
                 const fileImage = watch("image");
                 if (data?.profile_picture && !fileImage) {
+                    setIsUploading(true);
                     const result = await uploadPicture(data.profile_picture);
                     if (result?.success) {
                         data.image = result.file_data?.url || null;
                         setValue("image", result.file_data?.url);
+                    } else {
+                        uploadErrors = true;
+                        setError("root", {
+                            type: "custom",
+                            message: result?.message || "Upload error",
+                        });
+                        notify({
+                            error: true,
+                            message: result?.message || "Upload error",
+                        });
                     }
                     console.log("Upload result:", result);
                 }
 
                 const fileUrl = watch("id_url");
                 if (data?.file && !fileUrl) {
+                    setIsUploading(true);
                     const result = await uploadPicture(data.file);
                     if (result?.success) {
                         data.id_url = result.file_data?.url || null;
                         setValue("id_url", result.file_data?.url);
+                    } else {
+                        uploadErrors = true;
+                        setError("root", {
+                            type: "custom",
+                            message: result?.message || "Upload error",
+                        });
+                        notify({
+                            error: true,
+                            message: result?.message || "Upload error",
+                        });
                     }
                     console.log("Upload result:", result);
                 }
 
+                setIsUploading(false);
+                if (uploadErrors) return;
                 mutate(data);
             },
         });
@@ -301,13 +311,8 @@ export default function NewDonorForm({ role_name, agency_id }) {
                         </div>
                     </CardDescription>
                 </CardHeader>
-                <CardContent id="form-modal">
+                <CardContent>
                     <Form {...form}>
-                        {isError && (
-                            <div className="alert alert-error text-gray-700 mb-5">
-                                Error: {error.message}
-                            </div>
-                        )}
                         <form onSubmit={handleSubmit(onSubmit)}>
                             {sectionNo == 0 ? (
                                 <NewUserBasicInfoForm
@@ -357,7 +362,9 @@ export default function NewDonorForm({ role_name, agency_id }) {
                             {sectionNo == 5 ? (
                                 <>
                                     <Preloader3 />
-                                    <LoadingModal isLoading={isPending}>
+                                    <LoadingModal
+                                        isLoading={isPending || isUploading}
+                                    >
                                         Errors
                                     </LoadingModal>
                                     <Card>
@@ -368,6 +375,9 @@ export default function NewDonorForm({ role_name, agency_id }) {
                                             <CardDescription>
                                                 <DisplayValidationErrors
                                                     errors={errors}
+                                                    mutationError={
+                                                        mutationError
+                                                    }
                                                 />
                                             </CardDescription>
                                         </CardHeader>
@@ -422,7 +432,7 @@ export default function NewDonorForm({ role_name, agency_id }) {
                                                                     the{" "}
                                                                     <Link
                                                                         className="link link-primary"
-                                                                        href="#"
+                                                                        href="/legal"
                                                                         target="_blank"
                                                                     >
                                                                         Terms
@@ -454,7 +464,7 @@ export default function NewDonorForm({ role_name, agency_id }) {
                                                                     the{" "}
                                                                     <Link
                                                                         className="link link-primary"
-                                                                        href="#"
+                                                                        href="/eligibility-requirements"
                                                                         target="_blank"
                                                                     >
                                                                         Eligibility

@@ -61,6 +61,24 @@ export async function storeContactForm(formData) {
                                 reference_id: newContactForm.id,
                                 created_by: null, // System generated
                             },
+                            emailData: {
+                                to: adminUsers.map((a) => a.email),
+                                templateCategory: "CONTACT_FORM",
+                                templateData: {
+                                    contact_name: data.name,
+                                    contact_email: data.email,
+                                    contact_phone: data.phone || "Not provided",
+                                    contact_subject: data.subject,
+                                    contact_message: data.message,
+                                    submission_date:
+                                        new Date().toLocaleDateString(),
+                                    system_name:
+                                        process.env.NEXT_PUBLIC_SYSTEM_NAME,
+                                    support_email:
+                                        process.env.NEXT_PUBLIC_SUPPORT_EMAIL,
+                                    domain_url: process.env.NEXT_PUBLIC_APP_URL,
+                                },
+                            },
                         });
                     }
                 }

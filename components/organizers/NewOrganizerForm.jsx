@@ -95,7 +95,7 @@ export default function NewOrganizerForm({ role_name }) {
         data: newAgencyData,
         mutate,
         isPending,
-        error,
+        error: mutationError,
         isError,
     } = useMutation({
         mutationFn: async (formData) => {
@@ -122,13 +122,11 @@ export default function NewOrganizerForm({ role_name }) {
         onError: (error) => {
             if (error?.type === "validation" && error?.errorArr.length) {
                 toastError(error);
-                
             } else if (
                 error?.type === "catch_validation_error" &&
                 error?.errors?.length
             ) {
                 toastCatchError(error, setError);
-                
             } else {
                 setError("root", {
                     type: "custom",
@@ -138,7 +136,7 @@ export default function NewOrganizerForm({ role_name }) {
                     error: true,
                     message: error?.message,
                 });
-                alert(error?.message )
+                alert(error?.message);
             }
         },
     });
@@ -290,7 +288,6 @@ export default function NewOrganizerForm({ role_name }) {
                         Send Email
                     </button> */}
                     <Form {...form}>
-
                         <form onSubmit={handleSubmit(onSubmit)}>
                             {sectionNo == 0 ? (
                                 <NewUserBasicInfoForm
@@ -343,12 +340,10 @@ export default function NewOrganizerForm({ role_name }) {
                                             <CardDescription>
                                                 <DisplayValidationErrors
                                                     errors={errors}
+                                                    mutationError={
+                                                        mutationError
+                                                    }
                                                 />
-                                                {/* {isError && (
-                                                    <div className="alert alert-error text-gray-700 mb-5">
-                                                        Error: {error.message}
-                                                    </div>
-                                                )} */}
                                             </CardDescription>
                                         </CardHeader>
                                         <CardContent>
