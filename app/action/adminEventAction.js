@@ -15,6 +15,7 @@ import {
     sequelize,
     User,
 } from "@lib/models";
+import { sendNotificationAndEmail } from "@lib/notificationEmail.utils";
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import {
@@ -22,6 +23,7 @@ import {
     eventRegistrationStatusSchema,
     eventStatusSchema,
 } from "@lib/zod/bloodDonationSchema";
+import { format } from "date-fns";
 import moment from "moment";
 import { Op } from "sequelize";
 
@@ -42,7 +44,10 @@ async function updatePastEventStatuses() {
 
     // 2. Not Approved & Not Started -> Closed
     await BloodDonationEvent.update(
-        { registration_status: "closed", remarks: "Event has been closed due to past date." },
+        {
+            registration_status: "closed",
+            remarks: "Event has been closed due to past date.",
+        },
         {
             where: {
                 date: { [Op.lt]: today },
@@ -53,7 +58,11 @@ async function updatePastEventStatuses() {
 
     // 3. Past For Approval Events -> Rejected & Closed
     await BloodDonationEvent.update(
-        { status: "rejected", registration_status: "closed", remarks: "Event has been closed due to past date." },
+        {
+            status: "rejected",
+            registration_status: "closed",
+            remarks: "Event has been closed due to past date.",
+        },
         {
             where: {
                 date: { [Op.lt]: today },
@@ -1069,7 +1078,15 @@ export async function updateEventStatus(formData) {
 
     const { data } = parsed;
 
-    const event = await BloodDonationEvent.findByPk(data.id);
+    const event = await BloodDonationEvent.findByPk(data.id, {
+        include: [
+            {
+                model: Agency,
+                as: "agency",
+                attributes: ["name"],
+            },
+        ],
+    });
 
     if (!event) {
         return {
@@ -1091,6 +1108,90 @@ export async function updateEventStatus(formData) {
             action: "UPDATE EVENT STATUS",
             details: `Event status has been successfully updated. ID#: ${updatedEvent?.id}`,
         });
+
+        // Notifications and emails (non-blocking)
+        (async () => {
+            try {
+                let notification_message = `The blood donation event "${event.title}" has been updated.`;
+
+                if (data.status === "approved") {
+                    notification_message = `Your blood donation event "${event.title}" has been approved! You can now manage the event and open registrations for your donors.`;
+                } else if (data.status === "rejected") {
+                    notification_message = `Your blood donation event "${event.title}" has been rejected with the following remarks: (${event.remarks}). Please review the feedback and make the necessary adjustments.`;
+                }
+
+                const organizer = await User.findByPk(event.requester_id);
+
+                if (organizer) {
+                    // System notification to all admins
+                    try {
+                        await sendNotificationAndEmail({
+                            userIds: [organizer.id],
+                            notificationData: {
+                                subject: `Blood Donation Event Update`,
+                                message: notification_message,
+                                type: "BLOOD_DRIVE_STATUS_UPDATE",
+                                reference_id: event.id,
+                                created_by: user.id,
+                            },
+                        });
+                    } catch (err) {
+                        console.error(
+                            "An organizer system notification failed:",
+                            err
+                        );
+                    }
+                    // Email notification to all admins
+                    // "event_name",
+                    // "event_date",
+                    // "agency_name",
+                    // "event_organizer",
+                    // "event_description",
+                    // "approval_status",
+                    // "approval_date",
+                    // "approval_reason",
+                    // "system_name",
+                    // "support_email",
+                    // "domain_url"
+                    try {
+                        await sendNotificationAndEmail({
+                            emailData: {
+                                to: organizer.email,
+                                templateCategory: "BLOOD_DRIVE_APPROVAL",
+                                templateData: {
+                                    event_name: event.title,
+                                    event_date: event.date,
+
+                                    agency_name: event?.agency?.name || "",
+                                    event_description: event.description || "",
+                                    approval_status: event.status || "",
+                                    approval_date: format(new Date(), "PPP"),
+                                    approval_reason:
+                                        event.remarks ||
+                                        "You can now manage the event and open registrations for your donors.",
+                                    event_organizer:
+                                        organizer.full_name || organizer.name,
+                                    system_name:
+                                        process.env.NEXT_PUBLIC_SYSTEM_NAME,
+                                    support_email:
+                                        process.env.NEXT_PUBLIC_SUPPORT_EMAIL,
+                                    domain_url:
+                                        process.env.NEXT_PUBLIC_APP_URL ||
+                                        "http://pedbcstg.pcmc.intra:3000/",
+                                },
+                            },
+                        });
+                    } catch (err) {
+                        console.error(
+                            `Admin email notification failed for ${organizer.email}:`,
+                            err
+                        );
+                    }
+                }
+            } catch (err) {
+                console.error("Admin notification/email block failed:", err);
+            }
+        })();
 
         const title = {
             rejected: "Rejection Successful",

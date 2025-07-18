@@ -4,18 +4,13 @@ import "@/globals.css";
 // import { Button } from "@components/ui/button";
 import Sidebar from "@components/layout/Sidebar";
 import HeaderNav from "@components/layout/HeaderNav";
-import WrapperHead from "@components/layout/WrapperHead";
 import Footer from "@components/layout/Footer";
 import { ThemeProvider } from "next-themes";
 import { ToastContainer } from "react-toastify";
 import Preloader from "@components/layout/Preloader";
 import Providers from "../../components/layout/AuthProvider";
-import Header from "@components/layout/Header";
-import { auth } from "@lib/auth";
 import TansactProviders from "@components/layout/TansactProvider";
-import ModalComponent from "./ModalComponent";
-import { headers } from "next/headers";
-import clsx from "clsx";
+
 import MainWrapper from "@components/layout/MainWrapper";
 import BackToTop from "@components/pages/shared/BackToTop";
 
@@ -37,7 +32,7 @@ export const metadata = {
     },
 };
 
-export default async function RootLayout({ children, organizers }) {
+export default async function RootLayout({ children, rootLayoutModal }) {
     // const session = await auth();
 
     // let className = "";
@@ -79,8 +74,7 @@ export default async function RootLayout({ children, organizers }) {
                                     {/* <Header /> */}
                                     {/* <WrapperHead /> */}
                                     <main className="flex-1 ">
-                                        {/* <ModalComponent>{modal}</ModalComponent> */}
-                                        {organizers}
+                                        {rootLayoutModal}
                                         {children}
                                     </main>
                                     <Footer />

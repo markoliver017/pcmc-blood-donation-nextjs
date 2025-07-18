@@ -12,8 +12,13 @@ import { Table, TableBody, TableCell, TableRow } from "@components/ui/table";
 import { useQuery } from "@tanstack/react-query";
 
 import React from "react";
+import VerifyCoordinator from "./VerifyCoordinator";
+import { CheckIcon } from "lucide-react";
+import RejectCoordinator from "./RejectCoordinator";
+import { useSession } from "next-auth/react";
 
 export default function ShowCoordinator({ coorId }) {
+    const { data: session } = useSession();
     const { data: coordinator } = useQuery({
         queryKey: ["coordinator", coorId],
         queryFn: async () => await getCoordinatorById(coorId),
@@ -31,12 +36,41 @@ export default function ShowCoordinator({ coorId }) {
     }
     // return "";
     return (
-        <Card className="mt-2 p-5 h-full">
+        <Card className="p-5 h-full">
             <CardHeader>
-                <CardTitle className="flex">
-                    <div className="text-4xl">{coordinator.user.full_name}</div>
-                </CardTitle>
-                <CardDescription>Coordinator Information</CardDescription>
+                <div className="flex items-center justify-between">
+                    <div>
+                        <CardTitle className="flex">
+                            <div className="text-4xl">
+                                {coordinator.user.full_name}
+                            </div>
+                        </CardTitle>
+                        <CardDescription>
+                            Coordinator Information
+                        </CardDescription>
+                    </div>
+                    {session &&
+                        (session?.user.role_name === "Agency Administrator" ||
+                            session?.user.role_name === "Organizer") &&
+                        coordinator.status === "for approval" && (
+                            <div className="flex-items-center">
+                                <VerifyCoordinator
+                                    agencyData={{
+                                        id: coordinator.id,
+                                        status: "activated",
+                                    }}
+                                    label="Approve"
+                                    className="btn btn-success"
+                                    formClassName="w-full"
+                                    icon={<CheckIcon />}
+                                />
+                                <RejectCoordinator
+                                    coordinatorId={coordinator.id}
+                                    className="btn-error"
+                                />
+                            </div>
+                        )}
+                </div>
             </CardHeader>
             <CardContent className="flex flex-wrap xl:flex-nowrap gap-2">
                 <CustomAvatar
@@ -77,7 +111,9 @@ export default function ShowCoordinator({ coorId }) {
                             <TableCell className="font-semibold">
                                 Contact Number
                             </TableCell>
-                            <TableCell>{coordinator.contact_number}</TableCell>
+                            <TableCell>
+                                +63{coordinator.contact_number}
+                            </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">

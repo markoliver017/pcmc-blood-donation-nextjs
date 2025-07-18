@@ -17,14 +17,12 @@ import {
     FormMessage,
 } from "@components/ui/form";
 import SweetAlert from "@components/ui/SweetAlert";
-import { DialogContent } from "@radix-ui/react-dialog";
 
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Save, Send, XIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ToastContainer } from "react-toastify";
 
 export default function RejectDialog({ agencyId, className = "btn-error" }) {
     const [open, setOpen] = useState(false);
@@ -101,11 +99,10 @@ export default function RejectDialog({ agencyId, className = "btn-error" }) {
             >
                 <XIcon /> Reject
             </DialogTrigger>
-            <DialogContent
+            <DialogContentNoX
                 className="dark:text-white"
                 onClick={(e) => e.stopPropagation()}
             >
-                <ToastContainer />
                 <DialogHeader>
                     <div
                         onClick={() => {
@@ -169,7 +166,7 @@ export default function RejectDialog({ agencyId, className = "btn-error" }) {
                         </form>
                     </Form>
                 </DialogHeader>
-            </DialogContent>
+            </DialogContentNoX>
         </Dialog>
     );
 }

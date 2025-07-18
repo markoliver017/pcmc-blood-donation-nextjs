@@ -4,6 +4,7 @@ import { getUser } from "@/action/userAction";
 import RejectDialog from "@components/organizers/RejectDialog";
 import VerifyAgency from "@components/organizers/VerifyAgency";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
+import ImagePreviewComponent from "@components/reusable_components/ImagePreviewComponent";
 import { Button } from "@components/ui/button";
 import {
     Card,
@@ -26,7 +27,7 @@ import { formatFormalName } from "@lib/utils/string.utils";
 import { useQuery } from "@tanstack/react-query";
 import { CheckIcon, Pencil } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import React from "react";
 
 export default function ShowAgency({ agencyId }) {
@@ -40,6 +41,7 @@ export default function ShowAgency({ agencyId }) {
         enabled: !!agencyId,
     });
 
+    if (!agency) redirect("/portal");
     const { status } = agency;
     let statusClass = "badge-primary";
     if (status == "activated") {
@@ -62,31 +64,47 @@ export default function ShowAgency({ agencyId }) {
                     >
                         <Pencil />
                     </Button>
-                    {session && session?.user.role_name === "Admin" && (
-                        <div className="flex gap-2">
-                            <VerifyAgency
-                                agencyData={{
-                                    id: agencyId,
-                                    status: "activated",
-                                }}
-                                label="Approve"
-                                className="btn btn-success"
-                                icon={<CheckIcon />}
-                            />
-                            <RejectDialog
-                                agencyId={agencyId}
-                                className="btn-error"
-                            />
-                        </div>
-                    )}
+                    {session &&
+                        session?.user.role_name === "Admin" &&
+                        agency.status === "for approval" && (
+                            <div className="flex gap-2">
+                                <VerifyAgency
+                                    agencyData={{
+                                        id: agencyId,
+                                        status: "activated",
+                                    }}
+                                    label="Approve"
+                                    className="btn btn-success"
+                                    icon={<CheckIcon />}
+                                />
+                                <RejectDialog
+                                    agencyId={agencyId}
+                                    className="btn-error"
+                                />
+                            </div>
+                        )}
                 </CardTitle>
                 <CardDescription>Agency Information</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap xl:flex-nowrap gap-2">
-                <CustomAvatar
-                    avatar={agency.file_url || "/default_company_avatar.png"}
-                    className="w-[150px] h-[150px] sm:w-[200px] sm:h-[200px] md:w-[250px] md:h-[250px] xl:w-[350px] xl:h-[350px] flex-none"
-                />
+                <div>
+                    <div className="relative">
+                        <CustomAvatar
+                            avatar={
+                                agency.file_url || "/default_company_avatar.png"
+                            }
+                            className="w-[150px] h-[150px] sm:w-[200px] sm:h-[200px] md:w-[250px] md:h-[250px] xl:w-[350px] xl:h-[350px] flex-none"
+                        />
+                        <div className="absolute top-1/2 right-1/2 translate-x-1/2 translate-y-1/2">
+                            <ImagePreviewComponent
+                                imgSrc={
+                                    agency.file_url ||
+                                    "/default_company_avatar.png"
+                                }
+                            />
+                        </div>
+                    </div>
+                </div>
                 <Table className="w-full sm:min-w-sm">
                     <TableBody>
                         <TableRow>

@@ -7,13 +7,14 @@ export async function up(queryInterface) {
         {
             name: "Blood Donation Event Approval/Rejection Notification",
             category: "BLOOD_DRIVE_APPROVAL",
-            subject: "🩸 Your Blood Donation Event '{{event_name}}' has been {{approval_status}}",
+            subject:
+                "🩸 Your Blood Donation Event '{{event_name}}' has been {{approval_status}}",
             html_content: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
   <div style="background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
     <div style="background-color: #dc2626; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
       <h1 style="margin: 0; font-size: 24px; font-weight: bold;">🩸 PCMC Pediatric Blood Center</h1>
-      <p style="margin: 5px 0 0 0; font-size: 16px;">Event {{approval_status | uppercase}}</p>
+      <p style="margin: 5px 0 0 0; font-size: 16px;">Event Request Status Update</p>
     </div>
     <div style="margin-bottom: 25px;">
       <h2 style="color: #1f2937; margin-bottom: 15px;">Dear {{event_organizer}},</h2>
@@ -21,7 +22,7 @@ export async function up(queryInterface) {
         Your blood donation event <strong>{{event_name}}</strong> has been <strong>{{approval_status}}</strong> by the admin on {{approval_date}}.
       </p>
       <p style="color: #374151; line-height: 1.6; font-size: 16px;">
-        <strong>Reason:</strong> {{approval_reason}}
+        <strong>Remarks:</strong> {{approval_reason}}
       </p>
     </div>
     <div style="background-color: #f0f9ff; border: 2px solid #0ea5e9; padding: 25px; border-radius: 8px; margin: 25px 0;">
@@ -36,10 +37,7 @@ export async function up(queryInterface) {
             <td style="padding: 12px 0; font-weight: bold; color: #0c4a6e; vertical-align: top;">Date:</td>
             <td style="padding: 12px 0; color: #0c4a6e;">{{event_date}}</td>
           </tr>
-          <tr>
-            <td style="padding: 12px 0; font-weight: bold; color: #0c4a6e; vertical-align: top;">Location:</td>
-            <td style="padding: 12px 0; color: #0c4a6e;">{{event_location}}</td>
-          </tr>
+        
           <tr>
             <td style="padding: 12px 0; font-weight: bold; color: #0c4a6e; vertical-align: top;">Agency:</td>
             <td style="padding: 12px 0; color: #0c4a6e;">{{agency_name}}</td>
@@ -88,7 +86,6 @@ Reason: {{approval_reason}}
 EVENT DETAILS:
 - Event Name: {{event_name}}
 - Date: {{event_date}}
-- Location: {{event_location}}
 - Agency: {{agency_name}}
 - Description: {{event_description}}
 
@@ -107,9 +104,7 @@ This is an automated message. Please do not reply to this email.
 For support, contact us at {{support_email}}`,
             dynamic_fields: JSON.stringify([
                 "event_name",
-                "event_title",
                 "event_date",
-                "event_location",
                 "agency_name",
                 "event_organizer",
                 "event_description",
@@ -118,7 +113,7 @@ For support, contact us at {{support_email}}`,
                 "approval_reason",
                 "system_name",
                 "support_email",
-                "domain_url"
+                "domain_url",
             ]),
             is_active: true,
             created_by: null,
@@ -139,4 +134,4 @@ export async function down(queryInterface) {
         },
         {}
     );
-} 
+}

@@ -969,7 +969,6 @@ export async function updateAgencyStatus(formData) {
             data.status === "rejected"
         ) {
             (async () => {
-               
                 // 1. Send email to agency head using AGENCY_REJECTION template
                 try {
                     await sendNotificationAndEmail({

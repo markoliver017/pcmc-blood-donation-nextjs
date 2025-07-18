@@ -170,11 +170,18 @@ export default function EmailNotificationsDashboard() {
         { value: "DONOR_APPROVAL", label: "Donor Approval" },
         { value: "DONOR_REJECTION", label: "Donor Rejection" },
         { value: "COORDINATOR_REJECTION", label: "Coordinator Rejection" },
-        { value: "COORDINATOR_DEACTIVATION", label: "Coordinator Deactivation" },
-        { value: "COORDINATOR_REACTIVATION", label: "Coordinator Reactivation" },
+        {
+            value: "COORDINATOR_DEACTIVATION",
+            label: "Coordinator Deactivation",
+        },
+        {
+            value: "COORDINATOR_REACTIVATION",
+            label: "Coordinator Reactivation",
+        },
         { value: "DONOR_DEACTIVATION", label: "Donor Deactivation" },
         { value: "DONOR_REACTIVATION", label: "Donor Reactivation" },
         { value: "EVENT_CREATION", label: "Event Creation" },
+        { value: "BLOOD_DRIVE_APPROVAL", label: "Blood Drive Approval" },
         { value: "APPOINTMENT_BOOKING", label: "Appointment Booking" },
         { value: "MBDT_NOTIFICATION", label: "MBDT Notification" }, //done
         { value: "GENERAL", label: "General" },
@@ -200,6 +207,7 @@ export default function EmailNotificationsDashboard() {
             DONOR_DEACTIVATION: "destructive",
             DONOR_REACTIVATION: "secondary",
             EVENT_CREATION: "default",
+            BLOOD_DRIVE_APPROVAL: "default",
             APPOINTMENT_BOOKING: "secondary",
             MBDT_NOTIFICATION: "destructive",
             BLOOD_COLLECTION: "outline",

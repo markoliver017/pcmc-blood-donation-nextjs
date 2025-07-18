@@ -23,7 +23,7 @@ export default function NotificationSection({
     category,
     notifications,
     onAction,
-    isExpanded = true,
+    isExpanded = false,
 }) {
     const [expanded, setExpanded] = useState(isExpanded);
     const config = getCategoryConfig(category);

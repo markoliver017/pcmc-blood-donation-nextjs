@@ -93,7 +93,7 @@ export default function NotificationItem({ notification, onAction }) {
     };
 
     const handleAction = () => {
-        handleMarkAsRead();
+        // handleMarkAsRead();
         if (onAction) {
             onAction(notification);
         }
@@ -175,7 +175,7 @@ export default function NotificationItem({ notification, onAction }) {
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
                                     {notification.message}
                                 </p>
-                                <div className="flex items-center gap-2 mt-3">
+                                <div className="flex items-center justify-between gap-2 mt-3">
                                     <Badge
                                         variant={config.badge}
                                         className="text-xs px-2 py-0.5 transition-all duration-200 hover:scale-105"
@@ -195,7 +195,7 @@ export default function NotificationItem({ notification, onAction }) {
                                     <span className="text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full">
                                         {format(
                                             new Date(notification.createdAt),
-                                            "MMM dd, HH:mm"
+                                            "MMM dd | hh:mm a"
                                         )}
                                     </span>
                                 </div>
@@ -253,7 +253,7 @@ export default function NotificationItem({ notification, onAction }) {
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    className="w-full hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-200"
+                                    className="w-full hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 dark:hover:border-blue-700 dark:hover:text-white transition-all duration-200"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         handleAction();
