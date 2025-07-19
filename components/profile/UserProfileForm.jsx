@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
@@ -31,10 +31,14 @@ import { useRouter } from "next/navigation";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import FormLogger from "@lib/utils/FormLogger";
 import { useSession } from "next-auth/react";
+import LoadingModal from "@components/layout/LoadingModal";
+import ImagePreviewComponent from "@components/reusable_components/ImagePreviewComponent";
+import DisplayValidationErrors from "@components/form/DisplayValidationErrors";
+import { toastCatchError, toastError } from "@lib/utils/toastError.utils";
 
 export default function UserProfileForm({ userQuery }) {
     const router = useRouter();
-
+    const [isUploading, setIsUploading] = useState(false);
     const session = useSession();
 
     const isDonor =
@@ -51,7 +55,11 @@ export default function UserProfileForm({ userQuery }) {
 
     const { data: userData } = userQuery;
 
-    const { mutate, isPending } = useMutation({
+    const {
+        mutate,
+        isPending,
+        error: mutationError,
+    } = useMutation({
         mutationFn: async (formData) => {
             const res = await updateUserBasicInfo(formData);
             if (!res.success) {
@@ -74,40 +82,22 @@ export default function UserProfileForm({ userQuery }) {
         onError: (error) => {
             // Handle validation errors
             if (error?.type === "validation" && error?.errorArr.length) {
-                let detailContent = "";
-                const { errorArr: details, message } = error;
-
-                detailContent = (
-                    <ul className="list-disc list-inside">
-                        {details.map((err, index) => (
-                            <li key={index}>{err}</li>
-                        ))}
-                    </ul>
-                );
-                notify({
-                    error: true,
-                    message: (
-                        <div tabIndex={0} className="collapse">
-                            <input type="checkbox" />
-                            <div className="collapse-title font-semibold">
-                                {message}
-                                <br />
-                                <small className="link link-warning">
-                                    See details
-                                </small>
-                            </div>
-                            <div className="collapse-content text-sm">
-                                {detailContent}
-                            </div>
-                        </div>
-                    ),
-                });
+                toastError(error);
+            } else if (
+                error?.type === "catch_validation_error" &&
+                error?.errors?.length
+            ) {
+                toastCatchError(error, setError);
             } else {
-                // Handle server errors
+                setError("root", {
+                    type: "custom",
+                    message: error?.message || "Unknown error",
+                });
                 notify({
                     error: true,
                     message: error?.message,
                 });
+                alert(error?.message);
             }
         },
     });
@@ -177,21 +167,34 @@ export default function UserProfileForm({ userQuery }) {
             confirmButtonText: "Confirm",
             cancelButtonText: "Cancel",
             onConfirm: async () => {
-                const fileUrl = watch("image");
 
+                const fileUrl = watch("image");
                 if (
                     formData.profile_picture &&
                     (fileUrl == userData?.image || !fileUrl)
                 ) {
+                    setIsUploading(true);
                     const result = await uploadPicture(
                         formData.profile_picture
                     );
+                    setIsUploading(false);
                     if (result?.success) {
                         formData.image = result.file_data?.url || null;
                         setValue("image", result.file_data?.url);
+                    } else {
+                        setError("root", {
+                            type: "custom",
+                            message: result.message,
+                        });
+                        notify({
+                            error: true,
+                            message: result?.message || "Failed to upload image",
+                        });
+                        return;
                     }
                     console.log("Upload result:", result);
                 }
+
                 console.log("submitted formData>>>>>>>", formData);
                 mutate(formData);
             },
@@ -205,9 +208,16 @@ export default function UserProfileForm({ userQuery }) {
 
     return (
         <Form {...form}>
+            <LoadingModal isLoading={isPending || isUploading} />
+            <DisplayValidationErrors
+                errors={errors}
+                mutationError={
+                    mutationError
+                }
+            />
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="space-y-2 flex flex-wrap gap-2 justify-center"
+                className="space-y-2 flex flex-wrap mt-2 gap-2 justify-center"
             >
                 <div className="w-full md:w-min">
                     <FormField
@@ -241,16 +251,20 @@ export default function UserProfileForm({ userQuery }) {
                                         whenClick={handleImageClick}
                                         className="w-[250px] h-[250px]"
                                     />
-                                    {uploaded_avatar && (
-                                        <button
-                                            onClick={() =>
-                                                resetField("profile_picture")
-                                            }
-                                            className="btn btn-ghost"
-                                        >
-                                            Clear
-                                        </button>
-                                    )}
+                                    <div className="flex items-center justify-center space-x-2 mt-2">
+
+                                        <ImagePreviewComponent imgSrc={avatar} />
+                                        {uploaded_avatar && (
+                                            <button
+                                                onClick={() =>
+                                                    resetField("profile_picture")
+                                                }
+                                                className="btn btn-ghost"
+                                            >
+                                                Clear
+                                            </button>
+                                        )}
+                                    </div>
                                     <FormMessage />
                                 </FormItem>
                             );

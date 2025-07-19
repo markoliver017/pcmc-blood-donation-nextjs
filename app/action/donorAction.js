@@ -18,6 +18,7 @@ import {
     sequelize,
     User,
     Announcement,
+    BloodDonationHistory,
 } from "@lib/models";
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
@@ -32,6 +33,7 @@ import { donorBasicInformationSchema } from "@lib/zod/userSchema";
 import moment from "moment";
 import { Op } from "sequelize";
 import { handleValidationError } from "@lib/utils/validationErrorHandler";
+import { at } from "lodash";
 
 export async function getApprovedEventsByAgency() {
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -300,11 +302,9 @@ export async function storeDonor(formData) {
                             userIds: adminUsers.map((a) => a.id),
                             notificationData: {
                                 subject: "New Donor Registration",
-                                message: `A new donor (${newUser.first_name} ${
-                                    newUser.last_name
-                                }) has registered and is pending approval for agency (${
-                                    agency?.name || newDonor.agency_id
-                                }).`,
+                                message: `A new donor (${newUser.first_name} ${newUser.last_name
+                                    }) has registered and is pending approval for agency (${agency?.name || newDonor.agency_id
+                                    }).`,
                                 type: "DONOR_REGISTRATION",
                                 reference_id: newDonor.id,
                                 created_by: newUser.id,
@@ -357,11 +357,9 @@ export async function storeDonor(formData) {
                             userIds: recipients.map((r) => r.id),
                             notificationData: {
                                 subject: "New Donor Registration",
-                                message: `A new donor (${newUser.first_name} ${
-                                    newUser.last_name
-                                }) has registered and is awaiting approval for agency (${
-                                    agency?.name || newDonor.agency_id
-                                }).`,
+                                message: `A new donor (${newUser.first_name} ${newUser.last_name
+                                    }) has registered and is awaiting approval for agency (${agency?.name || newDonor.agency_id
+                                    }).`,
                                 type: "AGENCY_DONOR_APPROVAL",
                                 reference_id: newDonor.id,
                                 created_by: newUser.id,
@@ -586,7 +584,8 @@ export async function updateDonor(formData) {
         logErrorToFile(err, "UPDATE DONOR");
         await transaction.rollback();
 
-        return { success: false, message: extractErrorMessage(err) };
+        return handleValidationError(err);
+
     }
 }
 
@@ -846,15 +845,11 @@ export async function updateDonorStatus(formData) {
             userId: user.id,
             controller: "donors",
             action: "UPDATE DONOR STATUS",
-            details: `Donor status updated from "${donor.status}" to "${
-                data.status
-            }" for Donor ID#: ${updatedDonor.id} (${user_donor.first_name} ${
-                user_donor.last_name
-            } - ${user_donor.email}). Agency: ${
-                agency?.name || updatedDonor.agency_id
-            }. ${
-                data.remarks ? `Rejection reason: "${data.remarks}"` : ""
-            } Updated by: ${user?.name} (${user.id})`,
+            details: `Donor status updated from "${donor.status}" to "${data.status
+                }" for Donor ID#: ${updatedDonor.id} (${user_donor.first_name} ${user_donor.last_name
+                } - ${user_donor.email}). Agency: ${agency?.name || updatedDonor.agency_id
+                }. ${data.remarks ? `Rejection reason: "${data.remarks}"` : ""
+                } Updated by: ${user?.name} (${user.id})`,
         });
 
         // Notifications and emails (only for activation from "for approval")
@@ -928,13 +923,10 @@ export async function updateDonorStatus(formData) {
                                 userIds: adminUsers.map((a) => a.id),
                                 notificationData: {
                                     subject: "Donor Account Activated",
-                                    message: `A donor (${
-                                        user_donor.first_name
-                                    } ${
-                                        user_donor.last_name
-                                    }) has been activated for agency (${
-                                        agency?.name || updatedDonor.agency_id
-                                    }).`,
+                                    message: `A donor (${user_donor.first_name
+                                        } ${user_donor.last_name
+                                        }) has been activated for agency (${agency?.name || updatedDonor.agency_id
+                                        }).`,
                                     type: "DONOR_STATUS_UPDATE",
                                     reference_id: updatedDonor.id,
                                     created_by: user.id,
@@ -1071,13 +1063,10 @@ export async function updateDonorStatus(formData) {
                                 userIds: adminUsers.map((a) => a.id),
                                 notificationData: {
                                     subject: "Donor Application Rejected",
-                                    message: `A donor (${
-                                        user_donor.first_name
-                                    } ${
-                                        user_donor.last_name
-                                    }) has been rejected for agency (${
-                                        agency?.name || updatedDonor.agency_id
-                                    }).`,
+                                    message: `A donor (${user_donor.first_name
+                                        } ${user_donor.last_name
+                                        }) has been rejected for agency (${agency?.name || updatedDonor.agency_id
+                                        }).`,
                                     type: "DONOR_STATUS_UPDATE",
                                     reference_id: updatedDonor.id,
                                     created_by: user.id,
@@ -1199,13 +1188,10 @@ export async function updateDonorStatus(formData) {
                                 userIds: adminUsers.map((a) => a.id),
                                 notificationData: {
                                     subject: "Donor Account Deactivated",
-                                    message: `A donor (${
-                                        user_donor.first_name
-                                    } ${
-                                        user_donor.last_name
-                                    }) has been deactivated for agency (${
-                                        agency?.name || updatedDonor.agency_id
-                                    }).`,
+                                    message: `A donor (${user_donor.first_name
+                                        } ${user_donor.last_name
+                                        }) has been deactivated for agency (${agency?.name || updatedDonor.agency_id
+                                        }).`,
                                     type: "DONOR_STATUS_UPDATE",
                                     reference_id: updatedDonor.id,
                                     created_by: user.id,
@@ -1274,13 +1260,10 @@ export async function updateDonorStatus(formData) {
                                 userIds: adminUsers.map((a) => a.id),
                                 notificationData: {
                                     subject: "Donor Account Reactivated",
-                                    message: `A donor (${
-                                        user_donor.first_name
-                                    } ${
-                                        user_donor.last_name
-                                    }) has been reactivated for agency (${
-                                        agency?.name || updatedDonor.agency_id
-                                    }).`,
+                                    message: `A donor (${user_donor.first_name
+                                        } ${user_donor.last_name
+                                        }) has been reactivated for agency (${agency?.name || updatedDonor.agency_id
+                                        }).`,
                                     type: "DONOR_STATUS_UPDATE",
                                     reference_id: updatedDonor.id,
                                     created_by: user.id,
@@ -1410,11 +1393,18 @@ export async function getDonorDashboard() {
         const donor = await Donor.findOne({
             where: { user_id: user?.id }, // assuming this association
             attributes: ["id", "is_bloodtype_verified"],
-            include: {
-                model: BloodType,
-                as: "blood_type",
-                required: false,
-            },
+            include: [
+                {
+                    model: BloodType,
+                    as: "blood_type",
+                    required: false,
+                },
+                {
+                    model: BloodDonationHistory,
+                    as: "blood_history",
+                    attributes: ["previous_donation_count", "previous_donation_volume"]
+                }
+            ],
         });
 
         if (!donor) {
@@ -1430,8 +1420,8 @@ export async function getDonorDashboard() {
             },
         });
 
-        let nextEligibleDate = null;
-        let daysRemaining = null;
+        let nextEligibleDate = moment();
+        let daysRemaining = 0;
         let donateNow = true;
         let latestDonationDate = null;
 
@@ -1452,9 +1442,7 @@ export async function getDonorDashboard() {
             // Calculate remaining days
             daysRemaining = nextEligibleDate.diff(today, "days");
 
-            if (daysRemaining > 0) {
-                donateNow = false;
-            }
+            donateNow = daysRemaining <= 0; // true or false
         }
 
         return {
@@ -1462,14 +1450,11 @@ export async function getDonorDashboard() {
             data: {
                 blood_type: donor?.blood_type?.blood_type,
                 is_bloodtype_verified: donor?.is_bloodtype_verified,
-                no_donations: donationCount,
-                next_eligible_date: donateNow
-                    ? "Donate now"
-                    : nextEligibleDate
-                    ? moment(nextEligibleDate).format("MMM.DD, YYYY")
-                    : null,
+                no_donations: donationCount + (donor?.blood_history?.previous_donation_count || 0),
+                next_eligible_date: nextEligibleDate.format("MMM.DD, YYYY"),
                 days_remaining: donateNow ? 0 : daysRemaining,
                 latest_donation_date: latestDonationDate,
+                donateNow
             },
         };
     } catch (err) {
@@ -1482,85 +1467,6 @@ export async function getDonorDashboard() {
     }
 }
 
-export async function getLastDonationExamData(user_id) {
-    if (!user_id) {
-        const session = await auth();
-        if (!session) {
-            return {
-                success: false,
-                message: "You are not authorized to access this page.",
-            };
-        }
-
-        const { user } = session;
-        user_id = user?.id;
-    }
-
-    try {
-        // Verify donor exists
-        const donor = await Donor.findOne({
-            where: { user_id },
-            attributes: ["id", "is_regular_donor", "last_donation_date"],
-            include: [
-                {
-                    model: BloodDonationEvent,
-                    as: "last_donation_event",
-                    attributes: ["id", "date"],
-                    required: false,
-                },
-                {
-                    model: PhysicalExamination,
-                    as: "last_donation_examination",
-                    attributes: ["id", "eligibility_status", "deferral_reason"],
-                    required: false,
-                    include: {
-                        model: BloodDonationCollection,
-                        as: "blood_collection",
-                        attributes: ["id", "volume"],
-                        required: true,
-                    },
-                },
-            ],
-        });
-
-        if (!donor) {
-            return {
-                success: false,
-                message: "You are not authorized to access this page.",
-            };
-        }
-
-        let last_donation_data = null;
-
-        if (donor?.is_regular_donor) {
-            last_donation_data = {
-                date: donor?.last_donation_date,
-                eligibility_status: "ACCEPTED",
-            };
-        }
-
-        if (donor?.last_donation_event) {
-            last_donation_data = {
-                date: donor?.last_donation_event?.date,
-                eligibility_status:
-                    donor?.last_donation_examination?.eligibility_status,
-            };
-        }
-
-        return {
-            success: true,
-            last_donation_data,
-            donor: donor.get({ plain: true }),
-        };
-    } catch (err) {
-        logErrorToFile(err, "getLastDonationDateDonated ERROR"); // Your error logging function
-        return {
-            success: false,
-            type: "server",
-            message: extractErrorMessage(err),
-        };
-    }
-}
 
 export async function getLastDonationDateDonated(user_id) {
     if (!user_id) {
@@ -1580,7 +1486,7 @@ export async function getLastDonationDateDonated(user_id) {
         // Verify donor exists
         const donor = await Donor.findOne({
             where: { user_id },
-            attributes: ["id", "is_regular_donor", "last_donation_date"],
+            attributes: ["id", "is_regular_donor", "last_donation_date", "donation_history_donation_date", "last_donation_event_id"],
         });
 
         if (!donor) {
@@ -1591,54 +1497,52 @@ export async function getLastDonationDateDonated(user_id) {
         }
 
         // Fetch latest donation date
-        const latestDonation = await DonorAppointmentInfo.findOne({
-            where: {
-                donor_id: donor.id,
-                status: {
-                    [Op.in]: ["registered"],
-                },
-            },
-            attributes: ["id"],
-            include: [
-                {
-                    model: PhysicalExamination,
-                    as: "physical_exam",
-                    where: { eligibility_status: "ACCEPTED" },
-                    attributes: ["id", "eligibility_status"],
-                    required: true,
-                    include: [
-                        {
-                            model: BloodDonationEvent,
-                            as: "event",
-                            attributes: ["date"],
-                        },
-                        {
-                            model: BloodDonationCollection,
-                            as: "blood_collection",
-                            required: true,
-                        },
-                    ],
-                },
-            ],
-            order: [
-                [
-                    { model: PhysicalExamination, as: "physical_exam" },
-                    { model: BloodDonationEvent, as: "event" },
-                    "date",
-                    "DESC",
-                ],
-            ],
-            raw: true, // Optimize by returning plain object
-        });
+        // const latestDonation = await DonorAppointmentInfo.findOne({
+        //     where: {
+        //         donor_id: donor.id,
+        //     },
+        //     attributes: ["id"],
+        //     include: [
+        //         {
+        //             model: PhysicalExamination,
+        //             as: "physical_exam",
+        //             where: { eligibility_status: "ACCEPTED" },
+        //             attributes: ["id", "eligibility_status"],
+        //             required: true,
+        //             include: [
+        //                 {
+        //                     model: BloodDonationEvent,
+        //                     as: "event",
+        //                     attributes: ["date"],
+        //                 },
+        //                 {
+        //                     model: BloodDonationCollection,
+        //                     as: "blood_collection",
+        //                     required: true,
+        //                 },
+        //             ],
+        //         },
+        //     ],
+        //     order: [
+        //         [
+        //             { model: PhysicalExamination, as: "physical_exam" },
+        //             { model: BloodDonationEvent, as: "event" },
+        //             "date",
+        //             "DESC",
+        //         ],
+        //     ],
+        //     raw: true, // Optimize by returning plain object
+        // });
 
         let last_donation_date = null;
 
+        //default the last donation date to the donation history date (registration data)
         if (donor?.is_regular_donor) {
-            last_donation_date = donor?.last_donation_date;
+            last_donation_date = donor?.donation_history_donation_date;
         }
 
-        if (latestDonation) {
-            last_donation_date = latestDonation?.["physical_exam.event.date"];
+        if (donor?.last_donation_date) {
+            last_donation_date = donor?.last_donation_date;
         }
 
         return {
@@ -1739,11 +1643,9 @@ export async function notifyRegistrationOpen(donor, eventData = null) {
                 userId: session.user.id,
                 controller: "events",
                 action: "NOTIFY_DONORS",
-                details: `Event invitation sent to donor ${
-                    donor.user.full_name
-                } (${donor.user.email}) for event: ${
-                    eventData?.title || "Unknown Event"
-                }`,
+                details: `Event invitation sent to donor ${donor.user.full_name
+                    } (${donor.user.email}) for event: ${eventData?.title || "Unknown Event"
+                    }`,
             });
         } catch (err) {
             console.error("Audit trail failed:", err);

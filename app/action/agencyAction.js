@@ -796,6 +796,7 @@ export async function updateAgencyStatus(formData) {
 
     if (!parsed.success) {
         const fieldErrors = parsed.error.flatten().fieldErrors;
+        console.log("fieldErrors", fieldErrors);
         return {
             success: false,
             type: "validation",
@@ -865,15 +866,11 @@ export async function updateAgencyStatus(formData) {
             userId: user.id,
             controller: "agencies",
             action: "UPDATE AGENCY STATUS",
-            details: `Agency status updated from "${agencyCurrentStatus}" to "${
-                data.status
-            }" for Agency ID#: ${updatedAgency.id} (${
-                updatedAgency.name
-            }). Agency Head: ${agency_head.first_name} ${
-                agency_head.last_name
-            } (${agency_head.email}). ${
-                data.remarks ? `Remarks: "${data.remarks}"` : ""
-            } Updated by: ${user?.name} (${user?.email})`,
+            details: `Agency status updated from "${agencyCurrentStatus}" to "${data.status
+                }" for Agency ID#: ${updatedAgency.id} (${updatedAgency.name
+                }). Agency Head: ${agency_head.first_name} ${agency_head.last_name
+                } (${agency_head.email}). ${data.remarks ? `Remarks: "${data.remarks}"` : ""
+                } Updated by: ${user?.name} (${user?.email})`,
         });
 
         // Handle notifications and emails for agency status changes (non-critical operations)
@@ -1024,15 +1021,12 @@ export async function updateAgencyStatus(formData) {
                                 userIds: adminUsers.map((a) => a.id),
                                 notificationData: {
                                     subject: "Agency Application Rejected",
-                                    message: `Agency "${
-                                        updatedAgency.name
-                                    }" has been rejected by ${user?.name} (${
-                                        user?.email
-                                    }). ${
-                                        data.remarks
+                                    message: `Agency "${updatedAgency.name
+                                        }" has been rejected by ${user?.name} (${user?.email
+                                        }). ${data.remarks
                                             ? `Reason: ${data.remarks}`
                                             : ""
-                                    }`,
+                                        }`,
                                     type: "AGENCY_STATUS_UPDATE",
                                     reference_id: updatedAgency.id,
                                     created_by: user.id,
@@ -1052,25 +1046,18 @@ export async function updateAgencyStatus(formData) {
             deactivated: "Agency Successfully Deactivated",
         };
         const text = {
-            rejected: `The agency "${
-                updatedAgency.name
-            }" has been rejected successfully. ${
-                data.remarks
+            rejected: `The agency "${updatedAgency.name
+                }" has been rejected successfully. ${data.remarks
                     ? `Reason: ${data.remarks}`
                     : "No specific reason provided."
-            } The agency head (${agency_head.first_name} ${
-                agency_head.last_name
-            }) will be notified of this decision.`,
+                } The agency head (${agency_head.first_name} ${agency_head.last_name
+                }) will be notified of this decision.`,
             activated: `Congratulations! The agency "${updatedAgency.name}" has been successfully activated and is now operational in the blood donation system. Agency Head: ${agency_head.first_name} ${agency_head.last_name} (${agency_head.email}). The agency can now participate in blood donation events and manage their coordinators.`,
-            deactivated: `The agency "${
-                updatedAgency.name
-            }" has been successfully deactivated. Agency Head: ${
-                agency_head.first_name
-            } ${agency_head.last_name} (${
-                agency_head.email
-            }). The agency will no longer be able to participate in blood donation activities until reactivated. ${
-                data.remarks ? `Reason: ${data.remarks}` : ""
-            }`,
+            deactivated: `The agency "${updatedAgency.name
+                }" has been successfully deactivated. Agency Head: ${agency_head.first_name
+                } ${agency_head.last_name} (${agency_head.email
+                }). The agency will no longer be able to participate in blood donation activities until reactivated. ${data.remarks ? `Reason: ${data.remarks}` : ""
+                }`,
         };
 
         return {
@@ -1082,6 +1069,7 @@ export async function updateAgencyStatus(formData) {
                 `The agency "${updatedAgency.name}" status has been updated successfully. Agency Head: ${agency_head.first_name} ${agency_head.last_name} (${agency_head.email}).`,
         };
     } catch (err) {
+        console.lor("updateAgencyStatus error:", err);
         logErrorToFile(err, "UPDATE AGENCY STATUS");
         await transaction.rollback();
 
@@ -1235,13 +1223,10 @@ export async function storeCoordinator(formData) {
                             userIds: adminUsers.map((a) => a.id),
                             notificationData: {
                                 subject: "New Coordinator Registration",
-                                message: `A new coordinator (${
-                                    newUser.first_name
-                                } ${
-                                    newUser.last_name
-                                }) has registered and is pending approval for agency (${
-                                    agency?.name || newCoordinator.agency_id
-                                }).`,
+                                message: `A new coordinator (${newUser.first_name
+                                    } ${newUser.last_name
+                                    }) has registered and is pending approval for agency (${agency?.name || newCoordinator.agency_id
+                                    }).`,
                                 type: "COORDINATOR_REGISTRATION",
                                 reference_id: newCoordinator.id,
                                 created_by: newUser.id,
@@ -1260,13 +1245,10 @@ export async function storeCoordinator(formData) {
                         userIds: agencyHead.id,
                         notificationData: {
                             subject: "New Coordinator Registration",
-                            message: `A new coordinator (${
-                                newUser.first_name
-                            } ${
-                                newUser.last_name
-                            }) has registered and is awaiting for your approval (${
-                                agency?.name || newCoordinator.agency_id
-                            }).`,
+                            message: `A new coordinator (${newUser.first_name
+                                } ${newUser.last_name
+                                }) has registered and is awaiting for your approval (${agency?.name || newCoordinator.agency_id
+                                }).`,
                             type: "AGENCY_COORDINATOR_APPROVAL",
                             reference_id: newCoordinator.id,
                             created_by: newUser.id,

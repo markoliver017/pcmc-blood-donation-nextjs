@@ -13,6 +13,7 @@ import { getAllAppointmentsByDonor } from "@/action/donorAppointmentAction";
 import Skeleton_line from "@components/ui/skeleton_line";
 import { useQuery } from "@tanstack/react-query";
 import { startOfToday } from "date-fns";
+import moment from "moment";
 
 export default function Page() {
     const [selectedAppointment, setSelectedAppointment] = useState(null);
@@ -32,7 +33,7 @@ export default function Page() {
     if (isLoading) return <Skeleton_line />;
 
     // Data extraction for dashboard components
-    const now = new Date();
+
     const today = startOfToday();
     const sortedAppointments = [...appointments].sort(
         (a, b) =>
@@ -46,22 +47,19 @@ export default function Page() {
         (a) => new Date(a.time_schedule?.event?.date) < today
     );
     const nextAppointment = upcoming[0] || null;
+
     const lastDonation =
-        past.reverse().find((a) => a.status === "collected") || null;
+        [...sortedAppointments].reverse().find((a) => a.status === "collected") || null;
     const totalDonations = appointments.filter(
         (a) => a.status === "collected"
     ).length;
     // Eligibility: 90 days after last donation
     let eligibilityCountdown = null;
     if (lastDonation) {
-        const lastDate = new Date(lastDonation.time_schedule?.event?.date);
-        const nextEligible = new Date(
-            lastDate.getTime() + 90 * 24 * 60 * 60 * 1000
-        );
-        eligibilityCountdown = Math.max(
-            0,
-            Math.ceil((nextEligible - now) / (1000 * 60 * 60 * 24))
-        );
+        const lastDate = moment(lastDonation.time_schedule?.event?.date).startOf("day");
+
+        const nextEligible = lastDate.clone().add(90, "days");
+        eligibilityCountdown = nextEligible.diff(moment().startOf("day"), "days");
     }
 
     // Handler for opening appointment details modal

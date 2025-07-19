@@ -14,6 +14,7 @@ import { logErrorToFile } from "@lib/logger.server";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import { Op } from "sequelize";
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
+import { handleValidationError } from "@lib/utils/validationErrorHandler";
 // import { formatPersonName } from "@lib/utils/string.utils";
 
 export async function getUsers() {
@@ -290,11 +291,7 @@ export async function updateUserBasicInfo(formData) {
         logErrorToFile(err, "updateUserBasicInfo");
         await transaction.rollback();
 
-        return {
-            success: false,
-            type: "server",
-            message: err.message || "Unknown error",
-        };
+        return handleValidationError(err);
     }
 }
 

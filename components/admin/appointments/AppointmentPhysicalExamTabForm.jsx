@@ -62,7 +62,7 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
             return res;
         },
         onSuccess: (res) => {
-            
+
             // Invalidate the posts query to refetch the updated list
             queryClient.invalidateQueries({ queryKey: ["appointment"] });
             queryClient.invalidateQueries({
@@ -123,7 +123,7 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
     const onSubmit = async (formData) => {
         SweetAlert({
             title: "Donor's Physical Exam?",
-            text: "Are you sure you want to submit this information?",
+            text: "Are you sure you want to submit this information??",
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Yes!",
@@ -165,7 +165,6 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
             <ToastContainer />
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                id="form-modal"
                 className="space-y-2 flex flex-col gap-2 justify-center"
             >
                 <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">

@@ -32,7 +32,6 @@ export default function VerifyAgency({
             return res;
         },
         onSuccess: (data) => {
-            console.log("onSuccess", data);
             queryClient.invalidateQueries({ queryKey: ["agencies"] });
             queryClient.invalidateQueries({ queryKey: ["verified-agencies"] });
             queryClient.invalidateQueries({
@@ -48,6 +47,7 @@ export default function VerifyAgency({
             });
         },
         onError: (error) => {
+            console.log("onError", error);
             notify({ error: true, message: error?.message });
         },
     });
@@ -60,7 +60,6 @@ export default function VerifyAgency({
     const { handleSubmit, reset } = form;
 
     const onSubmit = async (data) => {
-        console.log("verfiy agency", data);
         const text =
             data?.status == "activated"
                 ? `Are you sure you want to activate this agency application?`
@@ -81,7 +80,7 @@ export default function VerifyAgency({
         <Form {...form}>
             <form
                 className={`${formClassName}`}
-                // onSubmit={handleSubmit(onSubmit)}
+            // onSubmit={handleSubmit(onSubmit)}
             >
                 <button
                     type="button"

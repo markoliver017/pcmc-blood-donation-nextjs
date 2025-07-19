@@ -35,7 +35,6 @@ export default function NotificationComponent() {
 
     const [activeTab, setActiveTab] = useState("all");
     const { data: session } = useSession();
-    console.log("session", session);
 
     const queryClient = useQueryClient();
 

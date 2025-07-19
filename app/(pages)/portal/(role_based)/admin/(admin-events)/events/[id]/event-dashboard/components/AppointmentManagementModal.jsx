@@ -97,7 +97,7 @@ export default function AppointmentManagementModal({
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContentNoX className="max-w-7xl h-[90vh] overflow-hidden flex flex-col">
+            <DialogContentNoX onInteractOutside={(event) => event.preventDefault()} className="max-w-7xl h-[90vh] overflow-hidden flex flex-col">
                 <DialogHeader className="pb-4">
                     <div className="flex items-center justify-between">
                         <div>
@@ -297,7 +297,7 @@ export default function AppointmentManagementModal({
                                             disabled={
                                                 appointment?.physical_exam
                                                     ?.eligibility_status !==
-                                                    "ACCEPTED" || false
+                                                "ACCEPTED" || false
                                             }
                                             className="flex items-center justify-center gap-2 p-2 w-full border-b data-[state=active]:bg-gray-100 data-[state=active]:text-gray-700 data-[state=active]:font-bold px-4 py-2 rounded-md disabled:opacity-50 dark:text-slate-300"
                                         >
@@ -307,10 +307,10 @@ export default function AppointmentManagementModal({
                                                 {appointment?.physical_exam
                                                     ?.eligibility_status !==
                                                     "ACCEPTED" && (
-                                                    <sup className="italic text-xs text-red-500">
-                                                        (Not Eligible)
-                                                    </sup>
-                                                )}
+                                                        <sup className="italic text-xs text-red-500">
+                                                            (Not Eligible)
+                                                        </sup>
+                                                    )}
                                             </span>
                                         </TabsTrigger>
                                     </TabsList>

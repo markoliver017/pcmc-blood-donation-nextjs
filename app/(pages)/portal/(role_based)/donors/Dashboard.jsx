@@ -17,7 +17,6 @@ import {
     getApprovedEventsByAgency,
     getDonorDashboard,
     getLastDonationDateDonated,
-    getLastDonationExamData,
 } from "@/action/donorAction";
 import DashboardEventCardList from "@components/dashboard/DashboardEventCardList";
 import Skeleton_line from "@components/ui/skeleton_line";
@@ -25,6 +24,7 @@ import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 import WidgetEventCalendar from "@components/organizers/WidgetEventCalendar";
 import AnnouncementsFeed from "@components/donors/announcements/AnnouncementsFeed";
 import ViewAnnouncementModal from "@components/donors/announcements/ViewAnnouncementModal";
+import { format } from "date-fns";
 
 export default function Dashboard() {
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -51,16 +51,17 @@ export default function Dashboard() {
         },
     });
 
-    const { data: lastDonation } = useQuery({
+    const { data: lastDonationData } = useQuery({
         queryKey: ["last-donation"],
         queryFn: async () => {
-            const res = await getLastDonationExamData();
+            const res = await getLastDonationDateDonated();
             if (!res.success) {
                 throw res;
             }
-            return res;
+            return res.data;
         },
     });
+
 
     const {
         data: events,
@@ -144,9 +145,9 @@ export default function Dashboard() {
                         </h2>
                         <Link
                             className="btn btn-primary btn-outline"
-                            href="/portal/donors/donor-appointments"
+                            href="/portal/donors/appointments"
                         >
-                            View List
+                            Details
                         </Link>
                     </CardContent>
                 </Card>
@@ -168,9 +169,9 @@ export default function Dashboard() {
                             )}
                         </h2>
                         <span className="p-2 italic text-link font-semibold text-lg text-blue-700 dark:text-blue-300 ">
-                            {dashboard?.next_eligible_date
-                                ? `${dashboard?.next_eligible_date}`
-                                : ""}
+                            {dashboard?.donateNow
+                                ? "Donate Now"
+                                : `${dashboard?.next_eligible_date}`}
                         </span>
                     </CardContent>
                 </Card>

@@ -13,7 +13,7 @@ import Skeleton_user from "@components/ui/Skeleton_user";
 import { formatFormalName } from "@lib/utils/string.utils";
 import moment from "moment";
 import ApprovalRejectComponent from "@components/organizers/ApprovalRejectComponent";
-import { FileClock } from "lucide-react";
+import { CheckIcon, FileClock } from "lucide-react";
 import clsx from "clsx";
 import Link from "next/link";
 
@@ -84,6 +84,16 @@ export default function ForApprovalAgencyList({
                                             </span>
                                         )}
                                     </div>
+                                    {/* <VerifyAgency
+                                        agencyData={{
+                                            id: agency.id,
+                                            status: "activated",
+                                        }}
+                                        label="Approve"
+                                        className="btn btn-block btn-success"
+                                        formClassName="w-full"
+                                        icon={<CheckIcon />}
+                                    /> */}
                                     <ApprovalRejectComponent
                                         agency={agency}
                                         target={target}

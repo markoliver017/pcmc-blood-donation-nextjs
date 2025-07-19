@@ -15,7 +15,8 @@ import { formatSeqObj } from "@lib/utils/object.utils";
 
 import { appointmentDetailsSchema } from "@lib/zod/appointmentSchema";
 import { physicalExaminationSchema } from "@lib/zod/physicalExaminationSchema";
-import { getLastDonationExamData } from "./donorAction";
+import { isBefore, startOfDay } from "date-fns";
+
 
 export async function storeUpdatePhysicalExam(appointmentId, formData) {
     const session = await auth();
@@ -70,7 +71,16 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
         };
     }
 
-    const donor = await Donor.findByPk(appointment.donor_id);
+    const donor = await Donor.findByPk(appointment.donor_id, {
+        attributes: ["id", "user_id", "last_donation_date", "donation_history_donation_date"],
+        include: [
+            {
+                model: BloodDonationEvent,
+                as: "last_donation_event",
+                attributes: ["date"],
+            },
+        ]
+    });
     if (!donor) {
         return {
             success: false,
@@ -78,9 +88,10 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
         };
     }
 
-    const currentDate = new Date();
-    const eventDate = new Date(appointment?.event?.date);
-    if (currentDate < eventDate) {
+    const currentDate = startOfDay(new Date());
+    const eventDate = startOfDay(new Date(appointment?.event?.date));
+
+    if (isBefore(currentDate, eventDate)) {
         return {
             success: false,
             message: "You cannot conduct a physical exam for a future event.",
@@ -91,9 +102,8 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
     if yes then update the donor last physical exam and last donation event  */
     let lastExaminationDate = null;
 
-    const lastExam = await getLastDonationExamData(donor?.user_id);
-    if (lastExam.success) {
-        lastExaminationDate = new Date(lastExam.last_donation_data?.date);
+    if (donor?.last_donation_event?.date) {
+        lastExaminationDate = startOfDay(new Date(donor?.last_donation_event?.date));
     }
     const isEventAfterEqualLastDonationDate = isNaN(
         lastExaminationDate?.getTime()
@@ -104,9 +114,12 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
     const transaction = await sequelize.transaction();
 
     try {
+
         const exam = await PhysicalExamination.findOne({
             where: { appointment_id: appointmentId },
         });
+
+        let examId = null;
 
         if (!exam) {
             data.appointment_id = appointment?.id;
@@ -116,29 +129,37 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
             const newExam = await PhysicalExamination.create(data, {
                 transaction,
             });
-
-            if (isEventAfterEqualLastDonationDate && newExam) {
-                await donor.update(
-                    {
-                        last_donation_examination_id: newExam.id,
-                        last_donation_event_id: appointment.event_id,
-                    },
-                    { transaction }
-                );
+            if (!newExam) {
+                return {
+                    success: false,
+                    message:
+                        "Registration Failed: There was an error while trying to save new entry for physical exam!",
+                };
             }
+            examId = newExam.id;
+
         } else {
             data.updated_by = user.id;
             const updatedExam = await exam.update(data, { transaction });
-
-            if (isEventAfterEqualLastDonationDate && updatedExam) {
-                await donor.update(
-                    {
-                        last_donation_examination_id: exam.id,
-                        last_donation_event_id: appointment.event_id,
-                    },
-                    { transaction }
-                );
+            if (!updatedExam) {
+                return {
+                    success: false,
+                    message:
+                        "Update Failed: There was an error while trying to update the physical examination!",
+                };
             }
+            examId = updatedExam.id;
+        }
+
+        if (isEventAfterEqualLastDonationDate) {
+            await donor.update(
+                {
+                    last_appointment_id: appointment.id,
+                    last_donation_examination_id: examId,
+                    last_donation_event_id: appointment.event_id,
+                },
+                { transaction }
+            );
         }
 
         /* update donor appointment status */
@@ -154,7 +175,7 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
             userId: user.id,
             controller: "physicalExamAction",
             action: "storeUpdatePhysicalExam ",
-            details: `The Donor's physical examination has been successfully submitted. With appointment ID#: ${appointmentId}.`,
+            details: `The Donor's physical examination has been successfully submitted. With appointment ID#: ${appointmentId}. by: ${user?.name} (${user?.email})`,
         });
 
         return {
@@ -162,6 +183,7 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
             message: `The Donor's physical examination has been successfully submitted.`,
             data: data,
         };
+
     } catch (err) {
         console.log("err", err);
         logErrorToFile(err, "updatePhysicalExam");

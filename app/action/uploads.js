@@ -41,7 +41,7 @@ export async function uploadPicture(file) {
             return {
                 success: false,
                 message:
-                    "File Server Error: Cannot connect to file server. Please try again later.",
+                    "Upload Error: Cannot connect to file server. Please try again later.",
             };
         }
         return {

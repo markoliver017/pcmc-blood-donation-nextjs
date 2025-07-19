@@ -18,6 +18,7 @@ import {
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import { bloodCollectionchema } from "@lib/zod/bloodCollectionSchema";
+import { format, startOfDay } from "date-fns";
 import { Op } from "sequelize";
 
 export async function storeUpdateBloodCollection(appointmentId, formData) {
@@ -49,12 +50,26 @@ export async function storeUpdateBloodCollection(appointmentId, formData) {
     console.log("parsed data", data);
 
     const appointment = await DonorAppointmentInfo.findByPk(appointmentId, {
-        include: {
-            model: PhysicalExamination,
-            as: "physical_exam",
-            where: { eligibility_status: "ACCEPTED" },
-            required: true,
-        },
+        include: [
+            {
+                model: PhysicalExamination,
+                as: "physical_exam",
+                where: { eligibility_status: "ACCEPTED" },
+                required: true,
+            },
+            {
+                model: Donor,
+                as: "donor",
+                attributes: ["id", "user_id", "last_donation_date", "donation_history_donation_date"],
+                required: true,
+            },
+            {
+                model: BloodDonationEvent,
+                as: "event",
+                attributes: ["date"],
+                required: true,
+            }
+        ],
     });
 
     if (!appointment) {
@@ -76,6 +91,21 @@ export async function storeUpdateBloodCollection(appointmentId, formData) {
 
     const transaction = await sequelize.transaction();
 
+    const donor = appointment.donor;
+
+    let lastBloodCollectionDate = null;
+    const eventDate = startOfDay(new Date(appointment?.event?.date));
+    console.log("eventDate", eventDate);
+
+    if (donor?.last_donation_date) {
+        lastBloodCollectionDate = startOfDay(new Date(donor?.last_donation_date));
+    }
+    const isEventAfterEqualLastBloodCollectionDate = isNaN(
+        lastBloodCollectionDate?.getTime()
+    )
+        ? true
+        : eventDate.getTime() >= lastBloodCollectionDate?.getTime();
+
     try {
         const bloodCollection = await BloodDonationCollection.findOne({
             where: { appointment_id: appointmentId },
@@ -91,6 +121,16 @@ export async function storeUpdateBloodCollection(appointmentId, formData) {
         } else {
             data.updated_by = user.id;
             await bloodCollection.update(data, { transaction });
+        }
+
+        if (isEventAfterEqualLastBloodCollectionDate) {
+            await donor.update(
+                {
+                    last_donation_date: format(eventDate, "yyyy-MM-dd"),
+
+                },
+                { transaction }
+            );
         }
 
         /* update donor appointment status */

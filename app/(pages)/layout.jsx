@@ -56,8 +56,11 @@ export default async function RootLayout({ children, rootLayoutModal }) {
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-y-hidden`}
             >
+                {/* This is the AuthProvider (next-auth) that wraps the entire app */}
                 <Providers>
-                    <ToastContainer />
+                    <ToastContainer containerId="main" />
+
+                    { /* next-theme */}
                     <ThemeProvider>
                         <TansactProviders>
                             <div className="flex dark:bg-black dark:text-slate-100">
