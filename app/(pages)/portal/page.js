@@ -6,7 +6,8 @@ import AuthSelectRole from "./AuthSelectRole";
 
 export default async function PortalPage() {
     const session = await auth();
-    if (!session || !session?.user?.roles?.length) redirect("/");
+
+    if (!session?.user) return null;
 
     const { roles, role_name: session_role } = session.user;
 
@@ -19,6 +20,7 @@ export default async function PortalPage() {
     }
 
     redirect(currentLoggedInRole?.url || "/portal?error=RoleUrlNotFound");
+
     return <pre>
         {JSON.stringify(session, null, 2)}
     </pre>

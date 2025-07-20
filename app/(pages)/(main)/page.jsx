@@ -23,9 +23,8 @@ import {
 } from "lucide-react";
 import { GiCycle } from "react-icons/gi";
 import Link from "next/link";
-import { FaHandHolding, FaRegistered } from "react-icons/fa";
-import { BiRegistered } from "react-icons/bi";
-import { PiSignpostDuotone } from "react-icons/pi";
+import { FaHandHolding } from "react-icons/fa";
+
 import { MdBloodtype } from "react-icons/md";
 
 export default function Page() {

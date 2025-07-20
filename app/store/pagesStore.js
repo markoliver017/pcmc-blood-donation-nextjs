@@ -155,7 +155,7 @@ export const usePagesStore = create((set) => ({
         },
         {
             title: "My Appointments",
-            path: "/donor-appointments",
+            path: "/appointments",
             icon: <Calendar />,
             roles: ["Donor"],
             is_role_based: true,

@@ -65,14 +65,9 @@ export default async function RootLayout({ children, rootLayoutModal }) {
                         <TansactProviders>
                             <div className="flex dark:bg-black dark:text-slate-100">
                                 <Sidebar currentUser={currentUser} />
-                                {/* <div
-                                id="main-container"
-                                className={clsx("flex flex-col flex-1 h-screen overflow-y-scroll",
-                                className
-                                )}
-                                > */}
+
                                 <MainWrapper>
-                                    <Preloader />
+                                    {/* <Preloader /> */}
                                     <HeaderNav currentUser={currentUser} />
                                     {/* <Header /> */}
                                     {/* <WrapperHead /> */}
@@ -84,7 +79,6 @@ export default async function RootLayout({ children, rootLayoutModal }) {
                                     <BackToTop />
                                 </MainWrapper>
 
-                                {/* </div> */}
                             </div>
                         </TansactProviders>
                     </ThemeProvider>

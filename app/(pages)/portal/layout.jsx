@@ -4,15 +4,17 @@ import { redirect } from "next/navigation";
 import React from "react";
 import ErrorPage from "./ErrorPage";
 import ErrorModal from "@components/layout/ErrorModal";
+import ClientPortal from "./ClientPortal";
+
 
 export default async function PortalLayout({ children }) {
     const session = await auth();
 
-    if (!session || !session?.user?.roles?.length) redirect("/");
+    if (!session || !session.user) redirect("/login");
 
     const { roles, role_name: session_role } = session.user;
 
-    let currentLoggedInRole = roles.find(
+    const currentLoggedInRole = roles.find(
         (role) => role.role_name == session_role
     );
 
@@ -156,27 +158,15 @@ export default async function PortalLayout({ children }) {
                 attributes: ["id"],
             });
             if (!donor) {
-                redirect("/organizers");
+                redirect("/");
             }
         }
     }
 
     return (
-        <div>
+        <>
+            <ClientPortal />
             {children}
-            {/* <pre>
-                User: {JSON.stringify(session.user, null, 2)}
-                <br />
-                <br />
-                Current Logged in Role:{" "}
-                {JSON.stringify(currentLoggedInRole, null, 2)}
-                <br />
-                <br />
-                Session Role = {session_role}
-                <br />
-                <br />
-                Agency Headed = {JSON.stringify(agency, null, 2)}
-            </pre> */}
-        </div>
+        </>
     );
 }

@@ -8,6 +8,7 @@ import {
     AgencyCoordinator,
     BloodDonationCollection,
     BloodDonationEvent,
+    BloodDonationHistory,
     BloodType,
     Donor,
     DonorAppointmentInfo,
@@ -392,6 +393,10 @@ export async function getAllAppointmentsByDonor() {
                     include: {
                         model: BloodDonationEvent,
                         as: "event",
+                        include: {
+                            model: Agency,
+                            as: "agency",
+                        },
                     },
                 },
                 {
@@ -406,6 +411,11 @@ export async function getAllAppointmentsByDonor() {
                             model: BloodType,
                             as: "blood_type",
                         },
+                        {
+                            model: BloodDonationHistory,
+                            as: "blood_history",
+                            attributes: ["previous_donation_count", "previous_donation_volume"]
+                        }
                     ],
                 },
                 {
