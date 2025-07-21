@@ -16,14 +16,14 @@ import { FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 
 const credentials = {
-    email: "mark@email.com",
+    email: "admin@email.com",
     password: "User@1234",
 };
 
 export default function LoginForm({
     showHeader = true,
     showProvidersSection = false,
-    onClose = () => { },
+    onClose = () => {},
 }) {
     const router = useRouter();
     const searchParams = useSearchParams();

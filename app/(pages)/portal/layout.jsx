@@ -6,7 +6,6 @@ import ErrorPage from "./ErrorPage";
 import ErrorModal from "@components/layout/ErrorModal";
 import ClientPortal from "./ClientPortal";
 
-
 export default async function PortalLayout({ children }) {
     const session = await auth();
 

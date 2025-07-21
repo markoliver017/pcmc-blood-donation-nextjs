@@ -41,10 +41,5 @@ export default async function RoleBasedLayout({ children }) {
         redirect("/portal");
     }
 
-    return (
-        <>
-            {/* <ClientPortal /> */}
-            {children}
-        </>
-    );
+    return <>{children}</>;
 }

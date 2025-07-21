@@ -1,4 +1,4 @@
-import { CardStackIcon, DashboardIcon } from "@radix-ui/react-icons";
+import { DashboardIcon } from "@radix-ui/react-icons";
 import {
     Calendar,
     CalendarCheck,
@@ -11,6 +11,7 @@ import {
     Users,
     Users2,
     Users2Icon,
+    BarChart3,
 } from "lucide-react";
 import { BiError } from "react-icons/bi";
 import { FaMicrophone } from "react-icons/fa";
@@ -261,6 +262,14 @@ export const usePagesStore = create((set) => ({
                     title: "Audit Trails",
                     path: "/portal/admin/audit-trails",
                     icon: <History />,
+                    roles: ["Admin"],
+                    has_child: false,
+                    is_role_based: true,
+                },
+                {
+                    title: "Reports",
+                    path: "/portal/admin/reports",
+                    icon: <BarChart3 />,
                     roles: ["Admin"],
                     has_child: false,
                     is_role_based: true,

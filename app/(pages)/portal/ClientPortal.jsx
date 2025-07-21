@@ -13,7 +13,8 @@ import Swal from "sweetalert2";
 const formatTimeLeft = (seconds) => {
     if (seconds === null) return "";
     const hrs = String(Math.floor(seconds / 3600)).padStart(2, "0");
-    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0") + "m";
+    const mins =
+        String(Math.floor((seconds % 3600) / 60)).padStart(2, "0") + "m";
     const secs = String(seconds % 60).padStart(2, "0") + "s";
     if (hrs === "00") {
         return `${mins} ${secs}`;
@@ -30,7 +31,6 @@ export default function ClientPortal() {
     const [warningShown, setWarningShown] = useState(false);
     // const [isConfirmed, setIsConfirmed] = useState(false);
 
-
     useEffect(() => {
         if (status === "authenticated" && session?.expires) {
             const expiry = new Date(session.expires).getTime();
@@ -42,11 +42,13 @@ export default function ClientPortal() {
                 setTimeLeft(secondsLeft);
 
                 // Show warning at 10 seconds
-                if (secondsLeft <= 50 && !warningShown && secondsLeft > 0) {
+                if (secondsLeft == 60 && !warningShown && secondsLeft > 0) {
                     setWarningShown(true);
                     if (!warningShown) {
                         alert(
-                            `Your session will expire in ${formatTimeLeft(secondsLeft)}. Refresh your browser to update your session.`
+                            `Your session will expire in ${formatTimeLeft(
+                                secondsLeft
+                            )}. Refresh your browser to update your session.`
                         );
                     }
                 }
@@ -56,15 +58,14 @@ export default function ClientPortal() {
                     clearInterval(interval);
                     redirect(`/login?callbackUrl=${currentRoute}`);
                 }
-            }, 1000);
+            }, 30000);
 
             return () => clearInterval(interval);
         }
     }, [session, status, currentRoute, warningShown]);
 
-
-    console.log("Client portal status", status);
-    console.log("Client portal session data", session);
+    // console.log("Client portal status", status);
+    // console.log("Client portal session data", session);
 
     const menus = usePagesStore((state) => state.menus);
 
@@ -82,10 +83,15 @@ export default function ClientPortal() {
         redirect(`/login?callbackUrl=${currentRoute}`);
     }
 
-
     if (status == "authenticated") {
-
-        if (!session || !session?.user?.roles?.length || session?.user?.role_name) redirect("/");
+        if (
+            !session ||
+            !session?.user?.roles?.length ||
+            !session?.user?.role_name
+        ) {
+            alert("You are not allowed to access this page.");
+            redirect("/");
+        }
 
         const currentUser = session?.user;
 
@@ -98,8 +104,6 @@ export default function ClientPortal() {
         if (!currentLoggedInRole && currentRoute !== "/portal") {
             redirect("/portal");
         }
-
-
 
         // console.log("Client portal currentUser", currentUser);
 
@@ -130,15 +134,14 @@ export default function ClientPortal() {
         // );
     }
 
-    return (
-        <>
-            <span>Status: {status} </span>
-            <span>Current Route: {currentRoute} </span>
+    // return (
+    //     <>
+    //         <span>Status: {status} </span>
+    //         <span>Current Route: {currentRoute} </span>
 
-            <p>
-                Time Left: <strong>{formatTimeLeft(timeLeft)}</strong>
-            </p>
-        </>
-    )
-
+    //         <p>
+    //             Time Left: <strong>{formatTimeLeft(timeLeft)}</strong>
+    //         </p>
+    //     </>
+    // );
 }
