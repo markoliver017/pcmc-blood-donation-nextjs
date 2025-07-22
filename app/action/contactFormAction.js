@@ -72,11 +72,12 @@ export async function storeContactForm(formData) {
                                     contact_message: data.message,
                                     submission_date:
                                         new Date().toLocaleDateString(),
-                                    system_name:
-                                        process.env.NEXT_PUBLIC_SYSTEM_NAME,
-                                    support_email:
-                                        process.env.NEXT_PUBLIC_SUPPORT_EMAIL,
-                                    domain_url: process.env.NEXT_PUBLIC_APP_URL,
+                                    system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                                    support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                                    support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
+                                    domain_url:
+                                        process.env.NEXT_PUBLIC_APP_URL ||
+                                        "",
                                 },
                             },
                         });

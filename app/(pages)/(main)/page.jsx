@@ -104,7 +104,7 @@ export default function Page() {
                                 />
                             </svg>
                         </span>
-                        Welcome to PCMC Pediatric Blood Center
+                        Overview
                     </h2>
                     {/* <p className="text-lg text-slate-700 dark:text-slate-200 mb-4">
                         We are committed to saving and improving the lives of
@@ -113,7 +113,24 @@ export default function Page() {
                         accessible and meaningful – bridging compassion with
                         action.
                     </p> */}
-                    <p className="text-lg text-slate-700 dark:text-slate-200 mb-4 text-justify">
+                    <p className="text-lg leading-relaxed">
+                        The Pediatric Blood Center Mobile Blood Donation Portal
+                        is a user-friendly, secure digital platform designed to
+                        connect volunteer blood donors with pediatric patients
+                        in need. Focused on convenience, safety, and community
+                        engagement, this portal enables donors to easily
+                        register, schedule, and track their donations, while
+                        providing critical updates about pediatric blood needs.
+                    </p>
+                    <p className="text-lg leading-relaxed">
+                        Our center ensures every donation is safe, secure, and
+                        reaches those who need it most. We are committed to
+                        saving and improving the lives of children in need by
+                        empowering volunteer blood donors. Our mobile platform
+                        makes blood donation simple, accessible and meaningful –
+                        bridging compassion with action.
+                    </p>
+                    {/* <p className="text-lg text-slate-700 dark:text-slate-200 mb-4 text-justify">
                         We are dedicated to saving and improving the lives of
                         children by empowering volunteer blood donors. Our
                         platform makes blood donation information accessible,
@@ -148,7 +165,7 @@ export default function Page() {
                                 us build a healthier future for all.
                             </span>
                         </li>
-                    </ul>
+                    </ul> */}
                     <div className="text-right">
                         <Link href="/about-us">
                             <button className="btn btn-primary btn-lg shadow-lg px-8 py-3 text-lg hover:scale-105 transition-transform">

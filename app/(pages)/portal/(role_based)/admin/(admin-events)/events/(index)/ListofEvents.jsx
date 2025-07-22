@@ -10,7 +10,7 @@ import {
     getPresentEvents,
 } from "@/action/adminEventAction";
 import LoadingModal from "@components/layout/LoadingModal";
-import { DataTable } from "@components/events/Datatable";
+
 
 import { useRouter, useSearchParams } from "next/navigation";
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
@@ -130,6 +130,8 @@ export default function ListofEvents() {
     const [allFilters, setAllFilters] = useState({});
     const [forApprovalFilters, setForApprovalFilters] = useState({});
 
+    console.log("ongoingFilters", ongoingFilters);
+    console.log("allFilters", allFilters);
     // Status options for filter
     const statusOptions = [
         { value: "ongoing", label: "Ongoing" },
@@ -157,8 +159,9 @@ export default function ListofEvents() {
                 const searchTerm = filters.search.toLowerCase();
                 const searchableFields = [
                     event.title,
+                    event.status,
                     event.agency?.name,
-                    event.location,
+                    event.agency?.agency_address,
                     event.description,
                 ].filter(Boolean);
 
@@ -362,6 +365,7 @@ export default function ListofEvents() {
                     </div>
                     <EventFilterBar
                         onChange={setOngoingFilters}
+                        defaultValues={ongoingFilters}
                         statusOptions={statusOptions}
                     />
 
@@ -447,6 +451,7 @@ export default function ListofEvents() {
                     </div>
                     <EventFilterBar
                         onChange={setUpcomingFilters}
+                        defaultValues={upcomingFilters}
                         statusOptions={statusOptions}
                     />
 
@@ -530,6 +535,7 @@ export default function ListofEvents() {
                     </div>
                     <EventFilterBar
                         onChange={setAllFilters}
+                        defaultValues={allFilters}
                         statusOptions={statusOptions}
                     />
                     {allViewMode === "table" ? (
@@ -590,6 +596,7 @@ export default function ListofEvents() {
                     <EventFilterBar
                         onChange={setForApprovalFilters}
                         statusOptions={statusOptions}
+                        defaultValues={forApprovalFilters}
                     />
                     <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 p-3 w-full">
                         <ForApprovalEventList

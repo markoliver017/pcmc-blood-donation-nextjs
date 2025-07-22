@@ -41,14 +41,14 @@ const StatCard = ({
     const CardWrapper = onClick ? Button : Card;
     const cardProps = onClick
         ? {
-              variant: "outline",
-              className:
-                  "w-full h-full p-0 hover:shadow-md transition-all duration-200 cursor-pointer",
-              onClick,
-          }
+            variant: "outline",
+            className:
+                "w-full h-full p-0 hover:shadow-md transition-all duration-200 cursor-pointer",
+            onClick,
+        }
         : {
-              className: "hover:shadow-md transition-shadow duration-200",
-          };
+            className: "hover:shadow-md transition-shadow duration-200",
+        };
 
     return (
         <CardWrapper {...cardProps}>
@@ -68,11 +68,10 @@ const StatCard = ({
                                     variant={
                                         trend > 0 ? "default" : "secondary"
                                     }
-                                    className={`text-xs ${
-                                        trend > 0
-                                            ? "bg-green-100 text-green-800"
-                                            : "bg-red-100 text-red-800"
-                                    }`}
+                                    className={`text-xs ${trend > 0
+                                        ? "bg-green-100 text-green-800"
+                                        : "bg-red-100 text-red-800"
+                                        }`}
                                 >
                                     {trend > 0 ? "+" : ""}
                                     {trend}%
@@ -196,7 +195,7 @@ export default function EventsDashboard() {
     const stats = [
         {
             title: "Total Events",
-            value: dashboardData?.totalEventCount || 0,
+            value: dashboardData?.approvedEventCount || 0,
             icon: Calendar,
             color: "bg-blue-500",
             subtitle: "All blood donation events",
@@ -206,7 +205,7 @@ export default function EventsDashboard() {
             value: dashboardData?.activeEventCount || 0,
             icon: TrendingUp,
             color: "bg-green-500",
-            subtitle: "Currently ongoing",
+            subtitle: "All ongoing & upcoming",
         },
         {
             title: "Pending Approval",
@@ -254,8 +253,8 @@ export default function EventsDashboard() {
             icon: BarChart3,
             variant: "success",
             onClick: () =>
-                (window.location.href =
-                    "/portal/admin/events?dashboardTab=analytics"),
+            (window.location.href =
+                "/portal/admin/events?dashboardTab=analytics"),
         },
         {
             title: "Pending Approvals",
@@ -263,8 +262,8 @@ export default function EventsDashboard() {
             icon: AlertCircle,
             variant: "warning",
             onClick: () =>
-                (window.location.href =
-                    "/portal/admin/events?tab=for-approval"),
+            (window.location.href =
+                "/portal/admin/events?tab=for-approval"),
         },
     ];
 
@@ -383,7 +382,7 @@ export default function EventsDashboard() {
                                             <span className="font-semibold">
                                                 {numeral(
                                                     dashboardData?.agencyCount ||
-                                                        0
+                                                    0
                                                 ).format("0,0")}
                                             </span>
                                         </div>
@@ -394,7 +393,7 @@ export default function EventsDashboard() {
                                             <span className="font-semibold">
                                                 {numeral(
                                                     dashboardData?.recentEventCount ||
-                                                        0
+                                                    0
                                                 ).format("0,0")}
                                             </span>
                                         </div>
@@ -418,7 +417,7 @@ export default function EventsDashboard() {
                                             <span className="font-semibold">
                                                 {numeral(
                                                     dashboardData?.donorCount ||
-                                                        0
+                                                    0
                                                 ).format("0,0")}
                                             </span>
                                         </div>
@@ -429,7 +428,7 @@ export default function EventsDashboard() {
                                             <span className="font-semibold">
                                                 {numeral(
                                                     dashboardData?.donationCount ||
-                                                        0
+                                                    0
                                                 ).format("0,0")}
                                             </span>
                                         </div>

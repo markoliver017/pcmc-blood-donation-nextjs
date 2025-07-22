@@ -25,7 +25,7 @@ import {
 } from "@lib/zod/bloodDonationSchema";
 import { format } from "date-fns";
 import moment from "moment";
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 
 async function updatePastEventStatuses() {
     const today = new Date();
@@ -176,14 +176,14 @@ export async function getAdminDashboard() {
         });
 
         const successRate =
-            totalEventCount > 0
-                ? Math.round((completedEvents / totalEventCount) * 100)
+            approvedEventCount > 0
+                ? Math.round((completedEvents / approvedEventCount) * 100)
                 : 0;
 
         // Average participants per event
         const averageParticipants =
-            totalEventCount > 0
-                ? Math.round(totalParticipants / totalEventCount)
+            approvedEventCount > 0
+                ? Math.round(totalParticipants / approvedEventCount)
                 : 0;
 
         return {
@@ -231,6 +231,9 @@ export async function getEventsAnalytics() {
                 date: {
                     [Op.gte]: twelveMonthsAgo.format("YYYY-MM-DD"),
                 },
+                status: {
+                    [Op.in]: ["approved"],
+                }
             },
             attributes: [
                 [
@@ -263,6 +266,9 @@ export async function getEventsAnalytics() {
 
         // Agency performance (top 10 agencies)
         const agencyPerformance = await BloodDonationEvent.findAll({
+            where: {
+                status: "approved",
+            },
             include: [
                 {
                     model: Agency,
@@ -299,7 +305,7 @@ export async function getEventsAnalytics() {
         const participantTrends = await DonorAppointmentInfo.findAll({
             where: {
                 status: {
-                    [Op.not]: "cancelled",
+                    [Op.notIn]: ["cancelled", "no show"],
                 },
             },
             include: [
@@ -1171,13 +1177,12 @@ export async function updateEventStatus(formData) {
                                         "You can now manage the event and open registrations for your donors.",
                                     event_organizer:
                                         organizer.full_name || organizer.name,
-                                    system_name:
-                                        process.env.NEXT_PUBLIC_SYSTEM_NAME,
-                                    support_email:
-                                        process.env.NEXT_PUBLIC_SUPPORT_EMAIL,
+                                    system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                                    support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                                    support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
                                     domain_url:
                                         process.env.NEXT_PUBLIC_APP_URL ||
-                                        "http://pedbcstg.pcmc.intra:3000/",
+                                        "",
                                 },
                             },
                         });

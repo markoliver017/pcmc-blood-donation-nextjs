@@ -86,8 +86,7 @@ export default function ClientPortal() {
     if (status == "authenticated") {
         if (
             !session ||
-            !session?.user?.roles?.length ||
-            !session?.user?.role_name
+            !session?.user?.roles?.length
         ) {
             alert("You are not allowed to access this page.");
             redirect("/");

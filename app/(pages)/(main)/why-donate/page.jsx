@@ -38,7 +38,7 @@ export default function WhyDonatePage() {
             <ReasonsGrid onOpenRegister={() => setOpenRegister(true)} />
 
             {/* Impact Stories */}
-            <ImpactStories onOpenRegister={() => setOpenRegister(true)} />
+            {/* <ImpactStories onOpenRegister={() => setOpenRegister(true)} /> */}
 
             {/* Health Benefits */}
             <HealthBenefits onOpenRegister={() => setOpenRegister(true)} />

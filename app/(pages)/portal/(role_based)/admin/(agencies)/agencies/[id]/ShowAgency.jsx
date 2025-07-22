@@ -33,7 +33,6 @@ import React from "react";
 export default function ShowAgency({ agencyId }) {
     const router = useRouter();
     const { data: session } = useSession();
-    console.log("session", session);
 
     const { data: agency } = useQuery({
         queryKey: ["agency", agencyId],
@@ -226,7 +225,7 @@ export default function ShowAgency({ agencyId }) {
                                             </TableHeader>
                                             <TableBody>
                                                 {agency?.coordinators?.length >
-                                                0 ? (
+                                                    0 ? (
                                                     agency.coordinators.map(
                                                         (coor, index) => (
                                                             <TableRow

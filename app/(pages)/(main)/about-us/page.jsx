@@ -7,6 +7,7 @@ import TimelineSection from "@components/pages/AboutUs/TimelineSection";
 import TeamSection from "@components/pages/AboutUs/TeamSection";
 import useRegistration from "@components/pages/shared/useRegistration";
 import SelectRegisterDrawer from "../SelectRegisterDrawer";
+import { Check } from "lucide-react";
 
 export default function AboutUsPage() {
     const { openRegister, setOpenRegister } = useRegistration();
@@ -31,7 +32,7 @@ export default function AboutUsPage() {
                 id="overview"
                 className="max-w-screen-xl mt-5 w-full mx-auto flex flex-col lg:flex-row gap-10 items-center shadow p-6 rounded-xl bg-white/80 dark:bg-slate-800/80 mb-16"
             >
-                <div className="flex-1 text-justify text-slate-700 dark:text-slate-200 space-y-4">
+                <div className="flex-1 text-justify text-slate-700 dark:text-slate-200 space-y-2">
                     <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                         <span className="inline-block align-middle">
                             <svg
@@ -49,28 +50,45 @@ export default function AboutUsPage() {
                                 />
                             </svg>
                         </span>
-                        Overview
+                        About Us
                     </h2>
                     <p className="text-lg leading-relaxed">
-                        The Pediatric Blood Center Mobile Blood Donation Portal
-                        is a user-friendly, secure digital platform designed to
-                        connect volunteer blood donors with pediatric patients
-                        in need. Focused on convenience, safety, and community
-                        engagement, this portal enables donors to easily
-                        register, schedule, and track their donations, while
-                        providing critical updates about pediatric blood needs.
+                        The Philippine Children's Medical Center (PCMC) is one of the top government hospitals in the country, dedicated to caring for children — especially those with serious illnesses like cancer and blood disorders. Many young patients at PCMC need lifesaving blood transfusions as part of their treatment for conditions such as leukemia, hemophilia, and other blood-related diseases.
                     </p>
                     <p className="text-lg leading-relaxed">
-                        Our center ensures every donation is safe, secure, and
-                        reaches those who need it most. We are committed to
-                        saving and improving the lives of children in need by
-                        empowering volunteer blood donors. Our mobile platform
-                        makes blood donation simple, accessible and meaningful –
-                        bridging compassion with action.
+                        The PCMC Pediatric Blood Center (PedBC)
                     </p>
+                    <p className="text-lg leading-relaxed">
+                        Since 2000, the PedBC has been making sure there’s a safe and steady blood supply for these children. Backed by the Department of Health (DOH) and the National Voluntary Blood Services Program (NVBSP), the center relies on voluntary blood donors — generous people like you — to help save young lives.
+                    </p>
+                    <p className="text-lg leading-relaxed">
+                        Be a Hero for a Child at PCMC.
+                    </p>
+                    <p className="text-lg leading-relaxed">
+                        CALL FOR ACTION
+                    </p>
+                    <p className="text-lg leading-relaxed">
+                        Are you part of a government office, private company, school, NGO, or community group?
+                    </p>
+                    <p className="text-lg leading-relaxed">
+                        Partner with us to host a Mobile Blood Donation Drive. It’s simple, impactful, and saves lives.
+                    </p>
+                    <ul className="text-lg leading-relaxed">
+                        <li className="flex-items-center gap-4"><Check className="h-4 w-4" /> We’ll bring the team and equipment</li>
+                        <li className="flex-items-center"><Check className="h-4 w-4" />You provide the space and volunteers</li>
+                        <li className="flex-items-center"><Check className="h-4 w-4" />Together, we give hope to children in need</li>
+                    </ul>
+                    <ul className="text-lg leading-relaxed">
+                        <li>📍 Pediatric Blood Center Contact Numbers:</li>
+                        <li>📱 Mobile: (0917) 8468167  / (0917) 846 8093</li>
+                        <li>☎️ Landline (Direct Line): (02) 8921 9781</li>
+                        <li>📞 Trunk Line: (02) 8588-9900 local 1165</li>
+                        <li>📧 Email: pcmcpedbcmbd@gmail.com</li>
+                        <li>📘 Facebook: PCMC Pedbc</li>
+                    </ul>
                 </div>
 
-                <div className="h-96 w-full max-w-[700px] relative overflow-hidden rounded-xl shadow-lg group transition-all duration-700 hover:cursor-pointer flex items-center justify-center bg-gradient-to-br from-red-100 to-blue-100 dark:from-red-900 dark:to-blue-900">
+                <div className="h-full w-full max-w-[700px] relative overflow-hidden rounded-xl shadow-lg group transition-all duration-700 hover:cursor-pointer flex items-center justify-center bg-gradient-to-br from-red-100 to-blue-100 dark:from-red-900 dark:to-blue-900">
                     <img
                         src="/pcmc-building.png"
                         alt="PCMC Building"
@@ -89,10 +107,10 @@ export default function AboutUsPage() {
             <FeaturesGrid />
 
             {/* Timeline Section */}
-            <TimelineSection />
+            {/* <TimelineSection /> */}
 
             {/* Team Section */}
-            <TeamSection />
+            {/* <TeamSection /> */}
 
             {/* Call to Action */}
             <CallToAction

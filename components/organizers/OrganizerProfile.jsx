@@ -56,7 +56,7 @@ export default function OrganizerProfile({ user }) {
                     <div>Update your account.</div>
                 </CardDescription>
             </CardHeader>
-            <CardContent id="form-modal">
+            <CardContent>
                 <Tabs defaultValue="user-profile" className="p-5">
                     <TabsList className="flex flex-wrap">
                         <TabsTrigger value="user-profile" title="User Profile">

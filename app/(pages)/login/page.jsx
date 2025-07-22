@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 
 export default async function page() {
     const session = await auth();
-    if(session?.user){
+    if (session?.user) {
         redirect("/portal");
     }
 
@@ -17,11 +17,11 @@ export default async function page() {
                 src="/blood-bg.jpg"
                 alt="Login Background"
                 fill
-                className="object-cover object-right opacity-40 z-0"
+                className="object-cover object-right z-0"
                 quality={100}
                 priority
             />
-            
+
             {/* Overlay for readability */}
             <div
                 className="absolute inset-0 bg-black/30 dark:bg-black/60 backdrop-blur-sm z-10"

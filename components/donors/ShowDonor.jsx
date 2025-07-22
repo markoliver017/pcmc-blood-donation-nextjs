@@ -16,8 +16,13 @@ import moment from "moment";
 
 import React from "react";
 import ApprovalRejectComponent from "./ApprovalRejectComponent";
+import { useSession } from "next-auth/react";
+import { CheckIcon } from "lucide-react";
+import RejectDonor from "./RejectDonor";
+import VerifyDonor from "./VerifyDonor";
 
 export default function ShowDonor({ donorId }) {
+    const { data: session } = useSession();
     const { data: donor } = useQuery({
         queryKey: ["donor", donorId],
         queryFn: async () => await getDonorById(donorId),
@@ -39,12 +44,28 @@ export default function ShowDonor({ donorId }) {
             <CardHeader>
                 <CardTitle className="flex justify-between">
                     <div className="text-4xl">{donor.user.full_name}</div>
-                    {donor.status === "for approval" && (
-                    <ApprovalRejectComponent
-                        data={donor}
-                        callbackUrl={`/portal/hosts/donors/${donorId}`}
-                    />
-                    )}
+
+                    {session &&
+                        session?.user.role_name === "Agency Administrator" &&
+                        donor?.status === "for approval" && (
+                            <div className="flex gap-2">
+
+                                <VerifyDonor
+                                    donorData={{
+                                        id: donor.id,
+                                        status: "activated",
+                                    }}
+                                    label="Approve"
+                                    className="btn btn-success"
+                                    icon={<CheckIcon />}
+                                />
+
+                                <RejectDonor
+                                    donorId={donor.id}
+                                    className="btn-error"
+                                />
+                            </div>
+                        )}
                 </CardTitle>
                 <CardDescription>Donor Information</CardDescription>
             </CardHeader>
@@ -87,7 +108,7 @@ export default function ShowDonor({ donorId }) {
                             <TableCell className="font-semibold">
                                 Contact Number
                             </TableCell>
-                            <TableCell>{donor.contact_number}</TableCell>
+                            <TableCell>+63{donor.contact_number}</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">

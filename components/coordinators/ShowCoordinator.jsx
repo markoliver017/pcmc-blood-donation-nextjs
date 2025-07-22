@@ -50,8 +50,7 @@ export default function ShowCoordinator({ coorId }) {
                         </CardDescription>
                     </div>
                     {session &&
-                        (session?.user.role_name === "Agency Administrator" ||
-                            session?.user.role_name === "Organizer") &&
+                        session?.user.role_name === "Agency Administrator" &&
                         coordinator.status === "for approval" && (
                             <div className="flex-items-center">
                                 <VerifyCoordinator

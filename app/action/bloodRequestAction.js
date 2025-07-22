@@ -293,13 +293,10 @@ export async function storeBloodRequest(formData) {
                 userId: user.id,
                 controller: "blood_requests",
                 action: "CREATE",
-                details: `A new blood request has been successfully created by ${
-                    user.name || user.email
-                }. ID#: ${newBloodRequest.id} - Component: ${
-                    newBloodRequest.blood_component
-                }, Units: ${newBloodRequest.no_of_units}, Hospital: ${
-                    newBloodRequest.hospital_name
-                }`,
+                details: `A new blood request has been successfully created by ${user.name || user.email
+                    }. ID#: ${newBloodRequest.id} - Component: ${newBloodRequest.blood_component
+                    }, Units: ${newBloodRequest.no_of_units}, Hospital: ${newBloodRequest.hospital_name
+                    }`,
             });
 
             // Notify all admins (system notification and email)
@@ -326,11 +323,9 @@ export async function storeBloodRequest(formData) {
                                 userIds: adminUsers.map((a) => a.id),
                                 notificationData: {
                                     subject: "New Blood Request Submitted",
-                                    message: `A new blood request (ID: ${
-                                        newBloodRequest.id
-                                    }) has been submitted by ${
-                                        user.name || user.email
-                                    }. Please review and process the request.`,
+                                    message: `A new blood request (ID: ${newBloodRequest.id
+                                        }) has been submitted by ${user.name || user.email
+                                        }. Please review and process the request.`,
                                     type: "BLOOD_REQUEST_APPROVAL",
                                     reference_id: newBloodRequest.id.toString(),
                                     created_by: user.id,
@@ -384,28 +379,28 @@ export async function storeBloodRequest(formData) {
                                             patient_name: donor
                                                 ? donor.user.full_name
                                                 : newBloodRequest.patient_name ||
-                                                  "Not specified",
+                                                "Not specified",
                                             patient_gender: donor
                                                 ? donor.user.gender
                                                 : newBloodRequest.patient_gender ||
-                                                  "Not specified",
+                                                "Not specified",
                                             patient_date_of_birth: donor
                                                 ? new Date(
-                                                      donor?.date_of_birth
-                                                  ).toLocaleDateString()
+                                                    donor?.date_of_birth
+                                                ).toLocaleDateString()
                                                 : newBloodRequest.patient_date_of_birth
-                                                ? new Date(
-                                                      newBloodRequest.patient_date_of_birth
-                                                  ).toLocaleDateString()
-                                                : "Not specified",
+                                                    ? new Date(
+                                                        newBloodRequest.patient_date_of_birth
+                                                    ).toLocaleDateString()
+                                                    : "Not specified",
                                             blood_type:
                                                 newBloodRequest.blood_type_id
                                                     ? (
-                                                          await sequelize.models.BloodType.findByPk(
-                                                              newBloodRequest.blood_type_id
-                                                          )
-                                                      )?.blood_type ||
-                                                      "Not specified"
+                                                        await sequelize.models.BloodType.findByPk(
+                                                            newBloodRequest.blood_type_id
+                                                        )
+                                                    )?.blood_type ||
+                                                    "Not specified"
                                                     : "Not specified",
                                             no_of_units:
                                                 newBloodRequest.no_of_units.toString(),
@@ -418,18 +413,12 @@ export async function storeBloodRequest(formData) {
                                             ).toLocaleDateString(),
                                             requested_by:
                                                 user.name || user.email,
-                                            system_name:
-                                                process.env
-                                                    .NEXT_PUBLIC_SYSTEM_NAME ||
-                                                "PCMC Pediatric Blood Center",
-                                            support_email:
-                                                process.env
-                                                    .NEXT_PUBLIC_SUPPORT_EMAIL ||
-                                                "mark.roman@pcmc.gov.ph",
+                                            system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                                            support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                                            support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
                                             domain_url:
-                                                process.env
-                                                    .NEXT_PUBLIC_APP_URL ||
-                                                "https://blood-donation.pcmc.gov.ph",
+                                                process.env.NEXT_PUBLIC_APP_URL ||
+                                                "",
                                         },
                                     },
                                 });
@@ -532,9 +521,8 @@ export async function updateBloodRequest(requestId, formData) {
                 userId: user.id,
                 controller: "blood_requests",
                 action: "UPDATE",
-                details: `Blood request has been successfully updated by ${
-                    user.name || user.email
-                }. ID#: ${updatedBloodRequest.id}`,
+                details: `Blood request has been successfully updated by ${user.name || user.email
+                    }. ID#: ${updatedBloodRequest.id}`,
             });
 
             // Notify all admins (system notification and email)
@@ -561,11 +549,9 @@ export async function updateBloodRequest(requestId, formData) {
                                 userIds: adminUsers.map((a) => a.id),
                                 notificationData: {
                                     subject: "Updated Blood Request",
-                                    message: `The blood request (ID: ${
-                                        updatedBloodRequest.id
-                                    }) has been updated by ${
-                                        user.name || user.email
-                                    }. Please review and process the request.`,
+                                    message: `The blood request (ID: ${updatedBloodRequest.id
+                                        }) has been updated by ${user.name || user.email
+                                        }. Please review and process the request.`,
                                     type: "BLOOD_REQUEST_APPROVAL",
                                     reference_id:
                                         updatedBloodRequest.id.toString(),
@@ -663,9 +649,8 @@ export async function updateBloodRequestStatus(formData) {
                 userId: user.id,
                 controller: "blood_requests",
                 action: "UPDATE STATUS",
-                details: `Blood request status updated from "${currentStatus}" to "${status}" for ID#: ${
-                    updatedBloodRequest.id
-                }. ${remarks ? `Remarks: ${remarks}` : ""}`,
+                details: `Blood request status updated from "${currentStatus}" to "${status}" for ID#: ${updatedBloodRequest.id
+                    }. ${remarks ? `Remarks: ${remarks}` : ""}`,
             });
 
             // Notifications and emails (non-blocking)
@@ -744,8 +729,8 @@ export async function updateBloodRequestStatus(formData) {
                                     patient_date_of_birth:
                                         bloodRequest?.patient_date_of_birth
                                             ? new Date(
-                                                  bloodRequest.patient_date_of_birth
-                                              ).toLocaleDateString()
+                                                bloodRequest.patient_date_of_birth
+                                            ).toLocaleDateString()
                                             : "Not specified",
                                     blood_type:
                                         bloodRequest.blood_type?.blood_type ||
@@ -762,15 +747,12 @@ export async function updateBloodRequestStatus(formData) {
                                         new Date().toLocaleDateString(),
                                     status_remarks:
                                         remarks || "No remarks provided",
-                                    system_name:
-                                        process.env.NEXT_PUBLIC_SYSTEM_NAME ||
-                                        "PCMC Pediatric Blood Center",
-                                    support_email:
-                                        process.env.NEXT_PUBLIC_SUPPORT_EMAIL ||
-                                        "mark.roman@pcmc.gov.ph",
+                                    system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                                    support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                                    support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
                                     domain_url:
                                         process.env.NEXT_PUBLIC_APP_URL ||
-                                        "https://blood-donation.pcmc.gov.ph",
+                                        "",
                                     status_message,
                                     status_style,
                                 },

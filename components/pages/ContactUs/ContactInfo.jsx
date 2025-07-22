@@ -13,14 +13,14 @@ export default function ContactInfo() {
             items: [
                 {
                     label: "Mobile",
-                    value: "(0928) 479 5154",
+                    value: "(0917) 8468167  / (0917) 846 8093",
                     description: "For urgent inquiries and appointments",
                 },
-                {
-                    label: "Direct Line",
-                    value: "(02) 8921 9781",
-                    description: "Main office line",
-                },
+                // {
+                //     label: "Direct Line / Trunk Line",
+                //     value: "(02) 8921 9781 / (02) 8588-9900 local 1165",
+                //     description: "Main office line",
+                // },
             ],
         },
         {
@@ -32,13 +32,13 @@ export default function ContactInfo() {
             items: [
                 {
                     label: "General Inquiries",
-                    value: "info@pcmc-bloodcenter.gov.ph",
+                    value: "pcmcpedbcmbd@gmail.com",
                     description: "General questions and information",
                 },
                 {
-                    label: "Appointments",
-                    value: "appointments@pcmc-bloodcenter.gov.ph",
-                    description: "Blood donation scheduling",
+                    label: "Announcements",
+                    value: "www.facebook.com/pcmc.pedbc",
+                    description: "Blood donation updates and events",
                 },
             ],
         },
@@ -52,7 +52,7 @@ export default function ContactInfo() {
                 {
                     label: "Main Office",
                     value: "PCMC Pediatric Blood Center",
-                    description: "Quezon Avenue, Quezon City, Philippines",
+                    description: "Quezon Avenue cor Sen. Miriam Defensor-Santiago Avenue, Bagong Pag-asa, Quezon City",
                 },
                 {
                     label: "Mobile Units",
@@ -70,28 +70,28 @@ export default function ContactInfo() {
             items: [
                 {
                     label: "Monday - Friday",
-                    value: "8:00 AM - 6:00 PM",
+                    value: "8:00 AM - 5:00 PM",
                     description: "Regular office hours",
                 },
-                {
-                    label: "Saturday",
-                    value: "8:00 AM - 4:00 PM",
-                    description: "Limited services",
-                },
+                // {
+                //     label: "Saturday",
+                //     value: "8:00 AM - 4:00 PM",
+                //     description: "Limited services",
+                // },
             ],
         },
     ];
 
     const emergencyContacts = [
         {
-            title: "Emergency Blood Requests",
-            phone: "(0928) 479 5154",
-            description: "24/7 emergency blood requests for pediatric patients",
+            title: "Landline (Direct Line)",
+            phone: "(02) 8921 9781",
+            description: "",
         },
         {
-            title: "Medical Staff",
-            phone: "(02) 8921 9781",
-            description: "Direct line to medical professionals",
+            title: "Trunk Line",
+            phone: "(02) 8588-9900 local 1165",
+            description: "",
         },
     ];
 

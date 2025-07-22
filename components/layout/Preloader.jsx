@@ -28,7 +28,7 @@ export default function Preloader() {
                     <div
                         className="absolute inset-0 w-full h-full z-10"
                         style={{
-                            backgroundImage: "url('/bg-loader.jpg')",
+                            backgroundImage: "url('/bg-image-new-1.png')",
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",
@@ -58,7 +58,7 @@ export default function Preloader() {
                     {/* Animated Loading Text */}
 
                     <motion.div
-                        className="text-2xl w-96 h-96  flex justify-center items-center font-semibold text-blue-500 relative z-20"
+                        className="text-2xl w-32 h-32 sm:w-60 sm:h-60 lg:w-96 lg:h-96  flex justify-center items-center font-semibold text-blue-500 relative z-20"
                         initial={{ scale: 1 }}
                         animate={{ scale: [1, 1.1, 1] }}
                         transition={{ repeat: Infinity, duration: 1 }}

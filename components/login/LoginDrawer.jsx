@@ -38,7 +38,7 @@ export default function LoginDrawer() {
                             src="/blood-bg.jpg"
                             alt="Login Background"
                             fill
-                            className="object-cover object-right opacity-40"
+                            className="object-cover object-right "
                             quality={100}
                             priority
                         />
@@ -46,7 +46,7 @@ export default function LoginDrawer() {
                         <div className="absolute inset-0 bg-black/30 dark:bg-black/60 backdrop-blur-sm z-10" aria-hidden="true" />
                         {/* Logo and Heading */}
                         <div className="w-full md:w-8/10 lg:w-6/10 xl:w-5/12 2xl:w-4/12">
-                        {/* Login Form */}
+                            {/* Login Form */}
                             <div className="relative z-20 w-9/10 mx-auto bg-white/90 dark:bg-slate-900/90 rounded-2xl shadow-2xl p-6 flex flex-col items-center gap-6 border border-blue-100 dark:border-slate-800 ">
                                 <div className="flex flex-col items-center gap-2">
                                     <Image
@@ -60,7 +60,7 @@ export default function LoginDrawer() {
                                         Welcome Back
                                     </h2>
                                     <p className="text-md text-slate-700 dark:text-slate-200 text-center max-w-xs drop-shadow">
-                                        Sign in to your account to access the<br/> PCMC Pediatric Blood Center Portal.
+                                        Sign in to your account to access the<br /> PCMC Pediatric Blood Center Portal.
                                     </p>
                                 </div>
                                 <LoginForm showHeader={false} showProvidersSection={true} onClose={() => drawerRef.current.close()} />

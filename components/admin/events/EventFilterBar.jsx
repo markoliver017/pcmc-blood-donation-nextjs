@@ -68,7 +68,11 @@ export default function EventFilterBar({
     }, [form.watch, onChange]);
 
     const handleClear = () => {
-        form.reset();
+        form.reset({
+            search: "",
+            dateRange: { from: null, to: null },
+            agency_id: "",
+        });
         onChange?.(form.getValues());
     };
 
@@ -134,7 +138,7 @@ export default function EventFilterBar({
                                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-400" />
                                         <Input
                                             {...field}
-                                            placeholder="Search by title, agency, or location..."
+                                            placeholder="Search by title, status, agency, or location..."
                                             className="pl-10"
                                         />
                                     </div>
@@ -161,17 +165,17 @@ export default function EventFilterBar({
                                                 value={
                                                     field.value?.from
                                                         ? new Date(
-                                                              field.value.from
-                                                          )
-                                                              .toISOString()
-                                                              .split("T")[0]
+                                                            field.value.from
+                                                        )
+                                                            .toISOString()
+                                                            .split("T")[0]
                                                         : ""
                                                 }
                                                 onChange={(e) => {
                                                     const date = e.target.value
                                                         ? new Date(
-                                                              e.target.value
-                                                          )
+                                                            e.target.value
+                                                        )
                                                         : null;
                                                     field.onChange({
                                                         ...field.value,
@@ -188,17 +192,17 @@ export default function EventFilterBar({
                                                 value={
                                                     field.value?.to
                                                         ? new Date(
-                                                              field.value.to
-                                                          )
-                                                              .toISOString()
-                                                              .split("T")[0]
+                                                            field.value.to
+                                                        )
+                                                            .toISOString()
+                                                            .split("T")[0]
                                                         : ""
                                                 }
                                                 onChange={(e) => {
                                                     const date = e.target.value
                                                         ? new Date(
-                                                              e.target.value
-                                                          )
+                                                            e.target.value
+                                                        )
                                                         : null;
                                                     field.onChange({
                                                         ...field.value,

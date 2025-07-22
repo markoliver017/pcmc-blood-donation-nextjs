@@ -14,20 +14,20 @@ export default function MainSlider() {
     var settings = {
         dots: true,
         infinite: true,
-        speed: 5000,
+        speed: 2000,
         slidesToShow: 1,
         slidesToScroll: 1,
         autoplay: true, // Add this line
-        autoplaySpeed: 30000,
+        autoplaySpeed: 10000,
     };
     return (
         <>
             <div className="relative z-10">
                 <Slider className="h-full" {...settings}>
-                    <div className="h-140 relative group transition-all duration-700 hover:cursor-pointer">
+                    <div className="h-180 relative group transition-all duration-700 hover:cursor-pointer">
                         <Image
                             src="/slide-main.jpg"
-                            className="h-full w-full object-fill rounded-2xl group-hover:scale-105 transition-transform duration-700"
+                            className="h-full w-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-700"
                             width={1500}
                             height={1000}
                             alt="Philippine Children's Medical Center"
@@ -51,47 +51,47 @@ export default function MainSlider() {
                             quibusdam!
                         </p> */}
                     </div>
-                    <div className="h-140 relative group  transition-all duration-700 hover:cursor-pointer">
+                    <div className="h-180 relative group  transition-all duration-700 hover:cursor-pointer">
                         <Image
-                            src="/slide-main-1.jpg"
-                            className="h-full w-full object-fill rounded-2xl group-hover:scale-105 transition-transform duration-700"
+                            src="/bg-image-new-1.png"
+                            className="h-full w-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-700"
                             width={1500}
                             height={1000}
                             alt="Philippine Children's Medical Center"
                             title="Philippine Children's Medical Center"
                         />
                     </div>
-                    <div className="h-140 relative group  transition-all duration-700 hover:cursor-pointer">
+                    <div className="h-180 relative group  transition-all duration-700 hover:cursor-pointer">
                         <Image
-                            src="/slide-main-3.png"
-                            className="h-full w-full object-fill rounded-2xl group-hover:scale-105 transition-transform duration-700"
+                            src="/slider-main-2.png"
+                            className="h-full w-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-700"
                             width={1500}
                             height={1000}
                             alt="Philippine Children's Medical Center"
                             title="Philippine Children's Medical Center"
                         />
                     </div>
-                    <div className="h-140 relative group  transition-all duration-700 hover:cursor-pointer">
+                    {/* <div className="h-180 relative group  transition-all duration-700 hover:cursor-pointer">
                         <Image
-                            src="/slide-main-4.png"
-                            className="h-full w-full object-fill rounded-2xl group-hover:scale-105 transition-transform duration-700"
+                            src="/loader_main.gif"
+                            className="h-full w-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-700"
                             width={1500}
                             height={1000}
                             alt="Philippine Children's Medical Center"
                             title="Philippine Children's Medical Center"
                         />
-                    </div>
+                    </div> */}
 
-                    <div className="h-140 relative group  transition-all duration-700 hover:cursor-pointer">
-                        <Image
+                    {/* <div className="h-180 relative group  transition-all duration-700 hover:cursor-pointer"> */}
+                    {/* <Image
                             src="/slide-main-2.png"
                             className="h-full w-full object-fill rounded-2xl group-hover:scale-105 transition-transform duration-700"
                             width={1920}
                             height={654}
                             alt="Philippine Children's Medical Center"
                             title="Philippine Children's Medical Center"
-                        />
-                        {/* <p className="absolute top-3 right-20 z-50 bg-white/70 p-4 rounded w-140">
+                        /> */}
+                    {/* <p className="absolute top-3 right-20 z-50 bg-white/70 p-4 rounded w-140">
                             Lorem ipsum dolor sit amet consectetur adipisicing
                             elit. Odit temporibus laborum cum inventore
                             molestiae nisi tempora nostrum rem praesentium ea
@@ -108,7 +108,7 @@ export default function MainSlider() {
                             dolorum ipsam, impedit soluta obcaecati nesciunt
                             quibusdam!
                         </p> */}
-                    </div>
+                    {/* </div> */}
                 </Slider>
                 {/* <div className="absolute bottom-10 left-30 flex gap-5">
 

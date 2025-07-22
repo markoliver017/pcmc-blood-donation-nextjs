@@ -555,12 +555,11 @@ export async function storeEvent(formData) {
     if (overlappingEvent) {
         return {
             success: false,
-            message: `Event date conflict: Your agency has another event ("${
-                overlappingEvent?.title
-            }") scheduled on ${format(
-                overlappingEvent?.date,
-                "PP"
-            )} Please choose a date that's at least 90 days before or after this event.`,
+            message: `Event date conflict: Your agency has another event ("${overlappingEvent?.title
+                }") scheduled on ${format(
+                    overlappingEvent?.date,
+                    "PP"
+                )} Please choose a date that's at least 90 days before or after this event.`,
         };
     }
 
@@ -630,9 +629,12 @@ export async function storeEvent(formData) {
                                             agency_name: agency?.name || "",
                                             event_description: newEvent.description || "",
                                             event_organizer: user.name || user.email,
-                                            system_name: "PCMC Pediatric Blood Center",
-                                            support_email: "support@pcmc.gov.ph",
-                                            domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                                            system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                                            support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                                            support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
+                                            domain_url:
+                                                process.env.NEXT_PUBLIC_APP_URL ||
+                                                "",
                                         },
                                     },
                                 });
@@ -765,19 +767,17 @@ export async function updateEvent(id, formData) {
         return {
             success: false,
             type: "field_errors",
-            message: `Event date conflict: Your agency has another event "${
-                overlappingEvent?.title
-            }" scheduled on ${format(
-                overlappingEvent?.date,
-                "PP"
-            )}. Please choose a date that's at least 90 days before or after this event.`,
-            errors: {
-                date: `Event date conflict: Your agency has another event "${
-                    overlappingEvent?.title
+            message: `Event date conflict: Your agency has another event "${overlappingEvent?.title
                 }" scheduled on ${format(
                     overlappingEvent?.date,
                     "PP"
                 )}. Please choose a date that's at least 90 days before or after this event.`,
+            errors: {
+                date: `Event date conflict: Your agency has another event "${overlappingEvent?.title
+                    }" scheduled on ${format(
+                        overlappingEvent?.date,
+                        "PP"
+                    )}. Please choose a date that's at least 90 days before or after this event.`,
             },
         };
     }

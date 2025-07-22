@@ -67,6 +67,7 @@ const form_sections = [
 
 export default function NewCoordinatorForm({ role_name, agency_id }) {
     const params = useSearchParams();
+    const router = useRouter();
 
     const { data: user_role, isLoading: user_role_loading } = useQuery({
         queryKey: ["role", role_name],
@@ -103,7 +104,7 @@ export default function NewCoordinatorForm({ role_name, agency_id }) {
                 text: "Thank you for registering as a coordinator with one of our partner agencies. Your application has been submitted successfully and is now pending approval from the agency. You will receive a notification via email or system alert once your registration has been approved.",
                 icon: "success",
                 confirmButtonText: "I understand.",
-                onConfirm: () => window.location.reload(),
+                onConfirm: () => router.back(),
             });
         },
         onError: (error) => {
@@ -156,14 +157,14 @@ export default function NewCoordinatorForm({ role_name, agency_id }) {
             role_ids: [user_role?.id],
             profile_picture: null,
             image: null,
-            email: "mark29@email.com",
-            first_name: "Mark",
+            email: "",
+            first_name: "",
             middle_name: "",
-            last_name: "Roman",
-            gender: "male",
-            contact_number: "+639123456789",
-            password: "User@1234",
-            password_confirmation: "User@1234",
+            last_name: "",
+            gender: "",
+            contact_number: "",
+            password: "",
+            password_confirmation: "",
             comments: "",
         },
     });

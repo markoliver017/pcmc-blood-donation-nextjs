@@ -1,6 +1,7 @@
 import React from "react";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 import Link from "next/link";
+import Image from "next/image";
 
 const Footer = () => {
     return (
@@ -45,36 +46,44 @@ const Footer = () => {
 
                 {/* Right: Social + Contact */}
                 <div className="flex flex-col items-center gap-2">
-                    <div className="flex space-x-4">
+                    {/* <div className="flex space-x-4">
+                        <label className="text-xs font-semibold text-slate-600 dark:text-slate-300">Follow us: </label>
                         <a
-                            href="#"
+                            href="https://www.facebook.com/pcmc.pedbc"
                             aria-label="Facebook"
-                            className="flex items-center gap-1 text-gray-500 hover:text-blue-600 transition-colors text-lg"
+                            target="_blank"
+                            className="flex items-center gap-1 text-blue-600 transition-colors text-lg"
                         >
                             <FaFacebook />
                         </a>
                         <a
-                            href="#"
+                            href="https://pcmc.gov.ph/"
                             aria-label="Twitter"
+                            target="_blank"
                             className="flex items-center gap-1 text-gray-500 hover:text-blue-400 transition-colors text-lg"
                         >
-                            <FaTwitter />
+                            <Image
+                                src="/pcmc_logo.png"
+                                alt="PCMC Logo"
+                                width={20}
+                                height={20}
+                            />
                         </a>
-                        <a
-                            href="#"
-                            aria-label="Instagram"
-                            className="flex items-center gap-1 text-gray-500 hover:text-pink-500 transition-colors text-lg"
-                        >
-                            <FaInstagram />
-                        </a>
-                    </div>
+
+                    </div> */}
                     <div className="text-xs text-slate-600 dark:text-slate-300 mt-1">
-                        <span className="font-semibold">Contact:</span>{" "}
-                        info@pcmc.gov.ph
+                        <span className="font-semibold">📍 Pediatric Blood Center Contact Numbers:</span>{" "}
+                        <ul className="text-xs pl-5">
+                            <li>📱 Mobile: (0917) 8468167  / (0917) 846 8093</li>
+                            <li>☎️ Landline (Direct Line): (02) 8921 9781</li>
+                            <li>📞 Trunk Line: (02) 8588-9900 local 1165</li>
+                            <li>📧 Email: pcmcpedbcmbd@gmail.com</li>
+                            <li>📘 Facebook: <a className="hover:text-blue-500 hover:underline" href="https://www.facebook.com/pcmc.pedbc" target="_blank">PCMC Pedbc</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
-        </footer>
+        </footer >
     );
 };
 

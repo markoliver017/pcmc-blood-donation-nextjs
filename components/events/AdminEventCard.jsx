@@ -65,7 +65,7 @@ export default function AdminEventCard({
             );
         return (
             <div className="badge p-2 font-semibold text-xs badge-warning">
-                <ExclamationTriangleIcon /> {status}
+                <ExclamationTriangleIcon /> {formatFormalName(status)}
             </div>
         );
     };
@@ -133,15 +133,18 @@ export default function AdminEventCard({
                                     </div>
                                 </CardTitle>
                                 <div className="flex flex-wrap gap-2">
-                                    <span className="flex-items-center px-2 py-1 rounded bg-green-100 text-green-700 text-xs font-bold">
-                                        <CheckCircle className="w-4 h-4" />
-                                        {formatFormalName(event.status)}
-                                    </span>
-                                    {getRegStatusBadge(
-                                        formatFormalName(
-                                            event.registration_status
-                                        )
+                                    {event.status === "approved" ? (
+                                        <span className="flex-items-center px-2 py-1 rounded bg-green-100 text-green-700 text-xs font-bold">
+                                            <CheckCircle className="w-4 h-4" />
+                                            {formatFormalName(event.status)}
+                                        </span>
+                                    ) : (
+                                        <span className="flex-items-center px-2 py-1 rounded bg-red-100 text-red-700 text-xs font-bold">
+                                            <XIcon className="w-4 h-4" />
+                                            {formatFormalName(event.status)}
+                                        </span>
                                     )}
+                                    {getRegStatusBadge(event.registration_status)}
                                     <span className="flex-items-center px-2 py-1 rounded bg-red-100 text-red-700 text-xs font-bold">
                                         <Users className="w-4 h-4" />
                                         {event.time_schedules?.reduce(
@@ -177,7 +180,7 @@ export default function AdminEventCard({
                                     {parse(
                                         event.description?.length > 200
                                             ? event.description.slice(0, 200) +
-                                                  "..."
+                                            "..."
                                             : event.description
                                     )}
                                 </span>

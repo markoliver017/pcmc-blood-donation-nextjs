@@ -42,7 +42,7 @@ export async function up(queryInterface) {
                     </tr>
                     <tr>
                         <td style="padding: 8px 0; font-weight: bold; color: #374151;">Contact Number:</td>
-                        <td style="padding: 8px 0; color: #374151;">{{donor_contact}}</td>
+                        <td style="padding: 8px 0; color: #374151;">{{contact_number}}</td>
                     </tr>
                     <tr>
                         <td style="padding: 8px 0; font-weight: bold; color: #374151;">Blood Type:</td>
@@ -97,7 +97,7 @@ export async function up(queryInterface) {
             <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; display: inline-block;">
                 <p style="margin: 5px 0; color: #374151;">
                     <strong>Email:</strong> {{support_email}}<br>
-                    <strong>Phone:</strong> +63 2 8XXX XXXX<br>
+                    <strong>Phone:</strong> {{support_contact}}<br>
                     <strong>Portal:</strong> <a href="{{domain_url}}" style="color: #dc2626; text-decoration: none;">{{domain_url}}</a>
                 </p>
             </div>
@@ -128,7 +128,7 @@ A new donor has registered with {{agency_name}} and is awaiting your approval. P
 DONOR INFORMATION:
 - Donor Name: {{donor_name}}
 - Email Address: {{donor_email}}
-- Contact Number: {{donor_contact}}
+- Contact Number: {{contact_number}}
 - Blood Type: {{blood_type}}
 - Registration Date: {{registration_date}}
 
@@ -146,7 +146,7 @@ Visit {{domain_url}}/portal/hosts to manage donor registrations.
 NEED HELP?
 If you have any questions about donor management or need assistance, please contact us:
 - Email: {{support_email}}
-- Phone: +63 2 8XXX XXXX
+- Phone: {{support_contact}}
 - Portal: {{domain_url}}
 
 Thank you for your continued partnership in our blood donation initiative.
@@ -161,11 +161,12 @@ For support, contact us at {{support_email}}`,
                 "agency_name",
                 "donor_name",
                 "donor_email",
-                "donor_contact",
+                "contact_number",
                 "blood_type",
                 "registration_date",
                 "system_name",
                 "support_email",
+                "support_contact",
                 "domain_url",
             ]),
             is_active: true,

@@ -12,39 +12,39 @@ export default function OfficeHours() {
     const regularHours = [
         {
             day: "Monday",
-            hours: "8:00 AM - 6:00 PM",
+            hours: "8:00 AM - 5:00 PM",
             status: "open",
             services: ["Blood Donation", "Consultation", "Emergency Services"],
         },
         {
             day: "Tuesday",
-            hours: "8:00 AM - 6:00 PM",
+            hours: "8:00 AM - 5:00 PM",
             status: "open",
             services: ["Blood Donation", "Consultation", "Emergency Services"],
         },
         {
             day: "Wednesday",
-            hours: "8:00 AM - 6:00 PM",
+            hours: "8:00 AM - 5:00 PM",
             status: "open",
             services: ["Blood Donation", "Consultation", "Emergency Services"],
         },
         {
             day: "Thursday",
-            hours: "8:00 AM - 6:00 PM",
+            hours: "8:00 AM - 5:00 PM",
             status: "open",
             services: ["Blood Donation", "Consultation", "Emergency Services"],
         },
         {
             day: "Friday",
-            hours: "8:00 AM - 6:00 PM",
+            hours: "8:00 AM - 5:00 PM",
             status: "open",
             services: ["Blood Donation", "Consultation", "Emergency Services"],
         },
         {
             day: "Saturday",
-            hours: "8:00 AM - 4:00 PM",
-            status: "limited",
-            services: ["Blood Donation", "Emergency Services"],
+            hours: "Closed",
+            status: "closed",
+            services: ["Emergency Services Only"],
         },
         {
             day: "Sunday",

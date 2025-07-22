@@ -33,7 +33,7 @@ export default function VerifyCoordinator({
             return res;
         },
         onSuccess: (data) => {
-            console.log("onSuccess", data);
+            queryClient.invalidateQueries({ queryKey: ["coordinator"] });
             queryClient.invalidateQueries({ queryKey: ["coordinators"] });
             queryClient.invalidateQueries({
                 queryKey: ["verified-coordinators"],

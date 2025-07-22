@@ -606,11 +606,12 @@ export async function storeAgency(formData) {
                             user_name: `${newUser.first_name} ${newUser.last_name}`,
                             agency_name: newAgency.name,
                             agency_address: newAgency.address,
-                            system_name: "Blood Donation Management System",
-                            support_email: "support@pcmc.gov.ph",
+                            system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                            support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                            support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
                             domain_url:
                                 process.env.NEXT_PUBLIC_APP_URL ||
-                                "https://blood-donation.pcmc.gov.ph",
+                                "",
                             registration_date: new Date().toLocaleDateString(),
                         },
                     },
@@ -665,12 +666,12 @@ export async function storeAgency(formData) {
                                             "Not provided",
                                         registration_date:
                                             new Date().toLocaleDateString(),
-                                        system_name:
-                                            "Blood Donation Management System",
-                                        support_email: "support@pcmc.gov.ph",
+                                        system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                                        support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                                        support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
                                         domain_url:
                                             process.env.NEXT_PUBLIC_APP_URL ||
-                                            "https://blood-donation.pcmc.gov.ph",
+                                            "",
                                     },
                                 },
                             });
@@ -910,11 +911,12 @@ export async function updateAgencyStatus(formData) {
                                 agency_address: updatedAgency.agency_address,
                                 agency_contact: updatedAgency.contact_number,
                                 approval_date: new Date().toLocaleDateString(),
-                                system_name: "PCMC Pediatric Blood Center",
-                                support_email: "support@pcmc.gov.ph",
+                                system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                                support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                                support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
                                 domain_url:
                                     process.env.NEXT_PUBLIC_APP_URL ||
-                                    "https://blood-donation.pcmc.gov.ph",
+                                    "",
                                 approved_by: `${user?.email}`,
                             },
                         },
@@ -985,11 +987,12 @@ export async function updateAgencyStatus(formData) {
                                 rejection_reason:
                                     data.remarks ||
                                     "Application requirements not met",
-                                system_name: "PCMC Pediatric Blood Center",
-                                support_email: "support@pcmc.gov.ph",
+                                system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                                support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                                support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
                                 domain_url:
                                     process.env.NEXT_PUBLIC_APP_URL ||
-                                    "https://blood-donation.pcmc.gov.ph",
+                                    "",
                                 rejected_by: `${user?.name}`,
                             },
                         },
@@ -1190,11 +1193,12 @@ export async function storeCoordinator(formData) {
                             user_last_name: newUser.last_name,
                             contact_number: newCoordinator.contact_number,
                             registration_date: new Date().toLocaleDateString(),
-                            system_name: "PCMC Pediatric Blood Center",
-                            support_email: "support@pcmc.gov.ph",
+                            system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                            support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                            support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
                             domain_url:
                                 process.env.NEXT_PUBLIC_APP_URL ||
-                                "https://blood-donation.pcmc.gov.ph",
+                                "",
                         },
                     },
                 });
@@ -1269,11 +1273,12 @@ export async function storeCoordinator(formData) {
                                     newCoordinator.contact_number,
                                 registration_date:
                                     new Date().toLocaleDateString(),
-                                system_name: "PCMC Pediatric Blood Center",
-                                support_email: "support@pcmc.gov.ph",
+                                system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                                support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                                support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
                                 domain_url:
                                     process.env.NEXT_PUBLIC_APP_URL ||
-                                    "https://blood-donation.pcmc.gov.ph",
+                                    "",
                             },
                         },
                     });

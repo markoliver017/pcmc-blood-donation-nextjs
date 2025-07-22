@@ -211,12 +211,12 @@ export async function updateCoordinatorStatus(formData) {
                 }
             );
             if (currentCoordinatorStatus === "for approval" && coordinatorWithDetails) {
-                
+
                 // 1. Handle approved application. Send system notification and email to the registering coordinator (template only) and notify all admins
-                if(data.status === "activated"){
+                if (data.status === "activated") {
 
                     try {
-    
+
                         await sendNotificationAndEmail({
                             userIds: coordinatorWithDetails?.user_id,
                             notificationData: {
@@ -240,15 +240,16 @@ export async function updateCoordinatorStatus(formData) {
                                     contact_number:
                                         coordinatorWithDetails.contact_number,
                                     approval_date: new Date().toLocaleDateString(),
-                                    system_name: "PCMC Pediatric Blood Center",
-                                    support_email: "support@pcmc.gov.ph",
+                                    system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                                    support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                                    support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
                                     domain_url:
                                         process.env.NEXT_PUBLIC_APP_URL ||
-                                        "https://blood-donation.pcmc.gov.ph",
+                                        "",
                                 },
                             },
                         });
-                        
+
                     } catch (err) {
                         console.error("Coordinator approval email failed:", err);
                         // Don't fail the main operation if email fails
@@ -290,7 +291,7 @@ export async function updateCoordinatorStatus(formData) {
                 }
 
                 // 2. Handle rejection: send email to coordinator, system notification to all admins
-                if ( data.status === "rejected") {
+                if (data.status === "rejected") {
                     try {
                         const coordinatorWithDetails = await AgencyCoordinator.findByPk(
                             data.id,
@@ -316,9 +317,12 @@ export async function updateCoordinatorStatus(formData) {
                                         approval_status: "Rejected",
                                         approval_date: new Date().toLocaleDateString(),
                                         approval_reason: data.remarks || "Application requirements not met.",
-                                        system_name: "PCMC Pediatric Blood Center",
-                                        support_email: "support@pcmc.gov.ph",
-                                        domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                                        system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                                        support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                                        support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
+                                        domain_url:
+                                            process.env.NEXT_PUBLIC_APP_URL ||
+                                            "",
                                     },
                                 },
                             });
@@ -360,8 +364,8 @@ export async function updateCoordinatorStatus(formData) {
                     }
                 }
 
-                
-            }else if(currentCoordinatorStatus === "activated" && data.status === "deactivated"){
+
+            } else if (currentCoordinatorStatus === "activated" && data.status === "deactivated") {
                 // 3. Handle deactivation: send email to coordinator, system notification to all admins
                 if (data.status === "deactivated") {
                     try {
@@ -377,9 +381,12 @@ export async function updateCoordinatorStatus(formData) {
                                     user_last_name: coordinatorWithDetails.user.last_name,
                                     deactivation_date: new Date().toLocaleDateString(),
                                     deactivation_reason: data.remarks || "Account deactivated by agency/admin.",
-                                    system_name: "PCMC Pediatric Blood Center",
-                                    support_email: "support@pcmc.gov.ph",
-                                    domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                                    system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                                    support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                                    support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
+                                    domain_url:
+                                        process.env.NEXT_PUBLIC_APP_URL ||
+                                        "",
                                 },
                             },
                         });
@@ -420,7 +427,7 @@ export async function updateCoordinatorStatus(formData) {
                     }
                 }
 
-            }else if(currentCoordinatorStatus === "deactivated" && data.status === "activated"){
+            } else if (currentCoordinatorStatus === "deactivated" && data.status === "activated") {
                 // 4. Handle reactivation: send email to coordinator, system notification to all admins
                 if (currentCoordinatorStatus === "deactivated" && data.status === "activated") {
                     try {
@@ -435,9 +442,12 @@ export async function updateCoordinatorStatus(formData) {
                                     user_first_name: coordinatorWithDetails.user.first_name,
                                     user_last_name: coordinatorWithDetails.user.last_name,
                                     reactivation_date: new Date().toLocaleDateString(),
-                                    system_name: "PCMC Pediatric Blood Center",
-                                    support_email: "support@pcmc.gov.ph",
-                                    domain_url: process.env.NEXT_PUBLIC_APP_URL || "https://blood-donation.pcmc.gov.ph",
+                                    system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                                    support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                                    support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
+                                    domain_url:
+                                        process.env.NEXT_PUBLIC_APP_URL ||
+                                        "",
                                 },
                             },
                         });

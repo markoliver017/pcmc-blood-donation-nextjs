@@ -375,7 +375,7 @@ export default function CreateEventForm({ agency }) {
                                                         className={cn(
                                                             "pl-3 text-left font-normal mt-1 text-xl dark:!bg-[#181717] hover:!text-slate-300",
                                                             !field.value &&
-                                                                "text-muted-foreground"
+                                                            "text-muted-foreground"
                                                         )}
                                                         tabIndex={2}
                                                     >
@@ -403,8 +403,8 @@ export default function CreateEventForm({ agency }) {
                                                     selected={
                                                         field.value
                                                             ? new Date(
-                                                                  field.value
-                                                              )
+                                                                field.value
+                                                            )
                                                             : undefined
                                                     }
                                                     month={calendarMonth}
@@ -439,11 +439,11 @@ export default function CreateEventForm({ agency }) {
                                                             bookedEvents
                                                         )
                                                             ? bookedEvents?.map(
-                                                                  (event) =>
-                                                                      new Date(
-                                                                          event.date
-                                                                      )
-                                                              )
+                                                                (event) =>
+                                                                    new Date(
+                                                                        event.date
+                                                                    )
+                                                            )
                                                             : []),
                                                         // (date) => isWithin90DaysOfBooked(date, bookedEvents),
                                                     ]}
@@ -452,11 +452,11 @@ export default function CreateEventForm({ agency }) {
                                                             bookedEvents
                                                         )
                                                             ? bookedEvents?.map(
-                                                                  (event) =>
-                                                                      new Date(
-                                                                          event.date
-                                                                      )
-                                                              )
+                                                                (event) =>
+                                                                    new Date(
+                                                                        event.date
+                                                                    )
+                                                            )
                                                             : [],
                                                     }}
                                                     modifiersClassNames={{
@@ -780,7 +780,7 @@ export default function CreateEventForm({ agency }) {
                     </CardContent>
                 </Card>
             </form>
-            <FormLogger watch={watch} errors={errors} data={agency} />
+            {/* <FormLogger watch={watch} errors={errors} data={agency} /> */}
         </Form>
     );
 }
