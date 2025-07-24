@@ -195,7 +195,7 @@ export default function Dashboard() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                            <div>
+                            <div className="h-96 overflow-y-auto">
                                 <WidgetEventCalendar />
                             </div>
                             <div>

@@ -4,7 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { useQuery } from "@tanstack/react-query";
-import { getAgencyId, getAllEvents } from "@/action/hostEventAction";
+import { getAgencyId, getDonorEventCalendar } from "@/action/hostEventAction";
 import parse from "html-react-parser";
 import { CalendarCheck2 } from "lucide-react";
 import Skeleton_line from "@components/ui/skeleton_line";
@@ -16,8 +16,8 @@ export default function WidgetEventCalendar() {
     const session = useSession();
     // console.log("session", session);
     const { data: events, isLoading } = useQuery({
-        queryKey: ["all_event_schedules"],
-        queryFn: getAllEvents,
+        queryKey: ["agency_event_schedules"],
+        queryFn: getDonorEventCalendar,
     });
 
     const { data: agency_id, isLoading: agencyIdIsLoading } = useQuery({
@@ -35,7 +35,7 @@ export default function WidgetEventCalendar() {
             <CardHeader>
                 <CardTitle></CardTitle>
             </CardHeader>
-            <CardContent className="h-96 overflow-y-auto">
+            <CardContent>
                 <div className="h-full">
                     <FullCalendar
                         plugins={[dayGridPlugin, timeGridPlugin]}
@@ -68,50 +68,31 @@ export default function WidgetEventCalendar() {
                             <div className="flex flex-col text-left gap-1 pt-5 rounded-2xl p-2 truncate relative cursor-pointer">
                                 {/* <CalendarCheck2 size={20} /> */}
                                 {eventInfo.event.title}
-                                {currentRole === "Admin" ? (
-                                    <>
-                                        <span>
-                                            {
-                                                eventInfo.event.extendedProps
-                                                    .agency_name
-                                            }
-                                        </span>
-                                        <div className="absolute w-7 h-7 top-0 right-0 ">
-                                            <Image
-                                                src={
-                                                    eventInfo.event
-                                                        .extendedProps
-                                                        .agency_avatar
-                                                }
-                                                alt={
-                                                    eventInfo.event
-                                                        .extendedProps
-                                                        .agency_name
-                                                }
-                                                fill
-                                                className="object-cover rounded-full"
-                                            />
-                                        </div>
-                                    </>
-                                ) : eventInfo.event.extendedProps
-                                      .isCurrentAgency ? (
+                                <>
+                                    <span>
+                                        {
+                                            eventInfo.event.extendedProps
+                                                .agency_name
+                                        }
+                                    </span>
                                     <div className="absolute w-7 h-7 top-0 right-0 ">
                                         <Image
                                             src={
-                                                eventInfo.event.extendedProps
+                                                eventInfo.event
+                                                    .extendedProps
                                                     .agency_avatar
                                             }
                                             alt={
-                                                eventInfo.event.extendedProps
+                                                eventInfo.event
+                                                    .extendedProps
                                                     .agency_name
                                             }
                                             fill
                                             className="object-cover rounded-full"
                                         />
                                     </div>
-                                ) : (
-                                    ""
-                                )}
+                                </>
+
                             </div>
                         )}
                         headerToolbar={{
@@ -136,7 +117,7 @@ export default function WidgetEventCalendar() {
                         }
                         height="100%"
                         contentHeight="auto"
-                        // aspectRatio={3} //Sets the aspect ratio of the calendar. A higher value will make the calendar wider, while a lower value will make it taller.
+                    // aspectRatio={3} //Sets the aspect ratio of the calendar. A higher value will make the calendar wider, while a lower value will make it taller.
                     />
                 </div>
             </CardContent>

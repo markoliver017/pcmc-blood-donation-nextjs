@@ -102,16 +102,19 @@ export default function CreateEventForm({ agency }) {
                 queryKey: ["all_event_schedules"],
             });
             queryClient.invalidateQueries({
+                queryKey: ["agency-dashboard"],
+            });
+            queryClient.invalidateQueries({
                 queryKey: ["agency_events"],
             });
             SweetAlert({
-                title: "New Blood Donation Event",
-                text: "You have successfully created a new blood donation event.",
+                title: "Event Request Submitted",
+                text: "Your blood donation event request has been successfully submitted. The Mobile Blood Donation team will review your request within 2-3 business days. You can track the status of your request in the 'For Approval' tab.",
                 icon: "success",
-                confirmButtonText: "Okay",
+                confirmButtonText: "I understand",
                 onConfirm: () => {
                     reset();
-                    router.push("/portal/hosts/events?tab=for-approval");
+                    router.back();
                 },
             });
         },
@@ -141,9 +144,9 @@ export default function CreateEventForm({ agency }) {
         resolver: zodResolver(bloodDonationEventSchema),
         defaultValues: {
             agency_id: agency?.id,
-            title: "Sample Title ",
+            title: "",
             description:
-                '<p><span style="font-size: 24px"><em>This is a sample description</em></span></p>',
+                "",
             date: format(addDays(new Date(), 1), "yyyy-MM-dd"),
             file: null,
             file_url: null,
@@ -176,11 +179,11 @@ export default function CreateEventForm({ agency }) {
 
     const onSubmit = async (formData) => {
         SweetAlert({
-            title: "Confirmation",
-            text: "Are you sure you want to request a new Blood Donation Event?",
+            title: "Submit Blood Donation Event Request",
+            text: "Your event request will be sent to the Mobile Blood Donation team for review and approval. Would you like to proceed?",
             icon: "question",
             showCancelButton: true,
-            confirmButtonText: "Confirm",
+            confirmButtonText: "Submit Request",
             cancelButtonText: "Cancel",
             onConfirm: async () => {
                 setIsUploading(true);

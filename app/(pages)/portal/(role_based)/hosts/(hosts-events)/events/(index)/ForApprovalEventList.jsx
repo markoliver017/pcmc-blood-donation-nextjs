@@ -85,10 +85,7 @@ export default function ForApprovalEventList({
                         <CardContent className="flex flex-wrap items-center justify-center gap-4 px-2 md:px-15 transform transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-110">
                             <div>
                                 <CustomAvatar
-                                    avatar={
-                                        event?.file_url ||
-                                        "/upload-event-photo.png"
-                                    }
+                                    avatar={event?.file_url || event?.agency?.file_url || "/default_company_avatar.png"}
                                     className={clsx(
                                         "flex-none w-[50px] h-[50px]",
                                         avatarClassName

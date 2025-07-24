@@ -13,7 +13,7 @@ import React from "react";
 import { FaArrowRight } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 
-import { getAdminDashboard } from "@/action/adminEventAction";
+import { getAdminDashboard, getEventsByStatus } from "@/action/adminEventAction";
 import { BiBuildings } from "react-icons/bi";
 import ForApprovalEventList from "./(admin-events)/events/(index)/ForApprovalEventList";
 import ForApprovalAgencyList from "./(agencies)/agencies/(index)/ForApprovalAgencyList";
@@ -42,11 +42,12 @@ export default function Dashboard() {
         staleTime: 5 * 60 * 1000,
         cacheTime: 5 * 60 * 1000,
     });
-    // const { data } = useQuery({
-    //     queryKey: ["getLastDonationExamStatus"],
-    //     queryFn: async () =>
-    //         getLastDonationExamData("354043dd-2394-42a6-8b7f-3e954d5835ce"),
-    // });
+
+    const { data: forApprovalEvents, isLoading: eventsIsFetching } = useQuery({
+        queryKey: ["all_events", "for approval"],
+        queryFn: async () => getEventsByStatus("for approval"),
+        staleTime: 0,
+    });
 
     return (
         <div className="space-y-6">
@@ -121,7 +122,7 @@ export default function Dashboard() {
                             {dashboardIsLoading ? (
                                 <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
                             ) : (
-                                <span>{dashboard?.eventCount || "0"}</span>
+                                <span>{dashboard?.approvedEventCount || "0"}</span>
                             )}
                         </h2>
                         <Link
@@ -191,11 +192,11 @@ export default function Dashboard() {
                                     href="/portal/admin/events?tab=for-approval"
                                     className="btn btn-block justify-between text-orange-800 dark:text-orange-400"
                                 >
-                                    For Approval - Blood Drives
+                                    For Approval - Blood Drives ({forApprovalEvents?.length || 0})
                                     <FaArrowRight />
                                 </Link>
                                 <div className="max-h-72 overflow-y-auto mt-2 flex flex-col gap-4 p-2">
-                                    <ForApprovalEventList target="_blank" />
+                                    <ForApprovalEventList events={forApprovalEvents} eventsIsFetching={eventsIsFetching} />
                                 </div>
                             </div>
                             <div className="divider" />

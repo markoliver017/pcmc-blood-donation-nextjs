@@ -1,11 +1,14 @@
 import { useRef } from "react";
 import { toast } from "react-toastify";
 import { notifyRegistrationOpen } from "@/action/donorAction";
+import { Mail } from "lucide-react";
+import { useToastStore } from "@/store/toastStore";
 
 export const NotifyEventRegistration = ({ donorsData, eventData }) => {
     const toastId = useRef(null);
     const failedDonors = useRef([]);
     const donors = donorsData || [];
+    const containerId = useToastStore.getState().containerId;
 
     const notify = () => {
         toastId.current = toast.info(
@@ -13,31 +16,31 @@ export const NotifyEventRegistration = ({ donorsData, eventData }) => {
             {
                 autoClose: false,
                 position: "bottom-right",
+                containerId
             }
         );
         donors.forEach((donor, index) => {
             (async () => {
                 const res = await notifyRegistrationOpen(donor, eventData);
+                console.log("Notification response:", res);
                 if (!res.success) {
                     failedDonors.current.push(donor);
                     toast.update(toastId.current, {
-                        render: `Sending ${donor?.user?.full_name}... ${
-                            index + 1
-                        } out of ${donors.length} (Failed: ${
-                            failedDonors.current.length
-                        })`,
+                        render: `Sending ${donor?.user?.full_name}... ${index + 1
+                            } out of ${donors.length} (Failed: ${failedDonors.current.length
+                            })`,
                         type: "error",
                         autoClose: false,
+                        containerId
                     });
                 } else {
                     toast.update(toastId.current, {
-                        render: `Sending  ${donor?.user?.full_name}... ${
-                            index + 1
-                        } out of ${donors.length} (Failed: ${
-                            failedDonors.current.length
-                        })`,
+                        render: `Sending  ${donor?.user?.full_name}... ${index + 1
+                            } out of ${donors.length} (Failed: ${failedDonors.current.length
+                            })`,
                         type: "info",
                         autoClose: false,
+                        containerId
                     });
                 }
                 if (index === donors.length - 1) {
@@ -71,6 +74,7 @@ export const NotifyEventRegistration = ({ donorsData, eventData }) => {
                                 ? "success"
                                 : "warning",
                         autoClose: false,
+                        containerId
                     });
                 }
             })();
@@ -85,6 +89,7 @@ export const NotifyEventRegistration = ({ donorsData, eventData }) => {
             {
                 autoClose: false,
                 position: "bottom-right",
+                containerId
             }
         );
         failedDonorNotif.forEach((donor, index) => {
@@ -92,19 +97,19 @@ export const NotifyEventRegistration = ({ donorsData, eventData }) => {
                 const res = await notifyRegistrationOpen(donor, eventData);
                 if (!res.success) {
                     toast.update(newToastId, {
-                        render: `Resending... ${index + 1} out of ${
-                            failedDonorNotif.length
-                        } (Failed: ${failedDonorNotif.length - index - 1})`,
+                        render: `Resending... ${index + 1} out of ${failedDonorNotif.length
+                            } (Failed: ${failedDonorNotif.length - index - 1})`,
                         type: "info",
                         autoClose: false,
+                        containerId
                     });
                 } else {
                     toast.update(newToastId, {
-                        render: `Resending... ${index + 1} out of ${
-                            failedDonorNotif.length
-                        }`,
+                        render: `Resending... ${index + 1} out of ${failedDonorNotif.length
+                            }`,
                         type: "info",
                         autoClose: false,
+                        containerId
                     });
                 }
                 if (index === failedDonorNotif.length - 1) {
@@ -112,6 +117,7 @@ export const NotifyEventRegistration = ({ donorsData, eventData }) => {
                         render: `Resend complete!`,
                         type: "success",
                         autoClose: true,
+                        containerId
                     });
                 }
             })();
@@ -125,6 +131,7 @@ export const NotifyEventRegistration = ({ donorsData, eventData }) => {
             disabled={!donorsData}
             onClick={notify}
         >
+            <Mail className="h-4 w-4" />
             Notify Donors ({donorsData?.length})
         </button>
     );

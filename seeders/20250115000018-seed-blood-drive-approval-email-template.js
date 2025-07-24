@@ -1,15 +1,16 @@
 // npx sequelize-cli db:seed --seed 20250115000018-seed-blood-drive-approval-email-template.js
 "use strict";
+//
 
 /** @type {import('sequelize-cli').Migration} */
 export async function up(queryInterface) {
-    const emailTemplates = [
-        {
-            name: "Blood Donation Event Approval/Rejection Notification",
-            category: "BLOOD_DRIVE_APPROVAL",
-            subject:
-                "🩸 Your Blood Donation Event '{{event_name}}' has been {{approval_status}}",
-            html_content: `
+  const emailTemplates = [
+    {
+      name: "Blood Donation Event Approval/Rejection Notification",
+      category: "BLOOD_DRIVE_APPROVAL",
+      subject:
+        "🩸 Your Blood Donation Event '{{event_name}}' has been {{approval_status}}",
+      html_content: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
   <div style="background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
     <div style="background-color: #dc2626; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
@@ -77,7 +78,7 @@ export async function up(queryInterface) {
   </div>
 </div>
 `,
-            text_content: `Dear {{event_organizer}},
+      text_content: `Dear {{event_organizer}},
 
 Your blood donation event '{{event_name}}' has been {{approval_status}} by the admin on {{approval_date}}.
 
@@ -102,36 +103,36 @@ Every donation counts. Every event matters.
 ---
 This is an automated message. Please do not reply to this email.
 For support, contact us at {{support_email}}`,
-            dynamic_fields: JSON.stringify([
-                "event_name",
-                "event_date",
-                "agency_name",
-                "event_organizer",
-                "event_description",
-                "approval_status",
-                "approval_date",
-                "approval_reason",
-                "system_name",
-                "support_email",
-                "domain_url",
-            ]),
-            is_active: true,
-            created_by: null,
-            updated_by: null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-    ];
+      dynamic_fields: JSON.stringify([
+        "event_name",
+        "event_date",
+        "agency_name",
+        "event_organizer",
+        "event_description",
+        "approval_status",
+        "approval_date",
+        "approval_reason",
+        "system_name",
+        "support_email",
+        "domain_url",
+      ]),
+      is_active: true,
+      created_by: null,
+      updated_by: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ];
 
-    await queryInterface.bulkInsert("email_templates", emailTemplates, {});
+  await queryInterface.bulkInsert("email_templates", emailTemplates, {});
 }
 
 export async function down(queryInterface) {
-    await queryInterface.bulkDelete(
-        "email_templates",
-        {
-            category: "BLOOD_DRIVE_APPROVAL",
-        },
-        {}
-    );
+  await queryInterface.bulkDelete(
+    "email_templates",
+    {
+      category: "BLOOD_DRIVE_APPROVAL",
+    },
+    {}
+  );
 }

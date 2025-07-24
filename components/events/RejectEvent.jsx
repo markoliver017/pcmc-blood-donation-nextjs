@@ -45,6 +45,7 @@ export default function RejectEvent({ eventId, className = "btn-error" }) {
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["all_events"] });
+            queryClient.invalidateQueries({ queryKey: ["agency_events"] });
 
             setOpen(false);
             SweetAlert({
@@ -143,7 +144,7 @@ export default function RejectEvent({ eventId, className = "btn-error" }) {
                                 </FormItem>
                             )}
                         />
-                        <div className="flex justify-end">
+                        <div className="flex justify-end gap-2">
                             <button
                                 type="button"
                                 onClick={() => {

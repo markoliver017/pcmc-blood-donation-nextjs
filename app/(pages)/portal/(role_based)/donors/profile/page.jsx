@@ -5,12 +5,9 @@ import {
 } from "@tanstack/react-query";
 import { getUser } from "@/action/userAction";
 import { auth } from "@lib/auth";
-import { fetchRoles } from "@/action/roleAction";
-import UserProfileTabs from "@components/profile/UserProfileTabs";
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 import { User } from "lucide-react";
-import OrganizerProfile from "@components/organizers/OrganizerProfile";
-import DonorProfile from "@components/donors/DonorProfilePage";
+
 import DonorProfilePage from "@components/donors/DonorProfilePage";
 
 export default async function Page() {

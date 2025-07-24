@@ -27,10 +27,12 @@ import {
 } from "@lib/utils/notificationTypes";
 import AgencyNotificationModal from "@components/notification/AgencyNotificationModal";
 import { useRouter } from "next/navigation";
+import NotificationItem from "./NotificationItem";
 
 export default function NotificationComponent() {
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
+    const [notification, setNotification] = useState(null);
     const [isAgencyModalOpen, setIsAgencyModalOpen] = useState(false);
 
     const [activeTab, setActiveTab] = useState("all");
@@ -120,29 +122,39 @@ export default function NotificationComponent() {
         const config = getNotificationTypeConfig(notification.type);
         console.log("config", config);
         if (config.actionUrl && config.actionUrl !== "#") {
+
             if (config?.category === "AGENCY_APPROVAL") {
                 router.push(
                     currentLoggedInRole?.url +
                     config.actionUrl +
                     notification?.reference_id
                 );
-            }
+            } else
 
-            if (config?.category === "AGENCY_COORDINATOR_APPROVAL") {
-                router.push(
-                    currentLoggedInRole?.url +
-                    config.actionUrl +
-                    notification?.reference_id
-                );
-            }
+                if (config?.category === "AGENCY_COORDINATOR_APPROVAL") {
+                    router.push(
+                        currentLoggedInRole?.url +
+                        config.actionUrl +
+                        notification?.reference_id
+                    );
+                } else
 
-            if (config?.category === "AGENCY_DONOR_APPROVAL") {
-                router.push(
-                    currentLoggedInRole?.url +
-                    config.actionUrl +
-                    notification?.reference_id
-                );
-            }
+                    if (config?.category === "AGENCY_DONOR_APPROVAL") {
+                        router.push(
+                            currentLoggedInRole?.url +
+                            config.actionUrl +
+                            notification?.reference_id
+                        );
+                    } else {
+                        router.push(
+                            currentLoggedInRole?.url +
+                            config.actionUrl +
+                            notification?.reference_id
+                        );
+                    }
+        } else {
+            setNotification(notification);
+            setIsAgencyModalOpen(true);
         }
     };
 
@@ -223,8 +235,8 @@ export default function NotificationComponent() {
                                 >
                                     <RefreshCw
                                         className={`w-4 h-4 ${notificationsLoading
-                                                ? "animate-spin"
-                                                : ""
+                                            ? "animate-spin"
+                                            : ""
                                             }`}
                                     />
                                 </Button>
@@ -376,7 +388,15 @@ export default function NotificationComponent() {
                 setIsOpen={setIsAgencyModalOpen}
                 modal={true}
             >
-                This is Agency Notification Modal
+                {notification && (
+                    <NotificationItem
+                        notification={notification}
+                        onAction={
+                            handleNotificationAction
+                        }
+                        viewAction={false}
+                    />
+                )}
             </AgencyNotificationModal>
         </>
     );

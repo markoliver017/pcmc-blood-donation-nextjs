@@ -6,6 +6,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@components/ui/dialog";
+import { AlertCircle } from "lucide-react";
+import { GiRingingBell } from "react-icons/gi";
 
 export default function AgencyNotificationModal({
     isOpen,
@@ -15,11 +17,15 @@ export default function AgencyNotificationModal({
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen} modal={true}>
             <DialogContent
-                className={`min-w-full md:min-w-8/10 2xl:min-w-7/10  max-h-97/100 overflow-y-scroll pt-10 `}
+                className={`min-w-full md:min-w-96  max-h-97/100 overflow-y-scroll `}
                 tabIndex={-1}
             >
-                <DialogHeader className="hidden">
-                    <DialogTitle>Title</DialogTitle>
+                <DialogHeader>
+                    <DialogTitle>
+                        <span className="flex-items-center">
+                            <GiRingingBell /> Notification Details
+                        </span>
+                    </DialogTitle>
                 </DialogHeader>
                 {children}
             </DialogContent>

@@ -10,6 +10,7 @@ import moment from "moment";
 import { getBookedAppointmentsByDonor } from "@/action/donorAppointmentAction";
 import EventCardList from "@components/events/EventCardList";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import WidgetEventCalendar from "@components/organizers/WidgetEventCalendar";
 
 export default function BloodDriveEvents() {
     const [isLoading, setIsLoading] = useState(false);
@@ -165,7 +166,7 @@ export default function BloodDriveEvents() {
                             Event Calendar
                         </h2>
                         <div className="flex-1 overflow-auto">
-                            <AllEventCalendar />
+                            <WidgetEventCalendar />
                         </div>
                     </div>
                 </TabsContent>
@@ -208,7 +209,7 @@ export default function BloodDriveEvents() {
                             Event Calendar
                         </h2>
                         <div className="flex-1 overflow-auto">
-                            <AllEventCalendar />
+                            <WidgetEventCalendar />
                         </div>
                     </div>
                 </TabsContent>

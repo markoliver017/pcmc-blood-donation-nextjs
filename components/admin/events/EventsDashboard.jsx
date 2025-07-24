@@ -205,7 +205,7 @@ export default function EventsDashboard() {
             value: dashboardData?.activeEventCount || 0,
             icon: TrendingUp,
             color: "bg-green-500",
-            subtitle: "All ongoing & upcoming",
+            subtitle: "Approved events with ongoing registrations",
         },
         {
             title: "Pending Approval",

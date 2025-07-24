@@ -5,9 +5,13 @@ import React from "react";
 import ErrorPage from "./ErrorPage";
 import ErrorModal from "@components/layout/ErrorModal";
 import ClientPortal from "./ClientPortal";
+import { headers } from "next/headers";
 
 export default async function PortalLayout({ children }) {
     const session = await auth();
+    const headerList = await headers();
+    const pathname = headerList.get("x-current-path");
+    console.log("Portal layout pathname", pathname);
 
     if (!session || !session.user) redirect("/login");
 
@@ -159,6 +163,10 @@ export default async function PortalLayout({ children }) {
             if (!donor) {
                 redirect("/");
             }
+        }
+    } else {
+        if (pathname !== "/portal") {
+            redirect("/portal");
         }
     }
 

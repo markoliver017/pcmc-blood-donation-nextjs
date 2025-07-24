@@ -34,6 +34,7 @@ export default function VerifyEvent({
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["all_events"] });
+            queryClient.invalidateQueries({ queryKey: ["agency_events"] });
 
             SweetAlert({
                 title: data?.title,

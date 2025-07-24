@@ -85,31 +85,31 @@ export default function ShowEvents({ eventId }) {
 
                     {(currentRole == "Organizer" ||
                         currentRole == "Agency Administrator") && (
-                        <div className="flex-items-center">
-                            {event.status == "for approval" ? (
-                                <Link
-                                    href={`/portal/hosts/events/${event.id}/edit`}
-                                >
-                                    <button className="btn btn-warning">
-                                        <Pencil className="w-4 h-4" />
-                                        <span>Edit</span>
-                                    </button>
-                                </Link>
-                            ) : (
-                                ""
-                            )}
+                            <div className="flex-items-center">
+                                {event.status == "for approval" ? (
+                                    <Link
+                                        href={`/portal/hosts/events/${event.id}/edit`}
+                                    >
+                                        <button className="btn btn-warning">
+                                            <Pencil className="w-4 h-4" />
+                                            <span>Edit</span>
+                                        </button>
+                                    </Link>
+                                ) : (
+                                    ""
+                                )}
 
-                            {event.status == "approved" ? (
-                                <EventRegistrationStatus
-                                    data={event}
-                                    setIsLoading={setIsLoading}
-                                    className="btn btn-warning"
-                                />
-                            ) : (
-                                ""
-                            )}
-                        </div>
-                    )}
+                                {event.status == "approved" ? (
+                                    <EventRegistrationStatus
+                                        data={event}
+                                        setIsLoading={setIsLoading}
+                                        className="btn btn-warning"
+                                    />
+                                ) : (
+                                    ""
+                                )}
+                            </div>
+                        )}
                     {currentRole == "Admin" && (
                         <div className="flex-items-center">
                             {event.status == "for approval" ? (
@@ -142,7 +142,7 @@ export default function ShowEvents({ eventId }) {
             >
                 <LoadingModal imgSrc="/loader_3.gif" isLoading={isLoading} />
                 <CustomAvatar
-                    avatar={event?.file_url || "/blood-logo.png"}
+                    avatar={event?.file_url || event?.agency?.file_url || "/default_company_avatar.png"}
                     className="w-[150px] h-[150px] sm:w-[200px] sm:h-[200px] md:w-[250px] md:h-[250px] xl:w-[350px] xl:h-[350px] flex-none"
                 />
                 <div className="w-full sm:min-w-sm">

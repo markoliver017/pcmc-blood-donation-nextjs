@@ -1,17 +1,24 @@
 "use client";
+import { useState } from "react";
 import { updateEventStatus } from "@/action/adminEventAction";
 import { updateAgencyStatus } from "@/action/agencyAction";
 import { bookDonorAppointment } from "@/action/donorAppointmentAction";
 
 import { Form } from "@components/ui/form";
+import { Checkbox } from "@components/ui/checkbox";
 import notify from "@components/ui/notify";
 import SweetAlert from "@components/ui/SweetAlert";
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+const MySwal = withReactContent(Swal);
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
-import { CalendarPlus } from "lucide-react";
+import { Book, CalendarPlus } from "lucide-react";
 import moment from "moment";
 import { useForm } from "react-hook-form";
+import { BookingSuccessAlert, showBookingSuccessAlert } from "../../lib/utils/showBookingSuccessAlert";
 
 export default function BookEventButton({
     event,
@@ -25,6 +32,14 @@ export default function BookEventButton({
     onFinish = () => { },
 }) {
     const queryClient = useQueryClient();
+
+    const eventDetails = {
+        id: schedule?.id,
+        title: event?.title,
+        date: moment(schedule?.date).format("MMM DD, YYYY"),
+        time: `${moment(schedule?.time_start, "HH:mm:ss").format("hh:mm A")} - ${moment(schedule?.time_end, "HH:mm:ss").format("hh:mm A")}`,
+        location: event?.agency?.agency_address || 'TBD',
+    }
 
     const {
         // data: eventData,
@@ -41,20 +56,21 @@ export default function BookEventButton({
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["blood_drives"] });
-            SweetAlert({
-                title: "Blood Donation Booked",
-                text: `You have successfully booked an appointment for ${event?.title
-                    } on ${moment(schedule?.date).format(
-                        "MMM DD, YYYY"
-                    )} from ${moment(schedule?.time_start, "HH:mm:ss").format(
-                        "hh:mm A"
-                    )} to ${moment(schedule?.time_end, "HH:mm:ss").format(
-                        "hh:mm A"
-                    )}.`,
+            showBookingSuccessAlert(eventDetails);
+            // SweetAlert({
+            //     title: "Blood Donation Booked",
+            //     text: `You have successfully booked an appointment for ${event?.title
+            //         } on ${moment(schedule?.date).format(
+            //             "MMM DD, YYYY"
+            //         )} from ${moment(schedule?.time_start, "HH:mm:ss").format(
+            //             "hh:mm A"
+            //         )} to ${moment(schedule?.time_end, "HH:mm:ss").format(
+            //             "hh:mm A"
+            //         )}.`,
 
-                icon: "info",
-                confirmButtonText: "Done",
-            });
+            //     icon: "info",
+            //     confirmButtonText: "Done",
+            // });
         },
         onError: (error) => {
             notify({ error: true, message: error?.message }, "warning", "top-center");
@@ -76,24 +92,50 @@ export default function BookEventButton({
     const { handleSubmit, reset } = form;
 
     const onSubmit = async (data) => {
-        SweetAlert({
-            title: "Confirm your action?",
-            html: `Are you sure you want to book an appointment on <b>${moment(
-                event?.date
-            ).format("MMM DD, YYYY")}</b> from <b>${moment(
-                schedule?.time_start,
-                "HH:mm:ss"
-            ).format("hh:mm A")}</b> to <b>${moment(
-                schedule?.time_end,
-                "HH:mm:ss"
-            ).format("hh:mm A")}</b> in <b>${event?.title}</b>?`,
+
+        MySwal.fire({
+            title: "Book Blood Donation Appointment",
+            html: `
+                <div class="space-y-4">
+                    <p class="text-left mb-4">Please review the appointment details:</p>
+                    <div class="text-left bg-gray-50 p-4 rounded-lg">
+                        <p><strong>Event:</strong> ${eventDetails?.title}</p>
+                        <p><strong>Date:</strong> ${eventDetails?.date}</p>
+                        <p><strong>Time:</strong> ${eventDetails?.time}</p>
+                        <p><strong>Location:</strong> ${eventDetails?.location}</p>
+                    </div>
+                    <div class="mt-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="terms-checkbox" class="form-checkbox" />
+                            <span class="ml-2 text-sm">I agree to the <a class="text-blue-500" href="/legal" target="_blank">Terms and conditions</a> for blood donation</span>
+                        </label>
+                    </div>
+                </div>
+            `,
             icon: "info",
             showCancelButton: true,
-            confirmButtonText: "Proceed",
-            onConfirm: () => {
+            confirmButtonText: "Confirm Booking",
+            confirmButtonColor: "#059669",
+            cancelButtonText: "Cancel",
+            showLoaderOnConfirm: true,
+            preConfirm: async () => {
+                const checkbox = document.getElementById('terms-checkbox');
+                if (!checkbox.checked) {
+                    Swal.showValidationMessage('You must agree to the terms and conditions');
+                    return false; // This will prevent the modal from closing
+                }
+                // Return the data you want to pass to .then()
+                return {
+                    agreed: true,
+                };
+            }
+        }).then((result) => {
+            if (result.isConfirmed && result.value.agreed) {
+
                 mutate(data);
-            },
+            }
         });
+
     };
 
     return (

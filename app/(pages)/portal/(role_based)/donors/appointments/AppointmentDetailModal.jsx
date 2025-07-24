@@ -13,7 +13,7 @@ const AppointmentDetailModal = ({ isOpen, appointment, onClose }) => {
   const event = appointment?.time_schedule?.event;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 ">
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
         <button
           className="absolute top-2 right-2 text-gray-400 hover:text-gray-700"

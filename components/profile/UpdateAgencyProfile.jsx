@@ -326,6 +326,7 @@ export default function UpdateAgencyProfile({ agency, isReadOnly = false }) {
                                         )}
                                     >
                                         <Phone className="h-3" />
+                                        +63
                                         <input
                                             type="text"
                                             tabIndex={2}

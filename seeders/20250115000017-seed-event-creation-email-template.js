@@ -1,14 +1,15 @@
 // npx sequelize-cli db:seed --seed 20250115000017-seed-event-creation-email-template.js
+// updated: 2025-07-23
 "use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 export async function up(queryInterface) {
-    const emailTemplates = [
-        {
-            name: "New Blood Donation Event Created",
-            category: "EVENT_CREATION",
-            subject: "🩸 New Blood Donation Event: {{event_name}}",
-            html_content: `
+  const emailTemplates = [
+    {
+      name: "New Blood Donation Event Created",
+      category: "EVENT_CREATION",
+      subject: "🩸 New Blood Donation Event: {{event_name}}",
+      html_content: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
   <div style="background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
     <div style="background-color: #dc2626; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
@@ -90,7 +91,7 @@ export async function up(queryInterface) {
   </div>
 </div>
 `,
-            text_content: `Dear Admin,
+      text_content: `Dear Admin,
 
 A new blood donation event has been created and is pending your review and approval. Please see the event details below:
 
@@ -120,35 +121,35 @@ Every donation counts. Every event matters.
 ---
 This is an automated message. Please do not reply to this email.
 For support, contact us at {{support_email}}`,
-            dynamic_fields: JSON.stringify([
-                "event_name",
-                "event_title",
-                "event_date",
-                "event_location",
-                "agency_name",
-                "event_organizer",
-                "event_description",
-                "system_name",
-                "support_email",
-                "domain_url"
-            ]),
-            is_active: true,
-            created_by: null,
-            updated_by: null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-    ];
+      dynamic_fields: JSON.stringify([
+        "event_name",
+        "event_title",
+        "event_date",
+        "event_location",
+        "agency_name",
+        "event_organizer",
+        "event_description",
+        "system_name",
+        "support_email",
+        "domain_url"
+      ]),
+      is_active: true,
+      created_by: null,
+      updated_by: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ];
 
-    await queryInterface.bulkInsert("email_templates", emailTemplates, {});
+  await queryInterface.bulkInsert("email_templates", emailTemplates, {});
 }
 
 export async function down(queryInterface) {
-    await queryInterface.bulkDelete(
-        "email_templates",
-        {
-            category: "EVENT_CREATION",
-        },
-        {}
-    );
+  await queryInterface.bulkDelete(
+    "email_templates",
+    {
+      category: "EVENT_CREATION",
+    },
+    {}
+  );
 } 

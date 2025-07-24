@@ -1,5 +1,6 @@
 import React from "react";
-import { Calendar, MapPin, Clock, BadgeCheck } from "lucide-react";
+import { Calendar, MapPin, Clock, BadgeCheck, Eye } from "lucide-react";
+import CancelEventButton from "@components/donors/CancelEventButton";
 
 const formatDate = (dateStr) => {
     if (!dateStr) return "-";
@@ -71,16 +72,19 @@ const UpcomingAppointmentsList = ({ appointments = [], onViewDetails }) => {
                                 }
                                 aria-label="View appointment details"
                             >
+                                <Eye className="w-4 h-4" />
                                 View Details
                             </button>
 
-                            <button
-                                className="btn btn-sm btn-error"
-                                // disabled
-                                title="Coming soon"
-                            >
-                                Cancel
-                            </button>
+
+                            <CancelEventButton
+                                event={event}
+                                schedule={appt?.time_schedule}
+                                appointmentId={
+                                    appt.id
+                                }
+                                className="btn-sm btn-error"
+                            />
                         </div>
                     </div>
                 );

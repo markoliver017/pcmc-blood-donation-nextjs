@@ -2,7 +2,7 @@ import React from "react";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@lib/auth";
 import { getEventDashboardData } from "@action/adminEventAction";
-import EventDashboardClient from "./components/EventDashboardClient";
+import EventDashboardClient from "@components/event-dashboard-component/EventDashboardClient";
 import {
     dehydrate,
     HydrationBoundary,
@@ -47,7 +47,9 @@ export default async function EventDashboardPage({ params }) {
         return (
             <HydrationBoundary state={dehydrate(queryClient)}>
                 <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-                    <EventDashboardClient eventId={eventId} />
+                    <EventDashboardClient eventId={eventId}
+                        roleName={session.user.role_name}
+                    />
                 </div>
             </HydrationBoundary>
         );
@@ -86,9 +88,8 @@ export async function generateMetadata({ params }) {
 
         return {
             title: `${event.title} - Event Dashboard | Blood Bank Portal`,
-            description: `Dashboard for blood donation event: ${
-                event.title
-            } on ${new Date(event.event_date).toLocaleDateString()}`,
+            description: `Dashboard for blood donation event: ${event.title
+                } on ${new Date(event.event_date).toLocaleDateString()}`,
             keywords: [
                 "blood donation",
                 "event dashboard",

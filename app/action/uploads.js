@@ -16,8 +16,8 @@ export async function uploadPicture(file) {
     formData.append("file", file);
 
     try {
-        // const res = await fetch("http://localhost:5000/api/uploads", {
-        const res = await fetch("http://10.0.0.185:5000/api/uploads", {
+        const res = await fetch("http://localhost:5000/api/uploads", {
+            // const res = await fetch("http://10.0.0.185:5000/api/uploads", {
             method: "POST",
             body: formData,
         });

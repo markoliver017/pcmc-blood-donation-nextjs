@@ -13,6 +13,7 @@ import {
     Donor,
     DonorAppointmentInfo,
     EventTimeSchedule,
+    Role,
     sequelize,
     User,
 } from "@lib/models";
@@ -23,6 +24,7 @@ import { Op } from "sequelize";
 import { getLastDonationDateDonated } from "./donorAction";
 import moment from "moment";
 import { appointmentDetailsSchema } from "@lib/zod/appointmentSchema";
+import { sendNotificationAndEmail } from "@lib/notificationEmail.utils";
 
 export async function bookDonorAppointment(formData) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -64,7 +66,7 @@ export async function bookDonorAppointment(formData) {
     const { data } = parsed;
 
     const event = await BloodDonationEvent.findByPk(data?.event_id, {
-        attributes: ["id", "date"],
+        attributes: ["id", "date", "title", "requester_id"],
     });
 
     if (!event) {
@@ -188,13 +190,49 @@ export async function bookDonorAppointment(formData) {
             userId: user.id,
             controller: "donorAppointmentAction",
             action: "BOOK DONOR APPOINTMENT",
-            details: `New appointment has been successfully booked to User ID: ${user.id}. ID#: ${newAppointment?.id}`,
+            details: `New appointment has been successfully booked to User ID: ${user.id} Name: ${user?.name} (${user?.email}). Appointment ID#: ${newAppointment?.id}`,
         });
+
+        //  Notify all admins & organizer
+        try {
+            const adminRole = await Role.findOne({
+                where: { role_name: "Admin" },
+            });
+
+            if (adminRole) {
+                const adminUsers = await User.findAll({
+                    include: [
+                        {
+                            model: Role,
+                            as: "roles",
+                            where: { id: adminRole.id },
+                            through: { attributes: [] },
+                        },
+                    ],
+                });
+                const emailRecipients = [...adminUsers.map((a) => a.id), event?.requester_id];
+                if (adminUsers.length > 0) {
+                    await sendNotificationAndEmail({
+                        userIds: emailRecipients,
+                        notificationData: {
+                            subject: "New Appointment Booked",
+                            message: `A new appointment to event (${event?.title}) has been booked by ${user.name} (${user.email}).`,
+                            type: "APPOINTMENT",
+                            reference_id: newAppointment.id,
+                            created_by: user.id,
+                        },
+                    });
+                }
+            }
+        } catch (err) {
+            console.error("Admin notification failed:", err);
+        }
 
         return {
             success: true,
             data: newAppointment.get({ plain: true }),
         };
+
     } catch (err) {
         console.log("bookDonorAppointment>>>>>>>>>>>>>>>>>>>>>", err);
         logErrorToFile(err, "BOOK DONOR APPOINTMENT");
@@ -219,7 +257,13 @@ export async function cancelDonorAppointment(appointmentId, formData) {
     }
     const { user } = session;
 
-    const appointment = await DonorAppointmentInfo.findByPk(appointmentId);
+    const appointment = await DonorAppointmentInfo.findByPk(appointmentId, {
+        include: {
+            model: BloodDonationEvent,
+            as: "event",
+            attribute: ["id", "requester_id", "title", "date"]
+        }
+    });
 
     if (!appointment) {
         return {
@@ -274,7 +318,7 @@ export async function cancelDonorAppointment(appointmentId, formData) {
     const timeSchedTotalDonors = timeSchedule?.dataValues?.donorCount || 0;
 
     const transaction = await sequelize.transaction();
-    console.log("formData", formData);
+
     try {
         const updatedData = await appointment.update(formData, {
             transaction,
@@ -295,6 +339,41 @@ export async function cancelDonorAppointment(appointmentId, formData) {
             action: "CANCEL DONOR APPOINTMENT",
             details: `The donor's appointment has been successfully cancelled. ID#: ${updatedData?.id}`,
         });
+
+        //  Notify all admins & organizer
+        try {
+            const adminRole = await Role.findOne({
+                where: { role_name: "Admin" },
+            });
+
+            if (adminRole) {
+                const adminUsers = await User.findAll({
+                    include: [
+                        {
+                            model: Role,
+                            as: "roles",
+                            where: { id: adminRole.id },
+                            through: { attributes: [] },
+                        },
+                    ],
+                });
+                const emailRecipients = [...adminUsers.map((a) => a.id), appointment?.event?.requester_id];
+                if (adminUsers.length > 0) {
+                    await sendNotificationAndEmail({
+                        userIds: emailRecipients,
+                        notificationData: {
+                            subject: "Appointment Cancelled",
+                            message: `The appointment to event (${appointment?.event?.title}) has been cancelled by ${user?.name} (${user?.email}).`,
+                            type: "APPOINTMENT",
+                            reference_id: appointment.id,
+                            created_by: user.id,
+                        },
+                    });
+                }
+            }
+        } catch (err) {
+            console.error("Admin notification failed:", err);
+        }
 
         return {
             success: true,

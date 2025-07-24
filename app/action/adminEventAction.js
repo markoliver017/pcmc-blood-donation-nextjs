@@ -119,9 +119,10 @@ export async function getAdminDashboard() {
         const activeEventCount = await BloodDonationEvent.count({
             where: {
                 status: "approved",
-                date: {
-                    [Op.gte]: moment().format("YYYY-MM-DD"),
-                },
+                registration_status: "ongoing",
+                // date: {
+                //     [Op.gte]: moment().format("YYYY-MM-DD"),
+                // },
             },
         });
 
@@ -1112,7 +1113,7 @@ export async function updateEventStatus(formData) {
             userId: user.id,
             controller: "adminEventAction",
             action: "UPDATE EVENT STATUS",
-            details: `Event status has been successfully updated. ID#: ${updatedEvent?.id}`,
+            details: `Event status has been successfully updated to ${data?.status}. Event ID#: ${updatedEvent?.id} by user ${user?.name} (${user?.email})`,
         });
 
         // Notifications and emails (non-blocking)
@@ -1136,7 +1137,7 @@ export async function updateEventStatus(formData) {
                             notificationData: {
                                 subject: `Blood Donation Event Update`,
                                 message: notification_message,
-                                type: "BLOOD_DRIVE_STATUS_UPDATE",
+                                type: "BLOOD_DRIVE_APPROVAL",
                                 reference_id: event.id,
                                 created_by: user.id,
                             },
@@ -1147,18 +1148,7 @@ export async function updateEventStatus(formData) {
                             err
                         );
                     }
-                    // Email notification to all admins
-                    // "event_name",
-                    // "event_date",
-                    // "agency_name",
-                    // "event_organizer",
-                    // "event_description",
-                    // "approval_status",
-                    // "approval_date",
-                    // "approval_reason",
-                    // "system_name",
-                    // "support_email",
-                    // "domain_url"
+
                     try {
                         await sendNotificationAndEmail({
                             emailData: {
@@ -1199,24 +1189,24 @@ export async function updateEventStatus(formData) {
         })();
 
         const title = {
-            rejected: "Rejection Successful",
-            approved: "Status Update",
-            cancelled: "Status Update",
+            rejected: "Event Rejected",
+            approved: "Event Approved",
+            cancelled: "Event Cancelled",
         };
+
         const text = {
-            rejected: "Blood donation event rejected successfully.",
-            approved: "Blood donation event activated successfully.",
-            cancelled: "Blood donation event cancelled successfully.",
+            rejected: "The blood donation event has been rejected. The agency will be notified.",
+            approved: "The blood donation event is now approved and active. The agency will be notified.",
+            cancelled: "The blood donation event has been cancelled. The agency will be notified.",
         };
 
         return {
             success: true,
             data: updatedEvent.get({ plain: true }),
-            title: title[data.status] || "Update!",
-            text:
-                text[data.status] ||
-                "Blood donation event updated successfully.",
+            title: title[data.status] || "Event Updated",
+            text: text[data.status] || "The blood donation event has been updated. The agency will be notified.",
         };
+
     } catch (err) {
         logErrorToFile(err, "UPDATE EVENT STATUS");
         await transaction.rollback();
@@ -1581,6 +1571,8 @@ export async function getEventDashboardData(eventId) {
         };
     }
 
+
+
     try {
         // Fetch event details
         const event = await BloodDonationEvent.findByPk(eventId, {
@@ -1616,13 +1608,32 @@ export async function getEventDashboardData(eventId) {
         if (!event) {
             return {
                 success: false,
-                message: "Event not found.",
+                message: "Event not found or inaccessible.",
             };
         }
 
+        if (session?.user?.role_name !== "Admin") {
+            if (session?.user?.role_name === "Organizer" && event?.requester_id !== session?.user?.id) {
+                return {
+                    success: false,
+                    message: "You are not authorized to access this event.",
+                };
+            }
+
+            if (session?.user?.role_name === "Agency Administrator" && event?.agency?.head_id !== session?.user?.id) {
+                return {
+                    success: false,
+                    message: "You are not authorized to access this event.",
+                };
+            }
+        }
+
+
         // Fetch all appointments for this event with related data
         const appointments = await DonorAppointmentInfo.findAll({
-            where: { event_id: eventId },
+            where: {
+                event_id: eventId
+            },
             include: [
                 {
                     model: EventTimeSchedule,

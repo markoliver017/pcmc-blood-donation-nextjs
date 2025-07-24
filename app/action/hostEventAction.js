@@ -26,6 +26,7 @@ import {
 import { addDays, format, subDays } from "date-fns";
 import { ForeignKeyConstraintError, Op } from "sequelize";
 import { sendNotificationAndEmail } from "@lib/notificationEmail.utils";
+import moment from "moment";
 // import { logAuditTrail } from "@lib/audit_trails.utils";
 
 export async function getAgencyId() {
@@ -103,6 +104,42 @@ export async function getAllEvents() {
         return formattedEvents;
     } catch (err) {
         logErrorToFile(err, "getAllEvents ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
+        };
+    }
+}
+export async function getDonorEventCalendar() {
+    const agency_id = await getAgencyId();
+
+    if (!agency_id) {
+        return {
+            success: false,
+            message: "Agency not found or inactive!",
+        };
+    }
+    try {
+        const events = await BloodDonationEvent.findAll({
+            where: {
+                agency_id,
+                status: {
+                    [Op.in]: ["for approval", "approved"],
+                },
+            },
+            include: {
+                model: Agency,
+                as: "agency",
+                attributes: ["id", "name", "file_url"],
+            },
+        });
+
+        const formattedEvents = formatSeqObj(events);
+
+        return formattedEvents;
+    } catch (err) {
+        logErrorToFile(err, "getDonorEventCalendar ERROR");
         return {
             success: false,
             type: "server",
@@ -320,6 +357,16 @@ export async function getEventsById(id) {
                 {
                     model: Agency,
                     as: "agency",
+                    include: {
+                        model: Donor,
+                        as: "donors",
+                        attributes: ["id", "agency_id", "blood_type_id"],
+                        include: {
+                            model: User,
+                            as: "user",
+                            attributes: ["id", "name", "email", "image", "full_name", "first_name", "middle_name", "last_name"],
+                        },
+                    }
                 },
                 {
                     model: DonorAppointmentInfo,
@@ -496,7 +543,7 @@ export async function storeEvent(formData) {
 
     const { data } = parsed;
 
-    const agency = Agency.findByPk(data?.agency_id, {
+    const agency = await Agency.findByPk(data?.agency_id, {
         where: { status: "activated" },
     });
 
@@ -605,7 +652,7 @@ export async function storeEvent(formData) {
                                 userIds: adminUsers.map((a) => a.id),
                                 notificationData: {
                                     subject: `New Blood Donation Event Created`,
-                                    message: `A new blood donation event ("${newEvent.title}") has been created and is pending approval.`,
+                                    message: `A new blood donation event ("${newEvent.title}") has been created and is pending approval by ${user?.name} (${user?.email}).`,
                                     type: "BLOOD_DRIVE_APPROVAL",
                                     reference_id: newEvent.id,
                                     created_by: user.id,
@@ -615,6 +662,7 @@ export async function storeEvent(formData) {
                             console.error("Admin system notification failed:", err);
                         }
                         // Email notification to all admins
+                        console.log("Agency >>>>>>>>>", agency);
                         for (const adminUser of adminUsers) {
                             try {
                                 await sendNotificationAndEmail({
@@ -969,3 +1017,526 @@ export async function updateEventTimeSchedule(id, formData) {
 //     })),
 //     { transaction }
 // );
+
+export async function getAgencyDashboard() {
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this page.",
+        };
+    }
+
+    const agency_id = await getAgencyId();
+    if (!agency_id) {
+        return {
+            success: false,
+            message: "Agency not found or inactive!",
+        };
+    }
+
+    try {
+        // Basic counts
+        const donorCount = await Donor.count({
+            where: {
+                agency_id,
+                status: {
+                    [Op.in]: ["activated"],
+                },
+            },
+        });
+
+        const donationCount = await BloodDonationCollection.count({
+            include: [
+                {
+                    model: DonorAppointmentInfo,
+                    as: "appointment",
+                    required: true,
+                    include: [
+                        {
+                            model: Donor,
+                            as: "donor",
+                            required: true,
+                            where: {
+                                agency_id,
+                            },
+                        },
+                    ],
+                },
+            ],
+        });
+
+        const totalEventCount = await BloodDonationEvent.count({
+            where: {
+                agency_id,
+            },
+        });
+
+        // Event status counts
+        const approvedEventCount = await BloodDonationEvent.count({
+            where: {
+                agency_id,
+                status: "approved",
+            },
+        });
+
+        const pendingApprovalCount = await BloodDonationEvent.count({
+            where: {
+                agency_id,
+                status: "for approval",
+            },
+        });
+
+        const activeEventCount = await BloodDonationEvent.count({
+            where: {
+                agency_id,
+                status: "approved",
+                registration_status: "ongoing",
+                // date: {
+                //     [Op.gte]: moment().format("YYYY-MM-DD"),
+                // },
+            },
+        });
+
+        // Participant counts
+        const totalParticipants = await DonorAppointmentInfo.count({
+            where: {
+                status: {
+                    [Op.notIn]: ["cancelled", "no show"],
+                },
+            },
+            include: [
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedule",
+                    required: true,
+                    include: [
+                        {
+                            model: BloodDonationEvent,
+                            as: "event",
+                            where: {
+                                agency_id,
+                                status: "approved",
+                            },
+                            required: true,
+                        },
+                    ],
+                },
+            ],
+        });
+        // Recent events (last 30 days)
+        const thirtyDaysAgo = moment()
+            .subtract(30, "days")
+            .format("YYYY-MM-DD");
+        const today = moment().format("YYYY-MM-DD");
+
+        const recentEventCount = await BloodDonationEvent.count({
+            where: {
+                agency_id,
+                status: "approved",
+                date: {
+                    [Op.gte]: thirtyDaysAgo,
+                    [Op.lte]: today,
+                },
+            },
+        });
+
+        // Success rate calculation
+        const completedEvents = await BloodDonationEvent.count({
+            where: {
+                agency_id,
+                status: "approved",
+                date: {
+                    [Op.lt]: moment().format("YYYY-MM-DD"),
+                },
+            },
+        });
+
+        const successRate =
+            approvedEventCount > 0
+                ? Math.round((completedEvents / approvedEventCount) * 100)
+                : 0;
+
+        // Average participants per event
+        const averageParticipants =
+            approvedEventCount > 0
+                ? Math.round(totalParticipants / approvedEventCount)
+                : 0;
+
+        return {
+            success: true,
+            data: {
+                donorCount,
+                donationCount,
+                totalEventCount,
+                approvedEventCount,
+                pendingApprovalCount,
+                activeEventCount,
+                totalParticipants,
+                recentEventCount,
+                successRate,
+                averageParticipants,
+            },
+        };
+    } catch (err) {
+        logErrorToFile(err, "getAgencyDashboard ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: err.message || "Unknown error",
+        };
+    }
+}
+
+export async function getAgencyEventsAnalytics() {
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this page.",
+        };
+    }
+
+    const agency_id = await getAgencyId();
+    if (!agency_id) {
+        return {
+            success: false,
+            message: "Agency not found or inactive!",
+        };
+    }
+
+    try {
+        // Events over time (last 12 months)
+        const twelveMonthsAgo = moment()
+            .subtract(12, "months")
+            .startOf("month");
+        const eventsOverTime = await BloodDonationEvent.findAll({
+            where: {
+                agency_id,
+                date: {
+                    [Op.gte]: twelveMonthsAgo.format("YYYY-MM-DD"),
+                },
+                status: {
+                    [Op.in]: ["approved"],
+                }
+            },
+            attributes: [
+                [
+                    sequelize.fn("DATE_FORMAT", sequelize.col("date"), "%Y-%m"),
+                    "month",
+                ],
+                [sequelize.fn("COUNT", sequelize.col("id")), "count"],
+            ],
+            group: [
+                sequelize.fn("DATE_FORMAT", sequelize.col("date"), "%Y-%m"),
+            ],
+            order: [
+                [
+                    sequelize.fn("DATE_FORMAT", sequelize.col("date"), "%Y-%m"),
+                    "ASC",
+                ],
+            ],
+            raw: true,
+        });
+
+        // Status distribution
+        const statusDistribution = await BloodDonationEvent.findAll({
+            where: {
+                agency_id,
+            },
+            attributes: [
+                "status",
+                [sequelize.fn("COUNT", sequelize.col("id")), "count"],
+            ],
+            group: ["status"],
+            raw: true,
+        });
+
+        // Participant trends (last 6 months)
+        const sixMonthsAgo = moment().subtract(6, "months").startOf("month");
+        const participantTrends = await DonorAppointmentInfo.findAll({
+            where: {
+                status: {
+                    [Op.notIn]: ["cancelled", "no show"],
+                },
+            },
+            include: [
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedule",
+                    include: [
+                        {
+                            model: BloodDonationEvent,
+                            as: "event",
+                            where: {
+                                agency_id,
+                            },
+                            attributes: [], // Only need the date for grouping
+                        },
+                    ],
+                    attributes: [],
+                },
+            ],
+            attributes: [
+                [
+                    sequelize.fn(
+                        "DATE_FORMAT",
+                        sequelize.col("time_schedule.event.date"),
+                        "%Y-%m"
+                    ),
+                    "month",
+                ],
+                [
+                    sequelize.fn(
+                        "COUNT",
+                        sequelize.col("DonorAppointmentInfo.id")
+                    ),
+                    "count",
+                ],
+            ],
+            where: {
+                [Op.and]: [
+                    { status: { [Op.not]: "cancelled" } },
+                    sequelize.where(
+                        sequelize.col("time_schedule.event.date"),
+                        ">=",
+                        sixMonthsAgo.format("YYYY-MM-DD")
+                    ),
+                ],
+            },
+            group: [
+                sequelize.fn(
+                    "DATE_FORMAT",
+                    sequelize.col("time_schedule.event.date"),
+                    "%Y-%m"
+                ),
+            ],
+            order: [
+                [
+                    sequelize.fn(
+                        "DATE_FORMAT",
+                        sequelize.col("time_schedule.event.date"),
+                        "%Y-%m"
+                    ),
+                    "ASC",
+                ],
+            ],
+            raw: true,
+        });
+
+        // Blood type distribution
+        const bloodTypeDistribution = await Donor.findAll({
+            where: {
+                agency_id,
+            },
+            include: [
+                {
+                    model: BloodType,
+                    as: "blood_type",
+                    attributes: ["blood_type"],
+                },
+            ],
+            attributes: [
+                "blood_type_id",
+                [sequelize.fn("COUNT", sequelize.col("Donor.id")), "count"],
+            ],
+            group: ["blood_type_id"],
+            raw: true,
+        });
+
+        // Format data for charts
+        const formattedEventsOverTime = eventsOverTime.map((item) => ({
+            month: moment(item.month, "YYYY-MM").format("MMM YYYY"),
+            count: parseInt(item.count),
+        }));
+
+        const formattedStatusDistribution = statusDistribution.map((item) => ({
+            status: item.status.toUpperCase(),
+            count: parseInt(item.count),
+        }));
+
+        const formattedParticipantTrends = participantTrends.map((item) => ({
+            month: moment(item.month, "YYYY-MM").format("MMM YYYY"),
+            count: parseInt(item.count),
+        }));
+
+        const formattedBloodTypeDistribution = bloodTypeDistribution
+            .filter((item) => item["blood_type.blood_type"])
+            .map((item) => ({
+                bloodType: item["blood_type.blood_type"],
+                count: parseInt(item.count),
+            }));
+
+        return {
+            success: true,
+            data: {
+                eventsOverTime: formattedEventsOverTime,
+                statusDistribution: formattedStatusDistribution,
+                participantTrends: formattedParticipantTrends,
+                bloodTypeDistribution: formattedBloodTypeDistribution,
+            },
+        };
+    } catch (err) {
+        console.log("getAgencyEventsAnalytics()", err);
+        logErrorToFile(err, "getAgencyEventsAnalytics ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: err.message || "Unknown error",
+        };
+    }
+}
+
+export async function getPresentEventsByAgency() {
+    const agency_id = await getAgencyId();
+    if (!agency_id) {
+        return {
+            success: false,
+            message: "Agency not found or inactive!",
+        };
+    }
+
+    const currentDate = moment().format("YYYY-MM-DD");
+    try {
+        const events = await BloodDonationEvent.findAll({
+            where: {
+                agency_id,
+                status: {
+                    [Op.eq]: "approved",
+                },
+                date: {
+                    [Op.gte]: currentDate,
+                },
+            },
+            order: [["date", "DESC"]],
+            include: [
+                {
+                    model: User,
+                    as: "requester",
+                    attributes: ["id", "name", "email", "image"],
+                },
+                {
+                    model: Agency,
+                    as: "agency",
+                    include: {
+                        model: Donor,
+                        as: "donors",
+                        attributes: ["id", "agency_id", "blood_type_id"],
+                        include: {
+                            model: User,
+                            as: "user",
+                            attributes: ["id", "name", "email", "image", "full_name", "first_name", "middle_name", "last_name"],
+                        },
+                    }
+                },
+                {
+                    model: User,
+                    as: "validator",
+                    attributes: ["id", "name", "email", "image"],
+                },
+                {
+                    model: User,
+                    as: "editor",
+                    attributes: ["id", "name", "email", "image"],
+                },
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedules",
+                    include: {
+                        model: DonorAppointmentInfo,
+                        as: "donors",
+                        include: {
+                            model: Donor,
+                            as: "donor",
+                            include: [
+                                {
+                                    model: User,
+                                    as: "user",
+                                },
+                                {
+                                    model: BloodType,
+                                    as: "blood_type",
+                                },
+                            ],
+                        },
+                    },
+                },
+            ],
+        });
+
+        const formattedEvents = formatSeqObj(events);
+
+        return { success: true, data: formattedEvents };
+    } catch (err) {
+        logErrorToFile(err, "getPresentEventsByAgency ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: err || "Unknown error",
+        };
+    }
+}
+
+export async function getEventsByRegistrationStatus(status) {
+    const agency_id = await getAgencyId();
+    if (!agency_id) {
+        return {
+            success: false,
+            message: "Agency not found or inactive!",
+        };
+    }
+
+    try {
+        const events = await BloodDonationEvent.findAll({
+            where: {
+                agency_id,
+                status: "approved",
+                registration_status: status,
+            },
+            include: [
+                {
+                    model: User,
+                    as: "requester",
+                    attributes: ["id", "name", "email", "image"],
+                },
+                {
+                    model: Agency,
+                    as: "agency",
+                },
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedules",
+                    include: {
+                        model: DonorAppointmentInfo,
+                        as: "donors",
+                        include: {
+                            model: Donor,
+                            as: "donor",
+                            include: [
+                                {
+                                    model: User,
+                                    as: "user",
+                                },
+                                {
+                                    model: BloodType,
+                                    as: "blood_type",
+                                },
+                            ],
+                        },
+                    },
+                },
+            ],
+        });
+
+        const formattedEvents = formatSeqObj(events);
+
+        return { success: true, data: formattedEvents };
+    } catch (err) {
+        logErrorToFile(err, "getEventsByRegistrationStatus ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: err || "Unknown error",
+        };
+    }
+}

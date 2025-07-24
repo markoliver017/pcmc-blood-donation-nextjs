@@ -40,7 +40,7 @@ export default function CancelEventButton({
             return res;
         },
         onSuccess: (data) => {
-
+            queryClient.invalidateQueries({ queryKey: ["donor-appointments"] });
             SweetAlert({
                 title: "Cancel Blood Donation Appointment",
                 text: `You have successfully cancelled an appointment for ${event?.title

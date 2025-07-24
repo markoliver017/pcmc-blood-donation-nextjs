@@ -73,17 +73,7 @@ export async function getApprovedEventsByAgency() {
             },
             order: [["date", "ASC"]],
             include: [
-                // {
-                //     model: DonorAppointmentInfo,
-                //     as: "donors",
-                //     attributes: [
-                //         "id",
-                //         "donor_id",
-                //         "time_schedule_id",
-                //         "event_id",
-                //         "status",
-                //     ],
-                // },
+
                 {
                     model: EventTimeSchedule,
                     as: "time_schedules",
@@ -99,6 +89,12 @@ export async function getApprovedEventsByAgency() {
                     include: {
                         model: DonorAppointmentInfo,
                         as: "donors",
+                        required: false,
+                        where: {
+                            status: {
+                                [Op.not]: "cancelled",
+                            },
+                        }
                     },
                 },
                 {
@@ -1645,7 +1641,7 @@ export async function notifyRegistrationOpen(donor, eventData = null) {
                 userId: session.user.id,
                 controller: "events",
                 action: "NOTIFY_DONORS",
-                details: `Event invitation sent to donor ${donor.user.full_name
+                details: `Event invitation sent to donor ${donor.user?.full_name
                     } (${donor.user.email}) for event: ${eventData?.title || "Unknown Event"
                     }`,
             });
@@ -1658,6 +1654,7 @@ export async function notifyRegistrationOpen(donor, eventData = null) {
             message: "Send Successfully to " + donor?.user?.full_name,
             data: donor,
         };
+
     } catch (err) {
         console.error("Notification process failed:", err);
         return {
