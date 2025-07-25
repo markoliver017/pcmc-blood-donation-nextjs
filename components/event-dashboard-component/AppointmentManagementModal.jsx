@@ -34,6 +34,8 @@ import EventDashboardAppointmentForm from "./EventDashboardAppointmentForm";
 import AppointmentPhysicalExamTabForm from "@components/admin/appointments/AppointmentPhysicalExamTabForm";
 import ScrollToTop from "@components/ui/scroll-to-top";
 import BloodCollectionTabForm from "@components/admin/appointments/BloodCollectionTabForm";
+import { FaQuestion, FaQuestionCircle } from "react-icons/fa";
+import EventScreeningQuestionaire from "./EventScreeningQuestionaire";
 
 export default function AppointmentManagementModal({
     isOpen,
@@ -45,6 +47,7 @@ export default function AppointmentManagementModal({
     const bloodTypeRef = useRef(null);
     const appointmentInfoRef = useRef(null);
     const physicalExamRef = useRef(null);
+    const screeningQuestionairesRef = useRef(null);
     const bloodCollectionRef = useRef(null);
 
     const { data: appointment, isLoading } = useQuery({
@@ -97,7 +100,10 @@ export default function AppointmentManagementModal({
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContentNoX onInteractOutside={(event) => event.preventDefault()} className="max-w-7xl h-[90vh] overflow-hidden flex flex-col">
+            <DialogContentNoX
+                onInteractOutside={(event) => event.preventDefault()}
+                className="max-w-7xl h-[90vh] overflow-hidden flex flex-col"
+            >
                 <DialogHeader className="pb-4">
                     <div className="flex items-center justify-between">
                         <div>
@@ -284,6 +290,15 @@ export default function AppointmentManagementModal({
                                             </span>
                                         </TabsTrigger>
                                         <TabsTrigger
+                                            value="screening-questionaires"
+                                            className="flex items-center justify-center gap-2 p-2 w-full border-b data-[state=active]:bg-gray-100 data-[state=active]:text-gray-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-300"
+                                        >
+                                            <FaQuestionCircle className="h-3 w-3" />
+                                            <span className="hidden lg:inline-block">
+                                                Screening Questionaire Response
+                                            </span>
+                                        </TabsTrigger>
+                                        <TabsTrigger
                                             value="physical-exam"
                                             className="flex items-center justify-center gap-2 p-2 w-full border-b data-[state=active]:bg-gray-100 data-[state=active]:text-gray-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-300"
                                         >
@@ -292,12 +307,13 @@ export default function AppointmentManagementModal({
                                                 Physical Examination
                                             </span>
                                         </TabsTrigger>
+
                                         <TabsTrigger
                                             value="blood-collection"
                                             disabled={
                                                 appointment?.physical_exam
                                                     ?.eligibility_status !==
-                                                "ACCEPTED" || false
+                                                    "ACCEPTED" || false
                                             }
                                             className="flex items-center justify-center gap-2 p-2 w-full border-b data-[state=active]:bg-gray-100 data-[state=active]:text-gray-700 data-[state=active]:font-bold px-4 py-2 rounded-md disabled:opacity-50 dark:text-slate-300"
                                         >
@@ -307,10 +323,10 @@ export default function AppointmentManagementModal({
                                                 {appointment?.physical_exam
                                                     ?.eligibility_status !==
                                                     "ACCEPTED" && (
-                                                        <sup className="italic text-xs text-red-500">
-                                                            (Not Eligible)
-                                                        </sup>
-                                                    )}
+                                                    <sup className="italic text-xs text-red-500">
+                                                        (Not Eligible)
+                                                    </sup>
+                                                )}
                                             </span>
                                         </TabsTrigger>
                                     </TabsList>
@@ -329,6 +345,24 @@ export default function AppointmentManagementModal({
                                         )}
                                         <ScrollToTop
                                             containerRef={appointmentInfoRef}
+                                            position="bottom-center"
+                                            size="sm"
+                                            variant="outline"
+                                            className="bg-blue-200/90 backdrop-blur-sm border-gray-200 hover:bg-blue-300/80 dark:hover:bg-blue-600/80 dark:bg-blue-500/90 dark:border-blue-300"
+                                        />
+                                    </TabsContent>
+                                    <TabsContent
+                                        value="screening-questionaires"
+                                        className="flex-1 border rounded-lg p-4 bg-white dark:bg-inherit shadow-sm overflow-y-auto relative"
+                                        ref={screeningQuestionairesRef}
+                                    >
+                                        <EventScreeningQuestionaire
+                                            appointmentId={appointmentId}
+                                        />
+                                        <ScrollToTop
+                                            containerRef={
+                                                screeningQuestionairesRef
+                                            }
                                             position="bottom-center"
                                             size="sm"
                                             variant="outline"

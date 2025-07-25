@@ -11,7 +11,6 @@ import {
 } from "@/action/adminEventAction";
 import LoadingModal from "@components/layout/LoadingModal";
 
-
 import { useRouter, useSearchParams } from "next/navigation";
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 import {
@@ -130,8 +129,6 @@ export default function ListofEvents() {
     const [allFilters, setAllFilters] = useState({});
     const [forApprovalFilters, setForApprovalFilters] = useState({});
 
-    console.log("ongoingFilters", ongoingFilters);
-    console.log("allFilters", allFilters);
     // Status options for filter
     const statusOptions = [
         { value: "ongoing", label: "Ongoing" },

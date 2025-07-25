@@ -6,12 +6,22 @@ A comprehensive blood donation management system built with Next.js 15, designed
 
 -   **Multi-Role System**: Admin, Host (Agency)/Coordinators, and Donor interfaces
 -   **Event Management**: Blood drive creation, scheduling, and execution
+-   **User Role Management:** Admins can assign and revoke roles (Admin, Donor, Staff).
+-   **Screening Questions Management:** Admins can create, view, update, and delete screening questions for donor questionnaires.
 -   **Donor Management**: Registration, verification, and appointment booking
 -   **Real-time Tracking**: Live updates and status monitoring
 -   **Physical Examination**: Pre-donation health screening
 -   **Blood Collection**: Volume tracking and method recording
 -   **Audit Trails**: Complete activity logging for compliance
 -   **Responsive Design**: Mobile-friendly interface
+
+### Donor Screening Questionnaire
+
+A critical feature ensuring the safety of the blood supply. Before each donation, donors are required to complete a comprehensive screening questionnaire. This module allows administrators to manage the questions and enables donors to submit their answers securely through the portal.
+
+-   **Dynamic Questionnaire Management:** Admins can add, edit, and deactivate screening questions.
+-   **Secure Donor Submissions:** Donors can fill out the questionnaire for their specific appointment.
+-   **Role-Based Access Control:** Ensures that only authorized users can manage questions or submit answers.
 
 ## 🛠️ Tech Stack
 
@@ -94,7 +104,7 @@ app/
 ├── (pages)/                    # Main application pages
 │   ├── (main)/                # Public landing pages
 │   ├── auth/                  # Authentication pages
-│   ├── portal/                # Main portal interface
+│   ├── portal/                # Donor Screening Questionnaire
 │   │   └── (role_based)/      # Role-specific pages
 │   │       ├── admin/         # Admin dashboard and features
 │   │       ├── donors/        # Donor interface

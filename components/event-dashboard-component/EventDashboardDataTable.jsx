@@ -44,7 +44,11 @@ import {
     SelectValue,
 } from "@components/ui/select";
 
-export default function EventDashboardDataTable({ appointments, eventId, roleName }) {
+export default function EventDashboardDataTable({
+    appointments,
+    eventId,
+    roleName,
+}) {
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
     const [bloodTypeFilter, setBloodTypeFilter] = useState("all");
@@ -166,9 +170,9 @@ export default function EventDashboardDataTable({ appointments, eventId, roleNam
         };
 
         return (
-            <badge className={`badge px-2 text-xs ${config.color}`}>
+            <Badge className={`badge px-2 text-xs ${config.color}`}>
                 {config.text}
-            </badge>
+            </Badge>
         );
     };
 
@@ -507,10 +511,11 @@ export default function EventDashboardDataTable({ appointments, eventId, roleNam
                                             )}
                                         </TableCell>
                                         {roleName === "Admin" && (
-
                                             <TableCell className="text-right">
                                                 <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
+                                                    <DropdownMenuTrigger
+                                                        asChild
+                                                    >
                                                         <Button
                                                             variant="ghost"
                                                             className="h-8 w-8 p-0"

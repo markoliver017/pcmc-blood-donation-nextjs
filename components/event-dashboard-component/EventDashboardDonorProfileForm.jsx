@@ -660,7 +660,7 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                         <div className="pl-4 space-y-5">
                             <FormField
                                 control={control}
-                                name="last_donation_date"
+                                name="donation_history_donation_date"
                                 render={({ field }) => (
                                     <FormItem>
                                         <InlineLabel required={false}>
@@ -670,7 +670,7 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                                         <label
                                             className={clsx(
                                                 "input w-full mt-1",
-                                                errors?.last_donation_date
+                                                errors?.donation_history_donation_date
                                                     ? "input-error"
                                                     : "input-info"
                                             )}
@@ -684,7 +684,9 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                                             />
                                         </label>
                                         <FieldError
-                                            field={errors?.last_donation_date}
+                                            field={
+                                                errors?.donation_history_donation_date
+                                            }
                                         />
                                     </FormItem>
                                 )}

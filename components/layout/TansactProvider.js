@@ -14,7 +14,7 @@ export default function TansactProviders({ children }) {
     return (
         <QueryClientProvider client={queryClient}>
             {children}
-            {/* {process.env.NODE_ENV === "development" && (
+            {process.env.NODE_ENV === "development" && (
                 <div className="absolute bottom-5 left-15">
                     <button
                         className="btn btn-ghost w-max text-red-500"
@@ -23,7 +23,7 @@ export default function TansactProviders({ children }) {
                         {isOpen ? <GrPowerShutdown /> : <GiOpenBook />} Devtools
                     </button>
                 </div>
-            )} */}
+            )}
             {isOpen && <ReactQueryDevtools initialIsOpen={false} />}
         </QueryClientProvider>
     );

@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 export default async function RoleBasedLayout({ children }) {
     const session = await auth();
-    console.log("RoleBasedLayout session", session);
+    // console.log("RoleBasedLayout session", session);
 
     const headerList = await headers();
     const currentRoute = headerList.get("x-current-path");
