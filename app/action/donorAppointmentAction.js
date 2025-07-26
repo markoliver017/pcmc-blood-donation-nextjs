@@ -13,6 +13,7 @@ import {
     Donor,
     DonorAppointmentInfo,
     EventTimeSchedule,
+    FeedbackResponse,
     Role,
     sequelize,
     User,
@@ -465,6 +466,9 @@ export async function getAllAppointmentsByDonor() {
             where: {
                 donor_id: donor.id,
             },
+            attributes: {
+                include: ["id", "status", "feedback_average"],
+            },
             include: [
                 {
                     model: EventTimeSchedule,
@@ -500,6 +504,11 @@ export async function getAllAppointmentsByDonor() {
                 {
                     model: BloodDonationCollection,
                     as: "blood_collection",
+                },
+                {
+                    model: FeedbackResponse,
+                    as: "feedback_responses",
+                    attributes: ["id"],
                 },
             ],
         });

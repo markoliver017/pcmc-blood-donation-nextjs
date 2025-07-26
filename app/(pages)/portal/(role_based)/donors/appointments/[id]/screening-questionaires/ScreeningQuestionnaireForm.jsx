@@ -273,7 +273,8 @@ const ScreeningQuestionnaireForm = ({
                             </AlertDialog>
                             <Button
                                 variant="outline"
-                                onClick={() => router.back()}
+                                type="button"
+                                onClick={() => router.back() || router.push(`/portal/donors/appointments`)}
                                 disabled={isPending}
                             >
                                 Back

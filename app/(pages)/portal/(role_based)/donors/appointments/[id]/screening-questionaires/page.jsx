@@ -8,6 +8,7 @@ import { Calendar } from "lucide-react";
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 import { formatFormalName } from "@lib/utils/string.utils";
 import { GiChecklist } from "react-icons/gi";
+import Link from "next/link";
 
 const ScreeningQuestionairesPage = async ({ params }) => {
     const session = await auth();
@@ -58,6 +59,23 @@ const ScreeningQuestionairesPage = async ({ params }) => {
                 <div className="text-center text-red-500 font-bold">
                     {error}
                 </div>
+            </div>
+        );
+    }
+
+    if(!questions || questions.length === 0) {
+        return (
+            <div className="flex items-center justify-center h-[calc(100vh-15rem)]">
+                <div className="flex flex-col items-center gap-2 text-center text-red-500 font-bold">
+                    No screening questions found.
+                    <Link
+                    href={`/portal/donors/appointments`}
+                    className="btn text-blue-500 hover:underline"
+                >
+                    Back
+                </Link>
+                </div>
+
             </div>
         );
     }

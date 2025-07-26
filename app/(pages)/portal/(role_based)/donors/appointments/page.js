@@ -99,38 +99,40 @@ export default function Page() {
                     <BookAppointmentButton />
                 </div>
 
-                <h3 className="text-lg font-semibold flex-items-center text-blue-600 dark:text-blue-400">
-                    <CalendarCheck /> Upcoming Appointments
-                </h3>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Upcoming Appointments (2/3 width) */}
                     <div className="md:col-span-2 space-y-4">
+                        {/* Upcoming Appointments (2/3 width) */}
+                        <h3 className="text-lg font-semibold flex-items-center text-blue-600 dark:text-blue-400">
+                            <CalendarCheck /> Upcoming Appointments
+                        </h3>
                         <UpcomingAppointmentsList
                             appointments={upcoming}
+                            onViewDetails={handleViewDetails}
+                        />
+                        <div className="divider"></div>
+                        {/* Past Appointments and Impact Metrics */}
+                        <h3 className="text-lg font-semibold flex-items-center text-orange-600 dark:text-orange-400">
+                            <CalendarCheck /> Past Appointments
+                        </h3>
+                        <PastAppointmentsList
+                            appointments={past}
                             onViewDetails={handleViewDetails}
                         />
                     </div>
                     {/* Analytics Chart (1/3 width) */}
                     <div>
                         <AnalyticsChart appointments={appointments} />
-                    </div>
-                </div>
-
-                {/* Past Appointments and Impact Metrics */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="md:col-span-2 space-y-4">
-                        <PastAppointmentsList
-                            appointments={past}
-                            onViewDetails={handleViewDetails}
-                        />
-                    </div>
-                    <div>
                         <ImpactMetrics
                             totalDonations={totalDonations}
                             appointments={appointments}
                         />
                     </div>
                 </div>
+
+
+                
+
 
                 {/* Appointment Details Modal (to be conditionally shown) */}
                 <AppointmentDetailModal
