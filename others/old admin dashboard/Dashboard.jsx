@@ -1,37 +1,52 @@
 "use client";
-import dynamic from 'next/dynamic';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
+import AllEventCalendar from "@components/organizers/AllEventCalendar";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@components/ui/card";
 import { Calendar, HandCoins, Users } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { FaArrowRight } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 
-import { getDashboardData } from "@/action/adminDashboardAction";
+import { getAdminDashboard, getEventsByStatus } from "@/action/adminEventAction";
 import { BiBuildings } from "react-icons/bi";
-import MetricCard from "./components/MetricCard";
-import ActionPanel from "./components/ActionPanel";
-import EventCalendarCard from "./components/EventCalendarCard";
-import DonationsChart from "./components/DonationsChart";
-import BloodTypeDistributionChart from "./components/BloodTypeDistributionChart";
-import EventSuccessRateChart from "./components/EventSuccessRateChart";
-
-const AllEventCalendar = dynamic(() => import('@components/organizers/AllEventCalendar'), {
-    loading: () => <div className="skeleton h-96 w-full"></div>,
-    ssr: false
-});
+import ForApprovalEventList from "./(admin-events)/events/(index)/ForApprovalEventList";
+import ForApprovalAgencyList from "./(agencies)/agencies/(index)/ForApprovalAgencyList";
+import { fetchAgencyByStatus } from "@/action/agencyAction";
 
 export default function Dashboard() {
     const { data: dashboard, isLoading: dashboardIsLoading } = useQuery({
-        queryKey: ["admin-dashboard-data"],
+        queryKey: ["admin-dashboard"],
         queryFn: async () => {
-            const res = await getDashboardData();
+            const res = await getAdminDashboard();
             if (!res.success) {
                 throw res;
             }
             return res.data;
         },
         staleTime: 5 * 60 * 1000,
+        cacheTime: 5 * 60 * 1000,
+    });
+
+    const {
+        data: forApprovalAgencies,
+        isLoading: forApprovalAgencyIsFetching,
+    } = useQuery({
+        queryKey: ["agencies", "for approval"],
+        queryFn: async () => fetchAgencyByStatus("for approval"),
+        staleTime: 5 * 60 * 1000,
+        cacheTime: 5 * 60 * 1000,
+    });
+
+    const { data: forApprovalEvents, isLoading: eventsIsFetching } = useQuery({
+        queryKey: ["all_events", "for approval"],
+        queryFn: async () => getEventsByStatus("for approval"),
+        staleTime: 0,
     });
 
     return (
@@ -80,7 +95,7 @@ export default function Dashboard() {
                             {dashboardIsLoading ? (
                                 <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
                             ) : (
-                                <span>{dashboard?.donationCount || 0}</span>
+                                <span>{dashboard?.donationCount || "0"}</span>
                             )}
                         </h2>
                         <Link
@@ -107,7 +122,7 @@ export default function Dashboard() {
                             {dashboardIsLoading ? (
                                 <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
                             ) : (
-                                <span>{dashboard?.activeEventCount || 0}</span>
+                                <span>{dashboard?.approvedEventCount || "0"}</span>
                             )}
                         </h2>
                         <Link
@@ -134,7 +149,7 @@ export default function Dashboard() {
                             {dashboardIsLoading ? (
                                 <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
                             ) : (
-                                <span>{dashboard?.agencyCount || 0}</span>
+                                <span>{dashboard?.agencyCount}</span>
                             )}
                         </h2>
                         <Link
@@ -145,24 +160,6 @@ export default function Dashboard() {
                         </Link>
                     </CardContent>
                 </Card>
-            </div>
-
-            {/* Analytics Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <DonationsChart 
-                    data={dashboard?.donationsByMonth}
-                    isLoading={dashboardIsLoading}
-                />
-                <BloodTypeDistributionChart 
-                    data={dashboard?.bloodTypeDistribution}
-                    isLoading={dashboardIsLoading}
-                />
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <EventSuccessRateChart 
-                    data={dashboard?.eventSuccessData}
-                    isLoading={dashboardIsLoading}
-                />
             </div>
 
             {/* Main Section */}
@@ -183,11 +180,45 @@ export default function Dashboard() {
 
                 {/* Action Panel */}
                 <div className="w-full">
-                    <ActionPanel 
-                        events={dashboard?.forApprovalEvents}
-                        agencies={dashboard?.forApprovalAgencies}
-                        isLoading={dashboardIsLoading}
-                    />
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-xl">
+                                Action Needed
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div>
+                                <Link
+                                    href="/portal/admin/events?tab=for-approval"
+                                    className="btn btn-block justify-between text-orange-800 dark:text-orange-400"
+                                >
+                                    For Approval - Blood Drives ({forApprovalEvents?.length || 0})
+                                    <FaArrowRight />
+                                </Link>
+                                <div className="max-h-72 overflow-y-auto mt-2 flex flex-col gap-4 p-2">
+                                    <ForApprovalEventList events={forApprovalEvents} eventsIsFetching={eventsIsFetching} />
+                                </div>
+                            </div>
+                            <div className="divider" />
+                            <div>
+                                <Link
+                                    href="/portal/admin/agencies?tab=for-approval"
+                                    className="btn btn-block justify-between text-orange-800 dark:text-orange-400"
+                                >
+                                    For Approval - Agencies (
+                                    {forApprovalAgencies?.length || 0})
+                                    <FaArrowRight />
+                                </Link>
+                                <div className="max-h-72 overflow-y-auto mt-2 flex flex-col gap-4 p-2">
+                                    <ForApprovalAgencyList
+                                        agencies={forApprovalAgencies}
+                                        isFetching={forApprovalAgencyIsFetching}
+                                        target="_blank"
+                                    />
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </div>
