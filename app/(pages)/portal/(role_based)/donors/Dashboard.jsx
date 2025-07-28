@@ -51,17 +51,16 @@ export default function Dashboard() {
         },
     });
 
-    const { data: lastDonationData } = useQuery({
-        queryKey: ["last-donation"],
-        queryFn: async () => {
-            const res = await getLastDonationDateDonated();
-            if (!res.success) {
-                throw res;
-            }
-            return res.data;
-        },
-    });
-
+    // const { data: lastDonationData } = useQuery({
+    //     queryKey: ["last-donation"],
+    //     queryFn: async () => {
+    //         const res = await getLastDonationDateDonated();
+    //         if (!res.success) {
+    //             throw res;
+    //         }
+    //         return res.data;
+    //     },
+    // });
 
     const {
         data: events,
@@ -169,9 +168,15 @@ export default function Dashboard() {
                             )}
                         </h2>
                         <span className="p-2 italic text-link font-semibold text-lg text-blue-700 dark:text-blue-300 ">
-                            {dashboard?.donateNow
-                                ? "Donate Now"
-                                : `${dashboard?.next_eligible_date}`}
+                            {dashboardIsLoading ? (
+                                <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
+                            ) : (
+                                <span>
+                                    {dashboard?.donateNow
+                                        ? "Donate Now"
+                                        : `${dashboard?.next_eligible_date}`}
+                                </span>
+                            )}
                         </span>
                     </CardContent>
                 </Card>

@@ -13,13 +13,13 @@ import {
 } from "@components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@components/ui/radio-group";
 import { screeningQuestionnaireSchema } from "@lib/zod/screeningDetailSchema";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { upsertManyScreeningDetails } from "@action/screeningDetailAction";
 
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Textarea } from "@components/ui/textarea";
-import { toast } from "react-toastify";
+
 import FormLogger from "@lib/utils/FormLogger";
 import {
     AlertDialog,
@@ -33,6 +33,8 @@ import {
     AlertDialogTrigger,
 } from "@components/ui/alert-dialog";
 import { useState } from "react";
+import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
 const ScreeningQuestionnaireForm = ({
     questions,
@@ -40,6 +42,9 @@ const ScreeningQuestionnaireForm = ({
     existingAnswers,
 }) => {
     const router = useRouter();
+    const session = useSession();
+    const queryClient = useQueryClient();
+
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const form = useForm({
@@ -70,7 +75,13 @@ const ScreeningQuestionnaireForm = ({
         onSuccess: (data) => {
             if (data.success) {
                 toast.success(data.message);
-                router.push(`/portal/donors/appointments`);
+                queryClient.invalidateQueries({
+                    queryKey: ["existingAnswers", appointmentId],
+                });
+
+                if (session?.data?.user?.role_name === "Donor") {
+                    router.push(`/portal/donors/appointments`);
+                }
             } else {
                 toast.error(data.message || data.error);
             }
@@ -274,7 +285,10 @@ const ScreeningQuestionnaireForm = ({
                             <Button
                                 variant="outline"
                                 type="button"
-                                onClick={() => router.back() || router.push(`/portal/donors/appointments`)}
+                                onClick={() =>
+                                    router.back() ||
+                                    router.push(`/portal/donors/appointments`)
+                                }
                                 disabled={isPending}
                             >
                                 Back

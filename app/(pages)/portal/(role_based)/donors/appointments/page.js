@@ -41,7 +41,9 @@ export default function Page() {
             new Date(b.time_schedule?.event?.date)
     );
     const upcoming = sortedAppointments.filter(
-        (a) => new Date(a.time_schedule?.event?.date) >= today && a.status !== "cancelled"
+        (a) =>
+            new Date(a.time_schedule?.event?.date) >= today &&
+            a.status !== "cancelled"
     );
     const past = sortedAppointments.filter(
         (a) => new Date(a.time_schedule?.event?.date) < today
@@ -49,17 +51,24 @@ export default function Page() {
     const nextAppointment = upcoming[0] || null;
 
     const lastDonation =
-        [...sortedAppointments].reverse().find((a) => a.status === "collected") || null;
+        [...sortedAppointments]
+            .reverse()
+            .find((a) => a.status === "collected") || null;
     const totalDonations = appointments.filter(
         (a) => a.status === "collected"
     ).length;
     // Eligibility: 90 days after last donation
     let eligibilityCountdown = null;
     if (lastDonation) {
-        const lastDate = moment(lastDonation.time_schedule?.event?.date).startOf("day");
+        const lastDate = moment(
+            lastDonation.time_schedule?.event?.date
+        ).startOf("day");
 
         const nextEligible = lastDate.clone().add(90, "days");
-        eligibilityCountdown = nextEligible.diff(moment().startOf("day"), "days");
+        eligibilityCountdown = nextEligible.diff(
+            moment().startOf("day"),
+            "days"
+        );
     }
 
     // Handler for opening appointment details modal
@@ -99,11 +108,10 @@ export default function Page() {
                     <BookAppointmentButton />
                 </div>
 
-
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="md:col-span-2 space-y-4">
                         {/* Upcoming Appointments (2/3 width) */}
-                        <h3 className="text-lg font-semibold flex-items-center text-blue-600 dark:text-blue-400">
+                        <h3 className="text-lg flex-items-center font-extrabold text-blue-600 dark:text-blue-400">
                             <CalendarCheck /> Upcoming Appointments
                         </h3>
                         <UpcomingAppointmentsList
@@ -112,7 +120,7 @@ export default function Page() {
                         />
                         <div className="divider"></div>
                         {/* Past Appointments and Impact Metrics */}
-                        <h3 className="text-lg font-semibold flex-items-center text-orange-600 dark:text-orange-400">
+                        <h3 className="text-lg flex-items-center font-extrabold text-orange-600 dark:text-orange-400">
                             <CalendarCheck /> Past Appointments
                         </h3>
                         <PastAppointmentsList
@@ -121,7 +129,7 @@ export default function Page() {
                         />
                     </div>
                     {/* Analytics Chart (1/3 width) */}
-                    <div>
+                    <div className="flex flex-col gap-4">
                         <AnalyticsChart appointments={appointments} />
                         <ImpactMetrics
                             totalDonations={totalDonations}
@@ -129,10 +137,6 @@ export default function Page() {
                         />
                     </div>
                 </div>
-
-
-                
-
 
                 {/* Appointment Details Modal (to be conditionally shown) */}
                 <AppointmentDetailModal

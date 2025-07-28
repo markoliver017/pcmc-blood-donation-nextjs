@@ -42,7 +42,7 @@ const AnalyticsChart = ({ appointments = [] }) => {
 
     if (!data.length) {
         return (
-            <div className="flex flex-col items-center justify-center p-8 bg-white rounded-2xl shadow-lg/20 shadow-green-800 text-gray-500">
+            <div className="flex flex-col items-center justify-center p-8 border rounded-2xl shadow-lg/20 shadow-green-800 text-gray-500">
                 <span className="text-2xl mb-2">📊</span>
                 <div className="font-semibold text-lg">No Donation Data</div>
                 <div className="text-sm">
@@ -53,7 +53,7 @@ const AnalyticsChart = ({ appointments = [] }) => {
     }
 
     return (
-        <div className="bg-white rounded shadow p-4 ">
+        <div className="border rounded shadow p-4 ">
             <div className="font-semibold mb-2">Donations (Last 12 Months)</div>
             <ResponsiveContainer width="100%" height={180}>
                 <BarChart

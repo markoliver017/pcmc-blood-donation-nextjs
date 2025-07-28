@@ -36,6 +36,8 @@ import ScrollToTop from "@components/ui/scroll-to-top";
 import BloodCollectionTabForm from "@components/admin/appointments/BloodCollectionTabForm";
 import { FaQuestion, FaQuestionCircle } from "react-icons/fa";
 import EventScreeningQuestionaire from "./EventScreeningQuestionaire";
+import { Toaster } from "sonner";
+import { Badge } from "@components/ui/badge";
 
 export default function AppointmentManagementModal({
     isOpen,
@@ -92,9 +94,9 @@ export default function AppointmentManagementModal({
         };
 
         return (
-            <badge className={`text-xs badge px-2 ${config.color}`}>
+            <Badge className={`text-xs badge px-2 ${config.color}`}>
                 {config.text}
-            </badge>
+            </Badge>
         );
     };
 
@@ -104,6 +106,7 @@ export default function AppointmentManagementModal({
                 onInteractOutside={(event) => event.preventDefault()}
                 className="max-w-7xl h-[90vh] overflow-hidden flex flex-col"
             >
+                <Toaster />
                 <DialogHeader className="pb-4">
                     <div className="flex items-center justify-between">
                         <div>
@@ -295,7 +298,7 @@ export default function AppointmentManagementModal({
                                         >
                                             <FaQuestionCircle className="h-3 w-3" />
                                             <span className="hidden lg:inline-block">
-                                                Screening Questionaire Response
+                                                Screening Response
                                             </span>
                                         </TabsTrigger>
                                         <TabsTrigger

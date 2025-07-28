@@ -25,7 +25,7 @@ import {
 } from "@lib/zod/bloodDonationSchema";
 import { format } from "date-fns";
 import moment from "moment";
-import { Op, where } from "sequelize";
+import { Op } from "sequelize";
 
 async function updatePastEventStatuses() {
     const today = new Date();
@@ -234,7 +234,7 @@ export async function getEventsAnalytics() {
                 },
                 status: {
                     [Op.in]: ["approved"],
-                }
+                },
             },
             attributes: [
                 [
@@ -1167,12 +1167,19 @@ export async function updateEventStatus(formData) {
                                         "You can now manage the event and open registrations for your donors.",
                                     event_organizer:
                                         organizer.full_name || organizer.name,
-                                    system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
-                                    support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
-                                    support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
-                                    domain_url:
-                                        process.env.NEXT_PUBLIC_APP_URL ||
+                                    system_name:
+                                        process.env.NEXT_PUBLIC_SYSTEM_NAME ||
                                         "",
+                                    support_email:
+                                        process.env
+                                            .NEXT_PUBLIC_SMTP_SUPPORT_EMAIL ||
+                                        "",
+                                    support_contact:
+                                        process.env
+                                            .NEXT_PUBLIC_SMTP_SUPPORT_CONTACT ||
+                                        "",
+                                    domain_url:
+                                        process.env.NEXT_PUBLIC_APP_URL || "",
                                 },
                             },
                         });
@@ -1195,18 +1202,22 @@ export async function updateEventStatus(formData) {
         };
 
         const text = {
-            rejected: "The blood donation event has been rejected. The agency will be notified.",
-            approved: "The blood donation event is now approved and active. The agency will be notified.",
-            cancelled: "The blood donation event has been cancelled. The agency will be notified.",
+            rejected:
+                "The blood donation event has been rejected. The agency will be notified.",
+            approved:
+                "The blood donation event is now approved and active. The agency will be notified.",
+            cancelled:
+                "The blood donation event has been cancelled. The agency will be notified.",
         };
 
         return {
             success: true,
             data: updatedEvent.get({ plain: true }),
             title: title[data.status] || "Event Updated",
-            text: text[data.status] || "The blood donation event has been updated. The agency will be notified.",
+            text:
+                text[data.status] ||
+                "The blood donation event has been updated. The agency will be notified.",
         };
-
     } catch (err) {
         logErrorToFile(err, "UPDATE EVENT STATUS");
         await transaction.rollback();
@@ -1571,8 +1582,6 @@ export async function getEventDashboardData(eventId) {
         };
     }
 
-
-
     try {
         // Fetch event details
         const event = await BloodDonationEvent.findByPk(eventId, {
@@ -1613,14 +1622,20 @@ export async function getEventDashboardData(eventId) {
         }
 
         if (session?.user?.role_name !== "Admin") {
-            if (session?.user?.role_name === "Organizer" && event?.requester_id !== session?.user?.id) {
+            if (
+                session?.user?.role_name === "Organizer" &&
+                event?.requester_id !== session?.user?.id
+            ) {
                 return {
                     success: false,
                     message: "You are not authorized to access this event.",
                 };
             }
 
-            if (session?.user?.role_name === "Agency Administrator" && event?.agency?.head_id !== session?.user?.id) {
+            if (
+                session?.user?.role_name === "Agency Administrator" &&
+                event?.agency?.head_id !== session?.user?.id
+            ) {
                 return {
                     success: false,
                     message: "You are not authorized to access this event.",
@@ -1628,11 +1643,10 @@ export async function getEventDashboardData(eventId) {
             }
         }
 
-
         // Fetch all appointments for this event with related data
         const appointments = await DonorAppointmentInfo.findAll({
             where: {
-                event_id: eventId
+                event_id: eventId,
             },
             include: [
                 {

@@ -364,9 +364,18 @@ export async function getEventsById(id) {
                         include: {
                             model: User,
                             as: "user",
-                            attributes: ["id", "name", "email", "image", "full_name", "first_name", "middle_name", "last_name"],
+                            attributes: [
+                                "id",
+                                "name",
+                                "email",
+                                "image",
+                                "full_name",
+                                "first_name",
+                                "middle_name",
+                                "last_name",
+                            ],
                         },
-                    }
+                    },
                 },
                 {
                     model: DonorAppointmentInfo,
@@ -602,11 +611,12 @@ export async function storeEvent(formData) {
     if (overlappingEvent) {
         return {
             success: false,
-            message: `Event date conflict: Your agency has another event ("${overlappingEvent?.title
-                }") scheduled on ${format(
-                    overlappingEvent?.date,
-                    "PP"
-                )} Please choose a date that's at least 90 days before or after this event.`,
+            message: `Event date conflict: Your agency has another event ("${
+                overlappingEvent?.title
+            }") scheduled on ${format(
+                overlappingEvent?.date,
+                "PP"
+            )} Please choose a date that's at least 90 days before or after this event.`,
         };
     }
 
@@ -633,7 +643,9 @@ export async function storeEvent(formData) {
         (async () => {
             try {
                 // Find all admin users
-                const adminRole = await Role.findOne({ where: { role_name: "Admin" } });
+                const adminRole = await Role.findOne({
+                    where: { role_name: "Admin" },
+                });
                 if (adminRole) {
                     const adminUsers = await User.findAll({
                         include: [
@@ -659,7 +671,10 @@ export async function storeEvent(formData) {
                                 },
                             });
                         } catch (err) {
-                            console.error("Admin system notification failed:", err);
+                            console.error(
+                                "Admin system notification failed:",
+                                err
+                            );
                         }
                         // Email notification to all admins
                         console.log("Agency >>>>>>>>>", agency);
@@ -673,21 +688,36 @@ export async function storeEvent(formData) {
                                             event_name: newEvent.title,
                                             event_title: newEvent.title,
                                             event_date: newEvent.date,
-                                            event_location: agency?.agency_address || "",
+                                            event_location:
+                                                agency?.agency_address || "",
                                             agency_name: agency?.name || "",
-                                            event_description: newEvent.description || "",
-                                            event_organizer: user.name || user.email,
-                                            system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
-                                            support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
-                                            support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
-                                            domain_url:
-                                                process.env.NEXT_PUBLIC_APP_URL ||
+                                            event_description:
+                                                newEvent.description || "",
+                                            event_organizer:
+                                                user.name || user.email,
+                                            system_name:
+                                                process.env
+                                                    .NEXT_PUBLIC_SYSTEM_NAME ||
                                                 "",
+                                            support_email:
+                                                process.env
+                                                    .NEXT_PUBLIC_SMTP_SUPPORT_EMAIL ||
+                                                "",
+                                            support_contact:
+                                                process.env
+                                                    .NEXT_PUBLIC_SMTP_SUPPORT_CONTACT ||
+                                                "",
+                                            domain_url:
+                                                process.env
+                                                    .NEXT_PUBLIC_APP_URL || "",
                                         },
                                     },
                                 });
                             } catch (err) {
-                                console.error(`Admin email notification failed for ${adminUser.email}:`, err);
+                                console.error(
+                                    `Admin email notification failed for ${adminUser.email}:`,
+                                    err
+                                );
                             }
                         }
                     }
@@ -815,17 +845,19 @@ export async function updateEvent(id, formData) {
         return {
             success: false,
             type: "field_errors",
-            message: `Event date conflict: Your agency has another event "${overlappingEvent?.title
+            message: `Event date conflict: Your agency has another event "${
+                overlappingEvent?.title
+            }" scheduled on ${format(
+                overlappingEvent?.date,
+                "PP"
+            )}. Please choose a date that's at least 90 days before or after this event.`,
+            errors: {
+                date: `Event date conflict: Your agency has another event "${
+                    overlappingEvent?.title
                 }" scheduled on ${format(
                     overlappingEvent?.date,
                     "PP"
                 )}. Please choose a date that's at least 90 days before or after this event.`,
-            errors: {
-                date: `Event date conflict: Your agency has another event "${overlappingEvent?.title
-                    }" scheduled on ${format(
-                        overlappingEvent?.date,
-                        "PP"
-                    )}. Please choose a date that's at least 90 days before or after this event.`,
             },
         };
     }
@@ -1218,7 +1250,7 @@ export async function getAgencyEventsAnalytics() {
                 },
                 status: {
                     [Op.in]: ["approved"],
-                }
+                },
             },
             attributes: [
                 [
@@ -1422,12 +1454,24 @@ export async function getPresentEventsByAgency() {
                         model: Donor,
                         as: "donors",
                         attributes: ["id", "agency_id", "blood_type_id"],
+                        where: {
+                            status: "activated",
+                        },
                         include: {
                             model: User,
                             as: "user",
-                            attributes: ["id", "name", "email", "image", "full_name", "first_name", "middle_name", "last_name"],
+                            attributes: [
+                                "id",
+                                "name",
+                                "email",
+                                "image",
+                                "full_name",
+                                "first_name",
+                                "middle_name",
+                                "last_name",
+                            ],
                         },
-                    }
+                    },
                 },
                 {
                     model: User,

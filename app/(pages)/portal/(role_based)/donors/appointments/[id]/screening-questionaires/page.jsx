@@ -1,5 +1,8 @@
 import React from "react";
-import { getActiveScreeningQuestions, getScreeningDetails } from "@action/screeningDetailAction";
+import {
+    getActiveScreeningQuestions,
+    getScreeningDetails,
+} from "@action/screeningDetailAction";
 
 import { auth } from "@lib/auth";
 import { BloodDonationEvent, Donor, DonorAppointmentInfo } from "@lib/models";
@@ -12,7 +15,7 @@ import Link from "next/link";
 
 const ScreeningQuestionairesPage = async ({ params }) => {
     const session = await auth();
-    const appointmentId = params.id;
+    const appointmentId = (await params).id;
 
     const appointment = await DonorAppointmentInfo.findOne({
         where: { id: appointmentId },
@@ -49,8 +52,16 @@ const ScreeningQuestionairesPage = async ({ params }) => {
         screeningDetailsPromise,
     ]);
 
-    const { success: questionsSuccess, data: questions, error: questionsError } = questionsResult;
-    const { success: detailsSuccess, data: existingAnswers, error: detailsError } = screeningDetailsResult;
+    const {
+        success: questionsSuccess,
+        data: questions,
+        error: questionsError,
+    } = questionsResult;
+    const {
+        success: detailsSuccess,
+        data: existingAnswers,
+        error: detailsError,
+    } = screeningDetailsResult;
 
     if (!questionsSuccess || !detailsSuccess) {
         const error = questionsError || detailsError || "Something went wrong";
@@ -63,19 +74,18 @@ const ScreeningQuestionairesPage = async ({ params }) => {
         );
     }
 
-    if(!questions || questions.length === 0) {
+    if (!questions || questions.length === 0) {
         return (
             <div className="flex items-center justify-center h-[calc(100vh-15rem)]">
                 <div className="flex flex-col items-center gap-2 text-center text-red-500 font-bold">
                     No screening questions found.
                     <Link
-                    href={`/portal/donors/appointments`}
-                    className="btn text-blue-500 hover:underline"
-                >
-                    Back
-                </Link>
+                        href={`/portal/donors/appointments`}
+                        className="btn text-blue-500 hover:underline"
+                    >
+                        Back
+                    </Link>
                 </div>
-
             </div>
         );
     }

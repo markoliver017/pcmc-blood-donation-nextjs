@@ -8,6 +8,9 @@ import { getDashboardData } from "@/action/adminDashboardAction";
 import { queryKeys } from "@lib/queryKeys";
 import { LogIn } from "lucide-react";
 import { PiHandHeart } from "react-icons/pi";
+import StarRating from "@components/reusable_components/StarRating";
+import { DonorAppointmentInfo, sequelize } from "@lib/models";
+import { Op } from "sequelize";
 
 export const metadata = {
     title: "Admin Dashboard",
@@ -32,9 +35,23 @@ export default async function page() {
         },
     });
 
+    const { participantOverallFeedback } = await DonorAppointmentInfo.findOne({
+        where: {
+            status: { [Op.notIn]: ["cancelled"] },
+            feedback_average: { [Op.not]: null },
+        },
+        attributes: [
+            [
+                sequelize.fn("AVG", sequelize.col("feedback_average")),
+                "participantOverallFeedback",
+            ],
+        ],
+        raw: true,
+    });
+
     return (
         <div className="p-5 overflow-scroll">
-            <div className="flex justify-between border-b border-gray-200 dark:border-gray-800">
+            <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-800">
                 <div>
                     <h1 className="text-3xl flex-items-center">
                         <PiHandHeart /> WELCOME, {user.name}
@@ -43,6 +60,10 @@ export default async function page() {
                         <LogIn className="h-4" /> Logged In as :{" "}
                         {user?.role_name || "Donor"}
                     </h2>
+                </div>
+                <div className="flex items-center flex-none gap-2 p-2 rounded-md bg-base-200">
+                    <span className="text-sm font-medium">Overall Rating:</span>
+                    <StarRating rating={participantOverallFeedback || 0} />
                 </div>
             </div>
 

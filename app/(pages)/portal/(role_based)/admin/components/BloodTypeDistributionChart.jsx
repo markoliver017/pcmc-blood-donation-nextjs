@@ -10,7 +10,16 @@ import {
     ResponsiveContainer,
 } from "recharts";
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF', '#FF1919', '#19FFD1', '#FFD119'];
+const COLORS = [
+    "#0088FE",
+    "#00C49F",
+    "#FFBB28",
+    "#FF8042",
+    "#AF19FF",
+    "#FF1919",
+    "#19FFD1",
+    "#FFD119",
+];
 
 export default function BloodTypeDistributionChart({ data, isLoading }) {
     if (isLoading) {
@@ -29,7 +38,7 @@ export default function BloodTypeDistributionChart({ data, isLoading }) {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Blood Type Distribution</CardTitle>
+                <CardTitle>Blood Type Distribution </CardTitle>
             </CardHeader>
             <CardContent>
                 <ResponsiveContainer width="100%" height={400}>
@@ -46,7 +55,10 @@ export default function BloodTypeDistributionChart({ data, isLoading }) {
                             label={(entry) => `${entry.name} (${entry.value})`}
                         >
                             {data?.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                <Cell
+                                    key={`cell-${index}`}
+                                    fill={COLORS[index % COLORS.length]}
+                                />
                             ))}
                         </Pie>
                         <Tooltip />

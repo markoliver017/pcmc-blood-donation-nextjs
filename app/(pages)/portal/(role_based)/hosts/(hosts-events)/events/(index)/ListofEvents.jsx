@@ -17,7 +17,7 @@ import {
     BarChart3,
     CreditCard,
     TableIcon,
-    Calendar
+    Calendar,
 } from "lucide-react";
 import Link from "next/link";
 import LoadingModal from "@components/layout/LoadingModal";
@@ -118,7 +118,7 @@ export default function ListofEvents() {
         { value: "ongoing", label: "Ongoing" },
         { value: "not started", label: "Not Started" },
         { value: "completed", label: "Completed" },
-        { value: "cancelled", label: "Cancelled" },
+        { value: "closed", label: "Closed" },
     ];
 
     // Handler for card actions
@@ -136,7 +136,6 @@ export default function ListofEvents() {
         return events.filter((event) => {
             // Search filter
             if (filters.search) {
-
                 const searchTerm = filters.search.toLowerCase();
                 const searchableFields = [
                     event.title,
@@ -171,7 +170,11 @@ export default function ListofEvents() {
             }
 
             // Registration status filter
-            if (filters.registration_status !== "All" && filters.registration_status && event.registration_status !== filters.registration_status) {
+            if (
+                filters.registration_status !== "All" &&
+                filters.registration_status &&
+                event.registration_status !== filters.registration_status
+            ) {
                 return false;
             }
 

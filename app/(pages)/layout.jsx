@@ -60,14 +60,14 @@ export default async function RootLayout({ children, rootLayoutModal }) {
                 <Providers>
                     <ToastContainer containerId="main" />
 
-                    { /* next-theme */}
+                    {/* next-theme */}
                     <ThemeProvider>
                         <TansactProviders>
                             <div className="flex dark:bg-black dark:text-slate-100">
                                 <Sidebar currentUser={currentUser} />
 
                                 <MainWrapper>
-                                    <Preloader />
+                                    {/* <Preloader /> */}
                                     <HeaderNav currentUser={currentUser} />
                                     {/* <Header /> */}
                                     {/* <WrapperHead /> */}
@@ -78,7 +78,6 @@ export default async function RootLayout({ children, rootLayoutModal }) {
                                     <Footer />
                                     <BackToTop />
                                 </MainWrapper>
-
                             </div>
                         </TansactProviders>
                     </ThemeProvider>

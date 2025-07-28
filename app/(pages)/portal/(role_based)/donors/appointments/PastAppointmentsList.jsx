@@ -7,7 +7,10 @@ import {
     Download,
     MessageCircle,
     Eye,
+    MessageSquareQuote,
 } from "lucide-react";
+import StarRating from "@components/reusable_components/StarRating";
+import Link from "next/link";
 
 const formatDate = (dateStr) => {
     if (!dateStr) return "-";
@@ -22,7 +25,7 @@ const formatDate = (dateStr) => {
 const PastAppointmentsList = ({ appointments = [], onViewDetails }) => {
     if (!appointments.length) {
         return (
-            <div className="flex flex-col items-center justify-center p-8 bg-white rounded shadow text-gray-500">
+            <div className="flex flex-col items-center justify-center p-8 rounded shadow text-gray-500">
                 <History className="w-8 h-8 mb-2 text-gray-400" />
                 <div className="font-semibold text-lg">
                     No Past Appointments
@@ -45,14 +48,35 @@ const PastAppointmentsList = ({ appointments = [], onViewDetails }) => {
                     return (
                         <div
                             key={appt.id}
-                            className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-white rounded-lg shadow border border-gray-100"
+                            className="space-y-2  justify-between p-4 rounded-lg shadow border border-gray-100"
                         >
                             <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 text-gray-700 font-semibold text-lg">
-                                    <History className="w-5 h-5" />
-                                    {event?.title || "Untitled Event"}
+                                <div className="flex justify-between">
+                                    <div className="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-lg">
+                                        <History className="w-5 h-5" />
+                                        {event?.title || "Untitled Event"}
+                                    </div>
+                                    {appt.feedback_average !== null ? (
+                                        <div className="flex items-center flex-none gap-2 p-2 rounded-md bg-base-200">
+                                            <span className="text-sm font-medium">
+                                                Your Rating:
+                                            </span>
+                                            <StarRating
+                                                rating={appt.feedback_average}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <Link
+                                            href={`/portal/donors/appointments/${appt.id}/feedback`}
+                                            className="btn btn-ghost"
+                                            aria-label="Provide Feedback"
+                                        >
+                                            <MessageSquareQuote className="w-4 h-4" />
+                                            <span>Send Feedback</span>
+                                        </Link>
+                                    )}
                                 </div>
-                                <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-600">
+                                <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-600 dark:text-gray-400">
                                     <span className="flex items-center gap-1">
                                         <Calendar className="w-4 h-4" />{" "}
                                         {formatDate(event?.date)}
@@ -75,7 +99,7 @@ const PastAppointmentsList = ({ appointments = [], onViewDetails }) => {
                                     </span>
                                 </div>
                             </div>
-                            <div className="flex gap-2 mt-4 md:mt-0 md:ml-4">
+                            <div className="flex md:justify-end gap-2 mt-4 md:mt-0 md:ml-4">
                                 <button
                                     className="btn btn-sm btn-primary"
                                     onClick={() =>
@@ -102,15 +126,6 @@ const PastAppointmentsList = ({ appointments = [], onViewDetails }) => {
                                 >
                                     <Download className="w-4 h-4" />
                                     Certificate
-                                </button>
-                                <button
-                                    className="btn btn-sm btn-outline flex items-center gap-1"
-                                    aria-label="Give feedback"
-                                    title="Give Feedback (coming soon)"
-                                    // onClick={() => ...}
-                                >
-                                    <MessageCircle className="w-4 h-4" />
-                                    Feedback
                                 </button>
                             </div>
                         </div>

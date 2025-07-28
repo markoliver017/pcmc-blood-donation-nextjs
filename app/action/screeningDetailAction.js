@@ -23,6 +23,7 @@ export async function getScreeningDetails(appointmentId) {
             where: { donor_appointment_info_id: appointmentId },
             raw: true,
         });
+
         return { success: true, data: details };
     } catch (error) {
         console.error("Failed to fetch screening details:", error);
@@ -60,11 +61,19 @@ export async function getActiveScreeningQuestions() {
 
 export async function upsertManyScreeningDetails(appointmentId, answers) {
     const session = await auth();
-    if (session?.user?.role_name !== "Donor") {
+    if (
+        session?.user?.role_name !== "Donor" &&
+        session?.user?.role_name !== "Admin"
+    ) {
         return {
             success: false,
             message: "Unauthorized: Donor role required",
         };
+    }
+
+    const whereConditions = {};
+    if (session?.user?.role_name === "Donor") {
+        whereConditions.user_id = session.user.id;
     }
 
     const t = await sequelize.transaction();
@@ -85,7 +94,7 @@ export async function upsertManyScreeningDetails(appointmentId, answers) {
             include: {
                 model: Donor,
                 as: "donor",
-                where: { user_id: session.user.id },
+                where: whereConditions,
             },
         });
 
@@ -104,7 +113,7 @@ export async function upsertManyScreeningDetails(appointmentId, answers) {
 
         await ScreeningDetail.bulkCreate(screeningDetailsToUpsert, {
             transaction: t,
-            updateOnDuplicate: ["response", "additional_info"],
+            updateOnDuplicate: ["response", "additional_info", "updatedAt"],
         });
 
         await t.commit();
