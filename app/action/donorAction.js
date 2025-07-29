@@ -32,6 +32,7 @@ import { donorBasicInformationSchema } from "@lib/zod/userSchema";
 import moment from "moment";
 import { Op } from "sequelize";
 import { handleValidationError } from "@lib/utils/validationErrorHandler";
+import { getAgencyIdBySession } from "./hostEventAction";
 
 export async function getApprovedEventsByAgency() {
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -491,7 +492,34 @@ export async function getDonorsByStatus(status) {
     }
 }
 export async function getDonorById(id) {
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // await new Promise((resolve) => setTimeout(resolve, 500));
+    if (!id) {
+        return {
+            success: false,
+            message: "Invalid Donor Id provided!",
+        };
+    }
+
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+    const { user } = session;
+
+    const {
+        success: agencySuccess,
+        agency_id,
+        message,
+    } = await getAgencyIdBySession();
+    if (!agencySuccess) {
+        return {
+            success: false,
+            message,
+        };
+    }
 
     if (!id) {
         return {
@@ -500,8 +528,14 @@ export async function getDonorById(id) {
         };
     }
 
+    let whereCondition = {};
+    if (user?.role_name !== "Admin") {
+        whereCondition.agency_id = agency_id;
+    }
+
     try {
         const donor = await Donor.findByPk(id, {
+            where: whereCondition,
             include: [
                 {
                     model: User,
@@ -515,8 +549,59 @@ export async function getDonorById(id) {
                     model: BloodType,
                     as: "blood_type",
                 },
+                {
+                    model: DonorAppointmentInfo,
+                    as: "appointments",
+                    attributes: [
+                        "id",
+                        "donor_type",
+                        "collection_method",
+                        "status",
+                        "comments",
+                        "feedback_average",
+                    ],
+                    include: {
+                        model: BloodDonationEvent,
+                        as: "event",
+                        attributes: ["date", "title"],
+                        required: true,
+                    },
+                },
+                {
+                    model: BloodDonationCollection,
+                    as: "blood_collections",
+                    include: {
+                        model: DonorAppointmentInfo,
+                        as: "appointment",
+                        attributes: ["collection_method"],
+                    },
+                },
+                {
+                    model: BloodDonationHistory,
+                    as: "blood_history",
+                    attributes: [
+                        "previous_donation_count",
+                        "previous_donation_volume",
+                    ],
+                },
+            ],
+            order: [
+                [
+                    { model: DonorAppointmentInfo, as: "appointments" },
+                    { model: BloodDonationEvent, as: "event" },
+                    "date",
+                    "DESC",
+                ],
             ],
         });
+
+        if (!donor) {
+            return {
+                success: false,
+                message:
+                    "Donor not found/inactive or you are not authorized to access the donor information.",
+            };
+        }
 
         return formatSeqObj(donor);
     } catch (err) {

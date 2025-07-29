@@ -1,6 +1,12 @@
 "use client";
-import dynamic from 'next/dynamic';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
+import dynamic from "next/dynamic";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@components/ui/card";
 import { Calendar, HandCoins, Users } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -16,10 +22,13 @@ import DonationsChart from "./components/DonationsChart";
 import BloodTypeDistributionChart from "./components/BloodTypeDistributionChart";
 import EventSuccessRateChart from "./components/EventSuccessRateChart";
 
-const AllEventCalendar = dynamic(() => import('@components/organizers/AllEventCalendar'), {
-    loading: () => <div className="skeleton h-96 w-full"></div>,
-    ssr: false
-});
+const AllEventCalendar = dynamic(
+    () => import("@components/organizers/AllEventCalendar"),
+    {
+        loading: () => <div className="skeleton h-96 w-full"></div>,
+        ssr: false,
+    }
+);
 
 export default function Dashboard() {
     const { data: dashboard, isLoading: dashboardIsLoading } = useQuery({
@@ -85,7 +94,7 @@ export default function Dashboard() {
                         </h2>
                         <Link
                             className="btn btn-primary btn-outline"
-                            href="/portal/admin/blood-donations"
+                            href="/portal/admin/blood-collections"
                         >
                             View List
                         </Link>
@@ -149,17 +158,17 @@ export default function Dashboard() {
 
             {/* Analytics Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <DonationsChart 
+                <DonationsChart
                     data={dashboard?.donationsByMonth}
                     isLoading={dashboardIsLoading}
                 />
-                <BloodTypeDistributionChart 
+                <BloodTypeDistributionChart
                     data={dashboard?.bloodTypeDistribution}
                     isLoading={dashboardIsLoading}
                 />
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <EventSuccessRateChart 
+                <EventSuccessRateChart
                     data={dashboard?.eventSuccessData}
                     isLoading={dashboardIsLoading}
                 />
@@ -183,7 +192,7 @@ export default function Dashboard() {
 
                 {/* Action Panel */}
                 <div className="w-full">
-                    <ActionPanel 
+                    <ActionPanel
                         events={dashboard?.forApprovalEvents}
                         agencies={dashboard?.forApprovalAgencies}
                         isLoading={dashboardIsLoading}

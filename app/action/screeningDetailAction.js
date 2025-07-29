@@ -7,9 +7,11 @@ import {
     sequelize,
     DonorAppointmentInfo,
     Donor,
+    BloodDonationEvent,
 } from "@lib/models";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import { screeningQuestionnaireSchema } from "@lib/zod/screeningDetailSchema";
+import { isBefore, startOfDay } from "date-fns";
 import { revalidatePath } from "next/cache";
 
 export async function getScreeningDetails(appointmentId) {
@@ -91,11 +93,18 @@ export async function upsertManyScreeningDetails(appointmentId, answers) {
 
         const appointment = await DonorAppointmentInfo.findOne({
             where: { id: appointmentId },
-            include: {
-                model: Donor,
-                as: "donor",
-                where: whereConditions,
-            },
+            include: [
+                {
+                    model: Donor,
+                    as: "donor",
+                    where: whereConditions,
+                },
+                {
+                    model: BloodDonationEvent,
+                    as: "event",
+                    attributes: ["date"],
+                },
+            ],
         });
 
         if (!appointment) {
@@ -103,6 +112,18 @@ export async function upsertManyScreeningDetails(appointmentId, answers) {
             return {
                 success: false,
                 message: "Appointment not found or you do not have permission.",
+            };
+        }
+
+        const currentDate = startOfDay(new Date());
+        const eventDate = startOfDay(new Date(appointment?.event?.date));
+
+        if (isBefore(currentDate, eventDate)) {
+            await t.rollback();
+            return {
+                success: false,
+                message:
+                    "Please answer the screening questionaires on the day of the event.",
             };
         }
 

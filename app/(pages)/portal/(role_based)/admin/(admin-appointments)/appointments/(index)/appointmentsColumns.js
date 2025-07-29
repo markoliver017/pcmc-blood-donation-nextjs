@@ -15,6 +15,7 @@ import Link from "next/link";
 import moment from "moment";
 import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 import { MdCheckCircleOutline } from "react-icons/md";
+import StatusBadge from "@components/ui/StatusBadge";
 
 function calculateAge(dateOfBirth) {
     const today = new Date();
@@ -54,7 +55,7 @@ export const appointmentsColumns = [
         },
     },
     {
-        accessorKey: "donor.user.full_name",
+        accessorKey: "donor.user.name",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Name" />
         ),
@@ -63,16 +64,6 @@ export const appointmentsColumns = [
             const isVerified = data.donor.is_data_verified;
             return (
                 <>
-                    {/* <span>{getValue()}</span>{" "}
-                    {isVerified ? (
-                        <div className="badge badge-success p-1 rounded-full">
-                            <Check className="h-4 w-4" />
-                        </div>
-                    ) : (
-                        <div className="badge badge-warning p-1 rounded-full">
-                            <QuestionMarkCircledIcon className="h-4 w-4" />
-                        </div>
-                    )} */}
                     {isVerified ? (
                         <div className="btn btn-ghost p-2 font-bold rounded-full">
                             {getValue()}{" "}
@@ -159,97 +150,36 @@ export const appointmentsColumns = [
             <DataTableColumnHeader column={column} title="Blood Type" />
         ),
         cell: ({ getValue, row }) => {
-            const blood_type = getValue();
             const data = row.original;
-            const isVerified = data?.donor?.is_bloodtype_verified;
-            if (blood_type) {
-                return (
-                    <>
-                        {isVerified ? (
-                            <div className="btn btn-ghost p-2 font-bold rounded-full">
-                                {blood_type}{" "}
-                                <MdCheckCircleOutline className="h-4 w-4 text-green-500" />
-                            </div>
-                        ) : (
-                            <div className="btn btn-ghost p-2 font-bold rounded-full">
-                                {blood_type}{" "}
-                                <QuestionMarkCircledIcon className="h-4 w-4 text-warning" />
-                            </div>
-                        )}
-                    </>
-                );
-            }
-            return "Not Specified";
+            const isVerified = data.donor.is_blood_type_verified;
+            return (
+                <>
+                    {isVerified ? (
+                        <div className="btn btn-ghost p-2 font-bold rounded-full">
+                            {getValue()}{" "}
+                            <MdCheckCircleOutline className="h-4 w-4 text-green-500" />
+                        </div>
+                    ) : (
+                        <div className="btn btn-ghost p-2 font-bold rounded-full">
+                            {getValue()}{" "}
+                            <QuestionMarkCircledIcon className="h-4 w-4 text-red-500" />
+                        </div>
+                    )}
+                </>
+            );
         },
         filterFn: "columnFilter",
     },
-    // {
-    //     accessorKey: "patient_name",
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="Patient Name" />
-    //     ),
-    //     cell: ({ getValue }) => <span>{getValue() || "N/A"}</span>,
-    //     filterFn: "columnFilter",
-    // },
-    //     {
-    //     accessorKey: "donor_type",
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="Donor Type" />
-    //     ),
-    //     cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
-    //     filterFn: "columnFilter",
-    // },
 
-    // {
-    //     accessorKey: "collection_method",
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="Collection Method" />
-    //     ),
-    //     cell: ({ getValue }) => <span>{formatFormalName(getValue())}</span>,
-    //     filterFn: "columnFilter",
-    // },
-    // {
-    //     accessorKey: "comments",
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="Remarks" />
-    //     ),
-    //     filterFn: "columnFilter",
-    // },
     {
         accessorKey: "status",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Progress status" />
+            <DataTableColumnHeader column={column} title="Status" />
         ),
         filterFn: "columnFilter",
         cell: ({ row }) => {
-            const data = row.original;
-            const status = data.status;
-            if (status == "registered") {
-                return (
-                    <div className="badge p-2 font-semibold text-xs badge-primary">
-                        {status.toUpperCase()}
-                    </div>
-                );
-            }
-            if (status == "deferred") {
-                return (
-                    <div className="badge p-2 font-semibold text-xs badge-warning">
-                        {status.toUpperCase()}
-                    </div>
-                );
-            }
-            if (status == "collected") {
-                return (
-                    <div className="badge p-2 font-semibold text-xs badge-success">
-                        DONATED
-                    </div>
-                );
-            }
-            return (
-                <div className="badge p-2 font-semibold text-xs badge-error">
-                    {status.toUpperCase()}
-                </div>
-            );
+            const status = row.original.status;
+            return <StatusBadge status={status} />;
         },
     },
     {
@@ -349,12 +279,6 @@ export const appointmentsColumns = [
                                 <span>Manage</span>
                             </DropdownMenuItem>
                         </Link>
-                        {/* <Link href={`/portal/admin/users/${data.id}/edit`}>
-                            <DropdownMenuItem className="flex items-center space-x-2">
-                                <Pencil className="w-4 h-4" />
-                                <span>Edit</span>
-                            </DropdownMenuItem>
-                        </Link> */}
                     </DropdownMenuContent>
                 </DropdownMenu>
             );

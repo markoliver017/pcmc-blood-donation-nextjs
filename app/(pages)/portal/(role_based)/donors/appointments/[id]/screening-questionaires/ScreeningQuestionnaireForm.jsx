@@ -35,6 +35,8 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
+import { ArrowLeft, Save } from "lucide-react";
+import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 
 const ScreeningQuestionnaireForm = ({
     questions,
@@ -105,9 +107,11 @@ const ScreeningQuestionnaireForm = ({
     };
 
     return (
-        <Card>
+        <Card className="px-4 py-5 space-y-5 bg-gray-100">
             <CardHeader>
-                <CardTitle>Screening Questions</CardTitle>
+                <CardTitle className="text-xl font-bold flex-items-center">
+                    <QuestionMarkCircledIcon /> Screening Questionnaires
+                </CardTitle>
             </CardHeader>
             <CardContent>
                 <Form {...form}>
@@ -201,7 +205,23 @@ const ScreeningQuestionnaireForm = ({
                                 );
                             })}
                         </div>
-                        <div className="space-x-2">
+                        <div className="flex justify-start items-center md:justify-end gap-2">
+                            {session?.data?.user?.role_name === "Donor" && (
+                                <Button
+                                    variant="outline"
+                                    type="button"
+                                    onClick={() =>
+                                        router.back() ||
+                                        router.push(
+                                            `/portal/donors/appointments`
+                                        )
+                                    }
+                                    disabled={isPending}
+                                >
+                                    <ArrowLeft className="h-4 w-4" />
+                                    Back
+                                </Button>
+                            )}
                             <AlertDialog
                                 open={isModalOpen}
                                 onOpenChange={setIsModalOpen}
@@ -212,10 +232,12 @@ const ScreeningQuestionnaireForm = ({
                                         onClick={() =>
                                             form.handleSubmit(onSubmit)()
                                         }
+                                        className="border"
                                         disabled={
                                             isPending || !form.formState.isValid
                                         }
                                     >
+                                        <Save className="h-4 w-4" />
                                         {existingAnswers.length > 0
                                             ? "Update Questionnaire"
                                             : "Submit Questionnaire"}
@@ -282,17 +304,6 @@ const ScreeningQuestionnaireForm = ({
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
                             </AlertDialog>
-                            <Button
-                                variant="outline"
-                                type="button"
-                                onClick={() =>
-                                    router.back() ||
-                                    router.push(`/portal/donors/appointments`)
-                                }
-                                disabled={isPending}
-                            >
-                                Back
-                            </Button>
                         </div>
                     </form>
                 </Form>

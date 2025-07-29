@@ -83,6 +83,71 @@ export async function getAgencyId() {
     return null;
 }
 
+export async function getAgencyIdBySession() {
+    let agencyId = null;
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+            agency_id: agencyId,
+        };
+    }
+
+    const { user } = session;
+    if (user?.role_name === "Agency Administrator") {
+        const response = await User.findByPk(user.id, {
+            attributes: ["id"],
+            include: [
+                {
+                    model: Agency,
+                    as: "headedAgency",
+                    attributes: ["id"],
+                    required: true,
+                },
+            ],
+        });
+        if (response) {
+            agencyId = response?.headedAgency?.id;
+        }
+    } else if (user?.role_name === "Organizer") {
+        const response = await User.findByPk(user.id, {
+            attributes: ["id"],
+            include: [
+                {
+                    model: AgencyCoordinator,
+                    as: "coordinator",
+                    attributes: ["id"],
+                    required: true,
+                    include: {
+                        model: Agency,
+                        attributes: ["id"],
+                        as: "agency",
+                        required: true,
+                    },
+                },
+            ],
+        });
+        if (response) {
+            agencyId = response?.coordinator?.agency?.id;
+        }
+    } else if (user?.role_name === "Donor") {
+        const response = await Donor.findOne({
+            where: { user_id: user.id },
+            attributes: ["agency_id"],
+        });
+        if (response) {
+            agencyId = response.agency_id;
+        }
+    }
+
+    return {
+        success: true,
+        agency_id: agencyId,
+        message: "",
+    };
+}
+
 /** AllEventCalendar , CreateEventForm */
 export async function getAllEvents() {
     try {

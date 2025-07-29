@@ -38,7 +38,7 @@ export default async function Page({ params }) {
                     },
                 ]}
             />
-            <div className="w-full h-full md:w-8/10 2xl:w-3/4 mx-auto relative">
+            <div className="w-full md:w-8/10 2xl:w-3/4 mx-auto relative pb-10">
                 <Link
                     href="/portal/admin/donors"
                     className="absolute top-5 right-4"

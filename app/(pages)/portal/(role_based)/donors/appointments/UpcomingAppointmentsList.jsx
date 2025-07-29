@@ -110,10 +110,10 @@ const UpcomingAppointmentsList = ({ appointments = [], onViewDetails }) => {
                             <Link
                                 href={`/portal/donors/appointments/${appt.id}/screening-questionaires`}
                                 className="btn btn-sm btn-primary"
-                                aria-label="View appointment details"
+                                aria-label="Answer screening questionaires"
                             >
                                 <FaQuestionCircle className="w-4 h-4" />
-                                Questionaires
+                                Screening
                             </Link>
 
                             <CancelEventButton

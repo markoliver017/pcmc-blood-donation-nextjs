@@ -12,6 +12,8 @@ import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 import { formatFormalName } from "@lib/utils/string.utils";
 import { GiChecklist } from "react-icons/gi";
 import Link from "next/link";
+import { Toaster } from "sonner";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
 
 const ScreeningQuestionairesPage = async ({ params }) => {
     const session = await auth();
@@ -92,6 +94,7 @@ const ScreeningQuestionairesPage = async ({ params }) => {
 
     return (
         <div>
+            <Toaster />
             <WrapperHeadMain
                 icon={<GiChecklist />}
                 pageTitle="Donor Screening Questionnaire"
@@ -108,11 +111,12 @@ const ScreeningQuestionairesPage = async ({ params }) => {
                     },
                 ]}
             />
-            <div className="flex flex-col gap-4 p-2">
-                <p>
-                    Please answer all questions honestly. Your responses are
-                    confidential and essential for ensuring the safety of both
-                    you and the recipient.
+            <div className="flex flex-col gap-4 p-2 md:max-w-7/10 mx-auto">
+                <p className="text-base italic flex items-center text-gray-600 dark:text-gray-400">
+                    <InfoCircledIcon className="w-4 h-4 mr-2" /> Please answer
+                    all questions honestly. Your responses are confidential and
+                    essential for ensuring the safety of both you and the
+                    recipient.
                 </p>
                 <ScreeningQuestionnaireForm
                     questions={questions}

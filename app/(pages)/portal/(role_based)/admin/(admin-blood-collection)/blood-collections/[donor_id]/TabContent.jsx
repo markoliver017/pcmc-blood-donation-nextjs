@@ -1,33 +1,16 @@
 "use client";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import {
-    HistoryIcon,
-    Text,
-    UserCircle,
-    UserSearch,
-} from "lucide-react";
-
+import { HistoryIcon } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 
-import AppointmentDonorProfileTabForm from "@components/admin/appointments/AppointmentDonorProfileTabForm";
-import AppointmentBloodTypeTabForm from "@components/admin/appointments/AppointmentBloodTypeTabForm";
-import { MdOutlineBloodtype } from "react-icons/md";
 import { FaArrowLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import AppointmentStatusTabForm from "@components/admin/appointments/AppointmentStatusTabForm";
-import { IoInformationCircle } from "react-icons/io5";
-import AppointmentPhysicalExamTabForm from "@components/admin/appointments/AppointmentPhysicalExamTabForm";
-import { GiBlood } from "react-icons/gi";
-import BloodCollectionTabForm from "@components/admin/appointments/BloodCollectionTabForm";
-import { BiCollection } from "react-icons/bi";
 import { bloodCollectionColumns } from "./bloodCollectionColumns";
-import { BloodCollectionsDatatable } from "@components/admin/blood-collections/BloodCollectionsDatatable";
 import { DataTable } from "@components/reusable_components/Datatable";
 import DonorPreviousDonationTabForm from "@components/admin/blood-collections/DonorPreviousDonationTabForm";
-
-
+import { BiCollection } from "react-icons/bi";
 
 export default function TabContent({ donor }) {
     const router = useRouter();
@@ -50,7 +33,6 @@ export default function TabContent({ donor }) {
 
                 <Tabs defaultValue="blood-collections" className="p-2">
                     <TabsList className="flex flex-wrap">
-
                         <TabsTrigger
                             value="blood-collections"
                             title="Blood Collections"
@@ -76,17 +58,17 @@ export default function TabContent({ donor }) {
                         </TabsTrigger>
                     </TabsList>
                     <TabsContent className="p-2" value="blood-collections">
-
                         <DataTable
                             columns={bloodCollectionColumns}
                             data={blood_collections}
                         />
                     </TabsContent>
-                    <TabsContent className="p-2" value="donor-previous-donations">
-
+                    <TabsContent
+                        className="p-2"
+                        value="donor-previous-donations"
+                    >
                         <DonorPreviousDonationTabForm donor={donor} />
                     </TabsContent>
-
                 </Tabs>
 
                 {/* <div>
@@ -95,5 +77,5 @@ export default function TabContent({ donor }) {
                         </div> */}
             </CardContent>
         </Card>
-    )
+    );
 }

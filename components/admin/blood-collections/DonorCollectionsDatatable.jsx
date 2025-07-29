@@ -152,7 +152,7 @@ export function DonorCollectionsDatatable({
                                 </label>
                                 <MultiSelect
                                     options={
-                                        agencyOptions.map((agency) => ({
+                                        agencyOptions?.map((agency) => ({
                                             label: agency.name,
                                             value: agency.name,
                                             number: data.filter(

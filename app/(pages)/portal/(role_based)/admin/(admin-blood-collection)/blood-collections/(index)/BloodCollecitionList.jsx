@@ -141,7 +141,6 @@ export default function BloodCollecitionList() {
                         eventOptions={eventOptions}
                         agencyOptions={agencyOptions}
                     />
-
                 </>
             )}
         </div>

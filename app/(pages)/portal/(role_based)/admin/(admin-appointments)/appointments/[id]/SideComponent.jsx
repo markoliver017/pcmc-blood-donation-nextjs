@@ -11,6 +11,7 @@ import {
 import parse from "html-react-parser";
 import moment from "moment";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function SideComponent({ appointment }) {
     const schedule = appointment?.time_schedule;
@@ -20,7 +21,7 @@ export default function SideComponent({ appointment }) {
 
     return (
         <Card className="p-4 flex flex-col gap-4 h-max">
-            <CardHeader className="border-b">
+            <CardHeader className="border-b p-2">
                 <div className="flex items-center gap-4">
                     <div className="relative w-16 h-16 rounded overflow-hidden border">
                         <Image

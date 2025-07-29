@@ -1395,7 +1395,7 @@ export async function getForApprovalEvents() {
     }
 }
 
-export async function getAllAppointments() {
+export async function getAllAppointments(date) {
     const session = await auth();
     if (!session) {
         return {
@@ -1405,28 +1405,25 @@ export async function getAllAppointments() {
     }
 
     try {
+        const whereClause = {};
+        // if (date && date.from && date.to) {
+        //     whereClause.date = {
+        //         [Op.between]: [new Date(date.from), new Date(date.to)],
+        //     };
+        // }
+        if (date && date.from) {
+            whereClause.date = {
+                [Op.gte]: new Date(date.from),
+            };
+        }
+        if (date && date.to) {
+            whereClause.date = {
+                [Op.lte]: new Date(date.to),
+            };
+        }
+
         const appointments = await DonorAppointmentInfo.findAll({
             include: [
-                {
-                    model: EventTimeSchedule,
-                    as: "time_schedule",
-                    required: true,
-                    include: {
-                        model: BloodDonationEvent,
-                        as: "event",
-                    },
-                },
-                {
-                    model: BloodDonationCollection,
-                    as: "blood_collection",
-                    required: false,
-                    attributes: ["id", "volume"],
-                },
-                {
-                    model: PhysicalExamination,
-                    as: "physical_exam",
-                    required: false,
-                },
                 {
                     model: Donor,
                     as: "donor",
@@ -1434,10 +1431,12 @@ export async function getAllAppointments() {
                         {
                             model: User,
                             as: "user",
+                            attributes: ["id", "name", "email"],
                         },
                         {
                             model: BloodType,
                             as: "blood_type",
+                            attributes: ["blood_type"],
                         },
                         {
                             model: Agency,
@@ -1446,18 +1445,36 @@ export async function getAllAppointments() {
                         },
                     ],
                 },
+                {
+                    model: EventTimeSchedule,
+                    as: "time_schedule",
+                    required: true,
+                    include: [
+                        {
+                            model: BloodDonationEvent,
+                            as: "event",
+                            attributes: ["id", "title", "date"],
+                            where: whereClause,
+                            required: true,
+                        },
+                    ],
+                },
+                {
+                    model: PhysicalExamination,
+                    as: "physical_exam",
+                    required: false,
+                },
+                {
+                    model: BloodDonationCollection,
+                    as: "blood_collection",
+                    required: false,
+                },
             ],
-            order: [
-                [
-                    { model: EventTimeSchedule, as: "time_schedule" },
-                    { model: BloodDonationEvent, as: "event" },
-                    "date",
-                    "DESC",
-                ],
-            ],
+            order: [["createdAt", "DESC"]],
         });
 
         const formattedAppointments = formatSeqObj(appointments);
+
         return {
             success: true,
             data: formattedAppointments,
@@ -1922,13 +1939,7 @@ export async function getEventAppointmentsByStatus(
                         {
                             model: User,
                             as: "user",
-                            attributes: [
-                                "id",
-                                "name",
-                                "email",
-                                "image",
-                                "full_name",
-                            ],
+                            attributes: ["id", "name", "email", "image"],
                         },
                         {
                             model: BloodType,
