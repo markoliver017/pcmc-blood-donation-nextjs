@@ -433,7 +433,7 @@ export default function UpdateEventForm({ eventId }) {
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
                                         <InlineLabel>Event Date: </InlineLabel>
-                                        <Popover>
+                                        <Popover modal={true}>
                                             <PopoverTrigger asChild>
                                                 <FormControl>
                                                     <Button
