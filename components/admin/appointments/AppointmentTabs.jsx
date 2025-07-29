@@ -14,6 +14,8 @@ import {
     UserX,
     RefreshCcw,
 } from "lucide-react";
+import { DatePicker } from "@components/ui/DatePicker";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * AppointmentTabs component for organizing appointments by status
@@ -35,7 +37,11 @@ export default function AppointmentTabs({
     isLoading = false,
     selectedStatus,
     onStatusChange,
+    date,
+    setDate
 }) {
+
+    const queryClient = useQueryClient();
     // Define tab configurations with their respective filters, icons, and colors
     const tabConfigs = [
         {
@@ -157,22 +163,55 @@ export default function AppointmentTabs({
             </TabsList>
 
             <TabsContent value={selectedStatus} className="space-y-4 mt-6">
-                <div className="flex items-center gap-2 mb-4">
-                    <div
-                        className={`p-2 rounded-lg ${activeTabConfig.bgColor}`}
-                    >
-                        <activeTabConfig.icon
-                            className={`h-5 w-5 ${activeTabConfig.color}`}
-                        />
+                <div className="flex justify-between">
+
+                    <div className="flex items-center gap-2 mb-4">
+                        <div
+                            className={`p-2 rounded-lg ${activeTabConfig.bgColor}`}
+                        >
+                            <activeTabConfig.icon
+                                className={`h-5 w-5 ${activeTabConfig.color}`}
+                            />
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-semibold">
+                                {activeTabConfig.label} Appointments
+                            </h3>
+                            <p className="text-sm text-gray-600">
+                                {appointments.length} appointment
+                                {appointments.length !== 1 ? "s" : ""} found
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <h3 className="text-lg font-semibold">
-                            {activeTabConfig.label} Appointments
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                            {appointments.length} appointment
-                            {appointments.length !== 1 ? "s" : ""} found
-                        </p>
+                    {/* Controls: Date Picker and Refresh Button */}
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                            <DatePicker
+                                date={date.from}
+                                onDateChange={(newDate) =>
+                                    setDate((prev) => ({ ...prev, from: newDate }))
+                                }
+                                placeholder="From date"
+                            />
+                            <DatePicker
+                                date={date.to}
+                                onDateChange={(newDate) =>
+                                    setDate((prev) => ({ ...prev, to: newDate }))
+                                }
+                                placeholder="To date"
+                            />
+                        </div>
+                        <button
+                            className="btn btn-circle btn-warning"
+                            onClick={() =>
+                                queryClient.invalidateQueries({
+                                    queryKey: ["all-appointments", date],
+                                })
+                            }
+                            title="Refresh appointments data"
+                        >
+                            <RefreshCcw className="h-4 w-4" />
+                        </button>
                     </div>
                 </div>
 

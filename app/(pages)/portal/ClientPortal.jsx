@@ -76,7 +76,7 @@ export default function ClientPortal() {
     // console.log("Client portal currentMenu", currentMenu);
 
     if (status == "loading") {
-        return <div>Loading...</div>;
+        return null;
     }
 
     if (status == "unauthenticated") {

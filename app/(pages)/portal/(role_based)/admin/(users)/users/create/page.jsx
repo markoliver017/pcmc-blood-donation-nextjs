@@ -1,9 +1,10 @@
 import { Suspense } from "react";
 import UserCreateForm from "./UserCreateForm";
 
-import { X } from "lucide-react";
+import { UserPlus, Users, X } from "lucide-react";
 import Link from "next/link";
 import Skeleton_user from "@components/ui/Skeleton_user";
+import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 
 const fetchRoles = async () => {
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -19,7 +20,23 @@ const fetchRoles = async () => {
 export default function Page() {
     return (
         <Suspense fallback={<Skeleton_user />}>
-            <div className="w-full h-full md:w-8/10 2xl:w-3/4 mx-auto relative">
+            <WrapperHeadMain
+                icon={<Users />}
+                pageTitle="Users Management"
+                breadcrumbs={[
+                    {
+                        path: "/portal/admin/users",
+                        icon: <Users className="w-4" />,
+                        title: "Users Management",
+                    },
+                    {
+                        path: "/portal/admin/users/create",
+                        icon: <UserPlus className="w-4" />,
+                        title: "New Account",
+                    },
+                ]}
+            />
+            <div className="w-full h-full my-2 md:w-8/10 2xl:w-3/4 mx-auto relative">
                 <Link
                     href="/portal/admin/users"
                     className="mb-3 absolute top-5 right-4"

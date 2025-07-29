@@ -50,10 +50,14 @@ export async function getUsers() {
 
 export async function createUser(formData) {
     const session = await auth();
-    if (session) {
-        const { user } = session;
-        formData.updated_by = user.id;
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
     }
+    const { user } = session;
+    formData.updated_by = user.id;
 
     console.log("formData received on server", formData);
     const parsed = userSchema.safeParse(formData);
@@ -107,7 +111,10 @@ export async function createUser(formData) {
         console.log("New User");
 
         const newUser = await User.create(data, { transaction });
-        await newUser.addRoles(data.role_ids, { transaction });
+        await newUser.addRoles(data.role_ids, {
+            through: { is_active: true },
+            transaction
+        });
 
         await transaction.commit();
 
@@ -128,7 +135,7 @@ export async function createUser(formData) {
             userId: userId,
             controller: "users",
             action: "CREATE",
-            details: `A new user has been successfully created. ID#: ${newUser.id}.`,
+            details: `A new user has been successfully created by ${user.name} (${user.email}). ID#: ${newUser.id}.`,
         });
 
         return { success: true, data: formatSeqObj(newUser) };
@@ -192,31 +199,32 @@ export async function updateUser(formData) {
     const transaction = await sequelize.transaction();
 
     try {
-        const user = await User.findByPk(data.id, {
+        const updatedUser = await User.findByPk(data.id, {
             transaction,
         });
 
-        if (!user) {
+        if (!updatedUser) {
             return {
                 success: false,
                 message: "User Not Found",
             };
         }
-        console.log("Validated data for update", data);
 
         if (!data?.isChangePassword) {
-            console.log("data?.isChangePassword", data?.isChangePassword);
             delete data.password;
         }
 
-        const updatedUser = await user.update(data, { transaction });
-        await updatedUser.setRoles(data.role_ids, { transaction });
+        await updatedUser.update(data, { transaction });
+        await updatedUser.setRoles(data.role_ids, {
+            through: { is_active: true },
+            transaction
+        });
         await transaction.commit();
 
         await logAuditTrail({
             userId: user.id,
             controller: "users",
-            action: "UPDATE",
+            action: "UPDATE USER",
             details: `User has been successfully updated. ID#: ${updatedUser.id}`,
         });
 
@@ -326,18 +334,18 @@ export async function updateUserCredentials(formData) {
     const transaction = await sequelize.transaction();
 
     try {
-        const user = await User.findByPk(data.id, {
+        const updatedUser = await User.findByPk(data.id, {
             transaction,
         });
 
-        if (!user) {
+        if (!updatedUser) {
             return {
                 success: false,
                 message: "User Not Found",
             };
         }
 
-        const updatedUser = await user.update(data, { transaction });
+        await updatedUser.update(data, { transaction });
 
         await signIn("credentials", {
             email: data.email,
@@ -350,14 +358,14 @@ export async function updateUserCredentials(formData) {
         await logAuditTrail({
             userId: user.id,
             controller: "users",
-            action: "UPDATE",
-            details: `User has been successfully updated. ID#: ${updatedUser.id}`,
+            action: "UPDATE USER CREDENTIALS",
+            details: `User credentials has been successfully updated by ${user.name} (${user.email}). ID#: ${updatedUser.id}`,
         });
 
         return { success: true, data: updatedUser.get({ plain: true }) };
     } catch (err) {
         console.log("Error in updateUserCredentials", err);
-        logErrorToFile(err, "UPDATE USER");
+        logErrorToFile(err, "UPDATE USER CREDENTIALS");
         await transaction.rollback();
         if (err.name === "CredentialsSignin") {
             return {
@@ -376,9 +384,7 @@ export async function updateUserCredentials(formData) {
 }
 
 export async function updateUserStatus(formData) {
-    console.log("updateUserStatus formData", formData);
     const session = await auth();
-    console.log("session", session);
     if (!session) {
         return {
             success: false,
@@ -407,18 +413,17 @@ export async function updateUserStatus(formData) {
     const transaction = await sequelize.transaction();
 
     try {
-        const user = await User.findByPk(data.id, {
+        const updatedUser = await User.findByPk(data.id, {
             transaction,
         });
 
-        if (!user) {
+        if (!updatedUser) {
             return {
                 success: false,
-                message: "User not found.",
+                message: "User to be updated not found.",
             };
         }
-        console.log("Validated data for update", data);
-        const updatedUser = await user.update(data, { transaction });
+        await updatedUser.update(data, { transaction });
 
         await transaction.commit();
 
@@ -429,6 +434,7 @@ export async function updateUserStatus(formData) {
             details: "User status has been successfully updated.",
         });
         return { success: true, data: updatedUser.get({ plain: true }) };
+
     } catch (err) {
         await transaction.rollback();
 
@@ -463,7 +469,7 @@ export async function getUser(id) {
                     attributes: ["id", "role_name"],
                     model: Role,
                     as: "roles",
-                    through: { attributes: [] },
+                    through: { attributes: ["is_active"] },
                 },
             ],
         });

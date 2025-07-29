@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { RefreshCcw, Users2Icon } from "lucide-react";
-import { subDays } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
+import {  Users2Icon } from "lucide-react";
 
 import { Card } from "@components/ui/card";
 import {
@@ -15,11 +14,11 @@ import DashboardStats from "@components/admin/appointments/DashboardStats";
 // import AppointmentTabs from "@/components/admin/appointments/AppointmentTabs";
 
 import DataTableSkeleton from "@components/ui/DataTableSkeleton";
-import { DatePicker } from "@components/ui/DatePicker";
+
 import AppointmentTabs from "@components/admin/appointments/AppointmentTabs";
 
 export default function AppointmentList() {
-    const queryClient = useQueryClient();
+    
     const [selectedStatus, setSelectedStatus] = useState("All");
     const [date, setDate] = useState({
         from: null,
@@ -71,6 +70,7 @@ export default function AppointmentList() {
             return res.data;
         },
     });
+    
 
     const isLoadingAny = isLoading || isLoadingEvents || isLoadingAgency;
 
@@ -103,41 +103,10 @@ export default function AppointmentList() {
     return (
         <div className="space-y-6">
             {/* Dashboard Stats */}
-            <DashboardStats appointments={filteredAppointments} />
-
-            {/* Controls: Date Picker and Refresh Button */}
-            <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                    <DatePicker
-                        date={date.from}
-                        onDateChange={(newDate) =>
-                            setDate((prev) => ({ ...prev, from: newDate }))
-                        }
-                        placeholder="From date"
-                    />
-                    <DatePicker
-                        date={date.to}
-                        onDateChange={(newDate) =>
-                            setDate((prev) => ({ ...prev, to: newDate }))
-                        }
-                        placeholder="To date"
-                    />
-                </div>
-                <button
-                    className="btn btn-circle btn-warning"
-                    onClick={() =>
-                        queryClient.invalidateQueries({
-                            queryKey: ["all-appointments", date],
-                        })
-                    }
-                    title="Refresh appointments data"
-                >
-                    <RefreshCcw className="h-4 w-4" />
-                </button>
-            </div>
+            {/* <DashboardStats appointments={filteredAppointments} /> */}
 
             {/* Main Content */}
-            {appointments && appointments.length === 0 ? (
+            {/* {appointments && appointments.length === 0 ? (
                 <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
                     <Users2Icon className="w-12 h-12 mb-4 text-primary" />
                     <h2 className="text-xl font-semibold">
@@ -147,7 +116,7 @@ export default function AppointmentList() {
                         Booked appointments will appear here.
                     </p>
                 </Card>
-            ) : (
+            ) : ( */}
                 <AppointmentTabs
                     appointments={filteredAppointments}
                     allAppointments={appointments}
@@ -156,8 +125,10 @@ export default function AppointmentList() {
                     isLoading={isLoadingAny}
                     selectedStatus={selectedStatus}
                     onStatusChange={setSelectedStatus}
+                    date={date}
+                    setDate={setDate}
                 />
-            )}
+            {/* )} */}
         </div>
     );
 }

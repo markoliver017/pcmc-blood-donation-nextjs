@@ -370,7 +370,7 @@ export default function CreateEventForm({ agency }) {
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
                                         <InlineLabel>Event Date: </InlineLabel>
-                                        <Popover>
+                                        <Popover modal={true}>
                                             <PopoverTrigger asChild>
                                                 <FormControl>
                                                     <Button

@@ -142,9 +142,25 @@ export default function ShowUser({ userId }) {
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">
-                                Status
+                                Roles
                             </TableCell>
-                            {user.status ? (
+                            <TableCell>
+                                {user?.roles?.map((role) => (
+                                    <div key={role.id}>
+                                        {formatFormalName(role.role_name)} {" - "}
+                                        {role.UserRole?.is_active ? (
+                                            <div className="badge p-2 font-semibold text-xs badge-success">
+                                                Activated
+                                            </div>
+                                        ) : (
+                                            <div className="badge p-2 font-semibold text-xs badge-error">
+                                                Deactivated
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </TableCell>
+                            {/* {user.status ? (
                                 <TableCell>
                                     <div className="badge p-2 font-semibold text-xs badge-success">
                                         Activated
@@ -156,7 +172,7 @@ export default function ShowUser({ userId }) {
                                         Deactivated
                                     </div>
                                 </TableCell>
-                            )}
+                            )} */}
                         </TableRow>
                     </TableBody>
                 </Table>

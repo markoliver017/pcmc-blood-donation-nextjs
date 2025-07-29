@@ -340,7 +340,7 @@ export default function UserUpdateForm({ userId }) {
 
                         <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
                             <div>
-                                <InlineLabel>Roles: *</InlineLabel>
+                                <InlineLabel>Roles:</InlineLabel>
                                 <fieldset className="fieldset w-full">
                                     <Controller
                                         control={control}
@@ -366,7 +366,7 @@ export default function UserUpdateForm({ userId }) {
                                                 <CreatableSelectNoSSR
                                                     name={name}
                                                     ref={ref}
-                                                    placeholder="Roles * (required)"
+                                                    placeholder="Roles (required)"
                                                     value={selectedOptions}
                                                     onChange={(
                                                         selectedOptions
@@ -406,7 +406,7 @@ export default function UserUpdateForm({ userId }) {
                                 render={({ field }) => (
                                     <FormItem>
                                         <InlineLabel>
-                                            Email Address: *
+                                            Email Address:
                                         </InlineLabel>
                                         <label
                                             className={clsx(
@@ -433,7 +433,7 @@ export default function UserUpdateForm({ userId }) {
                                 name="first_name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <InlineLabel>First Name: *</InlineLabel>
+                                        <InlineLabel>First Name:</InlineLabel>
 
                                         <label
                                             className={clsx(
@@ -489,7 +489,7 @@ export default function UserUpdateForm({ userId }) {
                                 name="last_name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <InlineLabel>Last Name: *</InlineLabel>
+                                        <InlineLabel>Last Name:</InlineLabel>
 
                                         <label
                                             className={clsx(
@@ -515,7 +515,7 @@ export default function UserUpdateForm({ userId }) {
                                 name="gender"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <InlineLabel>Gender: *</InlineLabel>
+                                        <InlineLabel>Gender:</InlineLabel>
 
                                         <label
                                             className={clsx(
@@ -562,7 +562,7 @@ export default function UserUpdateForm({ userId }) {
                                 name="password"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <InlineLabel>Password: *</InlineLabel>
+                                        <InlineLabel>Password:</InlineLabel>
 
                                         <label
                                             className={clsx(
@@ -593,7 +593,7 @@ export default function UserUpdateForm({ userId }) {
                                 render={({ field }) => (
                                     <FormItem>
                                         <InlineLabel>
-                                            Confirm Password: *
+                                            Confirm Password:
                                         </InlineLabel>
 
                                         <label

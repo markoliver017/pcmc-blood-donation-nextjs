@@ -1755,7 +1755,7 @@ export async function getEventDashboardData(eventId) {
         // Calculate success rate (collected / total registered)
         const successRate =
             totalRegistered > 0
-                ? Math.round((collected / totalRegistered) * 100)
+                ? Math.round((collected.length / totalRegistered) * 100)
                 : 0;
 
         // Calculate total blood volume collected

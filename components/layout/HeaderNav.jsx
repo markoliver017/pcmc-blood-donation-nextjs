@@ -39,6 +39,7 @@ import { MdAmpStories, MdEmail } from "react-icons/md";
 import NotificationComponent from "./NotificationComponent";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
+import { PiUserSwitchBold } from "react-icons/pi";
 
 const HeaderNav = ({ currentUser }) => {
     let isLoggedIn = false;
@@ -365,8 +366,8 @@ const HeaderNav = ({ currentUser }) => {
                                                 href="/portal/change-role"
                                                 className="w-full hover:ring rounded flex-items-center "
                                             >
-                                                <FileSliders className="h-4" />
-                                                Change Role
+                                                <PiUserSwitchBold className="h-4" />
+                                                Switch Account
                                             </Link>
                                         </DropdownMenuItem>
                                     )}
@@ -416,15 +417,15 @@ const HeaderNav = ({ currentUser }) => {
                                         />
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel className="flex items-center space-x-2">
+                                <DropdownMenuContent align="end" className="w-92 px-5">
+                                    <DropdownMenuLabel className="flex items-center space-x-2 text-lg">
                                         <UserRoundCheck className="w-3 h-3" />
                                         <div className="flex flex-col">
                                             <span>{currentUser.name}</span>
-                                            <span className="text-xs font-light">
+                                            <span className="font-light">
                                                 {currentUser?.role_name}
                                             </span>
-                                            <span className="text-xs font-light">
+                                            <span className="font-light">
                                                 {currentUser.email}
                                             </span>
                                         </div>
@@ -433,7 +434,7 @@ const HeaderNav = ({ currentUser }) => {
                                     <DropdownMenuSeparator />
 
                                     <Link href={`/portal`}>
-                                        <DropdownMenuItem className="flex items-center space-x-2">
+                                        <DropdownMenuItem className="flex items-center space-x-2 text-lg">
                                             <HomeIcon className="w-4 h-4" />
                                             <span>Dashboard</span>
                                         </DropdownMenuItem>
@@ -441,14 +442,14 @@ const HeaderNav = ({ currentUser }) => {
                                     {currentUser?.roles &&
                                         currentUser?.roles?.length > 1 && (
                                             <Link href="/portal/change-role">
-                                                <DropdownMenuItem className="flex items-center space-x-2">
-                                                    <FileSliders className="w-4 h-4" />
-                                                    <span>Change Role</span>
+                                                <DropdownMenuItem className="flex items-center gap-2 space-x-2 text-lg">
+                                                    <PiUserSwitchBold className="h-4" />
+                                                    Switch Account
                                                 </DropdownMenuItem>
                                             </Link>
                                         )}
                                     <DropdownMenuItem
-                                        className="flex items-center space-x-2"
+                                        className="flex items-center space-x-2 text-lg"
                                         onClick={handleLogOut}
                                     >
                                         <LogOut className="w-4 h-4" />

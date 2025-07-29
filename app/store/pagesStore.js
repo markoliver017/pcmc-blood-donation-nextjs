@@ -179,6 +179,14 @@ export const usePagesStore = create((set) => ({
         //     has_child: false,
         // },
         {
+            title: "Emergency Requests",
+            path: "/emergency-requests",
+            icon: <GrEmergency />,
+            roles: ["Admin", "Developer", "Agency Administrator", "Organizer"],
+            is_role_based: true,
+            has_child: false,
+        },
+        {
             title: "Announcements",
             path: "/announcements",
             icon: <FaMicrophone />,
@@ -202,14 +210,7 @@ export const usePagesStore = create((set) => ({
             is_role_based: true,
             has_child: false,
         },
-        {
-            title: "Emergency Requests",
-            path: "/emergency-requests",
-            icon: <GrEmergency />,
-            roles: ["Admin", "Developer", "Agency Administrator", "Organizer"],
-            is_role_based: true,
-            has_child: false,
-        },
+
         // {
         //     title: "Blood Requests",
         //     path: "/blood-requests",

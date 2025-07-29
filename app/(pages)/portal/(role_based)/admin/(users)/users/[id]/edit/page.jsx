@@ -5,11 +5,14 @@ import {
 } from "@tanstack/react-query";
 import UserUpdateForm from "@components/user/UserUpdateForm";
 import Link from "next/link";
-import { X } from "lucide-react";
+import { ArrowLeft, User, UserPen, Users, X } from "lucide-react";
 import { fetchRoles } from "@/action/roleAction";
 import { auth } from "@lib/auth";
+import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 
-export default async function Page() {
+export default async function Page({ params }) {
+    const { id } = await params;
+
     const session = await auth();
     const { user } = session;
     if (!user) throw "No Authenticated users found!";
@@ -40,14 +43,31 @@ export default async function Page() {
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <div className="w-full h-full md:w-8/10 2xl:w-3/4 mx-auto relative">
-                <Link href="../" className="mb-3 absolute top-5 right-4">
-                    <button className="btn btn-circle btn-warning w-max p-3">
-                        <span className="hidden sm:inline-block">Cancel</span>{" "}
-                        <X />
-                    </button>
-                </Link>
-                <UserUpdateForm userId={user.id} />
+            <WrapperHeadMain
+                            icon={<>
+                                <Link href="../" className="btn p-1">
+                                    
+                                        <ArrowLeft />
+                                    
+                                </Link>
+                            
+                            </>}
+                            pageTitle="Users Management"
+                            breadcrumbs={[
+                                {
+                                    path: "/portal/admin/users",
+                                    icon: <Users className="w-4" />,
+                                    title: "Users Management",
+                                },
+                                {
+                                    path: `/portal/admin/users/${id}/edit`,
+                                    icon: <UserPen className="w-4" />,
+                                    title: "User Details",
+                                },
+                            ]}
+                        />
+            <div className="w-full h-full md:w-8/10 2xl:w-3/4 mx-auto relative my-5">
+                <UserUpdateForm userId={id} />
             </div>
         </HydrationBoundary>
     );

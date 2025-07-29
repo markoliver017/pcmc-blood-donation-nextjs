@@ -5,9 +5,9 @@ import {
 } from "@tanstack/react-query";
 import { getUser } from "@/action/userAction";
 import ShowUser from "@components/user/ShowUser";
-import { Button } from "@components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, User, Users } from "lucide-react";
 import Link from "next/link";
+import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 
 export default async function Page({ params }) {
     const { id } = await params;
@@ -26,15 +26,31 @@ export default async function Page({ params }) {
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <div className="w-full h-full md:w-8/10 lg:w-3/4 mx-auto">
-                <div className="mb-2">
-                    <Link href="./">
-                        <Button>
+            <WrapperHeadMain
+                icon={<>
+                    <Link href="./" className="btn p-1">
+                        
                             <ArrowLeft />
-                            Back
-                        </Button>
+                        
                     </Link>
-                </div>
+                
+                </>}
+                pageTitle="Users Management"
+                breadcrumbs={[
+                    {
+                        path: "/portal/admin/users",
+                        icon: <Users className="w-4" />,
+                        title: "Users Management",
+                    },
+                    {
+                        path: `/portal/admin/users/${id}`,
+                        icon: <User className="w-4" />,
+                        title: "User Details",
+                    },
+                ]}
+            />
+            <div className="w-full md:w-8/10 lg:w-3/4 mx-auto my-5">
+
                 <ShowUser userId={id} />
             </div>
         </HydrationBoundary>

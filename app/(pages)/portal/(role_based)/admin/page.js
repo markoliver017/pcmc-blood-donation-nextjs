@@ -61,7 +61,7 @@ export default async function page() {
                         {user?.role_name || "Donor"}
                     </h2>
                 </div>
-                <div className="flex items-center flex-none gap-2 p-2 rounded-md bg-base-200">
+                <div className="flex items-center flex-none gap-2 p-2 rounded-md bg-base-300">
                     <span className="text-sm font-medium">Overall Rating:</span>
                     <StarRating rating={participantOverallFeedback || 0} />
                 </div>
