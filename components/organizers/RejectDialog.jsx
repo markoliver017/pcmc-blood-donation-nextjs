@@ -3,6 +3,7 @@ import { updateAgencyStatus } from "@/action/agencyAction";
 
 import {
     Dialog,
+    DialogContentNoToast,
     DialogContentNoX,
     DialogDescription,
     DialogHeader,
@@ -93,13 +94,13 @@ export default function RejectDialog({ agencyId, className = "btn-error" }) {
         >
             <DialogTrigger
                 className={`btn ${className} hover:btn-neutral hover:text-red-400`}
-                onClick={(e) => {
-                    e.stopPropagation();
-                }}
+                // onClick={(e) => {
+                //     e.stopPropagation();
+                // }}
             >
                 <XIcon /> Reject
             </DialogTrigger>
-            <DialogContentNoX
+            <DialogContentNoToast
                 className="dark:text-white"
                 onClick={(e) => e.stopPropagation()}
             >
@@ -166,7 +167,7 @@ export default function RejectDialog({ agencyId, className = "btn-error" }) {
                         </form>
                     </Form>
                 </DialogHeader>
-            </DialogContentNoX>
+            </DialogContentNoToast>
         </Dialog>
     );
 }

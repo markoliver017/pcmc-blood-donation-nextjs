@@ -3,6 +3,7 @@ import { updateCoordinatorStatus } from "@/action/coordinatorAction";
 
 import {
     Dialog,
+    DialogContentNoToast,
     DialogContentNoX,
     DialogDescription,
     DialogHeader,
@@ -42,6 +43,9 @@ export default function RejectCoordinator({
             queryClient.invalidateQueries({ queryKey: ["coordinators"] });
             queryClient.invalidateQueries({
                 queryKey: ["verified-coordinators"],
+            });
+            queryClient.invalidateQueries({
+                queryKey: ["coordinator", coordinatorId],
             });
             setOpen(false);
             SweetAlert({
@@ -97,7 +101,7 @@ export default function RejectCoordinator({
             >
                 <XIcon /> Reject
             </DialogTrigger>
-            <DialogContentNoX className="dark:text-white">
+            <DialogContentNoToast className="dark:text-white">
                 <ToastContainer />
                 <DialogHeader>
                     <div
@@ -162,7 +166,7 @@ export default function RejectCoordinator({
                         </form>
                     </Form>
                 </DialogHeader>
-            </DialogContentNoX>
+            </DialogContentNoToast>
         </Dialog>
     );
 }

@@ -262,8 +262,7 @@ export async function getHostDonorsByStatus(status) {
                 },
             ],
         });
-        console.log(">>>>>>>>>>>>>>>>>>agency", agency.id);
-        console.log(">>>>>>>>>>>>>>>>>>donors", donors);
+
         return formatSeqObj(donors);
     } catch (err) {
         logErrorToFile(err, "getHostDonorsByStatus ERROR");

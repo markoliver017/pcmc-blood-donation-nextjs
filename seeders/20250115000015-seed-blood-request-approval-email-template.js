@@ -175,9 +175,9 @@ STATUS INFORMATION:
 Your blood request has been successfully fulfilled. The blood units have been allocated and are ready for use.
 {{/if_eq}}
 
-{{#if_eq request_status "expired"}}
-⏰ REQUEST EXPIRED
-Your blood request has expired. If you still need blood units, please submit a new request.
+{{#if_eq request_status "rejected"}}
+⏰ REQUEST REJECTED
+Your blood request has been rejected. If you still need blood units, please submit a new request.
 {{/if_eq}}
 
 {{#if_eq request_status "cancelled"}}

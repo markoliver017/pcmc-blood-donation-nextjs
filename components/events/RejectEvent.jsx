@@ -5,6 +5,7 @@ import { updateAgencyStatus } from "@/action/agencyAction";
 import {
     Dialog,
     DialogContent,
+    DialogContentNoToast,
     DialogContentNoX,
     DialogDescription,
     DialogHeader,
@@ -101,7 +102,7 @@ export default function RejectEvent({ eventId, className = "btn-error" }) {
             >
                 <XIcon /> Reject
             </DialogTrigger>
-            <DialogContentNoX>
+            <DialogContentNoToast>
                 <ToastContainer />
                 <DialogHeader>
                     <div
@@ -176,7 +177,7 @@ export default function RejectEvent({ eventId, className = "btn-error" }) {
                         </div>
                     </form>
                 </Form>
-            </DialogContentNoX>
+            </DialogContentNoToast>
         </Dialog>
     );
 }

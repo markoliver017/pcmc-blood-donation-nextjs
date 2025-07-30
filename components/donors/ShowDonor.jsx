@@ -22,7 +22,6 @@ import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 
 import React from "react";
-import ApprovalRejectComponent from "./ApprovalRejectComponent";
 import { useSession } from "next-auth/react";
 import { CheckIcon, Info, LinkIcon } from "lucide-react";
 import RejectDonor from "./RejectDonor";
@@ -62,7 +61,8 @@ export default function ShowDonor({ donorId }) {
                     <div className="text-4xl">{donor.user.full_name}</div>
 
                     {session &&
-                        session?.user.role_name === "Agency Administrator" &&
+                        (session?.user.role_name === "Agency Administrator" ||
+                            session?.user.role_name === "Admin") &&
                         donor?.status === "for approval" && (
                             <div className="flex gap-2">
                                 <VerifyDonor

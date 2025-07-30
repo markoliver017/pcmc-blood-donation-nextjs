@@ -80,70 +80,6 @@ export default function ForApprovalEventList({
                                 Description:
                                 <br /> {parse(event?.description)}
                             </span>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button
-                                        variant="default"
-                                        className="h-8 w-min p-0 dark:border hover:ring-offset-2 hover:ring-1 cursor-pointer"
-                                    >
-                                        <span className="sr-only">
-                                            Open menu
-                                        </span>
-                                        Actions
-                                        <SquareMenu className="h-4 w-4" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="start">
-                                    <DropdownMenuLabel className="flex items-center space-x-2">
-                                        <Command className="w-3 h-3" />
-                                        <span>Actions</span>
-                                    </DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-
-                                    <DropdownMenuItem className="space-x-2 flex justify-between">
-                                        <VerifyEvent
-                                            eventData={{
-                                                id: event.id,
-                                                status: "approved",
-                                            }}
-                                            label="Approve"
-                                            className="btn btn-ghost btn-success"
-                                            formClassName="w-full"
-                                            icon={<CheckIcon />}
-                                        />
-                                    </DropdownMenuItem>
-                                    <div className="px-2 flex justify-between">
-                                        <RejectEvent
-                                            eventId={event.id}
-                                            className="w-full btn btn-ghost btn-error"
-                                        />
-                                    </div>
-                                    <Link
-                                        href={`/portal/admin/events/${event.id}`}
-                                        target={target}
-                                    >
-                                        <DropdownMenuItem className="space-x-2 btn btn-ghost btn-primary">
-                                            <Eye className="w-4 h-4" />
-                                            <span>Details</span>
-                                        </DropdownMenuItem>
-                                    </Link>
-                                    {/* <Link
-                                            href={`/portal/admin/events/${event.id}/edit`}
-                                            // target={target}
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            <DropdownMenuItem
-                                                className="space-x-2 btn btn-ghost btn-warning"
-                                                onClick={(e) =>
-                                                    e.stopPropagation()
-                                                }
-                                            >
-                                                <Pencil className="w-4 h-4" />
-                                                <span>Edit</span>
-                                            </DropdownMenuItem>
-                                        </Link> */}
-                                </DropdownMenuContent>
-                            </DropdownMenu>
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="flex flex-wrap items-center justify-center gap-4 px-2 md:px-15 transform transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-110 dark:text-slate-200">
@@ -166,6 +102,30 @@ export default function ForApprovalEventList({
                             </span>
                         </div>
                     </CardContent>
+                    <div className="px-2 space-y-1 my-2">
+                        <Link
+                            href={`/portal/admin/events/${event.id}`}
+                            target={target}
+                            className=" btn hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200 btn-block"
+                        >
+                            <Eye className="w-4 h-4" />
+                            <span>Details</span>
+                        </Link>
+                        <VerifyEvent
+                            eventData={{
+                                id: event.id,
+                                status: "approved",
+                            }}
+                            label="Approve"
+                            className="btn btn-block btn-success"
+                            formClassName="w-full"
+                            icon={<CheckIcon />}
+                        />
+                        <RejectEvent
+                            eventId={event.id}
+                            className="w-full btn-error"
+                        />
+                    </div>
                 </Card>
                 // </Link>
             ))}

@@ -40,6 +40,8 @@ import { useSession } from "next-auth/react";
 import Skeleton_line from "@components/ui/skeleton_line";
 import VerifyEvent from "./VerifyEvent";
 import RejectEvent from "./RejectEvent";
+import { getFeedbackAverage } from "@lib/utils/event.utils";
+import StarRating from "@components/reusable_components/StarRating";
 
 export default function ShowEvents({ eventId }) {
     const session = useSession();
@@ -77,39 +79,46 @@ export default function ShowEvents({ eventId }) {
     return (
         <Card className="mt-2 p-5 h-full">
             <CardHeader>
-                <CardTitle className="flex">
+                <CardTitle className="flex justify-between items-center">
                     <div className="text-4xl">{event?.title}</div>
+                    {event?.status !== "for approval" && (
+                        <div>
+                            <StarRating
+                                rating={getFeedbackAverage(event?.donors)}
+                            />
+                        </div>
+                    )}
                 </CardTitle>
                 <CardDescription className="flex justify-between">
                     <span>{parse(event?.description)}</span>
 
                     {(currentRole == "Organizer" ||
                         currentRole == "Agency Administrator") && (
-                            <div className="flex-items-center">
-                                {event.status == "for approval" ? (
-                                    <Link
-                                        href={`/portal/hosts/events/${event.id}/edit`}
-                                    >
-                                        <button className="btn btn-warning">
-                                            <Pencil className="w-4 h-4" />
-                                            <span>Edit</span>
-                                        </button>
-                                    </Link>
-                                ) : (
-                                    ""
-                                )}
+                        <div className="flex-items-center">
+                            {event.status == "for approval" ? (
+                                <Link
+                                    href={`/portal/hosts/events/${event.id}/edit`}
+                                >
+                                    <button className="btn btn-warning">
+                                        <Pencil className="w-4 h-4" />
+                                        <span>Edit</span>
+                                    </button>
+                                </Link>
+                            ) : (
+                                ""
+                            )}
 
-                                {event.status == "approved" ? (
-                                    <EventRegistrationStatus
-                                        data={event}
-                                        setIsLoading={setIsLoading}
-                                        className="btn btn-warning"
-                                    />
-                                ) : (
-                                    ""
-                                )}
-                            </div>
-                        )}
+                            {event.status == "approved" ? (
+                                <EventRegistrationStatus
+                                    data={event}
+                                    setIsLoading={setIsLoading}
+                                    className="btn btn-warning"
+                                />
+                            ) : (
+                                ""
+                            )}
+                        </div>
+                    )}
                     {currentRole == "Admin" && (
                         <div className="flex-items-center">
                             {event.status == "for approval" ? (
@@ -142,7 +151,11 @@ export default function ShowEvents({ eventId }) {
             >
                 <LoadingModal imgSrc="/loader_3.gif" isLoading={isLoading} />
                 <CustomAvatar
-                    avatar={event?.file_url || event?.agency?.file_url || "/default_company_avatar.png"}
+                    avatar={
+                        event?.file_url ||
+                        event?.agency?.file_url ||
+                        "/default_company_avatar.png"
+                    }
                     className="w-[150px] h-[150px] sm:w-[200px] sm:h-[200px] md:w-[250px] md:h-[250px] xl:w-[350px] xl:h-[350px] flex-none"
                 />
                 <div className="w-full sm:min-w-sm">

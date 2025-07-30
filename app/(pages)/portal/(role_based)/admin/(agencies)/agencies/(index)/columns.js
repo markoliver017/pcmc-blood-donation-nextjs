@@ -85,6 +85,7 @@ export const columns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Contact Number" />
         ),
+        cell: ({ getValue }) => <>+63{getValue()}</>,
         filterFn: "columnFilter",
     },
     {
@@ -167,6 +168,21 @@ export const columns = [
                 </div>
             );
         },
+    },
+    {
+        accessorKey: "donors",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="No of Donors" />
+        ),
+        cell: ({ row }) => {
+            const data = row.original;
+            return (
+                <span className="font-bold text-lg text-center block">
+                    {data.donors.length}
+                </span>
+            );
+        },
+        filterFn: "columnFilter",
     },
     {
         id: "actions",

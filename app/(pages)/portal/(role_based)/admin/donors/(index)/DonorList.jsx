@@ -3,25 +3,14 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { RefreshCcw, Users2Icon } from "lucide-react";
 import Skeleton from "@components/ui/skeleton";
 import { Card } from "@components/ui/card";
-import { getVerifiedDonors } from "@/action/donorAction";
+
 import { DataTable } from "@components/donors/Datatable";
 import { adminDonorColumns } from "@components/donors/adminDonorColumns";
 
-export default function DonorList() {
+export default function DonorList({ donors, isLoading, error }) {
     const queryClient = useQueryClient();
-    const {
-        data: donors,
-        error,
-        isFetching,
-        isLoading,
-    } = useQuery({
-        queryKey: ["verified-donors"],
-        queryFn: getVerifiedDonors,
-        staleTime: 1 * 60 * 1000, // Data is fresh for 1 minute
-        cacheTime: 2 * 60 * 1000, // Cache persists for 2 minute
-    });
 
-    if (isLoading || isFetching) return <Skeleton />;
+    if (isLoading) return <Skeleton />;
 
     if (error) return <div>Error: {error.message}</div>;
 

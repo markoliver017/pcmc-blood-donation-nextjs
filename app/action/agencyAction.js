@@ -7,7 +7,14 @@ import { auth } from "@lib/auth";
 import { getEmailToMBDT } from "@lib/email-html-template/getNewAgencyRegistrationEmailTemplate";
 import { logErrorToFile } from "@lib/logger.server";
 import { send_mail } from "@lib/mail.utils";
-import { Agency, AgencyCoordinator, Role, sequelize, User } from "@lib/models";
+import {
+    Agency,
+    AgencyCoordinator,
+    Donor,
+    Role,
+    sequelize,
+    User,
+} from "@lib/models";
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import {
@@ -83,6 +90,11 @@ export async function fetchVerifiedAgencies() {
                 },
             },
             include: [
+                {
+                    model: Donor,
+                    as: "donors",
+                    attributes: ["id"],
+                },
                 {
                     model: User,
                     as: "head",
@@ -606,12 +618,15 @@ export async function storeAgency(formData) {
                             user_name: `${newUser.first_name} ${newUser.last_name}`,
                             agency_name: newAgency.name,
                             agency_address: newAgency.address,
-                            system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
-                            support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
-                            support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
-                            domain_url:
-                                process.env.NEXT_PUBLIC_APP_URL ||
+                            system_name:
+                                process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                            support_email:
+                                process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL ||
                                 "",
+                            support_contact:
+                                process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT ||
+                                "",
+                            domain_url: process.env.NEXT_PUBLIC_APP_URL || "",
                             registration_date: new Date().toLocaleDateString(),
                         },
                     },
@@ -666,9 +681,17 @@ export async function storeAgency(formData) {
                                             "Not provided",
                                         registration_date:
                                             new Date().toLocaleDateString(),
-                                        system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
-                                        support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
-                                        support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
+                                        system_name:
+                                            process.env
+                                                .NEXT_PUBLIC_SYSTEM_NAME || "",
+                                        support_email:
+                                            process.env
+                                                .NEXT_PUBLIC_SMTP_SUPPORT_EMAIL ||
+                                            "",
+                                        support_contact:
+                                            process.env
+                                                .NEXT_PUBLIC_SMTP_SUPPORT_CONTACT ||
+                                            "",
                                         domain_url:
                                             process.env.NEXT_PUBLIC_APP_URL ||
                                             "",
@@ -867,11 +890,15 @@ export async function updateAgencyStatus(formData) {
             userId: user.id,
             controller: "agencies",
             action: "UPDATE AGENCY STATUS",
-            details: `Agency status updated from "${agencyCurrentStatus}" to "${data.status
-                }" for Agency ID#: ${updatedAgency.id} (${updatedAgency.name
-                }). Agency Head: ${agency_head.first_name} ${agency_head.last_name
-                } (${agency_head.email}). ${data.remarks ? `Remarks: "${data.remarks}"` : ""
-                } Updated by: ${user?.name} (${user?.email})`,
+            details: `Agency status updated from "${agencyCurrentStatus}" to "${
+                data.status
+            }" for Agency ID#: ${updatedAgency.id} (${
+                updatedAgency.name
+            }). Agency Head: ${agency_head.first_name} ${
+                agency_head.last_name
+            } (${agency_head.email}). ${
+                data.remarks ? `Remarks: "${data.remarks}"` : ""
+            } Updated by: ${user?.name} (${user?.email})`,
         });
 
         // Handle notifications and emails for agency status changes (non-critical operations)
@@ -911,12 +938,16 @@ export async function updateAgencyStatus(formData) {
                                 agency_address: updatedAgency.agency_address,
                                 agency_contact: updatedAgency.contact_number,
                                 approval_date: new Date().toLocaleDateString(),
-                                system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
-                                support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
-                                support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
+                                system_name:
+                                    process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                                support_email:
+                                    process.env
+                                        .NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                                support_contact:
+                                    process.env
+                                        .NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
                                 domain_url:
-                                    process.env.NEXT_PUBLIC_APP_URL ||
-                                    "",
+                                    process.env.NEXT_PUBLIC_APP_URL || "",
                                 approved_by: `${user?.email}`,
                             },
                         },
@@ -987,12 +1018,16 @@ export async function updateAgencyStatus(formData) {
                                 rejection_reason:
                                     data.remarks ||
                                     "Application requirements not met",
-                                system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
-                                support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
-                                support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
+                                system_name:
+                                    process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                                support_email:
+                                    process.env
+                                        .NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                                support_contact:
+                                    process.env
+                                        .NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
                                 domain_url:
-                                    process.env.NEXT_PUBLIC_APP_URL ||
-                                    "",
+                                    process.env.NEXT_PUBLIC_APP_URL || "",
                                 rejected_by: `${user?.name}`,
                             },
                         },
@@ -1024,12 +1059,15 @@ export async function updateAgencyStatus(formData) {
                                 userIds: adminUsers.map((a) => a.id),
                                 notificationData: {
                                     subject: "Agency Application Rejected",
-                                    message: `Agency "${updatedAgency.name
-                                        }" has been rejected by ${user?.name} (${user?.email
-                                        }). ${data.remarks
+                                    message: `Agency "${
+                                        updatedAgency.name
+                                    }" has been rejected by ${user?.name} (${
+                                        user?.email
+                                    }). ${
+                                        data.remarks
                                             ? `Reason: ${data.remarks}`
                                             : ""
-                                        }`,
+                                    }`,
                                     type: "AGENCY_STATUS_UPDATE",
                                     reference_id: updatedAgency.id,
                                     created_by: user.id,
@@ -1049,18 +1087,25 @@ export async function updateAgencyStatus(formData) {
             deactivated: "Agency Successfully Deactivated",
         };
         const text = {
-            rejected: `The agency "${updatedAgency.name
-                }" has been rejected successfully. ${data.remarks
+            rejected: `The agency "${
+                updatedAgency.name
+            }" has been rejected successfully. ${
+                data.remarks
                     ? `Reason: ${data.remarks}`
                     : "No specific reason provided."
-                } The agency head (${agency_head.first_name} ${agency_head.last_name
-                }) will be notified of this decision.`,
+            } The agency head (${agency_head.first_name} ${
+                agency_head.last_name
+            }) will be notified of this decision.`,
             activated: `Congratulations! The agency "${updatedAgency.name}" has been successfully activated and is now operational in the blood donation system. Agency Head: ${agency_head.first_name} ${agency_head.last_name} (${agency_head.email}). The agency can now participate in blood donation events and manage their coordinators.`,
-            deactivated: `The agency "${updatedAgency.name
-                }" has been successfully deactivated. Agency Head: ${agency_head.first_name
-                } ${agency_head.last_name} (${agency_head.email
-                }). The agency will no longer be able to participate in blood donation activities until reactivated. ${data.remarks ? `Reason: ${data.remarks}` : ""
-                }`,
+            deactivated: `The agency "${
+                updatedAgency.name
+            }" has been successfully deactivated. Agency Head: ${
+                agency_head.first_name
+            } ${agency_head.last_name} (${
+                agency_head.email
+            }). The agency will no longer be able to participate in blood donation activities until reactivated. ${
+                data.remarks ? `Reason: ${data.remarks}` : ""
+            }`,
         };
 
         return {
@@ -1193,12 +1238,15 @@ export async function storeCoordinator(formData) {
                             user_last_name: newUser.last_name,
                             contact_number: newCoordinator.contact_number,
                             registration_date: new Date().toLocaleDateString(),
-                            system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
-                            support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
-                            support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
-                            domain_url:
-                                process.env.NEXT_PUBLIC_APP_URL ||
+                            system_name:
+                                process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                            support_email:
+                                process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL ||
                                 "",
+                            support_contact:
+                                process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT ||
+                                "",
+                            domain_url: process.env.NEXT_PUBLIC_APP_URL || "",
                         },
                     },
                 });
@@ -1227,10 +1275,13 @@ export async function storeCoordinator(formData) {
                             userIds: adminUsers.map((a) => a.id),
                             notificationData: {
                                 subject: "New Coordinator Registration",
-                                message: `A new coordinator (${newUser.first_name
-                                    } ${newUser.last_name
-                                    }) has registered and is pending approval for agency (${agency?.name || newCoordinator.agency_id
-                                    }).`,
+                                message: `A new coordinator (${
+                                    newUser.first_name
+                                } ${
+                                    newUser.last_name
+                                }) has registered and is pending approval for agency (${
+                                    agency?.name || newCoordinator.agency_id
+                                }).`,
                                 type: "COORDINATOR_REGISTRATION",
                                 reference_id: newCoordinator.id,
                                 created_by: newUser.id,
@@ -1249,10 +1300,13 @@ export async function storeCoordinator(formData) {
                         userIds: agencyHead.id,
                         notificationData: {
                             subject: "New Coordinator Registration",
-                            message: `A new coordinator (${newUser.first_name
-                                } ${newUser.last_name
-                                }) has registered and is awaiting for your approval (${agency?.name || newCoordinator.agency_id
-                                }).`,
+                            message: `A new coordinator (${
+                                newUser.first_name
+                            } ${
+                                newUser.last_name
+                            }) has registered and is awaiting for your approval (${
+                                agency?.name || newCoordinator.agency_id
+                            }).`,
                             type: "AGENCY_COORDINATOR_APPROVAL",
                             reference_id: newCoordinator.id,
                             created_by: newUser.id,
@@ -1273,12 +1327,16 @@ export async function storeCoordinator(formData) {
                                     newCoordinator.contact_number,
                                 registration_date:
                                     new Date().toLocaleDateString(),
-                                system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
-                                support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
-                                support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
+                                system_name:
+                                    process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                                support_email:
+                                    process.env
+                                        .NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                                support_contact:
+                                    process.env
+                                        .NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
                                 domain_url:
-                                    process.env.NEXT_PUBLIC_APP_URL ||
-                                    "",
+                                    process.env.NEXT_PUBLIC_APP_URL || "",
                             },
                         },
                     });

@@ -13,7 +13,7 @@ import {
     Users2Icon,
     BarChart3,
 } from "lucide-react";
-import { BiError } from "react-icons/bi";
+import { BiBuildings, BiError } from "react-icons/bi";
 import { FaMicrophone } from "react-icons/fa";
 import { GrEmergency } from "react-icons/gr";
 import { MdBloodtype } from "react-icons/md";
@@ -197,7 +197,7 @@ export const usePagesStore = create((set) => ({
         {
             title: "Agencies Management",
             path: "/agencies",
-            icon: <Users />,
+            icon: <BiBuildings />,
             roles: ["Admin"],
             is_role_based: true,
             has_child: false,

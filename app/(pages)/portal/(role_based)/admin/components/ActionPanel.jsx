@@ -10,9 +10,7 @@ export default function ActionPanel({ events, agencies, isLoading }) {
     return (
         <Card className="w-full">
             <CardHeader>
-                <CardTitle className="text-xl">
-                    Action Needed
-                </CardTitle>
+                <CardTitle className="text-xl">Action Needed</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
                 <div>
@@ -24,7 +22,10 @@ export default function ActionPanel({ events, agencies, isLoading }) {
                         <FaArrowRight />
                     </Link>
                     <div className="max-h-72 overflow-y-auto mt-2 flex flex-col gap-4 p-2">
-                        <ForApprovalEventList events={events} eventsIsFetching={isLoading} />
+                        <ForApprovalEventList
+                            events={events}
+                            eventsIsFetching={isLoading}
+                        />
                     </div>
                 </div>
                 <div className="divider" />
@@ -40,7 +41,6 @@ export default function ActionPanel({ events, agencies, isLoading }) {
                         <ForApprovalAgencyList
                             agencies={agencies}
                             isFetching={isLoading}
-                            target="_blank"
                         />
                     </div>
                 </div>

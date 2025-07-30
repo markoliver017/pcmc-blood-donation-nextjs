@@ -26,6 +26,7 @@ import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { formatFormalName } from "@lib/utils/string.utils";
 import { GiClosedDoors, GiOpenBook } from "react-icons/gi";
 import EventRegistrationStatus from "@components/organizers/EventRegistrationStatus";
+import { getFeedbackAverage } from "@lib/utils/event.utils";
 // import parse from "html-react-parser";
 
 export const eventColumns = (setIsLoading) => [
@@ -114,6 +115,23 @@ export const eventColumns = (setIsLoading) => [
                         (acc, sched) => acc + sched?.donors?.length,
                         0
                     )}
+                </div>
+            );
+        },
+    },
+    {
+        id: "feedback",
+        accessorKey: "donors",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Average Feedback" />
+        ),
+        filterFn: "columnFilter",
+        cell: ({ getValue }) => {
+            const donors = getValue();
+
+            return (
+                <div className="font-semibold text-xl max-w-12 text-center">
+                    {getFeedbackAverage(donors)}
                 </div>
             );
         },

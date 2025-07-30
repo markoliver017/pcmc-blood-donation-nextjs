@@ -83,6 +83,10 @@ export const hostsDonorColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Contact" />
         ),
+        cell: ({ getValue }) => {
+            const contactNumber = getValue();
+            return <div>+63{contactNumber}</div>;
+        },
         filterFn: "columnFilter",
     },
     {

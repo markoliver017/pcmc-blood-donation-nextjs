@@ -29,6 +29,7 @@ import { getBloodTypes } from "@/action/bloodTypeAction";
 import Skeleton_line from "@components/ui/skeleton_line";
 import { MdBloodtype } from "react-icons/md";
 import moment from "moment";
+import { BiBuildings } from "react-icons/bi";
 
 export function AppointmentDatatable({
     columns,
@@ -135,18 +136,18 @@ export function AppointmentDatatable({
                 <Skeleton className="w-full h-80 rounded-xl" />
             ) : (
                 <>
-                    <div className="flex items-center py-2 space-x-2">
+                    <div className="flex flex-wrap gap-2 items-center py-2 space-x-2">
                         <input
                             placeholder="Search all .."
                             // value={{globalFilter}}
                             onChange={(e) =>
                                 table.setGlobalFilter(e.target.value)
                             }
-                            className="p-2 input-sm flex-none bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
+                            className="flex-1 p-2 input-sm bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
                         />
 
-                        <div className="flex-1 flex justify-end pr-2">
-                            <div className="flex space-x-2">
+                        <div className="flex justify-end pr-2 min-w-[300px]">
+                            <div className="flex flex-wrap space-x-2">
                                 <label className="dark:text-slate-400 flex items-center space-x-1">
                                     <Filter className="h-4 w-4" />
                                 </label>
@@ -174,8 +175,12 @@ export function AppointmentDatatable({
                                     }
                                     placeholder={
                                         <>
-                                            {<Calendar className="h-3 w-3" />}{" "}
-                                            <span>Agencies</span>
+                                            {
+                                                <BiBuildings className="h-3 w-3" />
+                                            }{" "}
+                                            <span className="hidden md:block">
+                                                Agencies
+                                            </span>
                                         </>
                                     }
                                     className="text-slate-700 bg-slate-100 hover:bg-white"
@@ -213,7 +218,9 @@ export function AppointmentDatatable({
                                     placeholder={
                                         <>
                                             {<Calendar className="h-3 w-3" />}{" "}
-                                            <span>Events</span>
+                                            <span className="hidden md:block">
+                                                Events
+                                            </span>
                                         </>
                                     }
                                     className="text-slate-700 bg-slate-100 hover:bg-white"
@@ -253,7 +260,9 @@ export function AppointmentDatatable({
                                             {
                                                 <MdBloodtype className="h-3 w-3" />
                                             }{" "}
-                                            <span>Blood Type</span>
+                                            <span className="hidden md:block">
+                                                Blood Type
+                                            </span>
                                         </>
                                     }
                                     className="text-slate-700 bg-slate-100 hover:bg-white"
@@ -295,7 +304,9 @@ export function AppointmentDatatable({
                                     placeholder={
                                         <>
                                             {<User className="h-3 w-3" />}{" "}
-                                            <span>Sex</span>
+                                            <span className="hidden md:block">
+                                                Sex
+                                            </span>
                                         </>
                                     }
                                     variant="inverted"

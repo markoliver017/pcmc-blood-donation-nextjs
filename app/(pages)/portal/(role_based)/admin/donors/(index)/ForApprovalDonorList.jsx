@@ -4,6 +4,7 @@ import {
     Card,
     CardContent,
     CardDescription,
+    CardFooter,
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
@@ -12,11 +13,12 @@ import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 
 import { FileClock, MessageCircle } from "lucide-react";
-import { getDonorsByStatus } from "@/action/donorAction";
 import { calculateAge } from "@lib/utils/string.utils";
 import ApprovalRejectComponent from "@components/donors/ApprovalRejectComponent";
+import clsx from "clsx";
+import { getDonorsByStatus } from "@/action/donorAction";
 
-export default function ForApprovalDonorList() {
+export default function ForApprovalDonorList({ avatarClassName = "" }) {
     const { data: donors, isLoading: donorsIsFetching } = useQuery({
         queryKey: ["donors", "for approval"],
         queryFn: async () => getDonorsByStatus("for approval"),
@@ -51,51 +53,56 @@ export default function ForApprovalDonorList() {
                 >
                     <CardHeader>
                         <CardTitle className="flex flex-wrap justify-between">
-                            <span className="text-xl underline font-bold">
+                            <span className="text-xl">
                                 {donor.user.full_name}
                             </span>
-                            <span className="text-sm text-slate-600">
+                            <span className="text-sm text-slate-600 dark:text-slate-300">
                                 {moment(donor.createdAt).format("MMM DD, YYYY")}
                             </span>
                         </CardTitle>
-                        <CardDescription className="flex flex-wrap flex-col gap-1 dark:text-slate-200 text-base italic">
-                            <span><b>Agency: </b>{donor.agency.name}</span>
+                        <CardDescription className="flex flex-wrap flex-col gap-1 space-y-2 dark:text-slate-300">
                             <span>
-                                <b>Age: </b>{calculateAge(donor.date_of_birth)}
+                                Age: {calculateAge(donor.date_of_birth)}
                             </span>
                             <span>
-                                <b>Blood Type:{" "}</b>
+                                Blood Type:{" "}
                                 {donor?.blood_type?.blood_type || "N/A"}
                             </span>
-                            <span> <b>Address: </b> {donor.full_address}</span>
-                            <ApprovalRejectComponent
-                                data={donor}
-                                callbackUrl={`/portal/admin/donors/${donor.id}`}
-                            />
+                            <span>Address: {donor.full_address}</span>
+                            <span>Agency: {donor.agency.name}</span>
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="flex flex-wrap items-center justify-center gap-4 px-2 md:px-15 dark:text-slate-200 transform transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-110">
+                    <CardContent className="flex flex-wrap items-center justify-center gap-4 px-2 md:px-15 text-slate-800 dark:text-slate-200 transform transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-110">
                         <div>
                             <CustomAvatar
                                 avatar={
                                     donor.user?.image || "/default_avatar.png"
                                 }
-                                className="flex-none w-[150px] h-[150px] "
+                                className={clsx(
+                                    "flex-none w-[50px] h-[50px]",
+                                    avatarClassName
+                                )}
                             />
                         </div>
-                        <div className="md:flex-1 flex flex-col gap-2">
-
+                        <div className="md:flex-1 flex flex-col items-center gap-2">
                             <span className="text-blue-700">
                                 {donor.user.email.toLowerCase()}
                             </span>
-                            <span >
-                                {donor.contact_number}
-                            </span>
+                            <span>+63{donor.contact_number}</span>
                             <span className="flex-items-center gap-1 italic">
-                                <MessageCircle className="h-4" /> {donor.comments}
+                                {donor.comments && (
+                                    <>
+                                        <MessageCircle className="h-4" />
+                                        {donor.comments}
+                                    </>
+                                )}
                             </span>
                         </div>
                     </CardContent>
+                    <ApprovalRejectComponent
+                        data={donor}
+                        callbackUrl={`/portal/admin/donors/${donor.id}`}
+                    />
                 </Card>
             ))}
         </>

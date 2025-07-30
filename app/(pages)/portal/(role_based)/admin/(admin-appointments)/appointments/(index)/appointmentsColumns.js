@@ -65,12 +65,12 @@ export const appointmentsColumns = [
             return (
                 <>
                     {isVerified ? (
-                        <div className="btn btn-ghost p-2 font-bold rounded-full">
+                        <div className="flex-items-center p-2 font-bold rounded-full">
                             {getValue()}{" "}
                             <MdCheckCircleOutline className="h-4 w-4 text-green-500" />
                         </div>
                     ) : (
-                        <div className="btn btn-ghost p-2 font-bold rounded-full">
+                        <div className="flex-items-center p-2 font-bold rounded-full">
                             {getValue()}{" "}
                             <QuestionMarkCircledIcon className="h-4 w-4 text-red-500" />
                         </div>

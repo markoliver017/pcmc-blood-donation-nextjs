@@ -66,6 +66,10 @@ export const hostCoordinatorColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Contact" />
         ),
+        cell: ({ row }) => {
+            const contactNumber = row.getValue("contact_number");
+            return <div>+63{contactNumber}</div>;
+        },
         filterFn: "columnFilter",
     },
 

@@ -36,6 +36,8 @@ import { Button } from "@components/ui/button";
 import { formatFormalName } from "@lib/utils/string.utils";
 import { IoCloseCircle } from "react-icons/io5";
 import { Badge } from "@components/ui/badge";
+import StarRating from "@components/reusable_components/StarRating";
+import { getFeedbackAverage } from "@lib/utils/event.utils";
 
 export default function AdminEventCard({
     event,
@@ -172,9 +174,12 @@ export default function AdminEventCard({
                             )}
                     </div>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
-                    <Calendar className="h-4 w-4" />
-                    <span>{moment(event.date).format("MMMM D, YYYY")}</span>
+                <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
+                        <Calendar className="h-4 w-4" />
+                        <span>{moment(event.date).format("MMMM D, YYYY")}</span>
+                    </div>
+                    <StarRating rating={getFeedbackAverage(event.donors)} />
                 </div>
             </CardHeader>
 
@@ -231,7 +236,7 @@ export default function AdminEventCard({
                                     href={`/portal/admin/events/${event.id}/participants`}
                                 >
                                     <Users className="w-4 h-4 mr-2" />
-                                    View Donors
+                                    View Donors ({event.donors?.length})
                                 </Link>
                             </Button>
                         </>

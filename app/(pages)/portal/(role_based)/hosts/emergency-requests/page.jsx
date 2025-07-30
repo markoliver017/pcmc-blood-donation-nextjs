@@ -43,7 +43,7 @@ export default function EmergencyRequestPage() {
     const stats = {
         pending: requests.filter((req) => req.status === "pending").length,
         fulfilled: requests.filter((req) => req.status === "fulfilled").length,
-        expired: requests.filter((req) => req.status === "expired").length,
+        rejected: requests.filter((req) => req.status === "rejected").length,
     };
 
     return (
@@ -84,12 +84,12 @@ export default function EmergencyRequestPage() {
                 <Card>
                     <CardHeader>
                         <h3 className="text-lg font-semibold">
-                            Expired Requests
+                            Rejected Requests
                         </h3>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-red-500">
-                            {stats.expired}
+                            {stats.rejected}
                         </div>
                     </CardContent>
                 </Card>

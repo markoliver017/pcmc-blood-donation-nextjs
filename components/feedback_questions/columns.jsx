@@ -1,8 +1,17 @@
 "use client";
 
+import DataTableColumnHeader from "@components/reusable_components/DataTableColumnHeader";
+import StarRating from "@components/reusable_components/StarRating";
 import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@components/ui/dropdown-menu";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuTrigger,
+} from "@components/ui/dropdown-menu";
+import { getFeedbackQuestionResponseAverage } from "@lib/utils/event.utils";
 import { MoreHorizontal } from "lucide-react";
 
 // This type is used to define the shape of our data.
@@ -10,19 +19,55 @@ import { MoreHorizontal } from "lucide-react";
 
 export const columns = [
     {
+        accessorKey: "id",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="ID#" />
+        ),
+        filterFn: "columnFilter",
+    },
+    {
         accessorKey: "question_text",
-        header: "Question",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Question" />
+        ),
+        filterFn: "columnFilter",
+    },
+    {
+        accessorKey: "responses",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Overall Rating" />
+        ),
+        cell: ({ row }) => {
+            const responses = row.getValue("responses");
+            return (
+                <span>
+                    <StarRating
+                        rating={getFeedbackQuestionResponseAverage(responses)}
+                    />
+                </span>
+            );
+        },
+        filterFn: "columnFilter",
     },
     {
         accessorKey: "is_active",
-        header: "Status",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Status" />
+        ),
         cell: ({ row }) => {
             const isActive = row.getValue("is_active");
-            return <Badge variant={isActive ? "success" : "destructive"}>{isActive ? "Active" : "Inactive"}</Badge>;
+            return (
+                <Badge variant={isActive ? "success" : "destructive"}>
+                    {isActive ? "Active" : "Inactive"}
+                </Badge>
+            );
         },
     },
     {
         id: "actions",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Actions" />
+        ),
         cell: ({ row, table }) => {
             const question = row.original;
             const { meta } = table.options;
@@ -37,17 +82,38 @@ export const columns = [
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => meta.openEditDialog(question)}>Edit</DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => meta.openEditDialog(question)}
+                        >
+                            Edit
+                        </DropdownMenuItem>
                         {question.is_active ? (
-                            <DropdownMenuItem onClick={() => meta.updateStatus(question.id, "inactive")}>Deactivate</DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    meta.updateStatus(question.id, "inactive")
+                                }
+                            >
+                                Deactivate
+                            </DropdownMenuItem>
                         ) : (
-                            <DropdownMenuItem onClick={() => meta.updateStatus(question.id, "active")}>Activate</DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    meta.updateStatus(question.id, "active")
+                                }
+                            >
+                                Activate
+                            </DropdownMenuItem>
                         )}
-                        <DropdownMenuItem className="text-red-600" onClick={() => meta.handleDelete(question.id)}>
+                        <DropdownMenuItem
+                            className="text-red-600"
+                            onClick={() => meta.handleDelete(question.id)}
+                        >
                             Delete
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(question.id)}
+                            onClick={() =>
+                                navigator.clipboard.writeText(question.id)
+                            }
                         >
                             Copy Question ID
                         </DropdownMenuItem>

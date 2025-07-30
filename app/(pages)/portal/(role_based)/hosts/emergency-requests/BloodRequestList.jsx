@@ -14,11 +14,17 @@ import {
 import { fetchBloodRequests } from "@action/bloodRequestAction";
 import { DataTable } from "./Datatable";
 import { Button } from "@components/ui/button";
-import { Eye, Pencil, XCircle } from "lucide-react";
+import { Eye, Pencil, SquareMenu, XCircle } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import SweetAlert from "@components/ui/SweetAlert";
 import notify from "@components/ui/notify";
 import { updateBloodRequestStatus } from "@action/bloodRequestAction";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@components/ui/dropdown-menu";
 
 const getColumns = (handleUpdate) => {
     const queryClient = useQueryClient();
@@ -103,43 +109,57 @@ const getColumns = (handleUpdate) => {
                 const data = row.original;
                 const id = data.id;
                 return (
-                    <div className="flex gap-2">
-                        <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleUpdate(id)}
-                            className="flex items-center gap-1"
-                        >
-                            {data.status !== "pending" ? (
-                                <Eye className="w-4 h-4" />
-                            ) : (
-                                <Pencil className="w-4 h-4" />
-                            )}
-                            <span className="hidden md:inline">
-                                {data.status !== "pending" ? "View" : "Update"}
-                            </span>
-                        </Button>
-                        <Button
-                            size="sm"
-                            variant="destructive"
-                            disabled={isCancelling || data.status !== "pending"}
-                            onClick={() => {
-                                SweetAlert({
-                                    title: "Cancel Request?",
-                                    text: "Are you sure you want to cancel this blood request? This action cannot be undone.",
-                                    icon: "warning",
-                                    showCancelButton: true,
-                                    confirmButtonText: "Yes, cancel",
-                                    cancelButtonText: "No",
-                                    onConfirm: () => cancelRequest(id),
-                                });
-                            }}
-                            className="flex items-center gap-1"
-                        >
-                            <XCircle className="w-4 h-4" />
-                            <span className="hidden md:inline">Cancel</span>
-                        </Button>
-                    </div>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-min p-0">
+                                <span className="sr-only">Open menu</span>
+                                <SquareMenu />
+                                <span className="block md:hidden">Menus</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+
+                        <DropdownMenuContent>
+                            <DropdownMenuItem
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleUpdate(id)}
+                                className="flex items-center gap-1"
+                            >
+                                {data.status !== "pending" ? (
+                                    <Eye className="w-4 h-4" />
+                                ) : (
+                                    <Pencil className="w-4 h-4" />
+                                )}
+                                <span className="hidden md:inline">
+                                    {data.status !== "pending"
+                                        ? "View"
+                                        : "Update"}
+                                </span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                size="sm"
+                                variant="destructive"
+                                disabled={
+                                    isCancelling || data.status !== "pending"
+                                }
+                                onClick={() => {
+                                    SweetAlert({
+                                        title: "Cancel Request?",
+                                        text: "Are you sure you want to cancel this blood request? This action cannot be undone.",
+                                        icon: "warning",
+                                        showCancelButton: true,
+                                        confirmButtonText: "Yes, cancel",
+                                        cancelButtonText: "No",
+                                        onConfirm: () => cancelRequest(id),
+                                    });
+                                }}
+                                className="flex items-center gap-1"
+                            >
+                                <XCircle className="w-4 h-4" />
+                                <span className="hidden md:inline">Cancel</span>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 );
             },
         },

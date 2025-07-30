@@ -34,7 +34,6 @@ export default function VerifyDonor({
             return res;
         },
         onSuccess: (data) => {
-            console.log("onSuccess", data);
             queryClient.invalidateQueries({ queryKey: ["donors"] });
             queryClient.invalidateQueries({
                 queryKey: ["verified-donors"],
@@ -92,8 +91,8 @@ export default function VerifyDonor({
                         className
                     )}
                     onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
+                        // e.preventDefault();
+                        // e.stopPropagation();
                         handleSubmit(onSubmit)();
                     }}
                 >

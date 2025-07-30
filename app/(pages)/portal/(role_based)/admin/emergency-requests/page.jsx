@@ -3,10 +3,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader } from "@components/ui/card";
 import { Badge } from "@components/ui/badge";
-import { Button } from "@components/ui/button";
-import { CheckCircle } from "lucide-react";
+import { Text } from "lucide-react";
 import { format } from "date-fns";
 import { DataTable } from "@components/reusable_components/Datatable";
+
 import {
     Dialog,
     DialogContent,
@@ -14,14 +14,14 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@components/ui/dialog";
+
 import { useState } from "react";
 
 import {
     fetchAllBloodRequests,
     updateBloodRequestStatus,
 } from "@action/bloodRequestAction";
-import SweetAlert from "@components/ui/SweetAlert";
-import notify from "@components/ui/notify";
+
 import {
     User,
     Hospital,
@@ -37,120 +37,15 @@ import DateRangePickerComponent from "@components/reusable_components/DateRangeP
 import moment from "moment";
 import { useQuery as useQueryTanstack } from "@tanstack/react-query";
 import { fetchBloodTypes } from "@action/bloodRequestAction";
+import { toast, Toaster } from "sonner";
+import { getColumns } from "./columns";
 
-function getColumns(approveRequest, isApproving, onShowDetails) {
-    return [
-        {
-            accessorKey: "blood_component",
-            header: "Component",
-            cell: ({ row }) => {
-                const component = row.original.blood_component;
-                return component.charAt(0).toUpperCase() + component.slice(1);
-            },
-        },
-        {
-            accessorKey: "blood_type.blood_type",
-            header: "Blood Type",
-        },
-        {
-            accessorKey: "no_of_units",
-            header: "Units",
-        },
-        {
-            accessorKey: "patient_name",
-            header: "Patient Name",
-            cell: ({ row }) => {
-                const donor = row.original.user;
-                return donor
-                    ? `${donor.first_name} ${donor.last_name}`
-                    : row.original.patient_name;
-            },
-        },
-        {
-            accessorKey: "hospital_name",
-            header: "Hospital",
-        },
-        {
-            accessorKey: "date",
-            header: "Date Needed",
-            cell: ({ row }) =>
-                format(new Date(row.original.date), "MMM dd, yyyy"),
-        },
-        {
-            accessorKey: "agency_name",
-            header: "Agency",
-            cell: ({ row }) => {
-                // Try to get agency name from donor->agency
-                return (
-                    row.original.user?.donor?.agency?.name || (
-                        <span className="italic text-gray-400">N/A</span>
-                    )
-                );
-            },
-        },
-        {
-            accessorKey: "status",
-            header: "Status",
-            cell: ({ row }) => {
-                const status = row.original.status;
-                const colors = {
-                    pending: "bg-orange-100 text-orange-800",
-                    fulfilled: "bg-green-100 text-green-800",
-                    expired: "bg-red-100 text-red-800",
-                    cancelled: "bg-gray-200 text-gray-600",
-                };
-                return (
-                    <Badge
-                        className={
-                            colors[status] || "bg-gray-200 text-gray-600"
-                        }
-                    >
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
-                    </Badge>
-                );
-            },
-        },
-        {
-            accessorKey: "actions",
-            header: "Actions",
-            cell: ({ row }) => {
-                const id = row.original.id;
-                const status = row.original.status;
-                return (
-                    <div className="flex gap-2">
-                        <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => onShowDetails(row.original)}
-                            className="flex items-center gap-1"
-                        >
-                            <span className="hidden md:inline">Details</span>
-                        </Button>
-                        <Button
-                            size="sm"
-                            disabled={status !== "pending" || isApproving}
-                            onClick={() => {
-                                SweetAlert({
-                                    title: "Approve Blood Request?",
-                                    text: "Are you sure you want to mark this blood request as fulfilled? This action will also send a notification to the user who initiated the request.",
-                                    icon: "info",
-                                    showCancelButton: true,
-                                    confirmButtonText: "Yes, approve",
-                                    cancelButtonText: "No",
-                                    onConfirm: () => approveRequest(id),
-                                });
-                            }}
-                            className="flex items-center gap-1 bg-green-500 text-white"
-                        >
-                            <CheckCircle className="w-4 h-4" />
-                            <span className="hidden md:inline">Approve</span>
-                        </Button>
-                    </div>
-                );
-            },
-        },
-    ];
-}
+const colors = {
+    pending: "bg-orange-100 text-orange-800",
+    fulfilled: "bg-green-100 text-green-800",
+    rejected: "bg-red-100 text-red-800",
+    cancelled: "bg-gray-200 text-gray-600",
+};
 
 export default function AdminEmergencyRequestsPage() {
     const queryClient = useQueryClient();
@@ -175,32 +70,32 @@ export default function AdminEmergencyRequestsPage() {
     const stats = {
         pending: requests.filter((req) => req.status === "pending").length,
         fulfilled: requests.filter((req) => req.status === "fulfilled").length,
-        expired: requests.filter((req) => req.status === "expired").length,
+        rejected: requests.filter((req) => req.status === "rejected").length,
         cancelled: requests.filter((req) => req.status === "cancelled").length,
     };
     // Approve mutation
-    const { mutate: approveRequest, isPending: isApproving } = useMutation({
-        mutationFn: async (id) => {
-            const res = await updateBloodRequestStatus({
-                id,
-                status: "fulfilled",
-            });
-            if (!res.success) throw res;
-            return res;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ["admin-blood-requests"],
-            });
-            notify({ message: "Request approved (fulfilled) successfully" });
-        },
-        onError: (error) => {
-            notify({
-                error: true,
-                message: error?.message || "Failed to approve request",
-            });
-        },
-    });
+    const { mutate: updateRequestStatus, isPending: isApproving } = useMutation(
+        {
+            mutationFn: async ({ id, status, remarks }) => {
+                const res = await updateBloodRequestStatus({
+                    id,
+                    status,
+                    remarks,
+                });
+                if (!res.success) throw res;
+                return res;
+            },
+            onSuccess: () => {
+                queryClient.invalidateQueries({
+                    queryKey: ["admin-blood-requests"],
+                });
+                toast("Request updated successfully");
+            },
+            onError: (error) => {
+                toast(error?.message || "Failed to approve request");
+            },
+        }
+    );
     const handleShowDetails = (request) => {
         setSelectedRequest(request);
         setDetailsOpen(true);
@@ -244,9 +139,14 @@ export default function AdminEmergencyRequestsPage() {
             return false;
         return true;
     });
-    const columns = getColumns(approveRequest, isApproving, handleShowDetails);
+    const columns = getColumns(
+        updateRequestStatus,
+        isApproving,
+        handleShowDetails
+    );
     return (
         <div className="container mx-auto p-6 space-y-6">
+            <Toaster />
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold">
                     All Emergency Blood Requests
@@ -275,11 +175,11 @@ export default function AdminEmergencyRequestsPage() {
                 </Card>
                 <Card>
                     <CardHeader>
-                        <h3 className="text-lg font-semibold">Expired</h3>
+                        <h3 className="text-lg font-semibold">Rejected</h3>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-red-500">
-                            {stats.expired}
+                            {stats.rejected}
                         </div>
                     </CardContent>
                 </Card>
@@ -446,32 +346,7 @@ export default function AdminEmergencyRequestsPage() {
                                     )}
                                 </div>
                             </div>
-                            <div className="flex items-center justify-between gap-2">
-                                <b className="flex-items-center">
-                                    <Badge className="w-4 h-4 text-gray-500" />
-                                    Status:
-                                </b>{" "}
-                                <div className="flex-none w-48">
-                                    <Badge
-                                        variant={
-                                            selectedRequest.status === "pending"
-                                                ? "secondary"
-                                                : selectedRequest.status ===
-                                                  "fulfilled"
-                                                ? "default"
-                                                : selectedRequest.status ===
-                                                  "expired"
-                                                ? "destructive"
-                                                : "outline"
-                                        }
-                                    >
-                                        {selectedRequest.status
-                                            .charAt(0)
-                                            .toUpperCase() +
-                                            selectedRequest.status.slice(1)}
-                                    </Badge>
-                                </div>
-                            </div>
+
                             <div className="flex items-center justify-between gap-2">
                                 <b className="flex-items-center">
                                     <ClipboardList className="w-4 h-4 text-indigo-500" />
@@ -481,6 +356,7 @@ export default function AdminEmergencyRequestsPage() {
                                     {selectedRequest.diagnosis}
                                 </div>
                             </div>
+
                             <div className="flex items-center justify-between gap-2">
                                 <b className="flex-items-center">
                                     <FileText className="w-4 h-4 text-blue-600" />
@@ -501,6 +377,35 @@ export default function AdminEmergencyRequestsPage() {
                                             N/A
                                         </span>
                                     )}
+                                </div>
+                            </div>
+                            <div className="flex items-center justify-between gap-2">
+                                <b className="flex-items-center">
+                                    <Badge className="w-4 h-4 text-gray-500" />
+                                    Status:
+                                </b>{" "}
+                                <div className="flex-none w-48">
+                                    <Badge
+                                        variant="outline"
+                                        className={
+                                            colors[selectedRequest.status] ||
+                                            "bg-gray-200 text-gray-600"
+                                        }
+                                    >
+                                        {selectedRequest.status
+                                            .charAt(0)
+                                            .toUpperCase() +
+                                            selectedRequest.status.slice(1)}
+                                    </Badge>
+                                </div>
+                            </div>
+                            <div className="flex items-center justify-between gap-2">
+                                <b className="flex-items-center">
+                                    <Text className="w-4 h-4 " />
+                                    Remarks:
+                                </b>{" "}
+                                <div className="flex-none w-48">
+                                    {selectedRequest.remarks}
                                 </div>
                             </div>
                         </div>

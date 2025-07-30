@@ -13,9 +13,11 @@ import {
     AlertTriangle,
     UserX,
     RefreshCcw,
+    X,
 } from "lucide-react";
 import { DatePicker } from "@components/ui/DatePicker";
 import { useQueryClient } from "@tanstack/react-query";
+import { format } from "date-fns";
 
 /**
  * AppointmentTabs component for organizing appointments by status
@@ -38,9 +40,8 @@ export default function AppointmentTabs({
     selectedStatus,
     onStatusChange,
     date,
-    setDate
+    setDate,
 }) {
-
     const queryClient = useQueryClient();
     // Define tab configurations with their respective filters, icons, and colors
     const tabConfigs = [
@@ -163,56 +164,83 @@ export default function AppointmentTabs({
             </TabsList>
 
             <TabsContent value={selectedStatus} className="space-y-4 mt-6">
-                <div className="flex justify-between">
+                <div>
+                    <div className="flex flex-wrap justify-between">
+                        <div className="flex items-center gap-2 mb-4">
+                            <div
+                                className={`p-2 rounded-lg ${activeTabConfig.bgColor}`}
+                            >
+                                <activeTabConfig.icon
+                                    className={`h-5 w-5 ${activeTabConfig.color}`}
+                                />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-semibold">
+                                    {activeTabConfig.label} Appointments
+                                </h3>
+                                <p className="text-sm text-gray-600">
+                                    {appointments.length} appointment
+                                    {appointments.length !== 1 ? "s" : ""} found
+                                </p>
+                            </div>
+                        </div>
+                        {/* Controls: Date Picker and Refresh Button */}
+                        <div className="flex flex-wrap justify-between gap-2 items-center ">
+                            <div className="flex flex-wrap items-center gap-2">
+                                <DatePicker
+                                    date={date.from}
+                                    onDateChange={(newDate) =>
+                                        setDate((prev) => ({
+                                            ...prev,
+                                            from: newDate,
+                                        }))
+                                    }
+                                    placeholder="From date"
+                                />
+                                <DatePicker
+                                    date={date.to}
+                                    onDateChange={(newDate) =>
+                                        setDate((prev) => ({
+                                            ...prev,
+                                            to: newDate,
+                                        }))
+                                    }
+                                    placeholder="To date"
+                                />
+                            </div>
 
-                    <div className="flex items-center gap-2 mb-4">
-                        <div
-                            className={`p-2 rounded-lg ${activeTabConfig.bgColor}`}
-                        >
-                            <activeTabConfig.icon
-                                className={`h-5 w-5 ${activeTabConfig.color}`}
-                            />
-                        </div>
-                        <div>
-                            <h3 className="text-lg font-semibold">
-                                {activeTabConfig.label} Appointments
-                            </h3>
-                            <p className="text-sm text-gray-600">
-                                {appointments.length} appointment
-                                {appointments.length !== 1 ? "s" : ""} found
-                            </p>
+                            <button
+                                className="btn btn-circle btn-warning"
+                                onClick={() =>
+                                    queryClient.invalidateQueries({
+                                        queryKey: ["all-appointments", date],
+                                    })
+                                }
+                                title="Refresh appointments data"
+                            >
+                                <RefreshCcw className="h-4 w-4" />
+                            </button>
                         </div>
                     </div>
-                    {/* Controls: Date Picker and Refresh Button */}
-                    <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-2">
-                            <DatePicker
-                                date={date.from}
-                                onDateChange={(newDate) =>
-                                    setDate((prev) => ({ ...prev, from: newDate }))
+                    {(date.from || date.to) && (
+                        <div className="flex md:justify-end text-sm gap-1 text-gray-500 pr-15 italic">
+                            <span>Filter by date:</span>
+                            <span>
+                                {date.from ? format(date.from, "PP") : ""}
+                            </span>
+                            <span>
+                                {date.to ? ` - ${format(date.to, "PP")}` : ""}
+                            </span>
+                            <button
+                                className="btn btn-xs border-0"
+                                onClick={() =>
+                                    setDate({ from: null, to: null })
                                 }
-                                placeholder="From date"
-                            />
-                            <DatePicker
-                                date={date.to}
-                                onDateChange={(newDate) =>
-                                    setDate((prev) => ({ ...prev, to: newDate }))
-                                }
-                                placeholder="To date"
-                            />
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
                         </div>
-                        <button
-                            className="btn btn-circle btn-warning"
-                            onClick={() =>
-                                queryClient.invalidateQueries({
-                                    queryKey: ["all-appointments", date],
-                                })
-                            }
-                            title="Refresh appointments data"
-                        >
-                            <RefreshCcw className="h-4 w-4" />
-                        </button>
-                    </div>
+                    )}
                 </div>
 
                 <AppointmentDatatable

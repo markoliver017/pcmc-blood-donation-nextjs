@@ -37,9 +37,7 @@ export default function ForApprovalDonorList({ avatarClassName = "" }) {
 
     if (!donors || donors.length === 0)
         return (
-            <Card
-                className="col-span-full flex flex-col justify-center items-center text-center py-16"
-            >
+            <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
                 <FileClock className="w-12 h-12 mb-4 text-primary" />
                 <h2 className="text-xl font-semibold">No Pending Approvals</h2>
                 <p className="text-gray-500 mt-2">You're all caught up! 🎉</p>
@@ -60,9 +58,7 @@ export default function ForApprovalDonorList({ avatarClassName = "" }) {
                                 {donor.user.full_name}
                             </span>
                             <span className="text-sm text-slate-600 dark:text-slate-300">
-                                {moment(donor.createdAt).format(
-                                    "MMM DD, YYYY"
-                                )}
+                                {moment(donor.createdAt).format("MMM DD, YYYY")}
                             </span>
                         </CardTitle>
                         <CardDescription className="flex flex-wrap flex-col gap-1 dark:text-slate-300">
@@ -74,18 +70,13 @@ export default function ForApprovalDonorList({ avatarClassName = "" }) {
                                 {donor?.blood_type?.blood_type || "N/A"}
                             </span>
                             <span>Address: {donor.full_address}</span>
-                            <ApprovalRejectComponent
-                                data={donor}
-                                callbackUrl={`/portal/hosts/donors/${donor.id}`}
-                            />
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="flex flex-wrap items-center justify-center gap-4 px-2 md:px-15 text-slate-800 dark:text-slate-200 transform transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-110">
                         <div>
                             <CustomAvatar
                                 avatar={
-                                    donor.user?.image ||
-                                    "/default_avatar.png"
+                                    donor.user?.image || "/default_avatar.png"
                                 }
                                 className={clsx(
                                     "flex-none w-[50px] h-[50px]",
@@ -108,6 +99,10 @@ export default function ForApprovalDonorList({ avatarClassName = "" }) {
                             </span>
                         </div>
                     </CardContent>
+                    <ApprovalRejectComponent
+                        data={donor}
+                        callbackUrl={`/portal/hosts/donors/${donor.id}`}
+                    />
                 </Card>
                 // </Link>
             ))}

@@ -57,7 +57,6 @@ export default function ForApprovalCoordinatorList() {
                             </span>
                         </CardTitle>
                         <CardDescription className="flex flex-wrap flex-col gap-1">
-                            <ApprovalRejectComponent coordinator={coor} />
                             <span>{coor.agency.agency_address}</span>
                         </CardDescription>
                     </CardHeader>
@@ -82,6 +81,7 @@ export default function ForApprovalCoordinatorList() {
                             </span>
                         </div>
                     </CardContent>
+                    <ApprovalRejectComponent coordinator={coor} />
                 </Card>
             ))}
         </>

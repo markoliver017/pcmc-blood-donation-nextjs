@@ -87,14 +87,14 @@ export default function ShowAgency({ agencyId }) {
             </CardHeader>
             <CardContent className="flex flex-wrap xl:flex-nowrap gap-2">
                 <div>
-                    <div className="relative">
+                    <div>
                         <CustomAvatar
                             avatar={
                                 agency.file_url || "/default_company_avatar.png"
                             }
                             className="w-[150px] h-[150px] sm:w-[200px] sm:h-[200px] md:w-[250px] md:h-[250px] xl:w-[350px] xl:h-[350px] flex-none"
                         />
-                        <div className="absolute top-1/2 right-1/2 translate-x-1/2 translate-y-1/2">
+                        <div className="text-center">
                             <ImagePreviewComponent
                                 imgSrc={
                                     agency.file_url ||
@@ -225,7 +225,7 @@ export default function ShowAgency({ agencyId }) {
                                             </TableHeader>
                                             <TableBody>
                                                 {agency?.coordinators?.length >
-                                                    0 ? (
+                                                0 ? (
                                                     agency.coordinators.map(
                                                         (coor, index) => (
                                                             <TableRow

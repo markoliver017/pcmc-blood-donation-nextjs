@@ -539,8 +539,21 @@ export async function getAllEvents() {
                         },
                     },
                 },
+                {
+                    model: DonorAppointmentInfo,
+                    as: "donors",
+                    attributes: ["id", "status", "feedback_average"],
+                    where: {
+                        status: {
+                            [Op.ne]: "cancelled",
+                        },
+                    },
+                    required: false,
+                },
             ],
         });
+
+        console.log("all events", formatSeqObj(events));
 
         const formattedEvents = formatSeqObj(events);
 
@@ -609,6 +622,16 @@ export async function getPresentEvents() {
                                     as: "blood_type",
                                 },
                             ],
+                        },
+                    },
+                },
+                {
+                    model: DonorAppointmentInfo,
+                    as: "donors",
+                    attributes: ["id", "status", "feedback_average"],
+                    where: {
+                        status: {
+                            [Op.ne]: "cancelled",
                         },
                     },
                 },
@@ -1431,7 +1454,13 @@ export async function getAllAppointments(date) {
                         {
                             model: User,
                             as: "user",
-                            attributes: ["id", "name", "email"],
+                            attributes: [
+                                "id",
+                                "name",
+                                "email",
+                                "image",
+                                "gender",
+                            ],
                         },
                         {
                             model: BloodType,

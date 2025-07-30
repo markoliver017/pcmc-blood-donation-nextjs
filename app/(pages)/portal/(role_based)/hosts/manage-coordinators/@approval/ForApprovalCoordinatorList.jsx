@@ -7,26 +7,14 @@ import {
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@components/ui/dropdown-menu";
+
 import Skeleton_user from "@components/ui/Skeleton_user";
 import { useQuery } from "@tanstack/react-query";
-import { formatFormalName } from "@lib/utils/string.utils";
 import moment from "moment";
 
-import { CheckIcon, Command, Eye, FileClock, SquareMenu } from "lucide-react";
 import ApprovalRejectComponent from "@components/coordinators/ApprovalRejectComponent";
 import { getHostCoordinatorsByStatus } from "@/action/hostCoordinatorAction";
-import { Button } from "@components/ui/button";
-import Link from "next/link";
-import VerifyCoordinator from "@components/coordinators/VerifyCoordinator";
-import RejectCoordinator from "@components/coordinators/RejectCoordinator";
+import { FileClock } from "lucide-react";
 
 export default function ForApprovalCoordinatorList() {
     const { data: coordinators, isLoading: coordinatorIsFetching } = useQuery({
@@ -69,58 +57,6 @@ export default function ForApprovalCoordinatorList() {
                             </span>
                         </CardTitle>
                         <CardDescription className="flex flex-wrap flex-col gap-1">
-                            <div className="flex sm:justify-end">
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button
-                                            variant="default"
-                                            className="h-8 w-min p-0"
-                                        >
-                                            <span className="sr-only">
-                                                Open menu
-                                            </span>
-                                            Actions
-                                            <SquareMenu className="h-4 w-4" />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuLabel className="flex items-center space-x-2">
-                                            <Command className="w-3 h-3" />
-                                            <span>Actions</span>
-                                        </DropdownMenuLabel>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem className="space-x-2">
-                                            <Link
-                                                href={`/portal/hosts/manage-coordinators/${coor.id}`}
-                                                className="btn btn-info w-full hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200"
-                                            >
-                                                <Eye />
-                                                Details
-                                            </Link>
-                                        </DropdownMenuItem>
-
-                                        <DropdownMenuItem className="space-x-2 flex justify-between">
-                                            <VerifyCoordinator
-                                                agencyData={{
-                                                    id: coor.id,
-                                                    status: "activated",
-                                                }}
-                                                label="Approve"
-                                                className="btn btn-block btn-success"
-                                                formClassName="w-full"
-                                                icon={<CheckIcon />}
-                                            />
-                                        </DropdownMenuItem>
-                                        <div className="px-2 flex justify-between">
-                                            <RejectCoordinator
-                                                coordinatorId={coor.id}
-                                                className="w-full btn-error"
-                                            />
-                                        </div>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-
                             <span>{coor.agency.agency_address}</span>
                         </CardDescription>
                     </CardHeader>
@@ -145,6 +81,10 @@ export default function ForApprovalCoordinatorList() {
                             </span>
                         </div>
                     </CardContent>
+                    <ApprovalRejectComponent
+                        coordinator={coor}
+                        callbackUrl="/portal/hosts/manage-coordinators"
+                    />
                 </Card>
             ))}
         </>

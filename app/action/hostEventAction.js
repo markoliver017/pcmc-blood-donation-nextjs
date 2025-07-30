@@ -475,6 +475,17 @@ export async function getEventsById(id) {
                         },
                     },
                 },
+                {
+                    model: DonorAppointmentInfo,
+                    as: "donors",
+                    attributes: ["id", "status", "feedback_average"],
+                    where: {
+                        status: {
+                            [Op.ne]: "cancelled",
+                        },
+                    },
+                    required: false,
+                },
             ],
         });
 
