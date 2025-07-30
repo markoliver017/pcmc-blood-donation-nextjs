@@ -32,7 +32,8 @@ import { donorBasicInformationSchema } from "@lib/zod/userSchema";
 import moment from "moment";
 import { Op } from "sequelize";
 import { handleValidationError } from "@lib/utils/validationErrorHandler";
-import { getAgencyIdBySession } from "./hostEventAction";
+import { getAgencyIdBySession, getAgencyId } from "./hostEventAction";
+import { BiPackage } from "react-icons/bi";
 
 export async function getApprovedEventsByAgency() {
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -990,13 +991,12 @@ export async function updateDonorStatus(formData) {
                                 system_name:
                                     process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
                                 support_email:
-                                    process.env
-                                        .NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                                    process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL ||
+                                    "",
                                 support_contact:
-                                    process.env
-                                        .NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
-                                domain_url:
-                                    process.env.NEXT_PUBLIC_APP_URL || "",
+                                    process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT ||
+                                    "",
+                                domain_url: process.env.NEXT_PUBLIC_APP_URL || "",
                             },
                         },
                     });
@@ -1520,7 +1520,7 @@ export async function getDonorDashboard() {
 
     try {
         const donor = await Donor.findOne({
-            where: { user_id: user?.id }, // assuming this association
+            where: { user_id: user?.id },
             attributes: ["id", "is_bloodtype_verified"],
             include: [
                 {
@@ -1562,19 +1562,42 @@ export async function getDonorDashboard() {
             latestDonationDate = latestDonation?.last_donation_date;
         }
 
+        const bloodCollectionData = await BloodDonationCollection.findOne({
+            attributes: [],
+            where: {
+                donor_id: donor.id,
+            },
+            include: [
+                {
+                    model: BloodDonationEvent,
+                    as: "event",
+                    attributes: ["date"],
+                },
+            ],
+            order: [[{ model: BloodDonationEvent, as: "event" }, "date", "DESC"]],
+        });
+
+        console.log("bloodCollectionData", formatSeqObj(bloodCollectionData))
+
+        if (bloodCollectionData) {
+            const collectionDate = moment(bloodCollectionData.event.date).startOf(
+                "day"
+            );
+            const lastKnownDate = moment(latestDonationDate).startOf("day");
+
+            if (!latestDonationDate || collectionDate.isAfter(lastKnownDate)) {
+                latestDonationDate = bloodCollectionData.event.date;
+                console.log("updating the latest donation date >>>>>>")
+                donor.update({ last_donation_date: latestDonationDate})
+            }
+        }
+
         if (latestDonationDate) {
             const lastDate = moment(latestDonationDate).startOf("day");
-
-            // Add 90 days
             nextEligibleDate = lastDate.clone().add(90, "days");
-
-            // Today at start of day
             const today = moment().startOf("day");
-
-            // Calculate remaining days
             daysRemaining = nextEligibleDate.diff(today, "days");
-
-            donateNow = daysRemaining <= 0; // true or false
+            donateNow = daysRemaining <= 0;
         }
 
         return {
@@ -1861,5 +1884,89 @@ export async function getDonorAnnouncements(limit = 5) {
     } catch (error) {
         console.error(error);
         return { success: false, message: extractErrorMessage(error) };
+    }
+}
+
+export async function registerExistingUserAsDonor(formData) {
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to perform this action.",
+        };
+    }
+    const { user } = session;
+
+    // Check if user already has the 'Donor' role
+    const isDonor = user.roles.includes("Donor");
+    if (isDonor) {
+        return {
+            success: false,
+            message: "You are already registered as a donor.",
+        };
+    }
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        const agency_id = await getAgencyId();
+        if (!agency_id) {
+            throw new Error("Could not determine your agency affiliation.");
+        }
+
+        const data = Object.fromEntries(formData);
+        const validation = existingUserAsDonorSchema.safeParse(data);
+
+        if (!validation.success) {
+            return handleValidationError(validation.error);
+        }
+
+        // Create Donor record
+        await Donor.create(
+            {
+                ...validation.data,
+                user_id: user.id,
+                agency_id: agency_id,
+                status: "activated", // Automatically activated
+            },
+            { transaction }
+        );
+
+        // Find the 'Donor' role
+        const donorRole = await Role.findOne({ where: { name: "Donor" } });
+        if (!donorRole) {
+            throw new Error("Donor role not found in the system.");
+        }
+
+        // Assign the 'Donor' role to the user
+        await UserRole.create(
+            {
+                user_id: user.id,
+                role_id: donorRole.id,
+                is_active: true,
+            },
+            { transaction }
+        );
+
+        await transaction.commit();
+
+        await logAuditTrail({
+            userId: user.id,
+            controller: "DonorAction",
+            action: "REGISTER_EXISTING_USER_AS_DONOR",
+            details: `User ${user.name} registered as a new donor.`,
+        });
+
+        return {
+            success: true,
+            message: "You have successfully registered as a donor!",
+        };
+    } catch (err) {
+        if (transaction) await transaction.rollback();
+        logErrorToFile(err, "registerExistingUserAsDonor");
+        return {
+            success: false,
+            message: extractErrorMessage(err),
+        };
     }
 }

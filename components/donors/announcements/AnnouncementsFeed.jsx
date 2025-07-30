@@ -66,12 +66,12 @@ export default function AnnouncementsFeed({ onViewAnnouncement }) {
                         <Bell className="w-5 h-5" />
                         Recent Announcements
                     </CardTitle>
-                    <Link href="/portal/donors/announcements">
+                    {/* <Link href="/portal/donors/announcements">
                         <Button variant="outline" size="sm">
                             View All
                             <ArrowRight className="w-4 h-4 ml-1" />
                         </Button>
-                    </Link>
+                    </Link> */}
                 </div>
             </CardHeader>
             <CardContent className="space-y-4 max-h-[1200px] overflow-y-auto pb-10 shadow-b-lg border-b rounded-lg">

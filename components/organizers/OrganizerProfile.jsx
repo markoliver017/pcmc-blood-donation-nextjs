@@ -7,7 +7,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@components/ui/card";
-import { Building, Cog, Phone, User2Icon } from "lucide-react";
+import { Building, Cog, Phone, User2Icon, HeartHandshake } from "lucide-react";
 
 // import UserProfileForm from "./UserProfileForm";
 // import UserChangePassword from "./UserChangePassword";
@@ -22,6 +22,7 @@ import Skeleton_user from "@components/ui/Skeleton_user";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import UpdateAgencyProfile from "@components/profile/UpdateAgencyProfile";
 import ProfileContactForm from "@components/coordinators/ProfileContactForm";
+import BecomeDonorWizard from "@components/hosts/BecomeDonorWizard";
 
 export default function OrganizerProfile({ user }) {
     // const { data, status } = useSession();
@@ -39,6 +40,7 @@ export default function OrganizerProfile({ user }) {
 
     const agencyRoles = ["Agency Administrator", "Organizer"];
     const isHavingAgency = agencyRoles.includes(user?.role_name) || false;
+    const isNotDonor = !user?.roles?.includes("Donor");
 
     let agency = userData?.headedAgency;
     let isCoordinator = false;
@@ -98,6 +100,17 @@ export default function OrganizerProfile({ user }) {
                                 </span>
                             </TabsTrigger>
                         )}
+                        {isNotDonor && (
+                            <TabsTrigger
+                                value="become-donor"
+                                title="Become a Donor"
+                            >
+                                <HeartHandshake />
+                                <span className="hidden md:inline-block">
+                                    Become a Donor
+                                </span>
+                            </TabsTrigger>
+                        )}
                     </TabsList>
                     <TabsContent className="p-2" value="user-profile">
                         <UserProfileForm userQuery={userQuery} />
@@ -117,6 +130,9 @@ export default function OrganizerProfile({ user }) {
                     </TabsContent>
                     <TabsContent value="agency-details">
                         <UpdateAgencyProfile agency={agency} />
+                    </TabsContent>
+                    <TabsContent value="become-donor">
+                        <BecomeDonorWizard />
                     </TabsContent>
                 </Tabs>
                 {/* <div>

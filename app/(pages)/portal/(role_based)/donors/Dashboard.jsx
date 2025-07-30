@@ -9,7 +9,7 @@ import {
 } from "@components/ui/card";
 import { CalendarArrowUp, CalendarCheck2, CheckCircle } from "lucide-react";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaArrowRight } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { MdBloodtype } from "react-icons/md";
@@ -25,10 +25,30 @@ import WidgetEventCalendar from "@components/organizers/WidgetEventCalendar";
 import AnnouncementsFeed from "@components/donors/announcements/AnnouncementsFeed";
 import ViewAnnouncementModal from "@components/donors/announcements/ViewAnnouncementModal";
 import { format } from "date-fns";
+import moment from "moment";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@components/ui/popover";
 
 export default function Dashboard() {
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [selectedAnnouncementId, setSelectedAnnouncementId] = useState(null);
+    const [isInfoOpen, setIsInfoOpen] = useState(false);
+
+    useEffect(() => {
+        // On initial load, open the popover
+        setIsInfoOpen(true);
+
+        // Set a timer to close it after 4 seconds
+        const timer = setTimeout(() => {
+            setIsInfoOpen(false);
+        }, 4000);
+
+        // Cleanup the timer if the component unmounts
+        return () => clearTimeout(timer);
+    }, []); // Empty dependency array ensures this runs only once
 
     const handleViewAnnouncement = (announcementId) => {
         setSelectedAnnouncementId(announcementId);
@@ -39,6 +59,7 @@ export default function Dashboard() {
         setIsViewModalOpen(false);
         setSelectedAnnouncementId(null);
     };
+
 
     const { data: dashboard, isLoading: dashboardIsLoading } = useQuery({
         queryKey: ["donor-dashboard"],
@@ -156,6 +177,37 @@ export default function Dashboard() {
                         <CardTitle className="text-2xl flex items-center gap-2">
                             <CalendarArrowUp className="w-6 h-6" />
                             Next Eligible Donation
+                            <Popover open={isInfoOpen} onOpenChange={setIsInfoOpen}>
+                                <PopoverTrigger asChild>
+                                    <button className="focus:outline-none">
+                                        <QuestionMarkCircledIcon className="w-5 h-5 cursor-pointer text-gray-500 hover:text-gray-700" />
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-80">
+                                    <div className="grid gap-4">
+                                        <div className="space-y-2">
+                                            <h4 className="font-medium leading-none">Donation Frequency</h4>
+                                            <p className="text-sm text-muted-foreground">
+                                                The waiting period depends on the type of donation.
+                                            </p>
+                                        </div>
+                                        <div className="grid gap-2 text-sm">
+                                            <div className="grid grid-cols-2 items-center gap-4">
+                                                <span className="font-semibold">Whole Blood</span>
+                                                <span>Every 8 - 12 weeks</span>
+                                            </div>
+                                            <div className="grid grid-cols-2 items-center gap-4">
+                                                <span className="font-semibold">Platelets</span>
+                                                <span>Every 7 days</span>
+                                            </div>
+                                            <div className="grid grid-cols-2 items-center gap-4">
+                                                <span className="font-semibold">Plasma</span>
+                                                <span>Every 28 days</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </PopoverContent>
+                            </Popover>
                         </CardTitle>
                         <CardDescription>Days to Go</CardDescription>
                     </CardHeader>
@@ -185,10 +237,15 @@ export default function Dashboard() {
             {/* Main Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Announcements */}
-                <div className="lg:col-span-2">
-                    <AnnouncementsFeed
-                        onViewAnnouncement={handleViewAnnouncement}
-                    />
+                <div className="lg:col-span-2 space-y-5">
+                    <div className="max-h-screen overflow-y-auto">
+                        <AnnouncementsFeed
+                            onViewAnnouncement={handleViewAnnouncement}
+                        />
+                    </div>
+                    <div>
+                        <WidgetEventCalendar />
+                    </div>
                 </div>
 
                 {/* Action Panel */}
@@ -200,9 +257,7 @@ export default function Dashboard() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                            <div className="h-96 overflow-y-auto">
-                                <WidgetEventCalendar />
-                            </div>
+
                             <div>
                                 <Link
                                     href="/portal/donors/events?tab=ongoing"
@@ -211,7 +266,7 @@ export default function Dashboard() {
                                     Ongoing Blood Drives
                                     <FaArrowRight />
                                 </Link>
-                                <div className="max-h-60 overflow-y-auto mt-2 space-y-2 p-2">
+                                <div className="max-h-200 overflow-y-auto mt-2 space-y-2 p-2">
                                     {eventIsLoading ? (
                                         <Skeleton_line />
                                     ) : !isError ? (
@@ -238,7 +293,7 @@ export default function Dashboard() {
                                     Upcoming Blood Drives
                                     <FaArrowRight />
                                 </Link>
-                                <div className="max-h-60 overflow-y-auto mt-2 space-y-2 p-2">
+                                <div className="max-h-200 overflow-y-auto mt-2 space-y-2 p-2">
                                     {eventIsLoading ? (
                                         <Skeleton_line />
                                     ) : !isError ? (
