@@ -59,6 +59,7 @@ export async function up(queryInterface, Sequelize) {
             id: userId,
             email: faker.internet.email({ firstName, lastName }),
             password: bcrypt.hashSync("Password123!", 10),
+            name: firstName + " " + lastName,
             first_name: firstName,
             last_name: lastName,
             gender: faker.helpers.arrayElement(["male", "female"]),
@@ -147,7 +148,7 @@ export async function up(queryInterface, Sequelize) {
             nationality: "Filipino",
             occupation: faker.person.jobTitle(),
             is_regular_donor: isRegularDonor,
-            last_donation_date: lastDonationDate,
+            donation_history_donation_date: lastDonationDate,
             blood_service_facility: isRegularDonor
                 ? faker.helpers.arrayElement([
                       "Philippine Red Cross",

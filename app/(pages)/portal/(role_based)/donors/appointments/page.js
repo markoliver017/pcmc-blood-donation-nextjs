@@ -53,13 +53,14 @@ export default function Page() {
     const lastDonation =
         [...sortedAppointments]
             .reverse()
-            .find((a) => a.status === "collected") || null;
+            .find((a) => a.status === "collected" || a.status === "deferred") ||
+        null;
     const totalDonations = appointments.filter(
         (a) => a.status === "collected"
     ).length;
     // Eligibility: 90 days after last donation
     let eligibilityCountdown = null;
-    if (lastDonation) {
+    if (lastDonation && lastDonation.status === "collected") {
         const lastDate = moment(
             lastDonation.time_schedule?.event?.date
         ).startOf("day");

@@ -145,8 +145,7 @@ export default function CreateEventForm({ agency }) {
         defaultValues: {
             agency_id: agency?.id,
             title: "",
-            description:
-                "",
+            description: "",
             date: format(addDays(new Date(), 1), "yyyy-MM-dd"),
             file: null,
             file_url: null,
@@ -378,7 +377,7 @@ export default function CreateEventForm({ agency }) {
                                                         className={cn(
                                                             "pl-3 text-left font-normal mt-1 text-xl dark:!bg-[#181717] hover:!text-slate-300",
                                                             !field.value &&
-                                                            "text-muted-foreground"
+                                                                "text-muted-foreground"
                                                         )}
                                                         tabIndex={2}
                                                     >
@@ -406,8 +405,8 @@ export default function CreateEventForm({ agency }) {
                                                     selected={
                                                         field.value
                                                             ? new Date(
-                                                                field.value
-                                                            )
+                                                                  field.value
+                                                              )
                                                             : undefined
                                                     }
                                                     month={calendarMonth}
@@ -442,11 +441,11 @@ export default function CreateEventForm({ agency }) {
                                                             bookedEvents
                                                         )
                                                             ? bookedEvents?.map(
-                                                                (event) =>
-                                                                    new Date(
-                                                                        event.date
-                                                                    )
-                                                            )
+                                                                  (event) =>
+                                                                      new Date(
+                                                                          event.date
+                                                                      )
+                                                              )
                                                             : []),
                                                         // (date) => isWithin90DaysOfBooked(date, bookedEvents),
                                                     ]}
@@ -455,11 +454,11 @@ export default function CreateEventForm({ agency }) {
                                                             bookedEvents
                                                         )
                                                             ? bookedEvents?.map(
-                                                                (event) =>
-                                                                    new Date(
-                                                                        event.date
-                                                                    )
-                                                            )
+                                                                  (event) =>
+                                                                      new Date(
+                                                                          event.date
+                                                                      )
+                                                              )
                                                             : [],
                                                     }}
                                                     modifiersClassNames={{
@@ -751,13 +750,10 @@ export default function CreateEventForm({ agency }) {
                                 </CardContent>
                             </Card>
 
-                            <div
-                                className="space-y-2 mt-4 relative"
-                                id="form-modal"
-                            >
+                            <div className="space-y-2 mt-4 relative flex md:justify-end gap-2">
                                 <button
                                     disabled={!isDirty || isPending}
-                                    className="py-5 flex rounded-2xl text-2xl btn btn-block btn-primary ring-offset-2 ring-offset-blue-500 hover:ring-2 "
+                                    className="py-5 flex rounded-2xl text-2xl btn btn-primary ring-offset-2 ring-offset-blue-500 hover:ring-2 "
                                 >
                                     {isPending ? (
                                         <>
@@ -774,7 +770,7 @@ export default function CreateEventForm({ agency }) {
                                 <button
                                     onClick={() => router.back()}
                                     type="button"
-                                    className="p-5 flex rounded-2xl text-2xl btn btn-outline btn-block btn-error ring-offset-2 ring-offset-red-500 hover:ring-2"
+                                    className="p-5 flex rounded-2xl text-2xl btn btn-outline btn-error ring-offset-2 ring-offset-red-500 hover:ring-2"
                                 >
                                     <X /> Cancel
                                 </button>

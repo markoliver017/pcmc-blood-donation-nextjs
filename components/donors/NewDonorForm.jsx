@@ -82,6 +82,7 @@ const form_sections = [
 export default function NewDonorForm({ role_name, agency_id }) {
     const router = useRouter();
     const [isUploading, setIsUploading] = useState(false);
+    const [sectionNo, setSectionNo] = useState(0);
 
     const { data: user_role, isLoading: user_role_loading } = useQuery({
         queryKey: ["role", role_name],
@@ -90,8 +91,6 @@ export default function NewDonorForm({ role_name, agency_id }) {
         staleTime: 10 * 60 * 1000,
         cacheTime: 20 * 60 * 1000,
     });
-
-    const [sectionNo, setSectionNo] = useState(0);
 
     const queryClient = useQueryClient();
 
@@ -260,20 +259,20 @@ export default function NewDonorForm({ role_name, agency_id }) {
         });
     };
 
-    const govtId = watch("file");
-    const profilePic = watch("profile_picture");
-    const govtIdFile = {
-        name: govtId?.name,
-        size: govtId?.size,
-        type: govtId?.type,
-        lastModified: govtId?.lastModified,
-    };
-    const profilePicFile = {
-        name: profilePic?.name,
-        size: profilePic?.size,
-        type: profilePic?.type,
-        lastModified: profilePic?.lastModified,
-    };
+    // const govtId = watch("file");
+    // const profilePic = watch("profile_picture");
+    // const govtIdFile = {
+    //     name: govtId?.name,
+    //     size: govtId?.size,
+    //     type: govtId?.type,
+    //     lastModified: govtId?.lastModified,
+    // };
+    // const profilePicFile = {
+    //     name: profilePic?.name,
+    //     size: profilePic?.size,
+    //     type: profilePic?.type,
+    //     lastModified: profilePic?.lastModified,
+    // };
 
     useEffect(() => {
         if (user_role_loading) return;

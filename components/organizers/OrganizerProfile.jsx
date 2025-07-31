@@ -39,8 +39,10 @@ export default function OrganizerProfile({ user }) {
     if (isLoading === "loading") return <Skeleton_user />;
 
     const agencyRoles = ["Agency Administrator", "Organizer"];
+    const currentUserRole = user?.roles?.map((role) => role.role_name);
+
     const isHavingAgency = agencyRoles.includes(user?.role_name) || false;
-    const isNotDonor = !user?.roles?.includes("Donor");
+    const isNotDonor = !currentUserRole?.includes("Donor");
 
     let agency = userData?.headedAgency;
     let isCoordinator = false;

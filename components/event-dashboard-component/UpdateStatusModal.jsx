@@ -29,6 +29,7 @@ import { updateAppointmentStatus } from "@action/adminEventAction";
 import notify from "@components/ui/notify";
 import { FaExclamationCircle } from "react-icons/fa";
 import { ToastContainer } from "react-toastify";
+import { toast, Toaster } from "sonner";
 
 export default function UpdateStatusModal({
     isOpen,
@@ -71,10 +72,7 @@ export default function UpdateStatusModal({
             return result;
         },
         onSuccess: (result) => {
-            notify({
-                error: false,
-                message: result?.message || "Status updated successfully",
-            });
+            toast.success(result?.message || "Status updated successfully");
 
             // Invalidate and refetch dashboard data
             queryClient.invalidateQueries({
@@ -84,19 +82,14 @@ export default function UpdateStatusModal({
                 queryKey: ["event-statistics", eventId],
             });
 
-            handleClose();
+            setTimeout(() => {
+                handleClose();
+            }, 1000);
         },
         onError: (error) => {
             console.log("error on updateStatusMutation", error);
-            notify(
-                {
-                    error: true,
-                    message:
-                        error?.message ||
-                        "An error occurred while updating the status",
-                },
-                "warning",
-                "top-right"
+            toast.error(
+                error?.message || "An error occurred while updating the status"
             );
         },
     });
@@ -163,9 +156,12 @@ export default function UpdateStatusModal({
     if (!appointment) return null;
 
     return (
-        <Dialog open={isOpen} onOpenChange={handleClose}>
-            <DialogContent className="sm:max-w-[500px]">
-                <ToastContainer />
+        <Dialog open={isOpen} onOpenChange={handleClose} modal={true}>
+            <Toaster />
+            <DialogContent
+                className="sm:max-w-[500px]"
+                onInteractOutside={(e) => e.preventDefault()}
+            >
                 <DialogHeader>
                     <DialogTitle>Update Donor Status</DialogTitle>
                     <DialogDescription>

@@ -91,58 +91,6 @@ export default function ShowEvents({ eventId }) {
                 </CardTitle>
                 <CardDescription className="flex justify-between">
                     <span>{parse(event?.description)}</span>
-
-                    {(currentRole == "Organizer" ||
-                        currentRole == "Agency Administrator") && (
-                        <div className="flex-items-center">
-                            {event.status == "for approval" ? (
-                                <Link
-                                    href={`/portal/hosts/events/${event.id}/edit`}
-                                >
-                                    <button className="btn btn-warning">
-                                        <Pencil className="w-4 h-4" />
-                                        <span>Edit</span>
-                                    </button>
-                                </Link>
-                            ) : (
-                                ""
-                            )}
-
-                            {event.status == "approved" ? (
-                                <EventRegistrationStatus
-                                    data={event}
-                                    setIsLoading={setIsLoading}
-                                    className="btn btn-warning"
-                                />
-                            ) : (
-                                ""
-                            )}
-                        </div>
-                    )}
-                    {currentRole == "Admin" && (
-                        <div className="flex-items-center">
-                            {event.status == "for approval" ? (
-                                <>
-                                    <VerifyEvent
-                                        eventData={{
-                                            id: event.id,
-                                            status: "approved",
-                                        }}
-                                        label="Approve"
-                                        className="btn btn-success"
-                                        formClassName="w-full"
-                                        icon={<CheckIcon />}
-                                    />
-                                    <RejectEvent
-                                        eventId={event.id}
-                                        className="btn btn-error"
-                                    />
-                                </>
-                            ) : (
-                                ""
-                            )}
-                        </div>
-                    )}
                 </CardDescription>
             </CardHeader>
             <CardContent
@@ -315,6 +263,59 @@ export default function ShowEvents({ eventId }) {
                             ))}
                         </TableBody>
                     </Table>
+                    <div className="flex md:justify-end gap-2 mt-10">
+                        {(currentRole == "Organizer" ||
+                            currentRole == "Agency Administrator") && (
+                            <div className="flex-items-center">
+                                {event.status == "for approval" ? (
+                                    <Link
+                                        href={`/portal/hosts/events/${event.id}/edit`}
+                                    >
+                                        <button className="btn btn-warning rounded-full">
+                                            <Pencil className="w-4 h-4" />
+                                            <span>Edit</span>
+                                        </button>
+                                    </Link>
+                                ) : (
+                                    ""
+                                )}
+
+                                {event.status == "approved" ? (
+                                    <EventRegistrationStatus
+                                        data={event}
+                                        setIsLoading={setIsLoading}
+                                        className="btn btn-warning rounded-full"
+                                    />
+                                ) : (
+                                    ""
+                                )}
+                            </div>
+                        )}
+                        {currentRole == "Admin" && (
+                            <div className="flex-items-center">
+                                {event.status == "for approval" ? (
+                                    <>
+                                        <VerifyEvent
+                                            eventData={{
+                                                id: event.id,
+                                                status: "approved",
+                                            }}
+                                            label="Approve"
+                                            className="btn btn-success rounded-full"
+                                            formClassName="w-full"
+                                            icon={<CheckIcon />}
+                                        />
+                                        <RejectEvent
+                                            eventId={event.id}
+                                            className="btn btn-error rounded-full"
+                                        />
+                                    </>
+                                ) : (
+                                    ""
+                                )}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </CardContent>
         </Card>

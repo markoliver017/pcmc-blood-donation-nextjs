@@ -17,7 +17,6 @@ import { appointmentDetailsSchema } from "@lib/zod/appointmentSchema";
 import { physicalExaminationSchema } from "@lib/zod/physicalExaminationSchema";
 import { isBefore, startOfDay } from "date-fns";
 
-
 export async function storeUpdatePhysicalExam(appointmentId, formData) {
     const session = await auth();
     if (!session) {
@@ -72,14 +71,19 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
     }
 
     const donor = await Donor.findByPk(appointment.donor_id, {
-        attributes: ["id", "user_id", "last_donation_date", "donation_history_donation_date"],
+        attributes: [
+            "id",
+            "user_id",
+            "last_donation_date",
+            "donation_history_donation_date",
+        ],
         include: [
             {
                 model: BloodDonationEvent,
                 as: "last_donation_event",
                 attributes: ["date"],
             },
-        ]
+        ],
     });
     if (!donor) {
         return {
@@ -103,7 +107,9 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
     let lastExaminationDate = null;
 
     if (donor?.last_donation_event?.date) {
-        lastExaminationDate = startOfDay(new Date(donor?.last_donation_event?.date));
+        lastExaminationDate = startOfDay(
+            new Date(donor?.last_donation_event?.date)
+        );
     }
     const isEventAfterEqualLastDonationDate = isNaN(
         lastExaminationDate?.getTime()
@@ -114,7 +120,6 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
     const transaction = await sequelize.transaction();
 
     try {
-
         const exam = await PhysicalExamination.findOne({
             where: { appointment_id: appointmentId },
         });
@@ -137,7 +142,6 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
                 };
             }
             examId = newExam.id;
-
         } else {
             data.updated_by = user.id;
             const updatedExam = await exam.update(data, { transaction });
@@ -183,7 +187,6 @@ export async function storeUpdatePhysicalExam(appointmentId, formData) {
             message: `The Donor's physical examination has been successfully submitted.`,
             data: data,
         };
-
     } catch (err) {
         console.log("err", err);
         logErrorToFile(err, "updatePhysicalExam");

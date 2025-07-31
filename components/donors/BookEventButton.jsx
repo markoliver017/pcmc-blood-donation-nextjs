@@ -8,8 +8,8 @@ import { Form } from "@components/ui/form";
 import { Checkbox } from "@components/ui/checkbox";
 import notify from "@components/ui/notify";
 import SweetAlert from "@components/ui/SweetAlert";
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const MySwal = withReactContent(Swal);
 
@@ -18,7 +18,10 @@ import clsx from "clsx";
 import { Book, CalendarPlus } from "lucide-react";
 import moment from "moment";
 import { useForm } from "react-hook-form";
-import { BookingSuccessAlert, showBookingSuccessAlert } from "../../lib/utils/showBookingSuccessAlert";
+import {
+    BookingSuccessAlert,
+    showBookingSuccessAlert,
+} from "../../lib/utils/showBookingSuccessAlert";
 
 export default function BookEventButton({
     event,
@@ -28,18 +31,21 @@ export default function BookEventButton({
     label = "Book",
     className = "btn-neutral",
     formClassName = "",
-    onLoad = () => { },
-    onFinish = () => { },
+    onLoad = () => {},
+    onFinish = () => {},
 }) {
     const queryClient = useQueryClient();
 
+    console.log("schedule", schedule);
     const eventDetails = {
         id: schedule?.id,
         title: event?.title,
-        date: moment(schedule?.date).format("MMM DD, YYYY"),
-        time: `${moment(schedule?.time_start, "HH:mm:ss").format("hh:mm A")} - ${moment(schedule?.time_end, "HH:mm:ss").format("hh:mm A")}`,
-        location: event?.agency?.agency_address || 'TBD',
-    }
+        date: moment(event?.date).format("MMM DD, YYYY"),
+        time: `${moment(schedule?.time_start, "HH:mm:ss").format(
+            "hh:mm A"
+        )} - ${moment(schedule?.time_end, "HH:mm:ss").format("hh:mm A")}`,
+        location: event?.agency?.agency_address || "TBD",
+    };
 
     const {
         // data: eventData,
@@ -73,7 +79,11 @@ export default function BookEventButton({
             // });
         },
         onError: (error) => {
-            notify({ error: true, message: error?.message }, "warning", "top-center");
+            notify(
+                { error: true, message: error?.message },
+                "warning",
+                "top-center"
+            );
             onFinish();
         },
         onSettled: () => {
@@ -92,7 +102,6 @@ export default function BookEventButton({
     const { handleSubmit, reset } = form;
 
     const onSubmit = async (data) => {
-
         MySwal.fire({
             title: "Book Blood Donation Appointment",
             html: `
@@ -119,23 +128,23 @@ export default function BookEventButton({
             cancelButtonText: "Cancel",
             showLoaderOnConfirm: true,
             preConfirm: async () => {
-                const checkbox = document.getElementById('terms-checkbox');
+                const checkbox = document.getElementById("terms-checkbox");
                 if (!checkbox.checked) {
-                    Swal.showValidationMessage('You must agree to the terms and conditions');
+                    Swal.showValidationMessage(
+                        "You must agree to the terms and conditions"
+                    );
                     return false; // This will prevent the modal from closing
                 }
                 // Return the data you want to pass to .then()
                 return {
                     agreed: true,
                 };
-            }
+            },
         }).then((result) => {
             if (result.isConfirmed && result.value.agreed) {
-
                 mutate(data);
             }
         });
-
     };
 
     return (
@@ -160,7 +169,9 @@ export default function BookEventButton({
                     ) : (
                         <>
                             {icon}
-                            <span className="hidden md:inline-block">{label}</span>
+                            <span className="hidden md:inline-block">
+                                {label}
+                            </span>
                         </>
                     )}
                 </button>

@@ -28,6 +28,7 @@ import { useQuery } from "@tanstack/react-query";
 import Skeleton_form from "@components/ui/Skeleton_form";
 import FormCardComponent from "@components/form/FormCardComponent";
 import { isOldEnoughToDonate } from "@lib/utils/checkMinAge";
+import ImagePreviewComponent from "@components/reusable_components/ImagePreviewComponent";
 
 const fetchCountries = async () => {
     const res = await fetch(process.env.NEXT_PUBLIC_NATIONALITY_API_URL);
@@ -117,12 +118,15 @@ export default function DonorBasicInfoForm({ details, onNext }) {
                         className="w-[150px] h-[150px] sm:w-[250px] sm:h-[250px] lg:w-[350px] lg:h-[350px]"
                     />
                     {uploaded_avatar ? (
-                        <button
-                            onClick={() => resetField("file")}
-                            className="btn btn-ghost"
-                        >
-                            Clear
-                        </button>
+                        <div className="flex justify-center gap-2">
+                            <ImagePreviewComponent imgSrc={avatar} />
+                            <button
+                                onClick={() => resetField("file")}
+                                className="btn btn-ghost"
+                            >
+                                Clear
+                            </button>
+                        </div>
                     ) : (
                         <label className="text-center font-semibold italic text-slate-500">
                             Gov't issued ID

@@ -19,6 +19,7 @@ import { updateDonorBloodType } from "@/action/donorAction";
 import { MdBloodtype } from "react-icons/md";
 import { bloodtypeSchema } from "@lib/zod/donorSchema";
 import FormLogger from "@lib/utils/FormLogger";
+import { toast } from "sonner";
 
 export default function EventDashboardBloodTypeForm({ donor, eventId }) {
     const queryClient = useQueryClient();
@@ -51,10 +52,7 @@ export default function EventDashboardBloodTypeForm({ donor, eventId }) {
             });
             queryClient.invalidateQueries({ queryKey: ["appointment"] });
 
-            notify({
-                error: false,
-                message: "Donor's blood type has been successfully updated.",
-            });
+            toast.success("Donor's blood type has been successfully updated.");
         },
         onError: (error) => {
             // Handle validation errors
@@ -69,30 +67,24 @@ export default function EventDashboardBloodTypeForm({ donor, eventId }) {
                         ))}
                     </ul>
                 );
-                notify({
-                    error: true,
-                    message: (
-                        <div tabIndex={0} className="collapse">
-                            <input type="checkbox" />
-                            <div className="collapse-title font-semibold">
-                                {message}
-                                <br />
-                                <small className="link link-warning">
-                                    See details
-                                </small>
-                            </div>
-                            <div className="collapse-content text-sm">
-                                {detailContent}
-                            </div>
+                toast.error(
+                    <div tabIndex={0} className="collapse">
+                        <input type="checkbox" />
+                        <div className="collapse-title font-semibold">
+                            {message}
+                            <br />
+                            <small className="link link-warning">
+                                See details
+                            </small>
                         </div>
-                    ),
-                });
+                        <div className="collapse-content text-sm">
+                            {detailContent}
+                        </div>
+                    </div>
+                );
             } else {
                 // Handle server errors
-                notify({
-                    error: true,
-                    message: error?.message || "Failed to update blood type",
-                });
+                toast.error(error?.message || "Failed to update blood type");
             }
         },
     });

@@ -14,6 +14,7 @@ import {
     DonorAppointmentInfo,
     EventTimeSchedule,
     FeedbackResponse,
+    PhysicalExamination,
     Role,
     sequelize,
     User,
@@ -211,7 +212,10 @@ export async function bookDonorAppointment(formData) {
                         },
                     ],
                 });
-                const emailRecipients = [...adminUsers.map((a) => a.id), event?.requester_id];
+                const emailRecipients = [
+                    ...adminUsers.map((a) => a.id),
+                    event?.requester_id,
+                ];
                 if (adminUsers.length > 0) {
                     await sendNotificationAndEmail({
                         userIds: emailRecipients,
@@ -233,7 +237,6 @@ export async function bookDonorAppointment(formData) {
             success: true,
             data: newAppointment.get({ plain: true }),
         };
-
     } catch (err) {
         console.log("bookDonorAppointment>>>>>>>>>>>>>>>>>>>>>", err);
         logErrorToFile(err, "BOOK DONOR APPOINTMENT");
@@ -262,8 +265,8 @@ export async function cancelDonorAppointment(appointmentId, formData) {
         include: {
             model: BloodDonationEvent,
             as: "event",
-            attribute: ["id", "requester_id", "title", "date"]
-        }
+            attribute: ["id", "requester_id", "title", "date"],
+        },
     });
 
     if (!appointment) {
@@ -358,7 +361,10 @@ export async function cancelDonorAppointment(appointmentId, formData) {
                         },
                     ],
                 });
-                const emailRecipients = [...adminUsers.map((a) => a.id), appointment?.event?.requester_id];
+                const emailRecipients = [
+                    ...adminUsers.map((a) => a.id),
+                    appointment?.event?.requester_id,
+                ];
                 if (adminUsers.length > 0) {
                     await sendNotificationAndEmail({
                         userIds: emailRecipients,
@@ -497,8 +503,20 @@ export async function getAllAppointmentsByDonor() {
                         {
                             model: BloodDonationHistory,
                             as: "blood_history",
-                            attributes: ["previous_donation_count", "previous_donation_volume"]
-                        }
+                            attributes: [
+                                "previous_donation_count",
+                                "previous_donation_volume",
+                            ],
+                        },
+                    ],
+                },
+                {
+                    model: PhysicalExamination,
+                    as: "physical_exam",
+                    attributes: [
+                        "deferral_reason",
+                        "eligibility_status",
+                        "remarks",
                     ],
                 },
                 {

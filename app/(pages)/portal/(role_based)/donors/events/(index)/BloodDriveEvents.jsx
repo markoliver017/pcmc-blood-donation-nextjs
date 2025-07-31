@@ -11,6 +11,7 @@ import { getBookedAppointmentsByDonor } from "@/action/donorAppointmentAction";
 import EventCardList from "@components/events/EventCardList";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import WidgetEventCalendar from "@components/organizers/WidgetEventCalendar";
+import { CalendarCheck, CalendarClock } from "lucide-react";
 
 export default function BloodDriveEvents() {
     const [isLoading, setIsLoading] = useState(false);
@@ -87,7 +88,7 @@ export default function BloodDriveEvents() {
                 <pre>
                     {JSON.stringify(
                         donorBookedAppointmentError?.message ||
-                        donorBookedAppointmentError,
+                            donorBookedAppointmentError,
                         null,
                         2
                     )}
@@ -100,7 +101,7 @@ export default function BloodDriveEvents() {
                 <pre>
                     {JSON.stringify(
                         donorBookedAppointmentError?.message ||
-                        donorBookedAppointmentError,
+                            donorBookedAppointmentError,
                         null,
                         2
                     )}
@@ -112,6 +113,14 @@ export default function BloodDriveEvents() {
         return <Skeleton_user />;
     }
 
+    const ongoingEvents = events.filter(
+        (event) => event.registration_status == "ongoing"
+    );
+
+    const upcomingEvents = events.filter(
+        (event) => event.registration_status == "not started"
+    );
+
     return (
         <div>
             <LoadingModal imgSrc="/loader_3.gif" isLoading={isLoading} />
@@ -121,8 +130,20 @@ export default function BloodDriveEvents() {
                 className="w-full"
             >
                 <TabsList>
-                    <TabsTrigger value="ongoing">Ongoing</TabsTrigger>
-                    <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
+                    <TabsTrigger
+                        value="ongoing"
+                        className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-blue-700 hover:bg-blue-100 focus-visible:ring-2 focus-visible:ring-blue-400"
+                    >
+                        <CalendarCheck />
+                        Ongoing ({ongoingEvents.length})
+                    </TabsTrigger>
+                    <TabsTrigger
+                        value="upcoming"
+                        className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-blue-700 hover:bg-blue-100 focus-visible:ring-2 focus-visible:ring-blue-400"
+                    >
+                        <CalendarClock />
+                        Upcoming ({upcomingEvents.length})
+                    </TabsTrigger>
                 </TabsList>
 
                 {/* Ongoing Tab */}
@@ -142,15 +163,12 @@ export default function BloodDriveEvents() {
                         </div>
                         <div className="flex-1 overflow-y-auto space-y-4 p-2">
                             <EventCardList
-                                events={events.filter(
-                                    (event) =>
-                                        event.registration_status == "ongoing"
-                                )}
+                                events={ongoingEvents}
                                 booked_appointments={donor_booked_appointments.map(
                                     (app) => ({
                                         appointment_id: app.id,
                                         time_schedule_id: app.time_schedule_id,
-                                        event_id: app.event_id
+                                        event_id: app.event_id,
                                     })
                                 )}
                                 onLoad={onLoad}
@@ -188,11 +206,7 @@ export default function BloodDriveEvents() {
                         </div>
                         <div className="flex-1 overflow-y-auto space-y-4 p-2">
                             <EventCardList
-                                events={events.filter(
-                                    (event) =>
-                                        event.registration_status ==
-                                        "not started"
-                                )}
+                                events={upcomingEvents}
                                 booked_appointments={donor_booked_appointments.map(
                                     (appointnments) =>
                                         appointnments.time_schedule_id

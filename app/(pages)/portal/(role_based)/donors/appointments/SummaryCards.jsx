@@ -1,5 +1,6 @@
 import React from "react";
-import { Calendar, Gift, Clock, ShieldCheck } from "lucide-react";
+import { Calendar, Gift, Clock, ShieldCheck, ShieldAlert } from "lucide-react";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 const Card = ({ icon, label, value, subtext, color }) => (
     <div
@@ -30,6 +31,15 @@ const SummaryCards = ({
     lastDonation,
     eligibilityCountdown,
 }) => {
+    const isLastDonationSuccess = lastDonation?.status === "collected";
+    const isPermanentlyDeferred =
+        !isLastDonationSuccess &&
+        lastDonation?.physical_exam?.eligibility_status ===
+            "PERMANENTLY-DEFERRED";
+    const isTemporarilyDeferred =
+        !isLastDonationSuccess &&
+        lastDonation?.physical_exam?.eligibility_status ===
+            "TEMPORARILY-DEFERRED";
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Next Appointment */}
@@ -62,8 +72,14 @@ const SummaryCards = ({
             />
             {/* Last Donation */}
             <Card
-                icon={<Clock className="w-7 h-7 text-green-500" />}
-                label="Last Donation"
+                icon={
+                    isLastDonationSuccess ? (
+                        <Clock className="w-7 h-7 text-green-500" />
+                    ) : (
+                        <ExclamationTriangleIcon className="w-7 h-7 text-red-500" />
+                    )
+                }
+                label="Last Appointment"
                 value={
                     lastDonation
                         ? formatDate(lastDonation.time_schedule?.event?.date)
@@ -74,29 +90,58 @@ const SummaryCards = ({
                         ? lastDonation.time_schedule?.event?.title || "-"
                         : "No past donation"
                 }
-                color="border-green-200"
+                color={
+                    isLastDonationSuccess
+                        ? "border-green-200"
+                        : "border-red-200"
+                }
             />
+
             {/* Eligibility Countdown */}
             <Card
-                icon={<ShieldCheck className="w-7 h-7 text-purple-500" />}
+                icon={
+                    isLastDonationSuccess ? (
+                        <ShieldCheck className="w-7 h-7 text-purple-500" />
+                    ) : isPermanentlyDeferred ? (
+                        <ShieldAlert className="w-7 h-7 text-gray-500" />
+                    ) : (
+                        <ShieldAlert className="w-7 h-7 text-yellow-500" />
+                    )
+                }
                 label="Eligibility"
                 value={
-                    eligibilityCountdown === null
+                    isPermanentlyDeferred
+                        ? "Status: Permanently Deferred"
+                        : isTemporarilyDeferred
+                        ? "Status: Temporarily Deferred"
+                        : eligibilityCountdown === null
                         ? "-"
                         : eligibilityCountdown === 0
-                        ? "Eligible"
+                        ? "Eligible to Donate"
                         : `${eligibilityCountdown} day${
                               eligibilityCountdown === 1 ? "" : "s"
-                          }`
+                          } remaining`
                 }
                 subtext={
-                    eligibilityCountdown === null
-                        ? "No donation yet"
+                    isPermanentlyDeferred
+                        ? "We appreciate your willingness to donate. Although you can’t donate blood anymore, there are many ways you can still make a difference."
+                        : isTemporarilyDeferred
+                        ? "You’re temporarily deferred. Please check again after the deferral period ends."
+                        : eligibilityCountdown === null
+                        ? "No donation history yet"
                         : eligibilityCountdown === 0
-                        ? "You can donate now!"
-                        : "Until next eligible donation"
+                        ? "You're good to go. Thank you for being a hero!"
+                        : "You can donate again once the countdown reaches zero."
                 }
-                color="border-purple-200"
+                color={
+                    isPermanentlyDeferred
+                        ? "border-gray-300"
+                        : isTemporarilyDeferred
+                        ? "border-yellow-200"
+                        : isLastDonationSuccess
+                        ? "border-green-200"
+                        : "border-purple-200"
+                }
             />
         </div>
     );

@@ -94,6 +94,12 @@ export async function fetchVerifiedAgencies() {
                     model: Donor,
                     as: "donors",
                     attributes: ["id"],
+                    where: {
+                        status: {
+                            [Op.notIn]: ["for approval", "rejected"],
+                        },
+                    },
+                    required: false,
                 },
                 {
                     model: User,

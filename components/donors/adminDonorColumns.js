@@ -98,6 +98,7 @@ export const adminDonorColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Contact" />
         ),
+        cell: ({ getValue }) => "+63" + getValue(),
         filterFn: "columnFilter",
     },
     {

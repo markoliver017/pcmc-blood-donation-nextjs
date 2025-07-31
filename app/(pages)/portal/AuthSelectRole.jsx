@@ -12,7 +12,7 @@ import { redirect } from "next/navigation";
 import React, { useState } from "react";
 
 export default function AuthSelectRole({ roles }) {
-    const { status, update } = useSession();
+    const { data: session, status, update } = useSession();
     const [isLoading, setIsLoading] = useState(false);
 
     if (status === "loading")

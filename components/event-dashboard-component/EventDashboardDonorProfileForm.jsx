@@ -47,6 +47,9 @@ import { BiMaleFemale } from "react-icons/bi";
 import { IoInformationCircle } from "react-icons/io5";
 import ImagePreviewComponent from "@components/reusable_components/ImagePreviewComponent";
 import { Input } from "@components/ui/input";
+import FormLogger from "@lib/utils/FormLogger";
+import DisplayValidationErrors from "@components/form/DisplayValidationErrors";
+import { toast } from "sonner";
 
 const fetchCountries = async () => {
     const res = await fetch(process.env.NEXT_PUBLIC_NATIONALITY_API_URL);
@@ -75,7 +78,11 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
     });
 
     // Update donor mutation
-    const { mutate, isPending } = useMutation({
+    const {
+        mutate,
+        isPending,
+        error: mutationError,
+    } = useMutation({
         mutationFn: async (formData) => {
             const res = await updateUserDonor(user.id, formData);
             if (!res.success) {
@@ -93,10 +100,9 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
             });
             queryClient.invalidateQueries({ queryKey: ["appointment"] });
 
-            notify({
-                error: false,
-                message: "Donor's profile has been updated successfully.",
-            });
+            toast.success(
+                <div>Donor's profile has been updated successfully.</div>
+            );
         },
         onError: (error) => {
             // Handle validation errors
@@ -111,30 +117,24 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                         ))}
                     </ul>
                 );
-                notify({
-                    error: true,
-                    message: (
-                        <div tabIndex={0} className="collapse">
-                            <input type="checkbox" />
-                            <div className="collapse-title font-semibold">
-                                {message}
-                                <br />
-                                <small className="link link-warning">
-                                    See details
-                                </small>
-                            </div>
-                            <div className="collapse-content text-sm">
-                                {detailContent}
-                            </div>
+                toast.error(
+                    <div tabIndex={0} className="collapse">
+                        <input type="checkbox" />
+                        <div className="collapse-title font-semibold">
+                            {message}
+                            <br />
+                            <small className="link link-warning">
+                                See details
+                            </small>
                         </div>
-                    ),
-                });
+                        <div className="collapse-content text-sm">
+                            {detailContent}
+                        </div>
+                    </div>
+                );
             } else {
                 // Handle server errors
-                notify({
-                    error: true,
-                    message: error?.message || "Failed to update donor profile",
-                });
+                toast.error(error?.message || "Failed to update donor profile");
             }
         },
     });
@@ -233,6 +233,10 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
         <Form {...form}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 {/* Profile Picture Section */}
+                <DisplayValidationErrors
+                    errors={errors}
+                    mutationError={mutationError}
+                />
                 <div className="w-full md:w-min hidden">
                     <FormField
                         control={control}
@@ -780,6 +784,7 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                     </button>
                 </div>
             </form>
+            {/* <FormLogger watch={form.watch} errors={errors} /> */}
         </Form>
     );
 }

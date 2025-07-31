@@ -202,14 +202,14 @@ export default function AgencyEventCard({
                             >
                                 <DashboardIcon className="h-4 w-4" /> Dashboard
                             </Link>
-                            {event.registration_status === "not started" ||
-                                (event.registration_status === "ongoing" && (
-                                    <EventRegistrationStatus
-                                        data={event}
-                                        setIsLoading={setIsLoading}
-                                        className="btn btn-sm btn-outline rounded-4xl"
-                                    />
-                                ))}
+                            {(event.registration_status === "not started" ||
+                                event.registration_status === "ongoing") && (
+                                <EventRegistrationStatus
+                                    data={event}
+                                    setIsLoading={setIsLoading}
+                                    className="btn btn-sm btn-outline rounded-4xl"
+                                />
+                            )}
                         </>
                     )}
                 </div>

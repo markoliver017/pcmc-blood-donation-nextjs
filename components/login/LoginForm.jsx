@@ -150,6 +150,7 @@ export default function LoginForm({
                         />
                         <button
                             className="btn btn-ghost btn-sm"
+                            type="button"
                             onClick={() =>
                                 setShowPasswordReset(!showPasswordReset)
                             }

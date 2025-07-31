@@ -14,11 +14,15 @@ import ForApprovalDonorList from "./(hosts-donors)/donors/@approval/ForApprovalD
 import { FaArrowRight } from "react-icons/fa";
 import ForApprovalEventList from "./(hosts-events)/events/(index)/ForApprovalEventList";
 import { useQuery } from "@tanstack/react-query";
-import { getVerifiedDonorsCount } from "@/action/hostDonorAction";
+import {
+    getHostDonorsByStatus,
+    getVerifiedDonorsCount,
+} from "@/action/hostDonorAction";
 import {
     getAllEventsCount,
     getForApprovalEventsByAgency,
 } from "@/action/hostEventAction";
+import ScrollableContainer from "@components/reusable_components/ScrollableContainer";
 
 export default function Dashboard() {
     const { data: donors_count, isLoading: donorsCountIsLoading } = useQuery({
@@ -31,6 +35,13 @@ export default function Dashboard() {
             return res.data;
         },
     });
+    const { data: donorsForApproval, isLoading: donorsIsFetching } = useQuery({
+        queryKey: ["donors", "for approval"],
+        queryFn: async () => getHostDonorsByStatus("for approval"),
+        staleTime: 0,
+        cacheTime: 0,
+    });
+
     const { data: events_count, isLoading: eventsCountIsLoading } = useQuery({
         queryKey: ["agency-events-count"],
         queryFn: async () => {
@@ -137,12 +148,19 @@ export default function Dashboard() {
                                     href="/portal/hosts/donors?tab=for-approval"
                                     className="btn btn-block justify-between text-green-700 dark:text-green-400"
                                 >
-                                    Donors For Approval
+                                    Donors For Approval (
+                                    {donorsForApproval?.length || 0})
                                     <FaArrowRight />
                                 </Link>
-                                <div className="max-h-60 overflow-y-auto mt-2 space-y-2 p-2">
-                                    <ForApprovalDonorList />
-                                </div>
+                                <ScrollableContainer
+                                    maxHeight="40rem"
+                                    className="mt-2 space-y-2 p-2"
+                                >
+                                    <ForApprovalDonorList
+                                        donors={donorsForApproval}
+                                        isFetching={donorsIsFetching}
+                                    />
+                                </ScrollableContainer>
                             </div>
                             <div className="divider" />
                             <div>
@@ -156,13 +174,16 @@ export default function Dashboard() {
                                     </span>
                                     <FaArrowRight />
                                 </Link>
-                                <div className="max-h-64 overflow-y-auto mt-2 flex flex-col gap-4 p-2">
+                                <ScrollableContainer
+                                    maxHeight="40rem"
+                                    className="mt-2 p-2 flex flex-col gap-4"
+                                >
                                     <ForApprovalEventList
                                         events={eventsForApproval}
                                         isFetching={eventsIsFetching}
                                         editable={false}
                                     />
-                                </div>
+                                </ScrollableContainer>
                             </div>
                         </CardContent>
                     </Card>

@@ -8,25 +8,19 @@ import {
     CardTitle,
 } from "@components/ui/card";
 import Skeleton_user from "@components/ui/Skeleton_user";
-import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 
 import { FileClock, MessageCircle } from "lucide-react";
 import { calculateAge } from "@lib/utils/string.utils";
 import ApprovalRejectComponent from "@components/donors/ApprovalRejectComponent";
-import { getHostDonorsByStatus } from "@/action/hostDonorAction";
 import clsx from "clsx";
-import Link from "next/link";
 
-export default function ForApprovalDonorList({ avatarClassName = "" }) {
-    const { data: donors, isLoading: donorsIsFetching } = useQuery({
-        queryKey: ["donors", "for approval"],
-        queryFn: async () => getHostDonorsByStatus("for approval"),
-        staleTime: 0,
-        cacheTime: 0,
-    });
-
-    if (donorsIsFetching)
+export default function ForApprovalDonorList({
+    donors = [],
+    isFetching = false,
+    avatarClassName = "",
+}) {
+    if (isFetching)
         return (
             <>
                 <Skeleton_user />

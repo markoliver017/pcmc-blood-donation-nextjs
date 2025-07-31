@@ -27,6 +27,7 @@ import Skeleton from "@components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { getBloodTypes } from "@/action/bloodTypeAction";
 import Skeleton_line from "@components/ui/skeleton_line";
+import { GrStatusGood } from "react-icons/gr";
 
 export function DataTable({ columns, data, isLoading }) {
     const { data: bloodTypes, isLoading: bloodTypesIsLoading } = useQuery({
@@ -142,6 +143,45 @@ export function DataTable({ columns, data, isLoading }) {
                                 <label className="dark:text-slate-400 flex items-center space-x-1">
                                     <Filter className="h-4 w-4" />
                                 </label>
+                                <MultiSelect
+                                    options={
+                                        ["activated", "rejected"].map(
+                                            (type) => ({
+                                                label: type,
+                                                value: type,
+                                                number: data.filter(
+                                                    (row) => row.status == type
+                                                ).length,
+                                            })
+                                        ) || []
+                                    }
+                                    onValueChange={(selectedOptions) => {
+                                        console.log(
+                                            "selectedOptions",
+                                            selectedOptions
+                                        );
+
+                                        table
+                                            .getColumn("status")
+                                            ?.setFilterValue(selectedOptions);
+                                    }}
+                                    value={
+                                        table
+                                            .getColumn("status")
+                                            ?.getFilterValue() ?? []
+                                    }
+                                    placeholder={
+                                        <>
+                                            {
+                                                <GrStatusGood className="h-3 w-3" />
+                                            }{" "}
+                                            <span>Status</span>
+                                        </>
+                                    }
+                                    className="text-slate-700 bg-slate-100 hover:bg-white"
+                                    animation={2}
+                                    maxCount={1}
+                                />
                                 <MultiSelect
                                     options={
                                         bloodTypes.map((type) => ({

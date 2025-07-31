@@ -122,7 +122,7 @@ export async function getVerifiedDonorsCount() {
             where: {
                 agency_id,
                 status: {
-                    [Op.not]: "for approval",
+                    [Op.notIn]: ["for approval", "rejected"],
                 },
             },
         });
