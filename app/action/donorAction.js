@@ -19,6 +19,7 @@ import {
     Announcement,
     BloodDonationHistory,
     UserRole,
+    PhysicalExamination,
 } from "@lib/models";
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
@@ -1581,8 +1582,6 @@ export async function getDonorDashboard() {
             ],
         });
 
-        console.log("bloodCollectionData", formatSeqObj(bloodCollectionData));
-
         if (bloodCollectionData) {
             const collectionDate = moment(
                 bloodCollectionData.event.date
@@ -1604,6 +1603,46 @@ export async function getDonorDashboard() {
             donateNow = daysRemaining <= 0;
         }
 
+        // latestDonationDate = null;
+        let lastAppointmentWhereDate = {};
+        if (latestDonationDate) {
+            lastAppointmentWhereDate.date = {
+                [Op.gt]: latestDonationDate,
+            };
+        }
+
+        const lastAppointment = await DonorAppointmentInfo.findOne({
+            where: {
+                donor_id: donor.id,
+                status: {
+                    [Op.notIn]: ["no show", "cancelled"],
+                },
+            },
+            attributes: ["id", "status"],
+            include: [
+                {
+                    model: BloodDonationEvent,
+                    as: "event",
+                    attributes: ["date", "title"],
+                    where: lastAppointmentWhereDate,
+                    required: true,
+                },
+                {
+                    model: PhysicalExamination,
+                    as: "physical_exam",
+                    attributes: [
+                        "id",
+                        "eligibility_status",
+                        "deferral_reason",
+                        "remarks",
+                    ],
+                },
+            ],
+            order: [
+                [{ model: BloodDonationEvent, as: "event" }, "date", "DESC"],
+            ],
+        });
+
         return {
             success: true,
             data: {
@@ -1616,6 +1655,7 @@ export async function getDonorDashboard() {
                 days_remaining: donateNow ? 0 : daysRemaining,
                 latest_donation_date: latestDonationDate,
                 donateNow,
+                last_appointment: formatSeqObj(lastAppointment),
             },
         };
     } catch (err) {

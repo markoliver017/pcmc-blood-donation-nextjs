@@ -4,14 +4,18 @@ import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 const Card = ({ icon, label, value, subtext, color }) => (
     <div
-        className={`flex flex-col items-center p-4 rounded-lg shadow border ${
+        className={`flex flex-col items-center justify-center p-4 rounded-lg shadow border ${
             color || ""
         }`}
     >
         <div className="mb-2">{icon}</div>
-        <div className="text-2xl font-bold">{value}</div>
-        <div className="text-sm text-gray-600">{label}</div>
-        {subtext && <div className="text-xs text-gray-400 mt-1">{subtext}</div>}
+        <div className="text-2xl font-bold text-center">{value}</div>
+        <div className="text-sm text-gray-600 text-center">{label}</div>
+        {subtext && (
+            <div className="text-xs text-gray-400 mt-1 text-center">
+                {subtext}
+            </div>
+        )}
     </div>
 );
 
@@ -123,15 +127,23 @@ const SummaryCards = ({
                           } remaining`
                 }
                 subtext={
-                    isPermanentlyDeferred
-                        ? "We appreciate your willingness to donate. Although you can’t donate blood anymore, there are many ways you can still make a difference."
-                        : isTemporarilyDeferred
-                        ? "You’re temporarily deferred. Please check again after the deferral period ends."
-                        : eligibilityCountdown === null
-                        ? "No donation history yet"
-                        : eligibilityCountdown === 0
-                        ? "You're good to go. Thank you for being a hero!"
-                        : "You can donate again once the countdown reaches zero."
+                    isPermanentlyDeferred ? (
+                        "We appreciate your willingness to donate. Although you can’t donate blood anymore, there are many ways you can still make a difference."
+                    ) : isTemporarilyDeferred ? (
+                        <>
+                            You’re temporarily deferred. <br />
+                            Remarks:{" "}
+                            {lastDonation?.physical_exam?.deferral_reason}
+                            <br />
+                            Please try again for the next available appointment.
+                        </>
+                    ) : eligibilityCountdown === null ? (
+                        "No donation history yet"
+                    ) : eligibilityCountdown === 0 ? (
+                        "You're good to go. Thank you for being a hero!"
+                    ) : (
+                        "You can donate again once the countdown reaches zero."
+                    )
                 }
                 color={
                     isPermanentlyDeferred

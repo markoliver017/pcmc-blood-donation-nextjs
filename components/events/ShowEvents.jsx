@@ -42,6 +42,7 @@ import VerifyEvent from "./VerifyEvent";
 import RejectEvent from "./RejectEvent";
 import { getFeedbackAverage } from "@lib/utils/event.utils";
 import StarRating from "@components/reusable_components/StarRating";
+import ImagePreviewComponent from "@components/reusable_components/ImagePreviewComponent";
 
 export default function ShowEvents({ eventId }) {
     const session = useSession();
@@ -98,14 +99,25 @@ export default function ShowEvents({ eventId }) {
                 className="flex flex-wrap xl:flex-nowrap gap-2"
             >
                 <LoadingModal imgSrc="/loader_3.gif" isLoading={isLoading} />
-                <CustomAvatar
-                    avatar={
-                        event?.file_url ||
-                        event?.agency?.file_url ||
-                        "/default_company_avatar.png"
-                    }
-                    className="w-[150px] h-[150px] sm:w-[200px] sm:h-[200px] md:w-[250px] md:h-[250px] xl:w-[350px] xl:h-[350px] flex-none"
-                />
+                <div>
+                    <CustomAvatar
+                        avatar={
+                            event?.file_url ||
+                            event?.agency?.file_url ||
+                            "/default_company_avatar.png"
+                        }
+                        className="w-[150px] h-[150px] sm:w-[200px] sm:h-[200px] md:w-[250px] md:h-[250px] xl:w-[350px] xl:h-[350px] flex-none"
+                    />
+                    <div className="text-center">
+                        <ImagePreviewComponent
+                            imgSrc={
+                                event?.file_url ||
+                                event?.agency?.file_url ||
+                                "/default_company_avatar.png"
+                            }
+                        />
+                    </div>
+                </div>
                 <div className="w-full sm:min-w-sm">
                     <Table className="w-full sm:min-w-sm">
                         <TableBody>

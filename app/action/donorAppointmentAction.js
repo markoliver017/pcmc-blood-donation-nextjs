@@ -41,6 +41,13 @@ export async function bookDonorAppointment(formData) {
 
     const donor = await Donor.findOne({
         where: { user_id: user?.id, status: "activated" },
+        include: [
+            {
+                model: PhysicalExamination,
+                as: "last_donation_examination",
+                attributes: ["id", "eligibility_status", "deferral_reason"],
+            },
+        ],
     });
 
     if (!donor) {
@@ -49,6 +56,19 @@ export async function bookDonorAppointment(formData) {
             message: "Database Error: Donor not found or inactive.",
         };
     }
+
+    if (
+        donor?.last_donation_examination?.eligibility_status ===
+        "PERMANENTLY-DEFERRED"
+    ) {
+        return {
+            success: false,
+            message:
+                "Sorry, you are permanently deferred. Please contact the organizer for more information.",
+        };
+    }
+
+    console.log("donor>>>>>>>>>>>", donor);
 
     formData.donor_id = donor.id;
 

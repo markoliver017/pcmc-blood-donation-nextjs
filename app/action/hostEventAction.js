@@ -528,6 +528,9 @@ export async function getEventParticipants(eventId) {
         const donors = await DonorAppointmentInfo.findAll({
             where: {
                 event_id: eventId,
+                status: {
+                    [Op.ne]: "cancelled",
+                },
             },
             include: [
                 {

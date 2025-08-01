@@ -81,6 +81,14 @@ export const appointmentsColumns = [
         filterFn: "columnFilter",
     },
     {
+        accessorKey: "donor.user.email",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Email" />
+        ),
+        cell: ({ getValue }) => <span>{getValue()}</span>,
+        filterFn: "columnFilter",
+    },
+    {
         accessorKey: "donor.agency.name",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Agency" />

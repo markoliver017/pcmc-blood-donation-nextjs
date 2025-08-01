@@ -260,13 +260,13 @@ export default function ListofEvents() {
                 <Link
                     href="/portal/hosts/events/create"
                     className={clsx(
-                        "btn absolute right-5 bg-gradient-to-b from-red-700 to-red-500 text-white text-2xl font-bold px-4 py-6 rounded-md shadow-[7px_5px_2px_0px_rgba(0,_0,_0,_0.3)] dark:shadow-red-400/60 hover:from-pink-500 hover:to-purple-400 hover:ring transition duration-300",
+                        "btn absolute right-5 bg-gradient-to-b from-red-700 to-red-500 text-white text-lg md:text-xl font-bold px-4 py-6 rounded-md shadow-[7px_5px_2px_0px_rgba(0,_0,_0,_0.3)] dark:shadow-red-400/60 hover:from-pink-500 hover:to-purple-400 hover:ring transition duration-300",
                         approvedEvents.length === 0 && "hidden"
                     )}
                 >
                     <MdBloodtype className="h-6 w-6" />
                     <span className="hidden sm:inline-block">
-                        Create New Blood Drive
+                        New Blood Drive
                     </span>
                 </Link>
 
@@ -277,7 +277,9 @@ export default function ListofEvents() {
                     >
                         <div className="flex-items-center">
                             <BarChart3 className="h-4 w-4" />
-                            Dashboard
+                            <span className="hidden sm:inline-block">
+                                Dashboard
+                            </span>
                         </div>
                     </TabsTrigger>
                     <TabsTrigger
@@ -286,7 +288,9 @@ export default function ListofEvents() {
                     >
                         <div className="flex-items-center">
                             <Check className="h-4 w-4" />
-                            Ongoing ({ongoingEvents?.length || 0})
+                            <span className="hidden sm:inline-block">
+                                Ongoing ({ongoingEvents?.length || 0})
+                            </span>
                         </div>
                     </TabsTrigger>
                     <TabsTrigger
@@ -295,7 +299,9 @@ export default function ListofEvents() {
                     >
                         <div className="flex-items-center">
                             <MdUpcoming />
-                            Upcoming ({upcomingEvents?.length || 0})
+                            <span className="hidden sm:inline-block">
+                                Upcoming ({upcomingEvents?.length || 0})
+                            </span>
                         </div>
                     </TabsTrigger>
                     <TabsTrigger
@@ -304,7 +310,9 @@ export default function ListofEvents() {
                     >
                         <div className="flex-items-center">
                             <Text className="h-4 w-4" />
-                            All ({events?.length || 0})
+                            <span className="hidden sm:inline-block">
+                                All ({events?.length || 0})
+                            </span>
                         </div>
                     </TabsTrigger>
                     <TabsTrigger
@@ -313,7 +321,9 @@ export default function ListofEvents() {
                     >
                         <div className="flex-items-center">
                             <QuestionMarkCircledIcon />
-                            For Approval ({eventsForApproval?.length || 0})
+                            <span className="hidden sm:inline-block">
+                                For Approval ({eventsForApproval?.length || 0})
+                            </span>
                         </div>
                     </TabsTrigger>
                 </TabsList>

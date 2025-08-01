@@ -60,10 +60,12 @@ export const columns = [
             <DataTableColumnHeader column={column} title="Email" />
         ),
         filterFn: "columnFilter",
-        cell: ({ getValue }) => <span className="text-blue-800">{getValue().toLowerCase()}</span>
+        cell: ({ getValue }) => (
+            <span className="text-blue-800 dark:text-blue-200">
+                {getValue().toLowerCase()}
+            </span>
+        ),
     },
-
-
 
     {
         accessorKey: "first_name",
@@ -94,7 +96,7 @@ export const columns = [
         cell: ({ getValue }) => {
             const roles = getValue();
             if (roles.length == 1) {
-                return <span>{roles[0].role_name}</span>
+                return <span>{roles[0].role_name}</span>;
             }
             return (
                 <ul className="flex flex-col list-disc">
