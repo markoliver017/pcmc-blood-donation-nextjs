@@ -1,0 +1,26 @@
+Accomplishment Report
+Name: Mark Oliver C. Roman
+Position: Computer Programmer II
+Date: August 1, 2025
+Reporting Period: April - June 2025
+
+Summary of Accomplishments:
+
+During the second quarter, the primary focus was the development and launch of the PCMC Pediatric Blood Center's Medical Blood Donation (PedBC MBD) Portal, which culminated in the successful delivery of the project's Minimum Viable Product (MVP).
+
+1. PCMC PedBC MBD Portal - Version 1 (MVP Completion)
+   - Date of Completion: June 23, 2025
+   - The main objective for this quarter was achieved with the full implementation of the MVP's functional requirements. The completed version was successfully presented to the end-users, the Mobile Blood Donation Team.
+   - Key Features Delivered:
+     - Multi-Role System: Established distinct interfaces and permissions for Admins, Hosts/Coordinators, and Donors.
+     - Core Functionalities: Implemented critical modules for event management, donor registration, appointment booking, and blood collection tracking.
+     - Foundational Tech: Built on a modern stack including Next.js 15, MySQL with Sequelize, and NextAuth.js for robust security and performance.
+
+2. Planning and Initial Development for Version 2
+   - Following the successful presentation of the MVP, the final week of June was dedicated to planning the next phase of development.
+   - Activities included:
+     - Gathering initial feedback from the end-user presentation.
+     - Scoping requirements for upcoming features, such as enhanced content uploading and UI/UX upgrades.
+     - Beginning the initial development work for the enhancements and revisions that would be formally released as Version 2 in the following quarter.
+
+This quarter marked the successful transition of the PedBC MBD Portal from a development concept to a functional, user-tested application, setting a strong foundation for its continued evolution.

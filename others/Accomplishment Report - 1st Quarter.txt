@@ -1,0 +1,16 @@
+Accomplishment Report
+Name: Mark Oliver C. Roman
+Position: Computer Programmer II
+Date: May 14, 2025
+Reporting Period: February 26 - March 31, 2025
+Summary of Accomplishments:
+During the reporting period, I successfully completed the following projects and tasks:
+1. PCMC PedBC MBD Portal: Substantial progress was made on Phase 1 (Web Development) of the
+Pediatric Blood Center Medical Blood Drive (PedBC MBD) Portal, which began on March 24,
+2025. Key accomplishments during this sprint include:
+o Completing Sprint 1, which involved gathering user requirements from PedBC staff.
+o Designing the database structure and creating an Entity Relationship Diagram (ERD) that
+was successfully approved.
+o Developing and presenting wireframes to end-users, which received positive feedback.
+Currently, the project is on the development stage for Sprint 2, where I will continue to build on
+the progress made in Sprint 1 and further enhance the portal&#39;s functionality.
