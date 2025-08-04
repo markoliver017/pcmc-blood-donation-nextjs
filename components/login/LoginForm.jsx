@@ -16,8 +16,8 @@ import { FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 
 const credentials = {
-    email: "admin@email.com",
-    password: "User@1234",
+    email: "",
+    password: "",
 };
 
 export default function LoginForm({
