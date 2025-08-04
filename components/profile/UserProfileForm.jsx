@@ -77,6 +77,12 @@ export default function UserProfileForm({ userQuery }) {
                 text: "Your user profile information has been updated successfully .",
                 icon: "success",
                 confirmButtonText: "Okay",
+                onConfirm: () => {
+                    session.update({
+                        image: data.image,
+                        name: data.full_name,
+                    });
+                },
             });
         },
         onError: (error) => {
@@ -167,7 +173,6 @@ export default function UserProfileForm({ userQuery }) {
             confirmButtonText: "Confirm",
             cancelButtonText: "Cancel",
             onConfirm: async () => {
-
                 const fileUrl = watch("image");
                 if (
                     formData.profile_picture &&
@@ -188,7 +193,8 @@ export default function UserProfileForm({ userQuery }) {
                         });
                         notify({
                             error: true,
-                            message: result?.message || "Failed to upload image",
+                            message:
+                                result?.message || "Failed to upload image",
                         });
                         return;
                     }
@@ -211,9 +217,7 @@ export default function UserProfileForm({ userQuery }) {
             <LoadingModal isLoading={isPending || isUploading} />
             <DisplayValidationErrors
                 errors={errors}
-                mutationError={
-                    mutationError
-                }
+                mutationError={mutationError}
             />
             <form
                 onSubmit={handleSubmit(onSubmit)}
@@ -252,12 +256,15 @@ export default function UserProfileForm({ userQuery }) {
                                         className="w-[250px] h-[250px]"
                                     />
                                     <div className="flex items-center justify-center space-x-2 mt-2">
-
-                                        <ImagePreviewComponent imgSrc={avatar} />
+                                        <ImagePreviewComponent
+                                            imgSrc={avatar}
+                                        />
                                         {uploaded_avatar && (
                                             <button
                                                 onClick={() =>
-                                                    resetField("profile_picture")
+                                                    resetField(
+                                                        "profile_picture"
+                                                    )
                                                 }
                                                 className="btn btn-ghost"
                                             >

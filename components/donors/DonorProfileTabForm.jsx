@@ -80,6 +80,7 @@ export default function DonorProfileTabForm({ donor }) {
                 icon: "success",
                 confirmButtonText: "Okay",
             });
+            reset();
         },
         onError: (error) => {
             // Handle validation errors
@@ -163,7 +164,8 @@ export default function DonorProfileTabForm({ donor }) {
                         });
                         notify({
                             error: true,
-                            message: result?.message || "Failed to upload image",
+                            message:
+                                result?.message || "Failed to upload image",
                         });
                         return;
                     }
@@ -229,9 +231,7 @@ export default function DonorProfileTabForm({ donor }) {
             <LoadingModal isLoading={isPending || isUploading} />
             <DisplayValidationErrors
                 errors={errors}
-                mutationError={
-                    mutationError
-                }
+                mutationError={mutationError}
             />
             <form
                 onSubmit={handleSubmit(onSubmit)}

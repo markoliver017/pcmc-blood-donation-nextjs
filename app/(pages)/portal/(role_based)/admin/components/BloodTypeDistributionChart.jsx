@@ -35,6 +35,21 @@ export default function BloodTypeDistributionChart({ data, isLoading }) {
         );
     }
 
+    if (!data) {
+        return (
+            <Card className="w-full">
+                <CardHeader>
+                    <CardTitle>Blood Type Distribution </CardTitle>
+                </CardHeader>
+                <CardContent className="">
+                    <div className="flex items-center justify-center h-96">
+                        <p className="text-gray-500">No data available</p>
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
     return (
         <Card>
             <CardHeader>
