@@ -20,6 +20,7 @@ import { GrUpdate } from "react-icons/gr";
 import { useRouter } from "next/navigation";
 import FormLogger from "@lib/utils/FormLogger";
 import { MdPassword } from "react-icons/md";
+import { signOut } from "next-auth/react";
 
 export default function UserChangePassword({ userQuery }) {
     const router = useRouter();
@@ -40,9 +41,12 @@ export default function UserChangePassword({ userQuery }) {
             queryClient.invalidateQueries({ queryKey: ["user"] });
             SweetAlert({
                 title: "User Updated",
-                text: "Your account credentials has been updated successfully .",
+                text: "Your account credentials has been updated successfully. You will be signed out.",
                 icon: "success",
                 confirmButtonText: "Okay",
+                onConfirm: () => {
+                    signOut({ callbackUrl: "/login" });
+                },
             });
         },
         onError: (error) => {
@@ -126,7 +130,7 @@ export default function UserChangePassword({ userQuery }) {
     const onSubmit = async (formData) => {
         SweetAlert({
             title: "Confirmation",
-            text: "Are you sure you want to update your credentials?",
+            text: "Are you sure you want to update your credentials? This action will sign you out.",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Confirm",
@@ -140,7 +144,10 @@ export default function UserChangePassword({ userQuery }) {
 
     return (
         <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 p-5 shadow border rounded-2xl">
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="space-y-2 p-5 shadow border rounded-2xl"
+            >
                 <FormField
                     control={form.control}
                     name="email"

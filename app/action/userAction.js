@@ -8,7 +8,7 @@ import {
 } from "@lib/zod/userSchema";
 import { Role, sequelize, User } from "@lib/models";
 import { redirect } from "next/navigation";
-import { auth, signIn } from "@lib/auth";
+import { auth } from "@lib/auth";
 import { logAuditTrail } from "@lib/audit_trails.utils";
 import { logErrorToFile } from "@lib/logger.server";
 import { formatSeqObj } from "@lib/utils/object.utils";
@@ -113,7 +113,7 @@ export async function createUser(formData) {
         const newUser = await User.create(data, { transaction });
         await newUser.addRoles(data.role_ids, {
             through: { is_active: true },
-            transaction
+            transaction,
         });
 
         await transaction.commit();
@@ -217,7 +217,7 @@ export async function updateUser(formData) {
         await updatedUser.update(data, { transaction });
         await updatedUser.setRoles(data.role_ids, {
             through: { is_active: true },
-            transaction
+            transaction,
         });
         await transaction.commit();
 
@@ -347,12 +347,6 @@ export async function updateUserCredentials(formData) {
 
         await updatedUser.update(data, { transaction });
 
-        await signIn("credentials", {
-            email: data.email,
-            password: data.password,
-            redirect: false,
-        });
-
         await transaction.commit();
 
         await logAuditTrail({
@@ -434,7 +428,6 @@ export async function updateUserStatus(formData) {
             details: "User status has been successfully updated.",
         });
         return { success: true, data: updatedUser.get({ plain: true }) };
-
     } catch (err) {
         await transaction.rollback();
 
