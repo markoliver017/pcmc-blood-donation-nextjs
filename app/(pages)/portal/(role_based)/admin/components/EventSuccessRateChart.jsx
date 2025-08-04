@@ -26,6 +26,21 @@ export default function EventSuccessRateChart({ data, isLoading }) {
         );
     }
 
+    if (!data) {
+        return (
+            <Card className="lg:col-span-2">
+                <CardHeader>
+                    <CardTitle>Blood Type Distribution </CardTitle>
+                </CardHeader>
+                <CardContent className="">
+                    <div className="flex items-center justify-center h-96">
+                        <p className="text-gray-500">No data available</p>
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
     return (
         <Card className="lg:col-span-2">
             <CardHeader>
@@ -47,8 +62,16 @@ export default function EventSuccessRateChart({ data, isLoading }) {
                         <YAxis />
                         <Tooltip />
                         <Legend />
-                        <Bar dataKey="participants" fill="#8884d8" name="Participants" />
-                        <Bar dataKey="donations" fill="#82ca9d" name="Successful Donations" />
+                        <Bar
+                            dataKey="participants"
+                            fill="#8884d8"
+                            name="Participants"
+                        />
+                        <Bar
+                            dataKey="donations"
+                            fill="#82ca9d"
+                            name="Successful Donations"
+                        />
                     </BarChart>
                 </ResponsiveContainer>
             </CardContent>

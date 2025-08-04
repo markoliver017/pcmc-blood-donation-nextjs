@@ -22,7 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import SweetAlert from "@components/ui/SweetAlert";
 import notify from "@components/ui/notify";
 import InlineLabel from "@components/form/InlineLabel";
-import { Form, FormField, FormItem } from "@components/ui/form";
+import { Form, FormField, FormItem, FormMessage } from "@components/ui/form";
 
 import { uploadPicture } from "@/action/uploads";
 import FieldError from "@components/form/FieldError";
@@ -45,6 +45,7 @@ import LoadingModal from "@components/layout/LoadingModal";
 import { FaHornbill } from "react-icons/fa";
 import { GiHornInternal } from "react-icons/gi";
 import { toastCatchError, toastError } from "@lib/utils/toastError.utils";
+import Link from "next/link";
 
 const form_sections = [
     {
@@ -87,7 +88,7 @@ export default function NewOrganizerForm({ role_name }) {
         cacheTime: 20 * 60 * 1000,
     });
 
-    const [sectionNo, setSectionNo] = useState(0);
+    const [sectionNo, setSectionNo] = useState(4);
 
     const queryClient = useQueryClient();
 
@@ -166,6 +167,8 @@ export default function NewOrganizerForm({ role_name }) {
             city_municipality: "",
             province: "Metro Manila",
             comments: "",
+            termsAccepted: false,
+            readEligibilityReq: true,
             selected_province_option: {
                 code: "130000000",
                 name: "Metro Manila",
@@ -377,6 +380,41 @@ export default function NewOrganizerForm({ role_name }) {
                                                     </FormItem>
                                                 )}
                                             />
+
+                                            <div className="py-3 px-5 flex flex-col justify-center flex-wrap">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="termsAccepted"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <label className="flex-items-center mt-2 text-2xl italic">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="checkbox border-orange-600 bg-orange-500 checked:border-green-500 checked:bg-green-400 checked:text-green-800"
+                                                                    {...field}
+                                                                    checked={
+                                                                        field.value
+                                                                    }
+                                                                />
+                                                                <span>
+                                                                    I agree to
+                                                                    the{" "}
+                                                                    <Link
+                                                                        className="link link-primary"
+                                                                        href="/legal"
+                                                                        target="_blank"
+                                                                    >
+                                                                        Terms
+                                                                        and
+                                                                        Condition
+                                                                    </Link>
+                                                                </span>
+                                                            </label>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
 
                                             <div className="flex justify-between mt-4">
                                                 <button

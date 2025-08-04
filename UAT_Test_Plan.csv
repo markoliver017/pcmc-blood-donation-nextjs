@@ -1,0 +1,44 @@
+Test Case ID,Feature,Test Scenario,Test Steps,Expected Results,Actual Results,"Status
+(PASS/FAIL)",Tester,Date,Notes
+TC-001,Admin Login,Successful Login with default credentials,"1. Go to https://pedbc.pcmc.gov.ph/login.
+2. Click the 'Sign In' button in the top-right corner.
+2. Enter the default admin email: 'admin@email.com'.
+3. Enter default admin password: 'Password@123'.
+4. Tick 'I agree to the Terms & Conditions'.
+5. Click 'Sign In'.",The user should be successfully logged in and redirected to the admin dashboard. The sidebar navigation should be visible on the left.,,PASS,,,
+TC-002,Admin Login,Invalid Login attempt,"1. Navigate to https://pedbc.pcmc.gov.ph/login.
+2. Enter an invalid email or password.
+3. Click 'Sign In'.",An error message 'Invalid email or password!' should be displayed.,,PASS,,,
+TC-003,Admin Profile,Update User Profile Information,"1. Log in as Admin.
+2. Click on 'Profile' in the sidebar.
+3. Go to the 'User Profile' tab.
+4. Change the Profile picture, first name, middle name,last name. and sex.
+5. Click 'Save Changes'.","The user's profile information should be updated successfully. A success message should appear.
+An error message will appear for invalid input and required fields.",,PASS,,,
+TC-004,Admin Profile,Update Account Credentials,"1. Log in as Admin.
+2. Click on 'Profile' in the sidebar.
+3. Go to the 'Account Credentials' tab.
+4. Change the email and password.
+5. Click 'Save Changes'.",The admin's login credentials should be updated. You will be redirected to the login page. You can now login with your new credentials.,,PASS,,,
+TC-005,Registration,Navigate to Registration Page,"1. Go to https://pedbc.pcmc.gov.ph.
+2. Click the 'Join Us' button on the main slider OR click the 'Register' button in the top-right corner.",User should be redirected to the registration options page (https://pedbc.pcmc.gov.ph/register).,,PASS,,,
+TC-006,Registration,Partner Agency Registration - Form Navigation,"1. On the registration options page, click on the 'Register as a Partner Agency' option.",User should be navigated to the multi-step registration form for Partner Agencies.,,PASS,,,
+TC-007,Registration,Partner Agency Registration - Required Field Validation,"1. In the registration form, leave a required field (marked with *) blank.
+2. Try to proceed to the next step.",The user should not be able to proceed. An error message should be displayed for the empty required field.,,PASS,,,
+TC-008,Registration,Partner Agency Registration - Multi-step Form Completion,"1. Complete all steps of the form: Agency Administrator, Account Credentials (with a valid test email), Agency Details, and Location Details.
+2. Ensure all required fields are filled correctly.",The user should be able to navigate through all the steps of the form without issues.,,PASS,,,
+TC-009,Registration,Partner Agency Registration - Terms and Conditions Link,"1. On the 'Confirm' step of the registration form, click the 'Terms and Condition' link.","A new tab or window should open, displaying the Terms and Conditions page.",,PASS,,,
+TC-010,Registration,Partner Agency Registration - Final Submission,"1. On the 'Confirm' step, review the summary of the registration details.
+2. Tick the 'I agree to the Terms and Conditions' checkbox.
+3. Click the 'Submit' button.","A success modal should appear confirming the registration was submitted.
+An email notification should be sent to the email address provided during registration.
+An email notification should also be sent to the registered email of the admin account.",,PASS,,,
+TC-011,Admin - Agency Approval,New Agency Pending Approval,"1. Log in as Admin.
+2. Find and click the 'Agencies Management' in the sidebar navigation.
+3.  Click the 'For Approval' tab in the Agencies Management page and look for the newly registered agency from TC-010.",The newly registered agency should appear in the list.,,PASS,,,
+TC-012,Admin - Agency Approval,View Agency Details,"1. Log in as Admin. 2. Go to 'Agencies Management' -> 'For Approval' tab. 3. For the newly registered agency, click the 'Details' button.","A pop-up window (modal) should appear, displaying all the details of the partner agency that were submitted during registration.",,PENDING,,,
+TC-013,Admin - Agency Approval,Approve Agency,"1. Log in as Admin. 2. Go to 'Agencies Management' -> 'For Approval' tab. 3. For the newly registered agency, click the 'Approve' button. 4. Confirm the approval in the confirmation pop-up.","A success message 'Agency approved successfully' should appear. The agency should now be listed under the 'Approved' tab and should no longer be in the 'For Approval' list. The agency should receive an email confirming their registration has been approved.",,PENDING,,,
+TC-014,Admin - Agency Approval,Reject Agency,"1. Log in as Admin. 2. Go to 'Agencies Management' -> 'For Approval' tab. 3. For the newly registered agency, click the 'Reject' button. 4. In the pop-up, provide a reason for rejection. 5. Click 'Confirm Rejection'.","A success message 'Agency rejected successfully' should appear. The agency should now be listed under the 'Rejected' tab and should no longer be in the 'For Approval' list.",,PENDING,,,
+TC-015,Admin - Notifications,New Agency Registration Notification,"1. A new partner agency completes their registration. 2. Log in as Admin. 3. Look at the notification bell icon in the top-right corner of the page. 4. Click the notification related to the new agency registration.","The notification bell should show an indicator for a new notification. Clicking the notification should allow the admin to directly 'Approve' or 'Reject' the agency from the notification panel.",,PENDING,,,
+TC-016,Admin - Dashboard,Action Needed Section,"1. A new partner agency completes their registration. 2. Log in as Admin. 3. Navigate to the Dashboard. 4. Look for the 'Action Needed' section.","The newly registered agency should be listed under the 'For Approval Agencies' card within the 'Action Needed' section, prompting the admin to take action.",,PENDING,,,
+,,,,,,,,,

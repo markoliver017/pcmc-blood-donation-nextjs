@@ -12,13 +12,24 @@ import {
 } from "@components/ui/drawer";
 import LoginForm from "@components/login/LoginForm";
 import Image from "next/image";
-import { X } from "lucide-react";
+import { UserPen, X } from "lucide-react";
 import { DialogTitle } from "@components/ui/dialog";
+import { useRouter } from "next/navigation";
 
 export default function LoginDrawer() {
     const drawerRef = useRef();
+    const router = useRouter();
     return (
         <>
+            <button
+                onClick={() => router.push("/register")}
+                className="bg-gradient-to-b from-blue-700 to-blue-500 text-white font-bold px-4 py-2 rounded-md shadow-[7px_10px_2px_0px_rgba(0,_0,_0,_0.1)] hover:from-pink-500 hover:to-purple-400 hover:ring transition duration-300"
+            >
+                <div className="flex justify-center items-center gap-2">
+                    <UserPen />
+                    <span className="hidden md:inline-block">Register</span>
+                </div>
+            </button>
             <button
                 onClick={() => drawerRef.current.open()}
                 className="bg-gradient-to-b from-green-700 to-green-500 text-white font-bold px-4 py-2 rounded-md shadow-[7px_10px_2px_0px_rgba(0,_0,_0,_0.1)] hover:from-pink-500 hover:to-purple-400 hover:ring transition duration-300"
@@ -43,7 +54,10 @@ export default function LoginDrawer() {
                             priority
                         />
                         {/* Overlay for readability */}
-                        <div className="absolute inset-0 bg-black/30 dark:bg-black/60 backdrop-blur-sm z-10" aria-hidden="true" />
+                        <div
+                            className="absolute inset-0 bg-black/30 dark:bg-black/60 backdrop-blur-sm z-10"
+                            aria-hidden="true"
+                        />
                         {/* Logo and Heading */}
                         <div className="w-full md:w-8/10 lg:w-6/10 xl:w-5/12 2xl:w-4/12">
                             {/* Login Form */}
@@ -60,10 +74,16 @@ export default function LoginDrawer() {
                                         Welcome Back
                                     </h2>
                                     <p className="text-md text-slate-700 dark:text-slate-200 text-center max-w-xs drop-shadow">
-                                        Sign in to your account to access the<br /> PCMC Pediatric Blood Center Portal.
+                                        Sign in to your account to access the
+                                        <br /> PCMC Pediatric Blood Center
+                                        Portal.
                                     </p>
                                 </div>
-                                <LoginForm showHeader={false} showProvidersSection={true} onClose={() => drawerRef.current.close()} />
+                                <LoginForm
+                                    showHeader={false}
+                                    showProvidersSection={true}
+                                    onClose={() => drawerRef.current.close()}
+                                />
                             </div>
                         </div>
                         <button
