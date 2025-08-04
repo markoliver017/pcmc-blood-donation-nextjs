@@ -11,7 +11,7 @@ import {
     Users,
     Users2,
     Users2Icon,
-    BarChart3,
+    // BarChart3,
 } from "lucide-react";
 import { BiBuildings, BiError } from "react-icons/bi";
 import { FaMicrophone } from "react-icons/fa";
@@ -267,14 +267,14 @@ export const usePagesStore = create((set) => ({
                     has_child: false,
                     is_role_based: true,
                 },
-                {
-                    title: "Reports",
-                    path: "/portal/admin/reports",
-                    icon: <BarChart3 />,
-                    roles: ["Admin"],
-                    has_child: false,
-                    is_role_based: true,
-                },
+                // {
+                //     title: "Reports",
+                //     path: "/portal/admin/reports",
+                //     icon: <BarChart3 />,
+                //     roles: ["Admin"],
+                //     has_child: false,
+                //     is_role_based: true,
+                // },
                 {
                     title: "Screening Questions",
                     path: "/portal/admin/screening-questions",

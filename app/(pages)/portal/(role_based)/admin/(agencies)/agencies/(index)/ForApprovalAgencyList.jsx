@@ -104,6 +104,7 @@ export default function ForApprovalAgencyList({
                                 {agency.head.email.toLowerCase()}
                             </span>
                             <span className=" text-slate-700 dark:text-slate-300 italic">
+                                +63
                                 {agency.contact_number}
                             </span>
                         </div>
