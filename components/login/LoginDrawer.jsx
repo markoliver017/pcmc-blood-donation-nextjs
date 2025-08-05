@@ -43,7 +43,7 @@ export default function LoginDrawer() {
             <Drawer ref={drawerRef} direction="top">
                 <DrawerContent className="dark:bg-neutral-900 dark:text-slate-100">
                     <DialogTitle></DialogTitle>
-                    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden py-8 px-2 sm:px-8">
+                    <div className="relative min-h-screen p w-full flex items-center justify-center overflow-hidden py-8 px-2 sm:px-8">
                         {/* Background Image */}
                         <Image
                             src="/blood-bg.jpg"
@@ -59,9 +59,9 @@ export default function LoginDrawer() {
                             aria-hidden="true"
                         />
                         {/* Logo and Heading */}
-                        <div className="w-full md:w-8/10 lg:w-6/10 xl:w-5/12 2xl:w-4/12">
+                        <div className="w-full md:w-9/10 lg:w-6/10 xl:w-5/12 2xl:w-4/12">
                             {/* Login Form */}
-                            <div className="relative z-20 w-9/10 mx-auto bg-white/90 dark:bg-slate-900/90 rounded-2xl shadow-2xl p-6 flex flex-col items-center gap-6 border border-blue-100 dark:border-slate-800 ">
+                            <div className="relative z-20 w-full b-red mx-auto bg-white/90 dark:bg-slate-900/90 rounded-2xl shadow-2xl p-6 flex flex-col items-center gap-6 border border-blue-100 dark:border-slate-800">
                                 <div className="flex flex-col items-center gap-2">
                                     <Image
                                         src="/pcmc_logo.png"

@@ -25,7 +25,7 @@ export default function PendingDonorsList({
     eventId,
     appointments,
     onManageAppointment,
-    roleName
+    roleName,
 }) {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
@@ -182,7 +182,7 @@ export default function PendingDonorsList({
                                             </span>
                                         </Button> */}
                                             <Button
-                                                variant="outline"
+                                                variant="destructive"
                                                 size="sm"
                                                 onClick={() =>
                                                     handleStatusUpdate(
@@ -192,18 +192,20 @@ export default function PendingDonorsList({
                                                 }
                                                 className="flex items-center gap-1 bg-warning"
                                             >
-                                                <EyeClosed className="h-3 w-3" />
+                                                <XCircle className="h-3 w-3" />
                                                 <span className="hidden sm:inline">
-                                                    No Show
+                                                    Mark as No Show
                                                 </span>
                                             </Button>
                                             <Button
-                                                variant="outline"
+                                                variant="ghost"
                                                 size="sm"
                                                 onClick={() =>
-                                                    onManageAppointment(appointment)
+                                                    onManageAppointment(
+                                                        appointment
+                                                    )
                                                 }
-                                                className="flex items-center gap-1"
+                                                className="flex items-center gap-1 bg-blue-500"
                                             >
                                                 <Settings className="h-3 w-3" />
                                                 <span className="hidden sm:inline">

@@ -191,7 +191,7 @@ export default function EventDashboardAppointmentForm({
                                             className="w-full dark:bg-inherit"
                                             tabIndex={2}
                                             {...field}
-                                            readOnly={!isEditable}
+                                            disabled={!isEditable}
                                         >
                                             <option value="">
                                                 Select here

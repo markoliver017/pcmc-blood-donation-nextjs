@@ -232,7 +232,7 @@ const ScreeningQuestionnaireForm = ({
                                         onClick={() =>
                                             form.handleSubmit(onSubmit)()
                                         }
-                                        className="border"
+                                        className="border hover:bg-blue-500 hover:text-primary-foreground"
                                         disabled={
                                             isPending || !form.formState.isValid
                                         }

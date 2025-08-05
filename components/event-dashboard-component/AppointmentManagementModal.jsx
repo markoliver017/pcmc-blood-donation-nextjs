@@ -86,20 +86,20 @@ export default function AppointmentManagementModal({
                 <DialogHeader className="pb-4">
                     <div className="flex items-center justify-between">
                         <div>
-                            <DialogTitle className="text-xl font-semibold">
+                            <DialogTitle className="text-xl font-semibold dark:text-white">
                                 Manage Appointment
                             </DialogTitle>
-                            <DialogDescription>
+                            <DialogDescription className="dark:text-slate-400">
                                 Manage appointment for{" "}
                                 {user?.name || "Unknown Donor"}
                             </DialogDescription>
                         </div>
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
                             tabIndex={-1}
                             onClick={onClose}
-                            className="h-8 w-8 p-0"
+                            className="h-8 w-8 p-0 dark:text-white"
                         >
                             <X className="h-4 w-4" />
                         </Button>

@@ -6,7 +6,7 @@ import UpcomingAppointmentsList from "./UpcomingAppointmentsList";
 import PastAppointmentsList from "./PastAppointmentsList";
 import AnalyticsChart from "./AnalyticsChart";
 import ImpactMetrics from "./ImpactMetrics";
-import BookAppointmentButton from "./BookAppointmentButton";
+// import BookAppointmentButton from "./BookAppointmentButton";
 import AppointmentDetailModal from "./AppointmentDetailModal";
 import { useState } from "react";
 import { getAllAppointmentsByDonor } from "@/action/donorAppointmentAction";
@@ -105,10 +105,11 @@ export default function Page() {
                 />
 
                 {/* Book Appointment Button */}
-                <div className="flex">
+                {/* <div className="flex">
                     <BookAppointmentButton />
-                </div>
+                </div> */}
 
+                <div className="divider"></div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="md:col-span-2 space-y-4">
                         {/* Upcoming Appointments (2/3 width) */}

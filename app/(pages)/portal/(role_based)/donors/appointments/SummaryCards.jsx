@@ -1,18 +1,49 @@
 import React from "react";
-import { Calendar, Gift, Clock, ShieldCheck, ShieldAlert } from "lucide-react";
+import {
+    Calendar,
+    Gift,
+    Clock,
+    ShieldCheck,
+    ShieldAlert,
+    Sparkles,
+    Heart,
+} from "lucide-react";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
-const Card = ({ icon, label, value, subtext, color }) => (
+const Card = ({
+    icon,
+    label,
+    value,
+    subtext,
+    color,
+    gradient,
+    isHighlight,
+}) => (
     <div
-        className={`flex flex-col items-center justify-center p-4 rounded-lg shadow border ${
-            color || ""
+        className={`relative flex flex-col items-center justify-center p-6 rounded-xl shadow-lg border transition-all duration-300 hover:shadow-xl hover:scale-105 ${
+            gradient
+                ? `bg-gradient-to-br ${gradient}`
+                : "bg-white dark:bg-gray-800"
+        } ${color || "border-gray-200 dark:border-gray-700"} ${
+            isHighlight ? "ring-2 ring-blue-400 dark:ring-blue-500" : ""
         }`}
     >
-        <div className="mb-2">{icon}</div>
-        <div className="text-2xl font-bold text-center">{value}</div>
-        <div className="text-sm text-gray-600 text-center">{label}</div>
+        {isHighlight && (
+            <div className="absolute -top-2 -right-2">
+                <Sparkles className="w-5 h-5 text-yellow-400 animate-pulse" />
+            </div>
+        )}
+        <div className="mb-3 p-2 rounded-full bg-white/20 dark:bg-black/20">
+            {icon}
+        </div>
+        <div className="text-3xl font-bold text-center mb-1 text-gray-200 dark:text-white">
+            {value}
+        </div>
+        <div className="text-sm font-medium text-gray-300 dark:text-gray-300 text-center mb-2">
+            {label}
+        </div>
         {subtext && (
-            <div className="text-xs text-gray-400 mt-1 text-center">
+            <div className="text-xs text-gray-200 mt-1 text-center leading-relaxed">
                 {subtext}
             </div>
         )}
@@ -45,10 +76,10 @@ const SummaryCards = ({
         lastDonation?.physical_exam?.eligibility_status ===
             "TEMPORARILY-DEFERRED";
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Next Appointment */}
             <Card
-                icon={<Calendar className="w-7 h-7 text-blue-500" />}
+                icon={<Calendar className="w-8 h-8 text-white" />}
                 label="Next Appointment"
                 value={
                     nextAppointment
@@ -58,29 +89,33 @@ const SummaryCards = ({
                 subtext={
                     nextAppointment
                         ? nextAppointment.time_schedule?.event?.title || "-"
-                        : "No upcoming appointment"
+                        : "Ready to book your next donation?"
                 }
-                color="border-blue-200"
+                gradient="from-blue-500 to-blue-600"
+                color="border-blue-300 dark:border-blue-500"
+                isHighlight={!!nextAppointment}
             />
             {/* Total Donations */}
             <Card
-                icon={<Gift className="w-7 h-7 text-red-500" />}
+                icon={<Heart className="w-8 h-8 text-white" />}
                 label="Total Donations"
                 value={totalDonations || 0}
                 subtext={
                     totalDonations > 0
-                        ? "Thank you for donating!"
-                        : "No donations yet"
+                        ? `You've saved ${totalDonations * 3} lives! 🎉`
+                        : "Your first donation awaits!"
                 }
-                color="border-red-200"
+                gradient="from-red-500 to-pink-600"
+                color="border-red-300 dark:border-red-500"
+                isHighlight={totalDonations > 0}
             />
             {/* Last Donation */}
             <Card
                 icon={
                     isLastDonationSuccess ? (
-                        <Clock className="w-7 h-7 text-green-500" />
+                        <Clock className="w-8 h-8 text-white" />
                     ) : (
-                        <ExclamationTriangleIcon className="w-7 h-7 text-red-500" />
+                        <ExclamationTriangleIcon className="w-8 h-8 text-white" />
                     )
                 }
                 label="Last Appointment"
@@ -92,12 +127,17 @@ const SummaryCards = ({
                 subtext={
                     lastDonation
                         ? lastDonation.time_schedule?.event?.title || "-"
-                        : "No past donation"
+                        : "Your donation history starts here"
+                }
+                gradient={
+                    isLastDonationSuccess
+                        ? "from-green-500 to-emerald-600"
+                        : "from-gray-500 to-gray-600"
                 }
                 color={
                     isLastDonationSuccess
-                        ? "border-green-200"
-                        : "border-red-200"
+                        ? "border-green-300 dark:border-green-500"
+                        : "border-gray-300 dark:border-gray-500"
                 }
             />
 
@@ -105,55 +145,66 @@ const SummaryCards = ({
             <Card
                 icon={
                     isLastDonationSuccess ? (
-                        <ShieldCheck className="w-7 h-7 text-purple-500" />
+                        <ShieldCheck className="w-8 h-8 text-white" />
                     ) : isPermanentlyDeferred ? (
-                        <ShieldAlert className="w-7 h-7 text-gray-500" />
+                        <ShieldAlert className="w-8 h-8 text-white" />
                     ) : (
-                        <ShieldAlert className="w-7 h-7 text-yellow-500" />
+                        <ShieldAlert className="w-8 h-8 text-white" />
                     )
                 }
-                label="Eligibility"
+                label="Eligibility Status"
                 value={
                     isPermanentlyDeferred
-                        ? "Status: Permanently Deferred"
+                        ? "Permanently Deferred"
                         : isTemporarilyDeferred
-                        ? "Status: Temporarily Deferred"
+                        ? "Temporarily Deferred"
                         : eligibilityCountdown === null
-                        ? "-"
+                        ? "Ready to Start"
                         : eligibilityCountdown === 0
-                        ? "Eligible to Donate"
+                        ? "✅ Eligible Now!"
                         : `${eligibilityCountdown} day${
                               eligibilityCountdown === 1 ? "" : "s"
-                          } remaining`
+                          } left`
                 }
                 subtext={
                     isPermanentlyDeferred ? (
-                        "We appreciate your willingness to donate. Although you can’t donate blood anymore, there are many ways you can still make a difference."
+                        "Thank you for your willingness to help. There are other ways to make a difference!"
                     ) : isTemporarilyDeferred ? (
                         <>
-                            You’re temporarily deferred. <br />
-                            Remarks:{" "}
-                            {lastDonation?.physical_exam?.deferral_reason}
+                            Temporarily deferred <br />
+                            Reason:{" "}
+                            {lastDonation?.physical_exam?.deferral_reason ||
+                                "Medical assessment"}
                             <br />
-                            Please try again for the next available appointment.
+                            You can try again at the next appointment.
                         </>
                     ) : eligibilityCountdown === null ? (
-                        "No donation history yet"
+                        "Complete your first donation to track eligibility"
                     ) : eligibilityCountdown === 0 ? (
-                        "You're good to go. Thank you for being a hero!"
+                        "🎉 You're cleared to donate! Book your appointment now."
                     ) : (
-                        "You can donate again once the countdown reaches zero."
+                        "Countdown to your next eligible donation date."
                     )
+                }
+                gradient={
+                    isPermanentlyDeferred
+                        ? "from-gray-500 to-gray-600"
+                        : isTemporarilyDeferred
+                        ? "from-yellow-500 to-orange-600"
+                        : eligibilityCountdown === 0
+                        ? "from-green-500 to-emerald-600"
+                        : "from-purple-500 to-indigo-600"
                 }
                 color={
                     isPermanentlyDeferred
-                        ? "border-gray-300"
+                        ? "border-gray-300 dark:border-gray-500"
                         : isTemporarilyDeferred
-                        ? "border-yellow-200"
-                        : isLastDonationSuccess
-                        ? "border-green-200"
-                        : "border-purple-200"
+                        ? "border-yellow-300 dark:border-yellow-500"
+                        : eligibilityCountdown === 0
+                        ? "border-green-300 dark:border-green-500"
+                        : "border-purple-300 dark:border-purple-500"
                 }
+                isHighlight={eligibilityCountdown === 0}
             />
         </div>
     );

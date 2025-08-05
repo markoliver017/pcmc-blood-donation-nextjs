@@ -199,7 +199,7 @@ export default function EventDashboardBloodTypeForm({ donor, eventId }) {
                                     <label className="flex items-center gap-4">
                                         <input
                                             type="checkbox"
-                                            className="checkbox bg-amber-300 checkbox-success border"
+                                            className="checkbox bg-red-500 checkbox-success border"
                                             {...field}
                                             disabled={isBloodTypeVerified}
                                             checked={field.value}

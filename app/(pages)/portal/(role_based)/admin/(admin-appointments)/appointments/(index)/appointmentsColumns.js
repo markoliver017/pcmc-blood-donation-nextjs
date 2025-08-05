@@ -159,7 +159,7 @@ export const appointmentsColumns = [
         ),
         cell: ({ getValue, row }) => {
             const data = row.original;
-            const isVerified = data.donor.is_blood_type_verified;
+            const isVerified = data.donor.is_bloodtype_verified;
             return (
                 <>
                     {isVerified ? (

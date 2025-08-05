@@ -742,7 +742,7 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                                 <div className="flex items-center gap-4">
                                     <input
                                         type="checkbox"
-                                        className="checkbox checkbox-success"
+                                        className="checkbox checkbox-success border bg-red-400 dark:bg-red-500 border-red-500 checked:border-green-500"
                                         {...field}
                                         checked={field.value}
                                     />

@@ -42,7 +42,7 @@ export default function CoordinatorConfirmTable({ watch }) {
                 </tr>
                 <tr className="hover:bg-base-300">
                     <th width="20%">Contact Number:</th>
-                    <td>{watch("contact_number")}</td>
+                    <td>+63{watch("contact_number")}</td>
                 </tr>
 
                 <tr className="bg-gray-200 dark:bg-gray-900">

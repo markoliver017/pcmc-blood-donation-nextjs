@@ -8,6 +8,9 @@ import {
     MessageCircle,
     Eye,
     MessageSquareQuote,
+    Award,
+    Heart,
+    Sparkles,
 } from "lucide-react";
 import StarRating from "@components/reusable_components/StarRating";
 import Link from "next/link";
@@ -25,13 +28,26 @@ const formatDate = (dateStr) => {
 const PastAppointmentsList = ({ appointments = [], onViewDetails }) => {
     if (!appointments.length) {
         return (
-            <div className="flex flex-col items-center justify-center p-8 rounded shadow text-gray-500">
-                <History className="w-8 h-8 mb-2 text-gray-400" />
-                <div className="font-semibold text-lg">
-                    No Past Appointments
+            <div className="relative overflow-hidden bg-gradient-to-br from-orange-50 to-amber-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-lg border border-orange-200 dark:border-gray-700 p-12">
+                <div className="absolute top-4 right-4 opacity-20">
+                    <Heart className="w-12 h-12 text-orange-500" />
                 </div>
-                <div className="text-sm">
-                    Your past appointments will appear here.
+                <div className="flex flex-col items-center text-center space-y-4">
+                    <div className="p-4 bg-orange-500 rounded-full shadow-lg">
+                        <History className="w-12 h-12 text-white" />
+                    </div>
+                    <div className="space-y-2">
+                        <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
+                            No Past Appointments Yet
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-300 max-w-md">
+                            Your donation history will appear here once you complete your first appointment. Every donation makes a difference!
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400 font-medium">
+                        <Award className="w-5 h-5" />
+                        <span>Start your hero journey today</span>
+                    </div>
                 </div>
             </div>
         );
@@ -48,13 +64,44 @@ const PastAppointmentsList = ({ appointments = [], onViewDetails }) => {
                     return (
                         <div
                             key={appt.id}
-                            className="space-y-2  justify-between p-4 rounded-lg shadow border border-gray-100"
+                            className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
                         >
+                            <div className={`absolute top-0 left-0 w-full h-1 ${
+                                appt.status === 'collected' ? 'bg-gradient-to-r from-green-500 to-emerald-600' :
+                                appt.status === 'deferred' ? 'bg-gradient-to-r from-yellow-500 to-orange-600' :
+                                appt.status === 'cancelled' ? 'bg-gradient-to-r from-red-500 to-pink-600' :
+                                'bg-gradient-to-r from-gray-500 to-gray-600'
+                            }`}></div>
                             <div className="flex-1 min-w-0">
-                                <div className="flex justify-between">
-                                    <div className="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-semibold text-lg">
-                                        <History className="w-5 h-5" />
-                                        {event?.title || "Untitled Event"}
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="flex-1 flex items-center gap-3">
+                                        <div className={`p-2 rounded-lg ${
+                                            appt.status === 'collected' ? 'bg-green-100 dark:bg-green-900' :
+                                            appt.status === 'deferred' ? 'bg-yellow-100 dark:bg-yellow-900' :
+                                            appt.status === 'cancelled' ? 'bg-red-100 dark:bg-red-900' :
+                                            'bg-gray-100 dark:bg-gray-700'
+                                        }`}>
+                                            <History className={`w-6 h-6 ${
+                                                appt.status === 'collected' ? 'text-green-600 dark:text-green-400' :
+                                                appt.status === 'deferred' ? 'text-yellow-600 dark:text-yellow-400' :
+                                                appt.status === 'cancelled' ? 'text-red-600 dark:text-red-400' :
+                                                'text-gray-600 dark:text-gray-400'
+                                            }`} />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+                                                {event?.title || "Untitled Event"}
+                                            </h3>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                Appointment #{appt.id} • {formatDate(event?.date)}
+                                            </p>
+                                        </div>
+                                        {appt.status === 'collected' && (
+                                            <div className="flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900 rounded-full">
+                                                <Award className="w-4 h-4 text-green-600 dark:text-green-400" />
+                                                <span className="text-xs font-medium text-green-700 dark:text-green-300">Hero</span>
+                                            </div>
+                                        )}
                                     </div>
                                     {appt.feedback_average !== null ? (
                                         <div className="flex items-center flex-none gap-2 p-2 rounded-md bg-base-200">
@@ -76,32 +123,55 @@ const PastAppointmentsList = ({ appointments = [], onViewDetails }) => {
                                         </Link>
                                     )}
                                 </div>
-                                <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-600 dark:text-gray-400">
-                                    <span className="flex items-center gap-1">
-                                        <Calendar className="w-4 h-4" />{" "}
-                                        {formatDate(event?.date)}
-                                    </span>
-                                    <span className="flex items-center gap-1">
-                                        <Clock className="w-4 h-4" />{" "}
-                                        {appt.time_schedule?.formatted_time ||
-                                            "-"}
-                                    </span>
-                                    <span className="flex items-center gap-1">
-                                        <MapPin className="w-4 h-4" />
-                                        {event?.agency?.agency_address ||
-                                            "No location"}
-                                    </span>
-                                    <span className="flex items-center gap-1">
-                                        Status:
-                                        <span className="font-bold uppercase ml-1">
-                                            {appt.status}
-                                        </span>
-                                    </span>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                    <div className="space-y-3">
+                                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                            <Clock className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Time</p>
+                                                <p className="font-semibold text-gray-800 dark:text-white">{appt.time_schedule?.formatted_time || "-"}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                            <MapPin className="w-5 h-5 text-red-600 dark:text-red-400" />
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Location</p>
+                                                <p className="font-semibold text-gray-800 dark:text-white text-sm">{event?.agency?.agency_address || "No location"}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                            <div className={`w-3 h-3 rounded-full ${
+                                                appt.status === 'collected' ? 'bg-green-500' :
+                                                appt.status === 'deferred' ? 'bg-yellow-500' :
+                                                appt.status === 'cancelled' ? 'bg-red-500' : 'bg-gray-500'
+                                            }`}></div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Status</p>
+                                                <p className={`font-semibold uppercase ${
+                                                    appt.status === 'collected' ? 'text-green-700 dark:text-green-300' :
+                                                    appt.status === 'deferred' ? 'text-yellow-700 dark:text-yellow-300' :
+                                                    appt.status === 'cancelled' ? 'text-red-700 dark:text-red-300' :
+                                                    'text-gray-700 dark:text-gray-300'
+                                                }`}>{appt.status}</p>
+                                            </div>
+                                        </div>
+                                        {appt.status === 'collected' && (
+                                            <div className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900 rounded-lg">
+                                                <Heart className="w-5 h-5 text-red-600 dark:text-red-400" />
+                                                <div>
+                                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Impact</p>
+                                                    <p className="font-semibold text-green-700 dark:text-green-300">~3 lives saved</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                            <div className="flex md:justify-end gap-2 mt-4 md:mt-0 md:ml-4">
+                            <div className="flex flex-wrap gap-3 justify-end">
                                 <button
-                                    className="btn btn-sm btn-primary"
+                                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-all duration-200 hover:shadow-md"
                                     onClick={() =>
                                         onViewDetails && onViewDetails(appt)
                                     }
@@ -111,17 +181,17 @@ const PastAppointmentsList = ({ appointments = [], onViewDetails }) => {
                                     Details
                                 </button>
                                 <button
-                                    className={`btn btn-sm btn-outline hidden items-center gap-1 ${
+                                    className={`inline-flex items-center gap-2 px-4 py-2 font-medium rounded-lg shadow-sm transition-all duration-200 ${
                                         canDownload
-                                            ? ""
-                                            : "opacity-60 cursor-not-allowed"
+                                            ? "bg-green-600 hover:bg-green-700 text-white hover:shadow-md"
+                                            : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
                                     }`}
                                     disabled={!canDownload}
                                     aria-label="Download certificate"
                                     title={
                                         canDownload
                                             ? "Download Certificate"
-                                            : "Certificate available after donation"
+                                            : "Certificate available after successful donation"
                                     }
                                 >
                                     <Download className="w-4 h-4" />

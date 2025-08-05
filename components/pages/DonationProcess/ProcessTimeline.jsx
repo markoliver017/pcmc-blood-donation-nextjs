@@ -79,7 +79,7 @@ export default function ProcessTimeline({ onOpenRegister }) {
         {
             number: 5,
             icon: RefreshCw,
-            title: "Recovery & Refreshments",
+            title: "Recovery, Home Instructions & Refreshments",
             description:
                 "Rest for 10-15 minutes while enjoying refreshments. This helps your body recover and prevents dizziness.",
             duration: "10-15 minutes",
@@ -87,13 +87,14 @@ export default function ProcessTimeline({ onOpenRegister }) {
                 "Rest period",
                 "Refreshments provided",
                 "Monitor for reactions",
+                "Home instructions provided",
             ],
             color: "orange",
         },
         {
             number: 6,
             icon: CheckCircle,
-            title: "Post-Donation Care",
+            title: "Post-Donation Care & Follow-up",
             description:
                 "Receive care instructions via email and information about when you can donate again.",
             duration: "5 minutes",

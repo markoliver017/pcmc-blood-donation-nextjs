@@ -2,10 +2,10 @@ Test Case ID,Feature,Test Scenario,Test Steps,Expected Results,Actual Results,"S
 (PASS/FAIL)",Tester,Date,Notes
 TC-001,Admin Login,Successful Login with default credentials,"1. Go to https://pedbc.pcmc.gov.ph/login.
 2. Click the 'Sign In' button in the top-right corner.
-2. Enter the default admin email: 'admin@email.com'.
-3. Enter default admin password: 'Password@123'.
-4. Tick 'I agree to the Terms & Conditions'.
-5. Click 'Sign In'.",The user should be successfully logged in and redirected to the admin dashboard. The sidebar navigation should be visible on the left.,,PASS,,,
+3. Enter the default admin email: 'admin@email.com'.
+4. Enter default admin password: 'Password@123'.
+5. Tick 'I agree to the Terms & Conditions'.
+6. Click 'Sign In'.",The user should be successfully logged in and redirected to the admin dashboard. The sidebar navigation should be visible on the left.,,PASS,,,
 TC-002,Admin Login,Invalid Login attempt,"1. Navigate to https://pedbc.pcmc.gov.ph/login.
 2. Enter an invalid email or password.
 3. Click 'Sign In'.",An error message 'Invalid email or password!' should be displayed.,,PASS,,,
@@ -37,8 +37,224 @@ TC-011,Admin - Agency Approval,New Agency Pending Approval,"1. Log in as Admin.
 2. Find and click the 'Agencies Management' in the sidebar navigation.
 3.  Click the 'For Approval' tab in the Agencies Management page and look for the newly registered agency from TC-010.",The newly registered agency should appear in the list.,,PASS,,,
 TC-012,Admin - Agency Approval,View Agency Details,"1. Log in as Admin. 2. Go to 'Agencies Management' -> 'For Approval' tab. 3. For the newly registered agency, click the 'Details' button.","A pop-up window (modal) should appear, displaying all the details of the partner agency that were submitted during registration.",,PENDING,,,
-TC-013,Admin - Agency Approval,Approve Agency,"1. Log in as Admin. 2. Go to 'Agencies Management' -> 'For Approval' tab. 3. For the newly registered agency, click the 'Approve' button. 4. Confirm the approval in the confirmation pop-up.","A success message 'Agency approved successfully' should appear. The agency should now be listed under the 'Approved' tab and should no longer be in the 'For Approval' list. The agency should receive an email confirming their registration has been approved.",,PENDING,,,
-TC-014,Admin - Agency Approval,Reject Agency,"1. Log in as Admin. 2. Go to 'Agencies Management' -> 'For Approval' tab. 3. For the newly registered agency, click the 'Reject' button. 4. In the pop-up, provide a reason for rejection. 5. Click 'Confirm Rejection'.","A success message 'Agency rejected successfully' should appear. The agency should now be listed under the 'Rejected' tab and should no longer be in the 'For Approval' list.",,PENDING,,,
-TC-015,Admin - Notifications,New Agency Registration Notification,"1. A new partner agency completes their registration. 2. Log in as Admin. 3. Look at the notification bell icon in the top-right corner of the page. 4. Click the notification related to the new agency registration.","The notification bell should show an indicator for a new notification. Clicking the notification should allow the admin to directly 'Approve' or 'Reject' the agency from the notification panel.",,PENDING,,,
-TC-016,Admin - Dashboard,Action Needed Section,"1. A new partner agency completes their registration. 2. Log in as Admin. 3. Navigate to the Dashboard. 4. Look for the 'Action Needed' section.","The newly registered agency should be listed under the 'For Approval Agencies' card within the 'Action Needed' section, prompting the admin to take action.",,PENDING,,,
-,,,,,,,,,
+TC-013,Admin - Agency Approval,Approve Agency,"1. Log in as Admin. 2. Go to 'Agencies Management' -> 'For Approval' tab. 3. For the newly registered agency, click the 'Approve' button. 4. Confirm the approval in the confirmation pop-up.",A success message that the agency approved should appear. The agency should now be listed under the 'Approved' tab and should no longer be in the 'For Approval' list. The agency should receive an email confirming their registration has been approved.,,PENDING,,,
+TC-014,Admin - Agency Approval,Reject Agency,"1. Log in as Admin. 2. Go to 'Agencies Management' -> 'For Approval' tab. 3. For the newly registered agency, click the 'Reject' button. 4. In the pop-up, provide a reason for rejection. 5. Click 'Confirm Rejection'.",A success message 'Agency rejected successfully' should appear. The agency should now be listed under the 'Rejected' tab and should no longer be in the 'For Approval' list.,,PENDING,,,
+TC-015,Admin - Notifications,New Agency Registration Notification,1. A new partner agency completes their registration. 2. Log in as Admin. 3. Look at the notification bell icon in the top-right corner of the page. 4. Click the notification related to the new agency registration.,The notification bell should show an indicator for a new notification. Clicking the notification should allow the admin to directly view the new partner agency request.,,PENDING,,,
+TC-016,Agency Admin Login,Successful Login as Agency Administrator,"1. Go to https://pedbc.pcmc.gov.ph/login.
+2. Click the 'Sign In' button in the top-right corner.
+3. Enter the Agency Administrator's registered email.
+4. Enter the Agency Administrator's password.
+5. Tick 'I agree to the Terms & Conditions'.
+6. Click 'Sign In'.",The user should be successfully logged in and redirected to the Agency Administrator dashboard. The sidebar navigation should be visible on the left.,,,,,
+TC-017,Agency Admin Profile,Update Agency Administrator Profile,"1. Log in as Agency Administrator.
+2. Click on 'Profile' in the sidebar.
+3. Go to the 'User Profile' tab.
+4. Edit profile details (first name, middle name, last name, sex).
+5. Click 'Save Changes'.",The Agency Administrator's profile information should be updated successfully. A success message should appear. An error message will appear for invalid input or missing required fields.,,,,,
+TC-018,Coordinator Registration,Register as a Coordinator,"1. Go to https://pedbc.pcmc.gov.ph/register.
+2. Click 'Register as a Coordinator'.
+3. Select an agency from the list (including newly created agencies).
+4. Review agency details and click 'Register as a Coordinator'.
+5. Complete the multi-step form:
+   a. New account details (first name, middle name, last name, sex; all required except middle name)
+   b. Account credentials (email, password, confirm password; all required)
+6. On the confirmation page, review registration summary.
+7. (Optional) Enter a message.
+8. Tick 'I agree to the Terms & Conditions'.
+9. Click 'Register' and confirm in the alert.
+10. Observe success or error messages.",If registration is successful, a success message appears. If there are errors or restrictions, an error message is shown. The coordinator receives an email confirmation. The Agency Administrator for the selected agency receives an email and in-app notification about the new coordinator request.,,,
+TC-019,Coordinator Approval,Approve or Reject Coordinator Request,"1. Log in as Agency Administrator.
+2. In the sidebar, click 'Manage Coordinator'.
+3. Click the 'For Approval' tab to view pending coordinators.
+4. For the new coordinator, click 'Details' to view information.
+5. Click 'Approve' to approve, or 'Reject' (enter rejection remarks) to reject.
+6. Check notifications by clicking the bell icon and viewing 'Coordinator Approvals'.
+7. Upon approval or rejection, the coordinator receives an email and in-app notification about their status.
+8. Approved coordinators can now log in using their credentials.",The Agency Administrator sees the new coordinator request. Upon approval, the coordinator is notified and can log in. Upon rejection, the coordinator receives a rejection notification.,,,
+TC-020,Coordinator Login,Successful Login as Coordinator,"1. Go to https://pedbc.pcmc.gov.ph/login.
+2. Click the 'Sign In' button in the top-right corner.
+3. Enter the Coordinator's registered email.
+4. Enter the Coordinator's password.
+5. Tick 'I agree to the Terms & Conditions'.
+6. Click 'Sign In'.",The user should be successfully logged in and redirected to the Coordinator dashboard. The sidebar navigation should be visible on the left.,,,,,
+TC-021,Coordinator Profile,Update Coordinator Profile,"1. Log in as Coordinator.
+2. Click on 'Profile' in the sidebar.
+3. Go to the 'User Profile' tab.
+4. Edit profile details (first name, middle name, last name, sex, contact number).
+5. Click 'Save Changes'.",The Coordinator's profile information should be updated successfully. A success message should appear. An error message will appear for invalid input or missing required fields.,,,,,
+TC-022,Agency Admin Profile,Edit Agency Information Tab,"1. Log in as Agency Administrator.
+2. Click on 'Profile' in the sidebar.
+3. Go to the 'Agency Information' tab.
+4. Edit agency details as needed.
+5. Click 'Save Changes'.",The agency information should be updated successfully. A success message should appear. An error message will appear for invalid input or missing required fields.,,,,,
+TC-023,Coordinator Profile,View Agency Information Tab,"1. Log in as Coordinator.
+2. Click on 'Profile' in the sidebar.
+3. Go to the 'Agency Information' tab.",The agency information should be displayed in a read-only format. Coordinator cannot edit the information.,,,,,
+TC-024,Donor Profile,View Agency Information Tab,"1. Log in as Donor.
+2. Click on 'Profile' in the sidebar.
+3. Go to the 'Agency Information' tab.",The agency information should be displayed in a read-only format. Donor cannot edit the information.,,,,,
+TC-025,Profile,Become a Donor,"1. Log in as Agency Administrator or Coordinator.
+2. Click on 'Profile' in the sidebar.
+3. Go to the 'Become a Donor' tab.
+4. Click 'Register as a Donor' for your agency.
+5. Complete the multi-step registration form as in TC-026.","The user is able to register as a blood donor for their agency. Upon approval, their account gains the Donor role in addition to their current role.",,,,,
+TC-026,Blood Donor Registration,Register as a Blood Donor,"1. Go to https://pedbc.pcmc.gov.ph/register.
+2. Click 'Register as a Blood Donor'.
+3. In the modal, choose the agency to register as a donor.
+4. Complete the multi-step registration form:
+   a. New Account Details (first name, middle name, last name, sex; all required except profile picture)
+   b. Account Credentials (email, password, confirm password; all required)
+   c. Donor Profile (DOB, civil status, nationality, contact number, occupation, gov't issued ID [optional])
+   d. Location (address, area [province, city/municipality, barangay])
+   e. Blood Donation History (is regular donor? If yes: blood type, last donation date, blood service facility)
+   f. Confirmation page (registration summary, optional message)
+5. Tick 'I agree to the Terms & Conditions' and 'I have read the Eligibility Requirements'.
+6. Click 'Submit' and confirm in the alert.","If registration is successful, a registration complete alert appears. If there are errors, a registration failed alert appears. Donor receives an email notification. Agency Admin receives a notification that a donor awaits approval.",,,,,
+TC-027,Donor Approval,Approve or Reject Donor Registration,"1. Log in as Agency Administrator.
+2. In the sidebar, click 'Donors Management'.
+3. Click the 'For Approval' tab to view pending donors.
+4. For the new donor, click 'Details' to view information.
+5. Click 'Approve' to approve, or 'Reject' (enter rejection remarks) to reject.
+6. Upon approval or rejection, the donor receives an email and in-app notification about their status.
+7. The donor appears in the 'All' tab with the appropriate status badge (approved/rejected).",Agency Admin can approve or reject donor requests. Donors are notified of their status. Approved donors can now log in.,,,,,
+TC-028,Donor Login,Successful Login as Donor,"1. Go to https://pedbc.pcmc.gov.ph/login.
+2. Click the 'Sign In' button in the top-right corner.
+3. Enter the Donor's registered email.
+4. Enter the Donor's password.
+5. Tick 'I agree to the Terms & Conditions'.
+6. Click 'Sign In'.",The user should be successfully logged in and redirected to the Donor dashboard. The sidebar navigation should be visible on the left.,,,,,
+TC-029,Donor Profile,Update Donor Profile,"1. Log in as Donor.
+2. Click on 'Profile' in the sidebar.
+3. Go to the 'Donor Profile' tab.
+4. Edit donor profile details as needed.
+5. Click 'Save Changes'.",The Donor's profile information should be updated successfully. A success message should appear. An error message will appear for invalid input or missing required fields.,,,,,
+TC-030,Agency Admin/Coordinator - Events,Navigate to Events Page,"1. Log in as an Agency Administrator or Coordinator.
+2. In the sidebar menu, click on 'Blood Drives'.","You should be redirected to the Blood Drives page, where you can see a list of your agency's events and a calendar view.",,PENDING,,,
+TC-031,Agency Admin/Coordinator - Events,Create New Event - Successful,"1. On the Blood Drives page, click the 'New Blood Donation Event' button.
+2. Fill in all required fields: Event Title, Description, Date, and Time.
+3. Click the 'Request Event' button.",A success message 'Event Request Submitted' should appear. The new event should be visible in the events list with a 'For Approval' status.,,PENDING,,,
+TC-032,Agency Admin/Coordinator - Events,Create New Event - Validation Error,"1. On the new event form, leave a required field (e.g., Event Title) blank.
+2. Click the 'Request Event' button.","An error message should appear under the empty field, and you should not be able to submit the form.",,PENDING,,,
+TC-033,Agency Admin/Coordinator - Events,View and Update Event,"1. On the Blood Drives page, find an existing event and click on it to view its details.
+2. Click the 'Edit' button.
+3. Change a detail, such as the event description.
+4. Click 'Save Changes'.","The event details page should open. After editing, a success message should appear, and the event's information should be updated.",,PENDING,,,
+TC-034,Admin - Event Approval,View Pending Events,"1. Log in as Admin.
+2. In the sidebar, navigate to 'Blood Drives'.
+3. Click on the 'For Approval' tab.",A list of all events awaiting approval should be displayed.,,PENDING,,,
+TC-035,Admin - Event Approval,Approve an Event,"1. From the 'For Approval' list, select an event.
+2. Click the 'Approve' button.
+3. Confirm the action in the pop-up.",A success message should appear. The event should be removed from the 'For Approval' list and its status updated to 'Upcoming' or 'Ongoing' in the main event lists. The hosting agency should receive a notification.,,PENDING,,,
+TC-036,Admin - Event Approval,Reject an Event,"1. From the 'For Approval' list, select an event. 
+2. Click the 'Reject' button.
+3. Provide a reason for rejection in the pop-up and confirm.",A success message should appear. The event should be removed from the 'For Approval' list and its status updated to 'Rejected'. The hosting agency should receive a notification with the reason for rejection.,,PENDING,,,
+TC-037,Admin - Event Approval,View Event Details,"1. From any event list (e.g., 'For Approval' or 'All Events'), click on an event card 'Details' button.","A modal or page should open, displaying the full details of the selected event, including the hosting agency's information.",,PENDING,,,
+TC-038,Agency Admin/Coordinator - Events,Open Event Registration,"1. Log in as Agency Admin/Coordinator.
+2. Navigate to the 'Blood Drives' page the go to 'Upcoming' tab list.
+3. This tab listed all 'Approved' event where registration is 'Not Started'.
+4. Click the 'Open the Registration' button.
+5. In the confirmation pop-up, click 'Proceed'.",The registration status should change to 'Ongoing'. A second pop-up should ask if you want to notify donors.,,PENDING,,,
+TC-039,Agency Admin/Coordinator - Events,Notify Donors of Open Registration,"1. After opening registration, in the notification pop-up, click 'Notify Donors'.","A toast notification should appear, indicating that emails are being sent to all registered donors of the agency. The toast should update with the progress and show success/failure counts upon completion.",,PENDING,,,
+TC-040,Agency Admin/Coordinator - Events,Manually Notify Donors,"1. Find an 'Ongoing' event. 
+2. Click the 'Others' (Settings icon) dropdown menu.
+3. Click 'Notify Donors'.","The same email notification process as in TC-039 should be triggered, sending invites to all agency donors.",,PENDING,,,
+TC-041,Donor - View Blood Drives,Verify donor can view the list of available blood drives with open registration.,"1. Log in as a Donor.
+2. Navigate to 'Blood Drives' from the main menu.
+3. Verify the page displays the event that was open for registration in 'TC-038' with 'Ongoing' registration status.
+4. Check that each event card shows Title, Description, Address, Date, and time.",The donor can see a list of all blood drives currently accepting appointments. Each event card is detailed and clear.,,,,,
+TC-042,Donor - Book Appointment,Verify donor can book an appointment.,"1. From the Blood Drives list, find an event then click 'Book' button in the available action.
+2. A confirmation dialog should appear, read the Terms and conditior.
+3. Tick the 'I agree to Terms and Condition' then click 'Confirm' to book the appointment.","A booking success message appears. Also, the 'Cancel' booking button in the booked event will appear, and the 'Book' event action will be disabled too. The donor count for that slot increases by one.",,PENDING,,,
+TC-043,Donor - Cancel Appointment,Verify donor can cancel a booked appointment.,"1. Log in as a Donor with a booked appointment.
+2. Navigate to the Blood Drives page and find the event.
+3. Click the 'Cancel Appointment' button for their booked slot.
+4. A confirmation dialog appears.
+5. Click 'Confirm' to cancel.",A success message appears. The 'Book' appointment becomes active. The donor count for the slot decreases by one.,,,,,
+TC-044,Agency Admin/Coordinator - Events,View Event Participants,"1. Find an 'Ongoing' event.
+2. Click the 'Others' (Settings icon) dropdown menu. 
+3. Click 'View Participants'.",The user should be navigated to a page listing all donors who have registered for this specific event.,,PENDING,,,
+TC-045,Agency Admin/Coordinator - Events,Access Event Dashboard,"1. Find an 'Approved' event on the 'Ongoing' tab list.
+2. Click the 'Dashboard' button.","The user should be navigated to the Event Dashboard for that specific event, showing statistics and donor lists.",,PENDING,,,
+TC-046,Admin - Events,"View Event Tabs (Upcoming, Ongoing)","1. Log in as Admin and navigate to 'Events'.
+2. Click the 'Upcoming' tab.
+3. Click the 'Ongoing' tab.","The 'Upcoming' tab should list events that are approved but not yet open for registration.
+The 'Ongoing' tab should list events where registration is currently open.",,PENDING,,,
+TC-047,Admin - Events,Access Event Dashboard (Manage Event),"1. Go to the 'Ongoing' or 'Upcoming' tab in the Admin events list.
+2. For any event, click the 'Manage Event' button.","The Admin should be navigated to the Event Dashboard for that specific event, with full administrative privileges.",,PENDING,,,
+TC-048,Admin - Event Dashboard,Verify Donor Information,"1. In the Event Dashboard, go to the 'Pending' donors list.
+2. Click the 'Manage' button for a donor.
+3. In the Donor Profile, review the User Profile, update any information then Tick the Verify Donor's Information.
+4. Click 'Save Changes'.",The donor's record should be updated with the new details. The donor's profile status badge should be updated from 'Verified'.,,PENDING,,,
+TC-049,Admin - Event Dashboard,Verify Blood Type,"1. After TC-048, under 'Donor profile' tab, go to 'Blood Type' sidebar and update the donor's blood type from the dropdown options and tick the 'Verify Donor's Blood Type'.
+2. Click 'Save Changes'.",The information should be saved successfully. A success message should appear. The donor's profile blood type status badge should be updated from 'Verified'.,,PENDING,,,
+TC-050,Admin - Event Dashboard,Manage Blood Donation Details (Appointment Details),"1. After TC-049, go to 'Blood Donation Details' tab, under 'Appointment Details' sidebar update Collection Method  and Donor Type (Replacement requires 'Patient Name' and 'Relation')
+2. Click 'Save Changes'.",The information should be saved successfully. A success message should appear. The donor's record should be updated with the new details.,,PENDING,,,
+TC-051,Admin - Event Dashboard,Manage Blood Donation Details (Screening Response),"1. After TC-050, 'Blood Donation Details' tab, under the 'Screening Response' sidebar, you see the responses to the Donor Screening Questionnaire; if it has not been responded to yet, you can update or overwrite.
+2. Click 'Submit Questionnaire'.",The information should be saved successfully. A success message should appear. The donor's record should be updated with the new details.,,PENDING,,,
+TC-052,Admin - Event Dashboard,Manage Blood Donation Details (Physical Examination),"1. After TC-051, in the 'Blood Donation Details' tab, under the 'Physical Examination' sidebar, Fill up the Physical Exam Details fields with Eligibility Status 'ACCEPTED'.
+2. Click 'Save Changes'.",The information should be saved successfully. A success message should appear. The donor's appointment status should be updated to 'Examined' and it should move to the 'Examined' list where you can see the Examination details.,,PENDING,,,
+TC-053,Admin - Event Dashboard,Manage Blood Donation Details (Blood Collection),"1. After TC-052, in the 'Blood Donation Details' tab, under the 'Blood Collection' sidebar, Fill up the Blood Collection details field (volume is required).
+2. Click 'Save Changes' and close the modal.","The blood collection details should be saved. The donor's appointment status should be updated to 'Collected', and they should move to the 'Collected' list.",,PENDING,,,
+TC-054,Admin - Event Dashboard,Manage Blood Collection (Physical Examination - defer a donor),"1. In the Event Dashboard, go to the 'Pending' donors list then select other donor.
+2. Click the 'Manage' button for a donor.
+3. Go to 'Blood Donation Details' tab, then under the 'Physical Examination' sidebar, Fill up the Physical Exam Details fields with Eligibility Status 'TEMPORARILY-DEFERRED'.
+4. Click 'Save Changes'.","The donor's appointment status should be updated to 'Deferred', and they should move to the 'Deferred/No Show' list. Also the Blood Collection tab will be disabled, this time you can not proceed to TC-053.",,PENDING,,,
+TC-055,Agency Admin/Coordinator - Emergency Request,Create New Blood Request - Successful,"1. Log in as an Agency Admin/Coordinator.
+2. Navigate to 'Emergency Blood Requests'.
+3. Click 'New Request'.
+4. Fill in all required fields (e.g., Patient Name, Blood Type, Diagnosis, Quantity).
+5. Click 'Submit Request'.",A success message appears. The new request is added to the list with 'Pending' status, and the dashboard statistics are updated.,,PENDING,,,
+TC-056,Agency Admin/Coordinator - Emergency Request,Create New Blood Request - Validation Error,"1. From the 'New Request' form, leave a required field blank.
+2. Click 'Submit Request'.",An error message is displayed for the empty required field, and the request is not submitted.,,PENDING,,,
+TC-057,Agency Admin/Coordinator - Emergency Request,View and Update Request,"1. Find a 'Pending' request in the list.
+2. Click the 'Update' action.
+3. Modify a field (e.g., update the quantity).
+4. Click 'Save Changes'.",The request details are updated successfully, and a confirmation message is shown.,,PENDING,,,
+TC-058,Admin - Emergency Request,View and Filter Requests,"1. Log in as an Admin.
+2. Navigate to 'Emergency Blood Requests'.
+3. Verify the dashboard shows all requests from all agencies.
+4. Use the filters to sort by status (e.g., 'Pending') and date range.",The Admin can view all requests. The filters work correctly, narrowing down the list as expected.,,PENDING,,,
+TC-059,Admin - Emergency Request,Approve a Request,"1. Find a 'Pending' request in the list.
+2. Click the 'Approve' action.
+3. Confirm the approval in the pop-up.",A success message appears. The request's status changes to 'Fulfilled' in the list, and the dashboard statistics are updated.,,PENDING,,,
+TC-060,Admin - Emergency Request,Reject a Request,"1. Find a 'Pending' request in the list.
+2. Click the 'Reject' action.
+3. Provide a reason and confirm.",A success message appears. The request's status changes to 'Rejected', and the statistics are updated.,,PENDING,,,
+TC-061,Agency Admin/Coordinator - Announcements,Create New Announcement,"1. Log in as an Agency Admin/Coordinator.
+2. Navigate to 'Announcements'.
+3. Click 'New Announcement'.
+4. Fill in the title and content.
+5. Click 'Publish'.",The announcement is created successfully and appears in the list. By default, it is visible only to donors within the same agency.,,PENDING,,,
+TC-062,Agency Admin/Coordinator - Announcements,View and Update Announcement,"1. Find an existing announcement in the list.
+2. Click the 'View' action to see details.
+3. Click the 'Update' action.
+4. Modify the content and save.",The announcement details are displayed correctly. The content is updated successfully after saving.,,PENDING,,,
+TC-063,Admin - Announcements,Create Public Announcement,"1. Log in as an Admin.
+2. Navigate to 'Announcements'.
+3. Click 'New Announcement'.
+4. Fill in the title and content.
+5. Set visibility to 'Public'.
+6. Click 'Publish'.",The announcement is created and appears in the list. It should be visible to all users in the system, regardless of their agency.,,PENDING,,,
+TC-064,Admin - Announcements,Create Agency-Specific Announcement,"1. Log in as an Admin.
+2. Navigate to 'Announcements'.
+3. Click 'New Announcement'.
+4. Fill in the title and content.
+5. Set visibility to 'Private' and select a specific agency.
+6. Click 'Publish'.",The announcement is created and appears in the list. It should be visible only to users belonging to the selected agency.,,PENDING,,,
+TC-065,Admin - Announcements,Update Announcement Visibility,"1. Find an existing announcement.
+2. Click 'Update'.
+3. Change the visibility from 'Public' to 'Private' (or vice-versa) and select an agency if needed.
+4. Click 'Save Changes'.",The announcement's visibility is updated successfully. Its audience changes according to the new setting.,,PENDING,,,
+TC-066,Donor - Dashboard,Verify Dashboard Components Load Correctly,"1. Log in as a Donor.
+2. Navigate to the main Dashboard page.",The dashboard should load without errors. All main sections should be visible: Metric cards (Blood Type, Last Donation, Total Donations), Announcements, and Blood Donation Drives.,,PENDING,,,
+TC-067,Donor - Dashboard,Verify Metric Cards Display Correct Information,"1. On the Dashboard, check the metric cards.
+2. Cross-reference the displayed Blood Type, Last Donation Date, and Total Donations with the donor's actual record.",The information displayed in the metric cards should be accurate and match the donor's profile and donation history.,,PENDING,,,
+TC-068,Donor - Dashboard,Verify Announcements Feed Displays Public and Agency Announcements,"1. As a Donor, view the Announcements feed on the Dashboard.
+2. Ensure there is an Admin that created a 'Public' announcement (e.g., from TC-063).
+3. Ensure the Donor's agency has created an announcement (e.g., from TC-061).",The feed should display both public announcements from the Admin and announcements from the donor's specific agency.,,PENDING,,,
+TC-069,Donor - Dashboard,View Announcement Details from Feed,"1. In the Announcements feed, click on any announcement.",A modal should open, displaying the full details of the selected announcement, including its title and content.,,PENDING,,,
+TC-070,Donor - Dashboard,Verify Blood Donation Drives Section,"1. On the Dashboard, locate the 'Blood Donation Drives' section.
+2. Verify that it contains lists for 'Ongoing Blood Drives' and 'Upcoming Blood Drives'.
+3. Check that relevant events are listed under the correct headings.",The section should be clearly visible and correctly populated with ongoing and upcoming events relevant to the donor's agency.,,PENDING,,,
+TC-071,Donor - Dashboard,Navigate to Events Page from Dashboard Links,"1. In the 'Blood Donation Drives' section, click the 'Ongoing Blood Drives' link.
+2. Go back to the dashboard and click the 'Upcoming Blood Drives' link.",Clicking 'Ongoing Blood Drives' should navigate to the Events page with the 'Ongoing' tab active. Clicking 'Upcoming Blood Drives' should navigate to the Events page with the 'Upcoming' tab active.,,PENDING,,,

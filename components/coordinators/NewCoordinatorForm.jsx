@@ -21,7 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import SweetAlert from "@components/ui/SweetAlert";
 import notify from "@components/ui/notify";
 import InlineLabel from "@components/form/InlineLabel";
-import { Form, FormField, FormItem } from "@components/ui/form";
+import { Form, FormField, FormItem, FormMessage } from "@components/ui/form";
 
 import { uploadPicture } from "@/action/uploads";
 import FieldError from "@components/form/FieldError";
@@ -46,6 +46,7 @@ import LoadingModal from "@components/layout/LoadingModal";
 import CoordinatorConfirmTable from "./CoordinatorConfirmTable";
 import { coordinatorRegistrationWithUser } from "@lib/zod/agencySchema";
 import { storeCoordinator } from "@/action/agencyAction";
+import Link from "next/link";
 
 const form_sections = [
     {
@@ -104,7 +105,7 @@ export default function NewCoordinatorForm({ role_name, agency_id }) {
                 text: "Thank you for registering as a coordinator with one of our partner agencies. Your application has been submitted successfully and is now pending approval from the agency. You will receive a notification via email or system alert once your registration has been approved.",
                 icon: "success",
                 confirmButtonText: "I understand.",
-                onConfirm: () => router.back(),
+                onConfirm: () => router.replace("/"),
             });
         },
         onError: (error) => {
@@ -166,6 +167,8 @@ export default function NewCoordinatorForm({ role_name, agency_id }) {
             password: "",
             password_confirmation: "",
             comments: "",
+            termsAccepted: false,
+            readEligibilityReq: true,
         },
     });
 
@@ -367,6 +370,41 @@ export default function NewCoordinatorForm({ role_name, agency_id }) {
                                                     </FormItem>
                                                 )}
                                             />
+
+                                            <div className="py-3 px-5 flex flex-col justify-center flex-wrap">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="termsAccepted"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <label className="flex-items-center mt-2 text-2xl italic">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="checkbox border-orange-600 bg-orange-500 checked:border-green-500 checked:bg-green-400 checked:text-green-800"
+                                                                    {...field}
+                                                                    checked={
+                                                                        field.value
+                                                                    }
+                                                                />
+                                                                <span>
+                                                                    I agree to
+                                                                    the{" "}
+                                                                    <Link
+                                                                        className="link link-primary"
+                                                                        href="/legal"
+                                                                        target="_blank"
+                                                                    >
+                                                                        Terms
+                                                                        and
+                                                                        Condition
+                                                                    </Link>
+                                                                </span>
+                                                            </label>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
 
                                             <div className="flex justify-between mt-4">
                                                 <button

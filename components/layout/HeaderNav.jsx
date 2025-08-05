@@ -156,7 +156,7 @@ const HeaderNav = ({ currentUser }) => {
                                     Eligibility Requirements
                                 </Link>
                             </li>
-                            <li className="hidden 2xl:block">
+                            {/* <li className="hidden 2xl:block">
                                 <Link
                                     href="/success-stories"
                                     className={clsx(
@@ -168,7 +168,7 @@ const HeaderNav = ({ currentUser }) => {
                                     <MdAmpStories className="h-4" />
                                     Success Stories
                                 </Link>
-                            </li>
+                            </li> */}
                             <li className="hidden 2xl:block">
                                 <Link
                                     href="/contact-us"
@@ -286,7 +286,7 @@ const HeaderNav = ({ currentUser }) => {
                                                 Eligibility Requirements
                                             </Link>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem
+                                        {/* <DropdownMenuItem
                                             className={clsx(
                                                 "block 2xl:hidden p-3 shadow-xs ",
                                                 pathname ===
@@ -301,7 +301,7 @@ const HeaderNav = ({ currentUser }) => {
                                                 <MdAmpStories className="h-4" />
                                                 Success Stories
                                             </Link>
-                                        </DropdownMenuItem>
+                                        </DropdownMenuItem> */}
                                         <DropdownMenuItem
                                             className={clsx(
                                                 "block 2xl:hidden p-3 shadow-xs ",
@@ -417,7 +417,10 @@ const HeaderNav = ({ currentUser }) => {
                                         />
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-92 px-5">
+                                <DropdownMenuContent
+                                    align="end"
+                                    className="w-92 px-5"
+                                >
                                     <DropdownMenuLabel className="flex items-center space-x-2 text-lg">
                                         <UserRoundCheck className="w-3 h-3" />
                                         <div className="flex flex-col">
