@@ -20,7 +20,7 @@ import CreateFeedbackQuestionForm from "./CreateFeedbackQuestionForm";
 import EditFeedbackQuestionForm from "./EditFeedbackQuestionForm";
 import { toast, Toaster } from "sonner";
 import { DataTable } from "@components/reusable_components/Datatable";
-import { Trash, X } from "lucide-react";
+import { Plus, Trash, X } from "lucide-react";
 
 export default function FeedbackQuestionDataTable() {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -153,9 +153,9 @@ export default function FeedbackQuestionDataTable() {
             <div className="flex justify-end mb-4">
                 <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                     <DialogTrigger asChild>
-                        <Button>Add New Question</Button>
+                        <Button variant="secondary"><Plus /> Add New Question</Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
+                    <DialogContent className="sm:max-w-[425px] dark:text-slate-200">
                         <DialogHeader>
                             <DialogTitle>
                                 Create New Feedback Question
@@ -177,7 +177,7 @@ export default function FeedbackQuestionDataTable() {
                 }}
             />
             <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className="sm:max-w-[425px] dark:text-slate-200">
                     <DialogHeader>
                         <DialogTitle>Edit Feedback Question</DialogTitle>
                     </DialogHeader>

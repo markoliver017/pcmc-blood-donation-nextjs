@@ -26,8 +26,9 @@ import {
 
 import { ScreeningQuestionSchema } from "@lib/zod/screeningQuestionSchema";
 import { updateScreeningQuestion } from "@action/screeningQuestionAction";
-import { toast } from "react-toastify";
+
 import FormLogger from "@lib/utils/FormLogger";
+import { toast } from "sonner";
 
 export default function EditQuestionModal({ question, onClose, onSuccess }) {
     const [questionType, setQuestionType] = React.useState(
@@ -81,7 +82,7 @@ export default function EditQuestionModal({ question, onClose, onSuccess }) {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 dark:text-slate-200">
                 <FormField
                     control={form.control}
                     name="question_text"

@@ -41,7 +41,7 @@ import {
 } from "@action/screeningQuestionAction";
 import AddQuestionModal from "./AddQuestionModal";
 import EditQuestionModal from "./EditQuestionModal";
-import { toast } from "react-toastify";
+import { toast, Toaster } from "sonner";
 
 export default function ScreeningQuestionsPage() {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -142,7 +142,7 @@ export default function ScreeningQuestionsPage() {
                     },
                 ]}
             />
-
+            <Toaster />
             <div className="container mx-auto p-6">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-bold">Screening Questions</h1>

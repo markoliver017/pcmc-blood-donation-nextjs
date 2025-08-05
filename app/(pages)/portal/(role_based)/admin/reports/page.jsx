@@ -618,72 +618,251 @@ const InventoryTab = () => {
 };
 
 const EventsTab = () => {
-    const { filters } = useReportContext();
+    const { filters, exportToPDF, isGenerating } = useReportContext();
+
+    const fetchData = async () => {
+        const params = new URLSearchParams();
+        if (filters.startDate) params.append("startDate", filters.startDate);
+        if (filters.endDate) params.append("endDate", filters.endDate);
+        if (filters.agency && filters.agency !== "ALL") {
+            params.append("agency", filters.agency);
+        }
+
+        const res = await fetch(`/api/reports/event-performance?${params}`);
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+            throw new Error(data.message || "Failed to fetch data");
+        }
+        return data.data;
+    };
+
+    const { data, isLoading, error } = useQuery({
+        queryKey: ["eventPerformance", filters],
+        queryFn: fetchData,
+    });
 
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Event Performance Report</CardTitle>
-                <Button variant="outline" size="sm">
-                    <Download className="h-4 w-4 mr-2" />
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => exportToPDF("event-performance")}
+                    disabled={isGenerating}
+                >
+                    {isGenerating ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                        <Download className="h-4 w-4 mr-2" />
+                    )}
                     Export PDF
                 </Button>
             </CardHeader>
             <CardContent>
-                <div className="text-center py-8 text-gray-500">
-                    <p>Event performance data will be displayed here</p>
-                    <p className="text-sm mt-2">
-                        Filters applied: {JSON.stringify(filters, null, 2)}
-                    </p>
-                </div>
+                {isLoading ? (
+                    <div className="flex justify-center items-center py-8">
+                        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+                    </div>
+                ) : error ? (
+                    <div className="text-center py-8 text-red-500">
+                        <p>Error: {error.message}</p>
+                    </div>
+                ) : data && data.length > 0 ? (
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Event Name</TableHead>
+                                <TableHead>Date</TableHead>
+                                <TableHead>Agency</TableHead>
+                                <TableHead className="text-center">Registered</TableHead>
+                                <TableHead className="text-center">Screened</TableHead>
+                                <TableHead className="text-center">Collected</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {data.map((event) => (
+                                <TableRow key={event.id}>
+                                    <TableCell className="font-medium">{event.name}</TableCell>
+                                    <TableCell>{new Date(event.date).toLocaleDateString()}</TableCell>
+                                    <TableCell>{event.agency.name}</TableCell>
+                                    <TableCell className="text-center">{event.registeredDonors}</TableCell>
+                                    <TableCell className="text-center">{event.screenedDonors}</TableCell>
+                                    <TableCell className="text-center">{event.collectedDonors}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                ) : (
+                    <div className="text-center py-8 text-gray-500">
+                        <p>No event performance data available for the selected filters.</p>
+                    </div>
+                )}
             </CardContent>
         </Card>
     );
 };
 
 const DonorsTab = () => {
-    const { filters } = useReportContext();
+    const { filters, exportToPDF, isGenerating } = useReportContext();
+
+    const fetchData = async () => {
+        const params = new URLSearchParams();
+        if (filters.startDate) params.append("startDate", filters.startDate);
+        if (filters.endDate) params.append("endDate", filters.endDate);
+
+        const res = await fetch(`/api/reports/active-donors?${params}`);
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+            throw new Error(data.message || "Failed to fetch data");
+        }
+        return data.data;
+    };
+
+    const { data, isLoading, error } = useQuery({
+        queryKey: ["activeDonors", filters.startDate, filters.endDate],
+        queryFn: fetchData,
+    });
 
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Active Donor List Report</CardTitle>
-                <Button variant="outline" size="sm">
-                    <Download className="h-4 w-4 mr-2" />
+                <CardTitle>Active Donors Report</CardTitle>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => exportToPDF("active-donors")}
+                    disabled={isGenerating}
+                >
+                    {isGenerating ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                        <Download className="h-4 w-4 mr-2" />
+                    )}
                     Export PDF
                 </Button>
             </CardHeader>
             <CardContent>
-                <div className="text-center py-8 text-gray-500">
-                    <p>Active donor list data will be displayed here</p>
-                    <p className="text-sm mt-2">
-                        Filters applied: {JSON.stringify(filters, null, 2)}
-                    </p>
-                </div>
+                {isLoading ? (
+                    <div className="flex justify-center items-center py-8">
+                        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+                    </div>
+                ) : error ? (
+                    <div className="text-center py-8 text-red-500">
+                        <p>Error: {error.message}</p>
+                    </div>
+                ) : data && data.length > 0 ? (
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Name</TableHead>
+                                <TableHead>Email</TableHead>
+                                <TableHead>Contact No.</TableHead>
+                                <TableHead>Blood Type</TableHead>
+                                <TableHead>Last Donation</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {data.map((donor) => (
+                                <TableRow key={donor.id}>
+                                    <TableCell className="font-medium">{donor.name}</TableCell>
+                                    <TableCell>{donor.email}</TableCell>
+                                    <TableCell>{donor.contact_no}</TableCell>
+                                    <TableCell>
+                                        <Badge variant="secondary">{donor.blood_type.blood_type}</Badge>
+                                    </TableCell>
+                                    <TableCell>{new Date(donor.lastDonationDate).toLocaleDateString()}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                ) : (
+                    <div className="text-center py-8 text-gray-500">
+                        <p>No active donors found for the selected period.</p>
+                    </div>
+                )}
             </CardContent>
         </Card>
     );
 };
 
 const AgenciesTab = () => {
-    const { filters } = useReportContext();
+    const { filters, exportToPDF, isGenerating } = useReportContext();
+
+    const fetchData = async () => {
+        const params = new URLSearchParams();
+        if (filters.startDate) params.append("startDate", filters.startDate);
+        if (filters.endDate) params.append("endDate", filters.endDate);
+
+        const res = await fetch(`/api/reports/agency-contribution?${params}`);
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+            throw new Error(data.message || "Failed to fetch data");
+        }
+        return data.data;
+    };
+
+    const { data, isLoading, error } = useQuery({
+        queryKey: ["agencyContribution", filters.startDate, filters.endDate],
+        queryFn: fetchData,
+    });
 
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Agency Contribution Report</CardTitle>
-                <Button variant="outline" size="sm">
-                    <Download className="h-4 w-4 mr-2" />
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => exportToPDF("agency-contribution")}
+                    disabled={isGenerating}
+                >
+                    {isGenerating ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                        <Download className="h-4 w-4 mr-2" />
+                    )}
                     Export PDF
                 </Button>
             </CardHeader>
             <CardContent>
-                <div className="text-center py-8 text-gray-500">
-                    <p>Agency contribution data will be displayed here</p>
-                    <p className="text-sm mt-2">
-                        Filters applied: {JSON.stringify(filters, null, 2)}
-                    </p>
-                </div>
+                {isLoading ? (
+                    <div className="flex justify-center items-center py-8">
+                        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+                    </div>
+                ) : error ? (
+                    <div className="text-center py-8 text-red-500">
+                        <p>Error: {error.message}</p>
+                    </div>
+                ) : data && data.length > 0 ? (
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Agency Name</TableHead>
+                                <TableHead className="text-center">Total Events</TableHead>
+                                <TableHead className="text-center">Total Volume (ml)</TableHead>
+                                <TableHead className="text-center">Avg. Donors / Event</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {data.map((agency) => (
+                                <TableRow key={agency.id}>
+                                    <TableCell className="font-medium">{agency.name}</TableCell>
+                                    <TableCell className="text-center">{agency.totalEvents}</TableCell>
+                                    <TableCell className="text-center">{parseInt(agency.totalVolumeCollected, 10) || 0}</TableCell>
+                                    <TableCell className="text-center">{parseFloat(agency.avgDonorsPerEvent).toFixed(1) || 0}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                ) : (
+                    <div className="text-center py-8 text-gray-500">
+                        <p>No agency contribution data available for the selected filters.</p>
+                    </div>
+                )}
             </CardContent>
         </Card>
     );
@@ -743,10 +922,10 @@ export default function ReportsPage() {
         <ReportProvider>
             <div className="container mx-auto p-6">
                 <div className="mb-6">
-                    <h1 className="text-3xl font-bold text-gray-900">
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                         Admin Reports
                     </h1>
-                    <p className="text-gray-600 mt-2">
+                    <p className="text-gray-600 mt-2 dark:text-gray-400">
                         Generate and export comprehensive reports for blood
                         donation activities
                     </p>

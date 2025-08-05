@@ -103,7 +103,7 @@ const HeaderNav = ({ currentUser }) => {
                                     Home
                                 </Link>
                             </li>
-                            <li className="hidden md:block">
+                            <li className="hidden lg:block">
                                 <Link
                                     href="/about-us"
                                     className={clsx(
@@ -129,7 +129,7 @@ const HeaderNav = ({ currentUser }) => {
                                     Why Donate
                                 </Link>
                             </li>
-                            <li className="hidden lg:block">
+                            <li className="hidden xl:block">
                                 <Link
                                     href="/donation-process"
                                     className={clsx(
@@ -142,7 +142,7 @@ const HeaderNav = ({ currentUser }) => {
                                     Donation Process
                                 </Link>
                             </li>
-                            <li className="hidden xl:block">
+                            <li className="hidden 2xl:block">
                                 <Link
                                     href="/eligibility-requirements"
                                     className={clsx(
@@ -226,7 +226,7 @@ const HeaderNav = ({ currentUser }) => {
                                         </DropdownMenuItem>
                                         <DropdownMenuItem
                                             className={clsx(
-                                                "block md:hidden p-3 shadow-xs ",
+                                                "block lg:hidden p-3 shadow-xs ",
                                                 pathname === "/about-us" &&
                                                     "bg-blue-400/50"
                                             )}
@@ -272,7 +272,7 @@ const HeaderNav = ({ currentUser }) => {
                                         </DropdownMenuItem>
                                         <DropdownMenuItem
                                             className={clsx(
-                                                "block xl:hidden p-3 shadow-xs ",
+                                                "block 2xl:hidden p-3 shadow-xs ",
                                                 pathname ===
                                                     "/eligibility-requirements" &&
                                                     "bg-blue-400/50"
@@ -322,77 +322,76 @@ const HeaderNav = ({ currentUser }) => {
                             </li>
                         </ul>
                     </nav>
-                    <div className="hidden">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    className="h-8 w-min p-0"
-                                >
-                                    <span className="sr-only">Open menu</span>
-                                    <UserCog2Icon /> Developer
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent side="bottom" align="start">
-                                <DropdownMenuLabel className="flex items-center gap-2 space-x-2">
-                                    <Command className="w-3 h-3" />
-                                    Navigate
-                                </DropdownMenuLabel>
-                                <DropdownMenuSeparator />
+                    
+                        {/* <div className="hidden">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        className="h-8 w-min p-0"
+                                    >
+                                        <span className="sr-only">Open menu</span>
+                                        <UserCog2Icon /> Developer
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent side="bottom" align="start">
+                                    <DropdownMenuLabel className="flex items-center gap-2 space-x-2">
+                                        <Command className="w-3 h-3" />
+                                        Navigate
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
 
-                                {/* <Link href={`/`}> */}
-                                <DropdownMenuItem>
-                                    <Link
-                                        href="/portal"
-                                        className="w-full hover:ring rounded flex-items-center "
-                                    >
-                                        <Users className="h-4" />
-                                        Dashboard
-                                    </Link>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    <Link
-                                        href="/portal/profile"
-                                        className="w-full hover:ring rounded flex-items-center "
-                                    >
-                                        <User className="h-4" />
-                                        Profile
-                                    </Link>
-                                </DropdownMenuItem>
-                                {currentUser?.roles &&
-                                    currentUser?.roles?.length > 1 && (
-                                        <DropdownMenuItem>
-                                            <Link
-                                                href="/portal/change-role"
-                                                className="w-full hover:ring rounded flex-items-center "
-                                            >
-                                                <PiUserSwitchBold className="h-4" />
-                                                Switch Account
-                                            </Link>
-                                        </DropdownMenuItem>
-                                    )}
-                                <DropdownMenuItem>
-                                    <Link
-                                        href="/portal/admin/users"
-                                        className="w-full hover:ring rounded flex-items-center "
-                                    >
-                                        <Users2Icon className="h-4" />
-                                        Users
-                                    </Link>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    <Link
-                                        href="/portal/admin/agencies"
-                                        className="w-full hover:ring rounded flex-items-center "
-                                    >
-                                        <FileSliders className="h-4" />
-                                        Agencies
-                                    </Link>
-                                </DropdownMenuItem>
-                                {/* </Link> */}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
+                                    <DropdownMenuItem>
+                                        <Link
+                                            href="/portal"
+                                            className="w-full hover:ring rounded flex-items-center "
+                                        >
+                                            <Users className="h-4" />
+                                            Dashboard
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                        <Link
+                                            href="/portal/profile"
+                                            className="w-full hover:ring rounded flex-items-center "
+                                        >
+                                            <User className="h-4" />
+                                            Profile
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    {currentUser?.roles &&
+                                        currentUser?.roles?.length > 1 && (
+                                            <DropdownMenuItem>
+                                                <Link
+                                                    href="/portal/change-role"
+                                                    className="w-full hover:ring rounded flex-items-center "
+                                                >
+                                                    <PiUserSwitchBold className="h-4" />
+                                                    Switch Account
+                                                </Link>
+                                            </DropdownMenuItem>
+                                        )}
+                                    <DropdownMenuItem>
+                                        <Link
+                                            href="/portal/admin/users"
+                                            className="w-full hover:ring rounded flex-items-center "
+                                        >
+                                            <Users2Icon className="h-4" />
+                                            Users
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                        <Link
+                                            href="/portal/admin/agencies"
+                                            className="w-full hover:ring rounded flex-items-center "
+                                        >
+                                            <FileSliders className="h-4" />
+                                            Agencies
+                                        </Link>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div> */}
                     {!isLoggedIn ? (
                         <LoginDrawer />
                     ) : (

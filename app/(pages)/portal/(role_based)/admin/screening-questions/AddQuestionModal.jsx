@@ -27,7 +27,8 @@ import {
 
 import { ScreeningQuestionSchema } from "@lib/zod/screeningQuestionSchema";
 import { createScreeningQuestion } from "@action/screeningQuestionAction";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+
 
 export default function AddQuestionModal({ onClose, onSuccess }) {
     const form = useForm({
@@ -61,7 +62,7 @@ export default function AddQuestionModal({ onClose, onSuccess }) {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 dark:text-slate-200">
                 <FormField
                     control={form.control}
                     name="question_text"

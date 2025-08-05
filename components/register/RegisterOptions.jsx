@@ -82,7 +82,7 @@ export default function RegisterOptions() {
                     </label>
                     <button
                         type="button"
-                        className="btn btn-primary w-full sm:w-auto flex items-center gap-2 font-semibold"
+                        className="btn btn-primary w-48 sm:w-auto flex items-center gap-2 font-semibold"
                         aria-label="Search"
                     >
                         <Search className="h-4 w-4" /> Search

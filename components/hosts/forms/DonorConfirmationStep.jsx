@@ -13,8 +13,8 @@ import { formatFormalName } from "@lib/utils/string.utils";
 
 const DetailItem = ({ label, value }) => (
     <div className="flex justify-between items-center py-2 border-b">
-        <span className="font-semibold text-gray-600">{label}</span>
-        <span className="text-gray-800">{value || "N/A"}</span>
+        <span className="font-semibold text-gray-600 dark:text-gray-400">{label}</span>
+        <span className="text-gray-800 dark:text-gray-200">{value || "N/A"}</span>
     </div>
 );
 
