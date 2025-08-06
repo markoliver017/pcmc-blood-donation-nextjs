@@ -19,6 +19,7 @@ export async function GET(request, { params }) {
             bloodType: searchParams.get("bloodType"),
         };
 
+        console.log("filters>>>>>>", filters);
         // Fetch the same data that the UI would use
         let reportData;
         const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";

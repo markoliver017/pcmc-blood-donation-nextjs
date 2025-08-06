@@ -1,5 +1,6 @@
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 import BloodCollecitionList from "./BloodCollecitionList";
+import BloodCollectionDashboard from "@components/admin/blood-collections/BloodCollectionDashboard";
 import { MdBloodtype } from "react-icons/md";
 
 export default function Page() {
@@ -7,7 +8,7 @@ export default function Page() {
         <>
             <WrapperHeadMain
                 icon={<MdBloodtype />}
-                pageTitle="Blood Collections"
+                pageTitle="Blood Donations"
                 breadcrumbs={[
                     {
                         path: "/portal/admin/blood-collections",
@@ -16,8 +17,11 @@ export default function Page() {
                     },
                 ]}
             />
-            <div className="w-full 2xl:px-5 mx-auto shadow-lg mt-5  space-y-3">
-                <BloodCollecitionList />
+            <div className="w-full 2xl:px-5 mx-auto mt-5 space-y-6">
+                <BloodCollectionDashboard />
+                <div className="shadow-lg rounded-lg">
+                    <BloodCollecitionList />
+                </div>
             </div>
         </>
     );

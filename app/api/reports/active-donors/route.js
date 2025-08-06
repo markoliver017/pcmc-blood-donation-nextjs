@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import {
     Donor,
-    BloodDonationHistory,
-    BloodType
+    BloodDonationCollection,
+    BloodType,
+    User,
+    BloodDonationEvent,
+    Agency,
 } from "@lib/models";
 import { Op, fn, col } from "sequelize";
 import { auth } from "@lib/auth";
@@ -21,48 +24,72 @@ export async function GET(request) {
         const startDate = searchParams.get("startDate");
         const endDate = searchParams.get("endDate");
 
-        const dateFilter = {};
+        // Build date filter for BloodDonationEvent.date
+        const eventDateFilter = {};
         if (startDate && endDate) {
-            dateFilter.date_of_donation = {
+            eventDateFilter.date = {
                 [Op.between]: [new Date(startDate), new Date(endDate)],
             };
         } else if (startDate) {
-            dateFilter.date_of_donation = { [Op.gte]: new Date(startDate) };
+            eventDateFilter.date = { [Op.gte]: new Date(startDate) };
         } else if (endDate) {
-            dateFilter.date_of_donation = { [Op.lte]: new Date(endDate) };
+            eventDateFilter.date = { [Op.lte]: new Date(endDate) };
         } else {
             // Default to the last 90 days if no date is provided
             const ninetyDaysAgo = new Date();
             ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
-            dateFilter.date_of_donation = { [Op.gte]: ninetyDaysAgo };
+            eventDateFilter.date = { [Op.gte]: ninetyDaysAgo };
         }
 
         const activeDonors = await Donor.findAll({
             attributes: [
                 "id",
-                "name",
-                "email",
-                "contact_no",
-                [fn('MAX', col('blood_history.date_of_donation')), 'lastDonationDate']
+                "contact_number",
+                [col("user.name"), "name"],
+                [col("user.email"), "email"],
+                [col("agency.name"), "agency"],
+                [col("blood_type.blood_type"), "blood_type"],
+                [
+                    fn("MAX", col("blood_collections->event.date")),
+                    "lastDonationDate",
+                ],
             ],
             include: [
                 {
-                    model: BloodDonationHistory,
-                    as: "blood_history",
+                    model: User,
+                    as: "user",
                     attributes: [],
-                    where: dateFilter,
-                    required: true, // Ensures only donors with donations in the period are returned
+                },
+                {
+                    model: BloodDonationCollection,
+                    as: "blood_collections",
+                    attributes: [],
+                    required: true,
+                    include: [
+                        {
+                            model: BloodDonationEvent,
+                            as: "event",
+                            attributes: [],
+                            where: eventDateFilter,
+                            required: true,
+                        },
+                    ],
                 },
                 {
                     model: BloodType,
-                    as: 'blood_type',
-                    attributes: ['blood_type']
-                }
+                    as: "blood_type",
+                    attributes: ["blood_type"],
+                },
+                {
+                    model: Agency,
+                    as: "agency",
+                    attributes: ["name"],
+                },
             ],
-            group: ['Donor.id', 'blood_type.id'],
-            order: [[fn('MAX', col('blood_history.date_of_donation')), 'DESC']],
+            group: ["Donor.id", "user.id", "blood_type.id"],
+            order: [[fn("MAX", col("blood_collections.event.date")), "DESC"]],
             raw: true,
-            nest: true
+            nest: true,
         });
 
         return NextResponse.json({ success: true, data: activeDonors });

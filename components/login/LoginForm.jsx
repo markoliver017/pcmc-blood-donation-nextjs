@@ -277,7 +277,7 @@ export default function LoginForm({
                                 </>
                             )}
                         </button>
-                        <button
+                        {/* <button
                             disabled={isAnyLoading}
                             className="flex items-center justify-center gap-3 w-full py-3 rounded-lg bg-[#1A77F2] border border-blue-700 shadow hover:bg-blue-800 text-white font-semibold text-base transition-all"
                             onClick={() => {
@@ -287,7 +287,6 @@ export default function LoginForm({
                                     facebook: true,
                                 }));
                             }}
-                            // onClick={() => alert("Works only in Production")}
                         >
                             {isLoading?.facebook ? (
                                 <>
@@ -311,7 +310,7 @@ export default function LoginForm({
                                     Continue with Facebook
                                 </>
                             )}
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             )}

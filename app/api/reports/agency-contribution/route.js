@@ -3,13 +3,14 @@ import {
     Agency,
     BloodDonationEvent,
     BloodDonationCollection,
+    DonorAppointmentInfo,
 } from "@lib/models";
 import { Op, fn, col, literal } from "sequelize";
 import { auth } from "@lib/auth";
 
 export async function GET(request) {
     const session = await auth();
-    if (!session || session.user.role !== "ADMIN") {
+    if (!session || session.user.role_name !== "Admin") {
         return NextResponse.json(
             { success: false, message: "Unauthorized" },
             { status: 401 }
@@ -21,7 +22,9 @@ export async function GET(request) {
         const startDate = searchParams.get("startDate");
         const endDate = searchParams.get("endDate");
 
-        const eventWhereConditions = {};
+        const eventWhereConditions = {
+            status: "approved",
+        };
         if (startDate && endDate) {
             eventWhereConditions.date = {
                 [Op.between]: [new Date(startDate), new Date(endDate)],
@@ -33,18 +36,27 @@ export async function GET(request) {
         }
 
         const agencyContributions = await Agency.findAll({
+            where: {
+                status: "activated",
+            },
             attributes: [
                 "id",
                 "name",
                 [fn("COUNT", col("events.id")), "totalEvents"],
+                [fn("COUNT", col("events.collections.id")), "totalCollections"],
                 [
                     fn("SUM", col("events.collections.volume")),
                     "totalVolumeCollected",
                 ],
                 [
-                    fn("AVG", literal(`(SELECT COUNT(*) FROM blood_donation_collections WHERE blood_donation_collections.event_id = events.id)`)),
-                    'avgDonorsPerEvent'
-                ]
+                    fn(
+                        "AVG",
+                        literal(
+                            `(SELECT COUNT(*) FROM donor_appointment_infos WHERE donor_appointment_infos.event_id = events.id)`
+                        )
+                    ),
+                    "avgDonorsPerEvent",
+                ],
             ],
             include: [
                 {
@@ -58,6 +70,17 @@ export async function GET(request) {
                             model: BloodDonationCollection,
                             as: "collections",
                             attributes: [],
+                            required: false,
+                        },
+                        {
+                            model: DonorAppointmentInfo,
+                            as: "donors",
+                            attributes: [],
+                            where: {
+                                status: {
+                                    [Op.notIn]: ["cancelled", "no show"],
+                                },
+                            },
                             required: false,
                         },
                     ],

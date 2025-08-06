@@ -3,15 +3,12 @@
 import { logAuditTrail } from "@lib/audit_trails.utils";
 import { auth } from "@lib/auth";
 import { logErrorToFile } from "@lib/logger.server";
-import {
-    BloodDonationHistory,
-    Donor,
-    sequelize,
-} from "@lib/models";
+import { BloodDonationHistory, Donor, sequelize } from "@lib/models";
 import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 
 import { bloodHistorySchema } from "@lib/zod/bloodHistorySchema";
+import { col, fn } from "sequelize";
 
 export async function storeUpdatePrevDonation(donorId, formData) {
     const session = await auth();
@@ -51,7 +48,6 @@ export async function storeUpdatePrevDonation(donorId, formData) {
         };
     }
 
-
     const transaction = await sequelize.transaction();
 
     try {
@@ -65,13 +61,9 @@ export async function storeUpdatePrevDonation(donorId, formData) {
             await BloodDonationHistory.create(data, {
                 transaction,
             });
-
-
         } else {
             await prevDonation.update(data, { transaction });
-
         }
-
 
         await transaction.commit();
 
@@ -119,16 +111,51 @@ export async function getDonorPrevDonation(donorId) {
 
     try {
         const donation = await BloodDonationHistory.findOne({
-            where: { donor_id: donorId }
+            where: { donor_id: donorId },
         });
 
         const formattedData = formatSeqObj(donation);
 
         return { success: true, data: formattedData };
-
     } catch (err) {
-
         logErrorToFile(err, "getDonorPrevDonation ERROR");
+        return {
+            success: false,
+            type: "server",
+            message: extractErrorMessage(err),
+        };
+    }
+}
+
+export async function getAllBloodDonationHistoryCount() {
+    const session = await auth();
+
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+
+    try {
+        const result = await BloodDonationHistory.findAll({
+            attributes: [
+                [
+                    fn("SUM", col("previous_donation_count")),
+                    "totalDonationHistoryCount",
+                ],
+                [
+                    fn("SUM", col("previous_donation_volume")),
+                    "totalDonationHistoryVolume",
+                ],
+            ],
+        });
+
+        const formattedData = formatSeqObj(result)[0];
+
+        return { success: true, data: formattedData };
+    } catch (err) {
+        logErrorToFile(err, "getAllBloodDonationHistory ERROR");
         return {
             success: false,
             type: "server",

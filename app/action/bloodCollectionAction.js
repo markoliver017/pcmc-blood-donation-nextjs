@@ -60,7 +60,12 @@ export async function storeUpdateBloodCollection(appointmentId, formData) {
             {
                 model: Donor,
                 as: "donor",
-                attributes: ["id", "user_id", "last_donation_date", "donation_history_donation_date"],
+                attributes: [
+                    "id",
+                    "user_id",
+                    "last_donation_date",
+                    "donation_history_donation_date",
+                ],
                 required: true,
             },
             {
@@ -68,7 +73,7 @@ export async function storeUpdateBloodCollection(appointmentId, formData) {
                 as: "event",
                 attributes: ["date"],
                 required: true,
-            }
+            },
         ],
     });
 
@@ -98,7 +103,9 @@ export async function storeUpdateBloodCollection(appointmentId, formData) {
     console.log("eventDate", eventDate);
 
     if (donor?.last_donation_date) {
-        lastBloodCollectionDate = startOfDay(new Date(donor?.last_donation_date));
+        lastBloodCollectionDate = startOfDay(
+            new Date(donor?.last_donation_date)
+        );
     }
     const isEventAfterEqualLastBloodCollectionDate = isNaN(
         lastBloodCollectionDate?.getTime()
@@ -127,7 +134,6 @@ export async function storeUpdateBloodCollection(appointmentId, formData) {
             await donor.update(
                 {
                     last_donation_date: format(eventDate, "yyyy-MM-dd"),
-
                 },
                 { transaction }
             );
@@ -176,11 +182,20 @@ export async function getAllBloodCollections() {
                 {
                     model: BloodDonationEvent,
                     as: "event",
+                    attributes: ["date"],
                 },
                 {
                     model: Donor,
                     as: "donor",
                     include: [
+                        {
+                            model: BloodDonationHistory,
+                            as: "blood_history",
+                            attributes: [
+                                "previous_donation_count",
+                                "previous_donation_volume",
+                            ],
+                        },
                         {
                             model: User,
                             as: "user",
@@ -238,7 +253,10 @@ export async function getAllDonorsBloodCollections() {
                 {
                     model: BloodDonationHistory,
                     as: "blood_history",
-                    attributes: ["previous_donation_count", "previous_donation_volume"]
+                    attributes: [
+                        "previous_donation_count",
+                        "previous_donation_volume",
+                    ],
                 },
                 {
                     model: User,
@@ -261,7 +279,15 @@ export async function getAllDonorsBloodCollections() {
                 {
                     model: Agency,
                     as: "agency",
-                    attributes: ["name", "address", "barangay", "city_municipality", "province", "contact_number", "agency_address"],
+                    attributes: [
+                        "name",
+                        "address",
+                        "barangay",
+                        "city_municipality",
+                        "province",
+                        "contact_number",
+                        "agency_address",
+                    ],
                 },
             ],
         });
@@ -301,25 +327,42 @@ export async function getDonorBloodCollections(donorId) {
                             where: { status: "collected" },
                             model: DonorAppointmentInfo,
                             as: "appointment",
-                            attributes: ["id", "donor_type", "collection_method", "status"],
+                            attributes: [
+                                "id",
+                                "donor_type",
+                                "collection_method",
+                                "status",
+                            ],
                         },
                         {
                             model: PhysicalExamination,
                             as: "exam",
-                            attributes: ["id", "eligibility_status", "blood_pressure", "pulse_rate", "hemoglobin_level", "weight", "temperature", "deferral_reason", "remarks"]
+                            attributes: [
+                                "id",
+                                "eligibility_status",
+                                "blood_pressure",
+                                "pulse_rate",
+                                "hemoglobin_level",
+                                "weight",
+                                "temperature",
+                                "deferral_reason",
+                                "remarks",
+                            ],
                         },
                         {
                             model: BloodDonationEvent,
                             as: "event",
-                            attributes: ["date", "title"]
-                        }
-
-                    ]
+                            attributes: ["date", "title"],
+                        },
+                    ],
                 },
                 {
                     model: BloodDonationHistory,
                     as: "blood_history",
-                    attributes: ["previous_donation_count", "previous_donation_volume"]
+                    attributes: [
+                        "previous_donation_count",
+                        "previous_donation_volume",
+                    ],
                 },
                 {
                     model: User,
@@ -342,7 +385,15 @@ export async function getDonorBloodCollections(donorId) {
                 {
                     model: Agency,
                     as: "agency",
-                    attributes: ["name", "address", "barangay", "city_municipality", "province", "contact_number", "agency_address"],
+                    attributes: [
+                        "name",
+                        "address",
+                        "barangay",
+                        "city_municipality",
+                        "province",
+                        "contact_number",
+                        "agency_address",
+                    ],
                 },
             ],
         });

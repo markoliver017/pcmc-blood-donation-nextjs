@@ -12,7 +12,17 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@components/ui/select";
-import { CalendarIcon, Download, Filter, Loader2 } from "lucide-react";
+import {
+    CalendarIcon,
+    Download,
+    Filter,
+    Loader2,
+    Heart,
+    Package,
+    Calendar,
+    Users,
+    Building2,
+} from "lucide-react";
 import { Badge } from "@components/ui/badge";
 import {
     Table,
@@ -182,6 +192,7 @@ const FilterBar = () => {
                             onValueChange={(value) =>
                                 updateFilter("agency", value)
                             }
+                            disabled
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select Agency" />
@@ -209,6 +220,7 @@ const FilterBar = () => {
                             onValueChange={(value) =>
                                 updateFilter("bloodType", value)
                             }
+                            disabled
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select Blood Type" />
@@ -676,27 +688,48 @@ const EventsTab = () => {
                                 <TableHead>Event Name</TableHead>
                                 <TableHead>Date</TableHead>
                                 <TableHead>Agency</TableHead>
-                                <TableHead className="text-center">Registered</TableHead>
-                                <TableHead className="text-center">Screened</TableHead>
-                                <TableHead className="text-center">Collected</TableHead>
+                                <TableHead className="text-center">
+                                    Registered
+                                </TableHead>
+                                <TableHead className="text-center">
+                                    Screened
+                                </TableHead>
+                                <TableHead className="text-center">
+                                    Collected
+                                </TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {data.map((event) => (
                                 <TableRow key={event.id}>
-                                    <TableCell className="font-medium">{event.name}</TableCell>
-                                    <TableCell>{new Date(event.date).toLocaleDateString()}</TableCell>
+                                    <TableCell className="font-medium">
+                                        {event.title}
+                                    </TableCell>
+                                    <TableCell>
+                                        {new Date(
+                                            event.date
+                                        ).toLocaleDateString()}
+                                    </TableCell>
                                     <TableCell>{event.agency.name}</TableCell>
-                                    <TableCell className="text-center">{event.registeredDonors}</TableCell>
-                                    <TableCell className="text-center">{event.screenedDonors}</TableCell>
-                                    <TableCell className="text-center">{event.collectedDonors}</TableCell>
+                                    <TableCell className="text-center">
+                                        {event.registeredDonors}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {event.screenedDonors}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {event.collectedDonors}
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 ) : (
                     <div className="text-center py-8 text-gray-500">
-                        <p>No event performance data available for the selected filters.</p>
+                        <p>
+                            No event performance data available for the selected
+                            filters.
+                        </p>
                     </div>
                 )}
             </CardContent>
@@ -761,19 +794,35 @@ const DonorsTab = () => {
                                 <TableHead>Email</TableHead>
                                 <TableHead>Contact No.</TableHead>
                                 <TableHead>Blood Type</TableHead>
+                                <TableHead>Agency</TableHead>
                                 <TableHead>Last Donation</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {data.map((donor) => (
                                 <TableRow key={donor.id}>
-                                    <TableCell className="font-medium">{donor.name}</TableCell>
-                                    <TableCell>{donor.email}</TableCell>
-                                    <TableCell>{donor.contact_no}</TableCell>
-                                    <TableCell>
-                                        <Badge variant="secondary">{donor.blood_type.blood_type}</Badge>
+                                    <TableCell className="font-medium">
+                                        {donor.name}
                                     </TableCell>
-                                    <TableCell>{new Date(donor.lastDonationDate).toLocaleDateString()}</TableCell>
+                                    <TableCell>{donor.email}</TableCell>
+                                    <TableCell>
+                                        +63{donor.contact_number}
+                                    </TableCell>
+                                    <TableCell>
+                                        <Badge variant="secondary">
+                                            {donor?.blood_type}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Badge variant="secondary">
+                                            {donor?.agency}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        {new Date(
+                                            donor.lastDonationDate
+                                        ).toLocaleDateString()}
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -842,25 +891,56 @@ const AgenciesTab = () => {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Agency Name</TableHead>
-                                <TableHead className="text-center">Total Events</TableHead>
-                                <TableHead className="text-center">Total Volume (ml)</TableHead>
-                                <TableHead className="text-center">Avg. Donors / Event</TableHead>
+                                <TableHead className="text-center">
+                                    Total Events
+                                </TableHead>
+                                <TableHead className="text-center">
+                                    Total Collections
+                                </TableHead>
+                                <TableHead className="text-center">
+                                    Total Volume (ml)
+                                </TableHead>
+                                <TableHead className="text-center">
+                                    Avg. Donors / Event
+                                </TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {data.map((agency) => (
                                 <TableRow key={agency.id}>
-                                    <TableCell className="font-medium">{agency.name}</TableCell>
-                                    <TableCell className="text-center">{agency.totalEvents}</TableCell>
-                                    <TableCell className="text-center">{parseInt(agency.totalVolumeCollected, 10) || 0}</TableCell>
-                                    <TableCell className="text-center">{parseFloat(agency.avgDonorsPerEvent).toFixed(1) || 0}</TableCell>
+                                    <TableCell className="font-medium">
+                                        {agency.name}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {agency.totalEvents}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {parseInt(
+                                            agency.totalCollections,
+                                            10
+                                        ) || 0}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {parseInt(
+                                            agency.totalVolumeCollected,
+                                            10
+                                        ) || 0}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {parseFloat(
+                                            agency.avgDonorsPerEvent
+                                        ).toFixed(1) || 0}
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 ) : (
                     <div className="text-center py-8 text-gray-500">
-                        <p>No agency contribution data available for the selected filters.</p>
+                        <p>
+                            No agency contribution data available for the
+                            selected filters.
+                        </p>
                     </div>
                 )}
             </CardContent>
@@ -934,14 +1014,42 @@ export default function ReportsPage() {
                 <FilterBar />
 
                 <Tabs defaultValue="donation" className="w-full">
-                    <TabsList className="grid w-full grid-cols-7">
-                        <TabsTrigger value="donation">Donation</TabsTrigger>
-                        <TabsTrigger value="inventory">Inventory</TabsTrigger>
-                        <TabsTrigger value="events">Events</TabsTrigger>
-                        <TabsTrigger value="donors">Donors</TabsTrigger>
-                        <TabsTrigger value="agencies">Agencies</TabsTrigger>
-                        <TabsTrigger value="audit">Audit</TabsTrigger>
-                        <TabsTrigger value="contact">Contact</TabsTrigger>
+                    <TabsList className="grid w-full grid-cols-5 h-auto p-1 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <TabsTrigger
+                            value="donation"
+                            className="flex items-center gap-2 px-4 py-3 rounded-md transition-all duration-200 data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-blue-200 data-[state=inactive]:text-gray-600 data-[state=inactive]:hover:text-gray-900 data-[state=inactive]:hover:bg-gray-50 dark:data-[state=active]:bg-gray-900 dark:data-[state=active]:text-blue-400 dark:data-[state=inactive]:text-gray-400 dark:data-[state=inactive]:hover:text-gray-200 dark:data-[state=inactive]:hover:bg-gray-700"
+                        >
+                            <Heart className="h-4 w-4" />
+                            <span className="font-medium">Donation</span>
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="inventory"
+                            className="flex items-center gap-2 px-4 py-3 rounded-md transition-all duration-200 data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-blue-200 data-[state=inactive]:text-gray-600 data-[state=inactive]:hover:text-gray-900 data-[state=inactive]:hover:bg-gray-50 dark:data-[state=active]:bg-gray-900 dark:data-[state=active]:text-blue-400 dark:data-[state=inactive]:text-gray-400 dark:data-[state=inactive]:hover:text-gray-200 dark:data-[state=inactive]:hover:bg-gray-700"
+                        >
+                            <Package className="h-4 w-4" />
+                            <span className="font-medium">Inventory</span>
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="events"
+                            className="flex items-center gap-2 px-4 py-3 rounded-md transition-all duration-200 data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-blue-200 data-[state=inactive]:text-gray-600 data-[state=inactive]:hover:text-gray-900 data-[state=inactive]:hover:bg-gray-50 dark:data-[state=active]:bg-gray-900 dark:data-[state=active]:text-blue-400 dark:data-[state=inactive]:text-gray-400 dark:data-[state=inactive]:hover:text-gray-200 dark:data-[state=inactive]:hover:bg-gray-700"
+                        >
+                            <Calendar className="h-4 w-4" />
+                            <span className="font-medium">Events</span>
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="donors"
+                            className="flex items-center gap-2 px-4 py-3 rounded-md transition-all duration-200 data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-blue-200 data-[state=inactive]:text-gray-600 data-[state=inactive]:hover:text-gray-900 data-[state=inactive]:hover:bg-gray-50 dark:data-[state=active]:bg-gray-900 dark:data-[state=active]:text-blue-400 dark:data-[state=inactive]:text-gray-400 dark:data-[state=inactive]:hover:text-gray-200 dark:data-[state=inactive]:hover:bg-gray-700"
+                        >
+                            <Users className="h-4 w-4" />
+                            <span className="font-medium">Donors</span>
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="agencies"
+                            className="flex items-center gap-2 px-4 py-3 rounded-md transition-all duration-200 data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-blue-200 data-[state=inactive]:text-gray-600 data-[state=inactive]:hover:text-gray-900 data-[state=inactive]:hover:bg-gray-50 dark:data-[state=active]:bg-gray-900 dark:data-[state=active]:text-blue-400 dark:data-[state=inactive]:text-gray-400 dark:data-[state=inactive]:hover:text-gray-200 dark:data-[state=inactive]:hover:bg-gray-700"
+                        >
+                            <Building2 className="h-4 w-4" />
+                            <span className="font-medium">Agencies</span>
+                        </TabsTrigger>
                     </TabsList>
 
                     <div className="mt-6">
@@ -963,14 +1071,6 @@ export default function ReportsPage() {
 
                         <TabsContent value="agencies">
                             <AgenciesTab />
-                        </TabsContent>
-
-                        <TabsContent value="audit">
-                            <AuditTab />
-                        </TabsContent>
-
-                        <TabsContent value="contact">
-                            <ContactTab />
                         </TabsContent>
                     </div>
                 </Tabs>
