@@ -88,7 +88,7 @@ export default function NewOrganizerForm({ role_name }) {
         cacheTime: 20 * 60 * 1000,
     });
 
-    const [sectionNo, setSectionNo] = useState(4);
+    const [sectionNo, setSectionNo] = useState(0);
 
     const queryClient = useQueryClient();
 

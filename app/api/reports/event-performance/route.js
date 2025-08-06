@@ -1,12 +1,6 @@
 import { NextResponse } from "next/server";
-import {
-    BloodDonationEvent,
-    DonorAppointmentInfo,
-    PhysicalExamination,
-    BloodDonationCollection,
-    Agency,
-} from "@lib/models";
-import { Op, fn, col, literal } from "sequelize";
+import { BloodDonationEvent, Agency } from "@lib/models";
+import { Op, literal } from "sequelize";
 import { auth } from "@lib/auth";
 
 export async function GET(request) {

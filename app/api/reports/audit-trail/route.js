@@ -1,15 +1,11 @@
 import { NextResponse } from "next/server";
-import {
-    AuditTrail,
-    User,
-    Role
-} from "@lib/models";
+import { AuditTrail, User, Role } from "@lib/models";
 import { Op } from "sequelize";
 import { auth } from "@lib/auth";
 
 export async function GET(request) {
     const session = await auth();
-    if (!session || session.user.role !== "ADMIN") {
+    if (!session || session.user.role_name !== "Admin") {
         return NextResponse.json(
             { success: false, message: "Unauthorized" },
             { status: 401 }
@@ -21,7 +17,7 @@ export async function GET(request) {
         const startDate = searchParams.get("startDate");
         const endDate = searchParams.get("endDate");
         const userId = searchParams.get("userId");
-        const module = searchParams.get("module");
+        const mod = searchParams.get("module");
 
         const whereConditions = {};
         if (startDate && endDate) {
@@ -34,12 +30,12 @@ export async function GET(request) {
             whereConditions.createdAt = { [Op.lte]: new Date(endDate) };
         }
 
-        if (userId && userId !== 'ALL') {
+        if (userId && userId !== "ALL") {
             whereConditions.user_id = userId;
         }
 
-        if (module && module !== 'ALL') {
-            whereConditions.controller = module;
+        if (mod && mod !== "ALL") {
+            whereConditions.controller = mod;
         }
 
         const auditTrails = await AuditTrail.findAll({
@@ -47,18 +43,18 @@ export async function GET(request) {
             include: [
                 {
                     model: User,
-                    as: 'user',
-                    attributes: ['name'],
+                    as: "user",
+                    attributes: ["name"],
                     include: {
                         model: Role,
-                        as: 'role',
-                        attributes: ['name']
-                    }
-                }
+                        as: "role",
+                        attributes: ["name"],
+                    },
+                },
             ],
-            order: [['createdAt', 'DESC']],
+            order: [["createdAt", "DESC"]],
             raw: true,
-            nest: true
+            nest: true,
         });
 
         return NextResponse.json({ success: true, data: auditTrails });

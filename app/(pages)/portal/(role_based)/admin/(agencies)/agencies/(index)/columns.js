@@ -194,88 +194,87 @@ export const columns = [
             const status = data.status;
 
             return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuLabel className="flex items-center space-x-2">
-                            <Command className="w-3 h-3" />
-                            <span>Actions</span>
-                        </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
+                <>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Open menu</span>
+                                <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel className="flex items-center space-x-2">
+                                <Command className="w-3 h-3" />
+                                <span>Actions</span>
+                            </DropdownMenuLabel>
+                            <DropdownMenuSeparator />
 
-                        <DropdownMenuItem className="flex items-center justify-center space-x-2">
-                            <Link
-                                className="btn btn-block btn-primary hover:btn-neutral hover:text-blue-400"
-                                href={`./agencies/${data.id}`}
-                            >
-                                <Eye className="w-4 h-4" />
-                                <span>Show</span>
+                            <Link href={`./agencies/${data.id}`}>
+                                <DropdownMenuItem className="btn btn-block btn-primary hover:btn-neutral hover:text-blue-400">
+                                    <Eye className="w-4 h-4" />
+                                    <span>Show</span>
+                                </DropdownMenuItem>
                             </Link>
-                        </DropdownMenuItem>
 
-                        {status == "for approval" ? (
-                            <>
-                                <DropdownMenuItem className="space-x-2 flex justify-between">
+                            {status == "for approval" ? (
+                                <>
+                                    <DropdownMenuItem className="space-x-2 flex justify-between">
+                                        <VerifyAgency
+                                            agencyData={{
+                                                id: data.id,
+                                                status: "activated",
+                                            }}
+                                            label="Approve"
+                                            className="btn btn-block btn-success"
+                                            formClassName="w-full"
+                                            icon={<CheckIcon />}
+                                        />
+                                    </DropdownMenuItem>
+                                    <div className="px-2 flex justify-between">
+                                        <RejectDialog
+                                            agencyId={data.id}
+                                            className="w-full btn-error"
+                                        />
+                                    </div>
+                                </>
+                            ) : (
+                                ""
+                            )}
+                            {status == "activated" ? (
+                                <DropdownMenuItem className="space-x-2">
+                                    <VerifyAgency
+                                        agencyData={{
+                                            id: data.id,
+                                            status: "deactivated",
+                                        }}
+                                        label="Deactivate"
+                                        className="btn btn-block btn-warning hover:text-warning"
+                                        formClassName="w-full"
+                                        icon={<XIcon />}
+                                    />
+                                </DropdownMenuItem>
+                            ) : (
+                                ""
+                            )}
+                            {status == "deactivated" ? (
+                                <DropdownMenuItem className="space-x-2">
                                     <VerifyAgency
                                         agencyData={{
                                             id: data.id,
                                             status: "activated",
                                         }}
-                                        label="Approve"
+                                        label="Activate"
                                         className="btn btn-block btn-success"
                                         formClassName="w-full"
                                         icon={<CheckIcon />}
                                     />
                                 </DropdownMenuItem>
-                                <div className="px-2 flex justify-between">
-                                    <RejectDialog
-                                        agencyId={data.id}
-                                        className="w-full btn-error"
-                                    />
-                                </div>
-                            </>
-                        ) : (
-                            ""
-                        )}
-                        {status == "activated" ? (
-                            <DropdownMenuItem className="space-x-2">
-                                <VerifyAgency
-                                    agencyData={{
-                                        id: data.id,
-                                        status: "deactivated",
-                                    }}
-                                    label="Deactivate"
-                                    className="btn btn-block btn-warning hover:text-warning"
-                                    formClassName="w-full"
-                                    icon={<XIcon />}
-                                />
-                            </DropdownMenuItem>
-                        ) : (
-                            ""
-                        )}
-                        {status == "deactivated" ? (
-                            <DropdownMenuItem className="space-x-2">
-                                <VerifyAgency
-                                    agencyData={{
-                                        id: data.id,
-                                        status: "activated",
-                                    }}
-                                    label="Activate"
-                                    className="btn btn-block btn-success"
-                                    formClassName="w-full"
-                                    icon={<CheckIcon />}
-                                />
-                            </DropdownMenuItem>
-                        ) : (
-                            ""
-                        )}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                            ) : (
+                                ""
+                            )}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </>
             );
         },
     },

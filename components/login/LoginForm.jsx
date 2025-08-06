@@ -256,14 +256,14 @@ export default function LoginForm({
                         <button
                             disabled={isAnyLoading}
                             className="flex items-center justify-center gap-3 w-full py-3 rounded-lg bg-white border border-blue-200 dark:bg-slate-800 dark:border-slate-700 shadow hover:bg-blue-50 dark:hover:bg-slate-700 text-blue-700 dark:text-blue-200 font-semibold text-base transition-all"
-                            // onClick={() => {
-                            //     signIn("google", { callbackUrl: "/portal" });
-                            //     setIsLoading((prev) => ({
-                            //         ...prev,
-                            //         google: true,
-                            //     }));
-                            // }}
-                            onClick={() => alert("Works only in Production")}
+                            onClick={() => {
+                                signIn("google", { callbackUrl: "/portal" });
+                                setIsLoading((prev) => ({
+                                    ...prev,
+                                    google: true,
+                                }));
+                            }}
+                            // onClick={() => alert("Works only in Production")}
                         >
                             {isLoading?.google ? (
                                 <>
@@ -280,21 +280,37 @@ export default function LoginForm({
                         <button
                             disabled={isAnyLoading}
                             className="flex items-center justify-center gap-3 w-full py-3 rounded-lg bg-[#1A77F2] border border-blue-700 shadow hover:bg-blue-800 text-white font-semibold text-base transition-all"
-                            onClick={() => alert("Works only in Production")}
+                            onClick={() => {
+                                signIn("facebook", { callbackUrl: "/portal" });
+                                setIsLoading((prev) => ({
+                                    ...prev,
+                                    facebook: true,
+                                }));
+                            }}
+                            // onClick={() => alert("Works only in Production")}
                         >
-                            <svg
-                                aria-label="Facebook logo"
-                                width="20"
-                                height="20"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 32 32"
-                            >
-                                <path
-                                    fill="white"
-                                    d="M8 12h5V8c0-6 4-7 11-6v5c-4 0-5 0-5 3v2h5l-1 6h-4v12h-6V18H8z"
-                                ></path>
-                            </svg>
-                            Continue with Facebook
+                            {isLoading?.facebook ? (
+                                <>
+                                    <span className="loading loading-bars loading-xs"></span>
+                                    Signing In with Facebook...
+                                </>
+                            ) : (
+                                <>
+                                    <svg
+                                        aria-label="Facebook logo"
+                                        width="20"
+                                        height="20"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 32 32"
+                                    >
+                                        <path
+                                            fill="white"
+                                            d="M8 12h5V8c0-6 4-7 11-6v5c-4 0-5 0-5 3v2h5l-1 6h-4v12h-6V18H8z"
+                                        ></path>
+                                    </svg>
+                                    Continue with Facebook
+                                </>
+                            )}
                         </button>
                     </div>
                 </div>
