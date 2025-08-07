@@ -22,7 +22,6 @@ export default function ViewAnnouncementModal({
     isOpen,
     onClose,
 }) {
-    console.log("announcementId", announcementId);
     const { data: announcement, isLoading } = useQuery({
         queryKey: ["announcement", announcementId],
         queryFn: async () => {

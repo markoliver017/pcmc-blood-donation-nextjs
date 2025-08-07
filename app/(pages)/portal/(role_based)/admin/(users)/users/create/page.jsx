@@ -7,8 +7,6 @@ import Skeleton_user from "@components/ui/Skeleton_user";
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 
 const fetchRoles = async () => {
-    // await new Promise((resolve) => setTimeout(resolve, 500));
-    console.log("process.env.INTERNAL_API_URL", process.env.INTERNAL_API_URL);
     const url = new URL(`/api/roles`, process.env.INTERNAL_API_URL);
     const response = await fetch(url, {
         method: "GET",

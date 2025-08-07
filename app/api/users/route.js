@@ -6,7 +6,6 @@ export async function GET() {
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     const last_donation_date = await getLastDonationDateDonated();
-    console.log("last_donation_date", last_donation_date);
 
     try {
         const users = await User.findAll({

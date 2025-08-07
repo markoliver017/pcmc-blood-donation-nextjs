@@ -13,7 +13,7 @@ export default async function PortalLayout({ children }) {
     const pathname = headerList.get("x-current-path");
     console.log("Portal layout pathname", pathname);
 
-    if (!session || !session.user) redirect("/login");
+    if (!session || !session.user) redirect("/login?callbackUrl=" + pathname);
 
     const { roles, role_name: session_role } = session.user;
 
@@ -166,7 +166,7 @@ export default async function PortalLayout({ children }) {
         }
     } else {
         if (pathname !== "/portal") {
-            redirect("/portal");
+            redirect("/portal?callbackUrl=" + pathname);
         }
     }
 

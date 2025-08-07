@@ -97,7 +97,7 @@ export async function up(queryInterface) {
             <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; display: inline-block;">
                 <p style="margin: 5px 0; color: #374151;">
                     <strong>Email:</strong> {{support_email}}<br>
-                    <strong>Phone:</strong> +63 2 8XXX XXXX<br>
+                    <strong>Phone:</strong> {{support_contact}}<br>
                     <strong>Portal:</strong> <a href="{{domain_url}}" style="color: #dc2626; text-decoration: none;">{{domain_url}}</a>
                 </p>
             </div>
@@ -149,7 +149,7 @@ IMPORTANT NOTES:
 NEED HELP?
 If you have any questions about your registration or need assistance, please contact us:
 - Email: {{support_email}}
-- Phone: +63 2 8XXX XXXX
+- Phone: {{support_contact}}
 - Portal: {{domain_url}}
 
 Thank you for partnering with us in our mission to save lives through blood donation.
@@ -170,6 +170,7 @@ For support, contact us at {{support_email}}`,
                 "registration_date",
                 "system_name",
                 "support_email",
+                "support_contact",
                 "domain_url",
             ]),
             is_active: true,
@@ -231,7 +232,7 @@ For support, contact us at {{support_email}}`,
             <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; display: inline-block;">
                 <p style="margin: 5px 0; color: #374151;">
                     <strong>Email:</strong> {{support_email}}<br>
-                    <strong>Phone:</strong> +63 2 8XXX XXXX<br>
+                    <strong>Phone:</strong> {{support_contact}}<br>
                     <strong>Portal:</strong> <a href="{{domain_url}}" style="color: #dc2626; text-decoration: none;">{{domain_url}}</a>
                 </p>
             </div>
@@ -271,7 +272,7 @@ GETTING STARTED:
 NEED HELP?
 If you need assistance with the portal or have any questions, please contact us:
 - Email: {{support_email}}
-- Phone: +63 2 8XXX XXXX
+- Phone: {{support_contact}}
 - Portal: {{domain_url}}
 
 Welcome to our community of life-saving partners!
@@ -290,6 +291,7 @@ For support, contact us at {{support_email}}`,
                 "approval_date",
                 "system_name",
                 "support_email",
+                "support_contact",
                 "domain_url",
             ]),
             is_active: true,

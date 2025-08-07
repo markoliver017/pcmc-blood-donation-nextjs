@@ -3,17 +3,17 @@ import LoadingModal from "@components/layout/LoadingModal";
 import { reactIconsFa } from "@components/reusable_components/PreloadedIcons";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import Skeleton from "@components/ui/skeleton";
-import SessionLogger from "@lib/utils/SessionLogger";
 import SessionTimer from "@lib/utils/SessionTimer";
 import { motion } from "framer-motion";
 import { LogIn } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
 import React, { useState } from "react";
 
-export default function AuthSelectRole({ roles }) {
+export default function AuthSelectRole({ roles, callbackUrl = "/portal" }) {
     const { data: session, status, update } = useSession();
     const [isLoading, setIsLoading] = useState(false);
+
+    console.log("callbackUrl", callbackUrl);
 
     if (status === "loading")
         return (
@@ -68,7 +68,9 @@ export default function AuthSelectRole({ roles }) {
                                             await update({
                                                 role_name: role.role_name,
                                             });
-                                            window.location.replace("/portal");
+                                            window.location.replace(
+                                                callbackUrl
+                                            );
                                         }}
                                         className="btn btn-primary flex items-center gap-2"
                                     >

@@ -519,7 +519,7 @@ export default function EmailNotificationsDashboard() {
                             <CardContent>
                                 <EmailTemplateForm
                                     template={selectedTemplate}
-                                    onSuccess={() => {
+                                    onSubmit={() => {
                                         handleFormClose();
                                         queryClient.invalidateQueries([
                                             "emailTemplates",

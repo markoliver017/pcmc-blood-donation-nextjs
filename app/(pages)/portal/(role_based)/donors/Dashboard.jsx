@@ -36,6 +36,7 @@ import {
     PopoverTrigger,
 } from "@components/ui/popover";
 import { format } from "date-fns";
+import { formatFormalName } from "@lib/utils/string.utils";
 
 export default function Dashboard() {
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -104,11 +105,229 @@ export default function Dashboard() {
         },
     });
 
+    let appointmentCard = (
+        <Card className="flex-1">
+            <CardHeader className="flex flex-col items-center gap-2">
+                <CardTitle className="text-2xl flex items-center gap-2">
+                    <CalendarArrowUp className="w-6 h-6" />
+                    Next Eligible Donation
+                    <Popover open={isInfoOpen} onOpenChange={setIsInfoOpen}>
+                        <PopoverTrigger asChild>
+                            <button className="focus:outline-none">
+                                <QuestionMarkCircledIcon className="w-5 h-5 cursor-pointer text-gray-500 hover:text-gray-700" />
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-80">
+                            <div className="grid gap-4">
+                                <div className="space-y-2">
+                                    <h4 className="font-medium leading-none">
+                                        Donation Frequency
+                                    </h4>
+                                    <p className="text-sm text-muted-foreground">
+                                        The waiting period depends on the type
+                                        of donation.
+                                    </p>
+                                </div>
+                                <div className="grid gap-2 text-sm">
+                                    <div className="grid grid-cols-2 items-center gap-4">
+                                        <span className="font-semibold">
+                                            Whole Blood
+                                        </span>
+                                        <span>Every 8 - 12 weeks</span>
+                                    </div>
+                                    <div className="grid grid-cols-2 items-center gap-4">
+                                        <span className="font-semibold">
+                                            Platelets
+                                        </span>
+                                        <span>Every 7 days</span>
+                                    </div>
+                                    <div className="grid grid-cols-2 items-center gap-4">
+                                        <span className="font-semibold">
+                                            Plasma
+                                        </span>
+                                        <span>Every 28 days</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </PopoverContent>
+                    </Popover>
+                </CardTitle>
+                <CardDescription>Days to Go</CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col items-center gap-4">
+                <h2 className="text-4xl font-bold text-blue-500 text-shadow-lg/25 text-shadow-blue-400">
+                    {dashboardIsLoading ? (
+                        <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
+                    ) : (
+                        <span>{dashboard?.days_remaining}</span>
+                    )}
+                </h2>
+                <span className="p-2 italic text-link font-semibold text-lg text-blue-700 dark:text-blue-300 ">
+                    {dashboardIsLoading ? (
+                        <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
+                    ) : (
+                        <span>
+                            {dashboard?.donateNow
+                                ? "Donate Now"
+                                : `${dashboard?.next_eligible_date}`}
+                        </span>
+                    )}
+                </span>
+            </CardContent>
+        </Card>
+    );
+
+    if (dashboard?.next_appointment) {
+        if (
+            dashboard?.next_appointment?.physical_exam &&
+            dashboard?.next_appointment?.physical_exam?.eligibility_status !==
+                "ACCEPTED"
+        ) {
+            appointmentCard = (
+                <Card className="flex-1">
+                    <CardHeader className="flex flex-col items-center gap-2">
+                        <CardTitle className="text-2xl flex items-center gap-2">
+                            <Calendar className="w-6 h-6" />
+                            Last Appointment
+                        </CardTitle>
+                        <CardDescription>Eligibility Status</CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex flex-col items-center gap-4">
+                        <h2 className="text-xl font-bold text-red-500 text-shadow-lg/25 text-shadow-red-400 text-center flex flex-col items-center gap-2">
+                            {dashboardIsLoading ? (
+                                <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
+                            ) : (
+                                <span>
+                                    {
+                                        dashboard?.next_appointment
+                                            ?.physical_exam?.eligibility_status
+                                    }
+                                </span>
+                            )}
+                            <Popover
+                                open={isInfoOpen}
+                                onOpenChange={setIsInfoOpen}
+                            >
+                                <PopoverTrigger asChild>
+                                    <button className="focus:outline-none text-xs flex items-center gap-2  cursor-pointer text-gray-500 hover:text-gray-700">
+                                        <QuestionMarkCircledIcon className="w-5 h-5" />
+                                        <span>More info</span>
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-80">
+                                    <div className="grid gap-4">
+                                        <div className="space-y-2">
+                                            <h4 className="font-medium leading-none">
+                                                Deferral Reason
+                                            </h4>
+                                            <p className="text-sm text-muted-foreground">
+                                                {
+                                                    dashboard?.next_appointment
+                                                        ?.physical_exam
+                                                        ?.deferral_reason
+                                                }
+                                            </p>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <h4 className="font-medium leading-none">
+                                                Recommendations
+                                            </h4>
+                                            {dashboard?.next_appointment
+                                                ?.physical_exam
+                                                ?.eligibility_status ===
+                                            "TEMPORARILY-DEFERRED" ? (
+                                                <p className="text-sm text-muted-foreground">
+                                                    Review your health as
+                                                    describe in the deferral
+                                                    reason. If the issue is
+                                                    resolved, you can donate
+                                                    again.
+                                                </p>
+                                            ) : (
+                                                //if PERMANENTLY-DEFERRED
+                                                <p className="text-sm text-muted-foreground">
+                                                    We appreciate your
+                                                    willingness to donate.
+                                                    Although you can’t donate
+                                                    blood anymore, there are
+                                                    many ways you can still make
+                                                    a difference.
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </PopoverContent>
+                            </Popover>
+                        </h2>
+                        <span className="p-2 italic text-link font-semibold text-lg">
+                            {dashboardIsLoading ? (
+                                <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
+                            ) : (
+                                <span>
+                                    {dashboard?.next_appointment?.event?.title}{" "}
+                                    (
+                                    {format(
+                                        dashboard?.next_appointment?.event
+                                            ?.date,
+                                        "PPP"
+                                    )}
+                                    )
+                                </span>
+                            )}
+                        </span>
+                    </CardContent>
+                </Card>
+            );
+        } else {
+            appointmentCard = (
+                <Card className="flex-1">
+                    <CardHeader className="flex flex-col items-center gap-2">
+                        <CardTitle className="text-2xl flex items-center gap-2">
+                            <Calendar className="w-6 h-6" />
+                            Next Appointment
+                        </CardTitle>
+                        <CardDescription>Status</CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex flex-col items-center gap-4">
+                        <h2 className="text-xl font-bold text-blue-500 text-shadow-lg/25 text-shadow-blue-400 text-center flex flex-col items-center gap-2">
+                            {dashboardIsLoading ? (
+                                <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
+                            ) : (
+                                <span>
+                                    {formatFormalName(
+                                        dashboard?.next_appointment?.status ||
+                                            ""
+                                    )}
+                                </span>
+                            )}
+                        </h2>
+                        <span className="p-2 italic text-link font-semibold text-lg">
+                            {dashboardIsLoading ? (
+                                <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
+                            ) : (
+                                <span>
+                                    {dashboard?.next_appointment?.event?.title}{" "}
+                                    (
+                                    {format(
+                                        dashboard?.next_appointment?.event
+                                            ?.date,
+                                        "PPP"
+                                    )}
+                                    )
+                                </span>
+                            )}
+                        </span>
+                    </CardContent>
+                </Card>
+            );
+        }
+    }
+
     return (
         <div className="space-y-6">
             {/* Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="w-full">
+            <div className="flex flex-wrap gap-6">
+                <Card className="flex-1">
                     <CardHeader className="flex flex-col items-center gap-2">
                         <CardTitle className="text-2xl flex items-center gap-2">
                             <MdBloodtype className="w-6 h-6" />
@@ -149,7 +368,7 @@ export default function Dashboard() {
                     </CardContent>
                 </Card>
 
-                <Card className="w-full">
+                <Card className="flex-1">
                     <CardHeader className="flex flex-col items-center gap-2">
                         <CardTitle className="text-2xl flex items-center gap-2">
                             <CalendarCheck2 className="w-6 h-6" />
@@ -176,186 +395,7 @@ export default function Dashboard() {
                     </CardContent>
                 </Card>
 
-                {dashboard?.last_appointment &&
-                dashboard?.last_appointment?.physical_exam
-                    ?.eligibility_status !== "ACCEPTED" ? (
-                    <Card className="w-full">
-                        <CardHeader className="flex flex-col items-center gap-2">
-                            <CardTitle className="text-2xl flex items-center gap-2">
-                                <Calendar className="w-6 h-6" />
-                                Last Appointment
-                            </CardTitle>
-                            <CardDescription>
-                                Eligibility Status
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="flex flex-col items-center gap-4">
-                            <h2 className="text-xl font-bold text-red-500 text-shadow-lg/25 text-shadow-red-400 text-center flex flex-col items-center gap-2">
-                                {dashboardIsLoading ? (
-                                    <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
-                                ) : (
-                                    <span>
-                                        {
-                                            dashboard?.last_appointment
-                                                ?.physical_exam
-                                                ?.eligibility_status
-                                        }
-                                    </span>
-                                )}
-                                <Popover
-                                    open={isInfoOpen}
-                                    onOpenChange={setIsInfoOpen}
-                                >
-                                    <PopoverTrigger asChild>
-                                        <button className="focus:outline-none text-xs flex items-center gap-2  cursor-pointer text-gray-500 hover:text-gray-700">
-                                            <QuestionMarkCircledIcon className="w-5 h-5" />
-                                            <span>More info</span>
-                                        </button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-80">
-                                        <div className="grid gap-4">
-                                            <div className="space-y-2">
-                                                <h4 className="font-medium leading-none">
-                                                    Deferral Reason
-                                                </h4>
-                                                <p className="text-sm text-muted-foreground">
-                                                    {
-                                                        dashboard
-                                                            ?.last_appointment
-                                                            ?.physical_exam
-                                                            ?.deferral_reason
-                                                    }
-                                                </p>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <h4 className="font-medium leading-none">
-                                                    Recommendations
-                                                </h4>
-                                                {dashboard?.last_appointment
-                                                    ?.physical_exam
-                                                    ?.eligibility_status ===
-                                                "TEMPORARILY-DEFERRED" ? (
-                                                    <p className="text-sm text-muted-foreground">
-                                                        Review your health as
-                                                        describe in the deferral
-                                                        reason. If the issue is
-                                                        resolved, you can donate
-                                                        again.
-                                                    </p>
-                                                ) : (
-                                                    //if PERMANENTLY-DEFERRED
-                                                    <p className="text-sm text-muted-foreground">
-                                                        We appreciate your
-                                                        willingness to donate.
-                                                        Although you can’t
-                                                        donate blood anymore,
-                                                        there are many ways you
-                                                        can still make a
-                                                        difference.
-                                                    </p>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </PopoverContent>
-                                </Popover>
-                            </h2>
-                            <span className="p-2 italic text-link font-semibold text-lg">
-                                {dashboardIsLoading ? (
-                                    <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
-                                ) : (
-                                    <span>
-                                        {
-                                            dashboard?.last_appointment?.event
-                                                ?.title
-                                        }{" "}
-                                        (
-                                        {format(
-                                            dashboard?.last_appointment?.event
-                                                ?.date,
-                                            "PPP"
-                                        )}
-                                        )
-                                    </span>
-                                )}
-                            </span>
-                        </CardContent>
-                    </Card>
-                ) : (
-                    <Card className="w-full">
-                        <CardHeader className="flex flex-col items-center gap-2">
-                            <CardTitle className="text-2xl flex items-center gap-2">
-                                <CalendarArrowUp className="w-6 h-6" />
-                                Next Eligible Donation
-                                <Popover
-                                    open={isInfoOpen}
-                                    onOpenChange={setIsInfoOpen}
-                                >
-                                    <PopoverTrigger asChild>
-                                        <button className="focus:outline-none">
-                                            <QuestionMarkCircledIcon className="w-5 h-5 cursor-pointer text-gray-500 hover:text-gray-700" />
-                                        </button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-80">
-                                        <div className="grid gap-4">
-                                            <div className="space-y-2">
-                                                <h4 className="font-medium leading-none">
-                                                    Donation Frequency
-                                                </h4>
-                                                <p className="text-sm text-muted-foreground">
-                                                    The waiting period depends
-                                                    on the type of donation.
-                                                </p>
-                                            </div>
-                                            <div className="grid gap-2 text-sm">
-                                                <div className="grid grid-cols-2 items-center gap-4">
-                                                    <span className="font-semibold">
-                                                        Whole Blood
-                                                    </span>
-                                                    <span>
-                                                        Every 8 - 12 weeks
-                                                    </span>
-                                                </div>
-                                                <div className="grid grid-cols-2 items-center gap-4">
-                                                    <span className="font-semibold">
-                                                        Platelets
-                                                    </span>
-                                                    <span>Every 7 days</span>
-                                                </div>
-                                                <div className="grid grid-cols-2 items-center gap-4">
-                                                    <span className="font-semibold">
-                                                        Plasma
-                                                    </span>
-                                                    <span>Every 28 days</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </PopoverContent>
-                                </Popover>
-                            </CardTitle>
-                            <CardDescription>Days to Go</CardDescription>
-                        </CardHeader>
-                        <CardContent className="flex flex-col items-center gap-4">
-                            <h2 className="text-4xl font-bold text-blue-500 text-shadow-lg/25 text-shadow-blue-400">
-                                {dashboardIsLoading ? (
-                                    <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
-                                ) : (
-                                    <span>{dashboard?.days_remaining}</span>
-                                )}
-                            </h2>
-                            <span className="p-2 italic text-link font-semibold text-lg text-blue-700 dark:text-blue-300 ">
-                                {dashboardIsLoading ? (
-                                    <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
-                                ) : (
-                                    <span>
-                                        {dashboard?.donateNow
-                                            ? "Donate Now"
-                                            : `${dashboard?.next_eligible_date}`}
-                                    </span>
-                                )}
-                            </span>
-                        </CardContent>
-                    </Card>
-                )}
+                {appointmentCard}
             </div>
 
             {/* Main Section */}

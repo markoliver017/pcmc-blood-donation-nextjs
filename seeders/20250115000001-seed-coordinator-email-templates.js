@@ -88,7 +88,6 @@ export async function up(queryInterface) {
                 <ol style="color: #0c4a6e; line-height: 1.8; margin: 0; padding-left: 20px;">
                     <li><strong>Review Process:</strong> Your agency will review your application and verify your information.</li>
                     <li><strong>Account Approval:</strong> Once approved, your account will be activated and you'll have access to the portal.</li>
-                    <li><strong>Training & Onboarding:</strong> You'll receive training materials and guidance for using the system.</li>
                     <li><strong>Event Creation:</strong> You'll be able to create and manage blood donation events for your agency.</li>
                 </ol>
             </div>
@@ -115,7 +114,7 @@ export async function up(queryInterface) {
                 <p style="margin: 5px 0; color: #374151;">
                     <strong>Your Agency:</strong> {{agency_name}}<br>
                     <strong>PCMC Support:</strong> {{support_email}}<br>
-                    <strong>Phone:</strong> +63 2 8XXX XXXX<br>
+                    <strong>Phone:</strong> {{support_contact}}<br>
                     <strong>Portal:</strong> <a href="{{domain_url}}" style="color: #3b82f6; text-decoration: none;">{{domain_url}}</a>
                 </p>
             </div>
@@ -163,8 +162,7 @@ As a coordinator, you will be responsible for:
 WHAT HAPPENS NEXT?
 1. Review Process: Your agency will review your application and verify your information.
 2. Account Approval: Once approved, your account will be activated and you'll have access to the portal.
-3. Training & Onboarding: You'll receive training materials and guidance for using the system.
-4. Event Creation: You'll be able to create and manage blood donation events for your agency.
+3. Event Creation: You'll be able to create and manage blood donation events for your agency.
 
 IMPORTANT NOTES:
 - You will not be able to log in or use the platform until your registration is approved by your agency.
@@ -176,7 +174,7 @@ NEED HELP?
 If you have any questions about your registration or need assistance, please contact:
 - Your Agency: {{agency_name}}
 - PCMC Support: {{support_email}}
-- Phone: +63 2 8XXX XXXX
+- Phone: {{support_contact}}
 - Portal: {{domain_url}}
 
 Thank you for joining our mission to save lives through blood donation.
@@ -197,6 +195,7 @@ For support, contact us at {{support_email}}`,
                 "registration_date",
                 "system_name",
                 "support_email",
+                "support_contact",
                 "domain_url",
             ]),
             is_active: true,

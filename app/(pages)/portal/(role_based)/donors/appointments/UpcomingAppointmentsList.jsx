@@ -13,7 +13,7 @@ import {
 import CancelEventButton from "@components/donors/CancelEventButton";
 import Link from "next/link";
 import { BiQuestionMark } from "react-icons/bi";
-import { FaQuestionCircle } from "react-icons/fa";
+import { FaCheckCircle, FaQuestionCircle } from "react-icons/fa";
 import StarRating from "@components/reusable_components/StarRating";
 
 const formatDate = (dateStr) => {
@@ -42,7 +42,9 @@ const UpcomingAppointmentsList = ({ appointments = [], onViewDetails }) => {
                             No Upcoming Appointments
                         </h3>
                         <p className="text-gray-600 dark:text-gray-300 max-w-md">
-                            Ready to make a difference? Book your next blood donation appointment and help save lives in your community.
+                            Ready to make a difference? Book your next blood
+                            donation appointment and help save lives in your
+                            community.
                         </p>
                     </div>
                     <Link
@@ -63,6 +65,8 @@ const UpcomingAppointmentsList = ({ appointments = [], onViewDetails }) => {
             {/* Only first two appointments will be shown */}
             {appointments.slice(0, 2).map((appt) => {
                 const event = appt.time_schedule?.event;
+                const hasAnsweredScreeningQuestions =
+                    appt?.screening_details?.length > 0;
                 return (
                     <div
                         key={appt.id}
@@ -109,15 +113,24 @@ const UpcomingAppointmentsList = ({ appointments = [], onViewDetails }) => {
                                     <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                         <Calendar className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                                         <div>
-                                            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Date</p>
-                                            <p className="font-semibold text-gray-800 dark:text-white">{formatDate(event?.date)}</p>
+                                            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                                Date
+                                            </p>
+                                            <p className="font-semibold text-gray-800 dark:text-white">
+                                                {formatDate(event?.date)}
+                                            </p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                         <Clock className="w-5 h-5 text-green-600 dark:text-green-400" />
                                         <div>
-                                            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Time</p>
-                                            <p className="font-semibold text-gray-800 dark:text-white">{appt.time_schedule?.formatted_time || "-"}</p>
+                                            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                                Time
+                                            </p>
+                                            <p className="font-semibold text-gray-800 dark:text-white">
+                                                {appt.time_schedule
+                                                    ?.formatted_time || "-"}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -125,19 +138,36 @@ const UpcomingAppointmentsList = ({ appointments = [], onViewDetails }) => {
                                     <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                         <MapPin className="w-5 h-5 text-red-600 dark:text-red-400" />
                                         <div>
-                                            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Location</p>
-                                            <p className="font-semibold text-gray-800 dark:text-white text-sm">{event?.agency?.agency_address || "No location"}</p>
+                                            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                                Location
+                                            </p>
+                                            <p className="font-semibold text-gray-800 dark:text-white text-sm">
+                                                {event?.agency
+                                                    ?.agency_address ||
+                                                    "No location"}
+                                            </p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                        <div className={`w-3 h-3 rounded-full ${
-                                            appt.status === 'confirmed' ? 'bg-green-500' :
-                                            appt.status === 'pending' ? 'bg-yellow-500' :
-                                            appt.status === 'cancelled' ? 'bg-red-500' : 'bg-gray-500'
-                                        }`}></div>
+                                        <div
+                                            className={`w-3 h-3 rounded-full ${
+                                                appt.status === "confirmed"
+                                                    ? "bg-green-500"
+                                                    : appt.status === "pending"
+                                                    ? "bg-yellow-500"
+                                                    : appt.status ===
+                                                      "cancelled"
+                                                    ? "bg-red-500"
+                                                    : "bg-gray-500"
+                                            }`}
+                                        ></div>
                                         <div>
-                                            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Status</p>
-                                            <p className="font-semibold text-gray-800 dark:text-white uppercase">{appt.status}</p>
+                                            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                                Status
+                                            </p>
+                                            <p className="font-semibold text-gray-800 dark:text-white uppercase">
+                                                {appt.status}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -156,11 +186,28 @@ const UpcomingAppointmentsList = ({ appointments = [], onViewDetails }) => {
                             </button>
                             <Link
                                 href={`/portal/donors/appointments/${appt.id}/screening-questionaires`}
-                                className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-sm transition-all duration-200 hover:shadow-md"
+                                className={
+                                    hasAnsweredScreeningQuestions
+                                        ? "inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-sm transition-all duration-200 hover:shadow-md"
+                                        : "inline-flex items-center gap-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg shadow-sm transition-all duration-200 hover:shadow-md"
+                                }
                                 aria-label="Answer screening questionaires"
                             >
-                                <FaQuestionCircle className="w-4 h-4" />
-                                Screening
+                                {hasAnsweredScreeningQuestions ? (
+                                    <FaCheckCircle className="w-4 h-4" />
+                                ) : (
+                                    <FaQuestionCircle className="w-4 h-4" />
+                                )}
+                                Screening{" "}
+                                {hasAnsweredScreeningQuestions ? (
+                                    <span className="text-xs text-green-900">
+                                        (Answered)
+                                    </span>
+                                ) : (
+                                    <span className="text-xs text-red-900">
+                                        (Pending)
+                                    </span>
+                                )}
                             </Link>
 
                             <CancelEventButton

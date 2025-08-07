@@ -73,7 +73,6 @@ export async function up(queryInterface) {
                     <li><strong>Manage Donors:</strong> Handle donor registrations and appointments</li>
                     <li><strong>Track Progress:</strong> Monitor event participation and donation statistics</li>
                     <li><strong>Communicate:</strong> Liaise between donors, agencies, and PCMC</li>
-                    <li><strong>Generate Reports:</strong> Create reports on event outcomes and donor data</li>
                 </ul>
             </div>
         </div>
@@ -130,7 +129,7 @@ export async function up(queryInterface) {
                 <p style="margin: 5px 0; color: #374151;">
                     <strong>Your Agency:</strong> {{agency_name}}<br>
                     <strong>PCMC Support:</strong> {{support_email}}<br>
-                    <strong>Phone:</strong> +63 2 8XXX XXXX<br>
+                    <strong>Phone:</strong> {{support_contact}}<br>
                     <strong>Portal:</strong> <a href="{{domain_url}}" style="color: #059669; text-decoration: none;">{{domain_url}}</a>
                 </p>
             </div>
@@ -165,7 +164,7 @@ YOUR APPROVED COORDINATOR INFORMATION:
 - Agency Name: {{agency_name}}
 - Coordinator Name: {{user_name}}
 - Email Address: {{user_email}}
-- Contact Number: {{contact_number}}
+- Contact Number: +63 {{contact_number}}
 - Approval Date: {{approval_date}}
 
 WHAT YOU CAN DO NOW:
@@ -200,7 +199,7 @@ NEED HELP?
 If you have any questions about your coordinator role or need assistance, please contact:
 - Your Agency: {{agency_name}}
 - PCMC Support: {{support_email}}
-- Phone: +63 2 8XXX XXXX
+- Phone: {{support_contact}}
 - Portal: {{domain_url}}
 
 Welcome to our team of dedicated coordinators!
@@ -222,6 +221,7 @@ For support, contact us at {{support_email}}`,
                 "system_name",
                 "support_email",
                 "domain_url",
+                "support_contact",
             ]),
             is_active: true,
             created_by: null,

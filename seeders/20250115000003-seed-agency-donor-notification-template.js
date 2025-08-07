@@ -42,7 +42,7 @@ export async function up(queryInterface) {
                     </tr>
                     <tr>
                         <td style="padding: 8px 0; font-weight: bold; color: #374151;">Contact Number:</td>
-                        <td style="padding: 8px 0; color: #374151;">{{contact_number}}</td>
+                        <td style="padding: 8px 0; color: #374151;">+63 {{contact_number}}</td>
                     </tr>
                     <tr>
                         <td style="padding: 8px 0; font-weight: bold; color: #374151;">Blood Type:</td>
@@ -128,7 +128,7 @@ A new donor has registered with {{agency_name}} and is awaiting your approval. P
 DONOR INFORMATION:
 - Donor Name: {{donor_name}}
 - Email Address: {{donor_email}}
-- Contact Number: {{contact_number}}
+- Contact Number: +63 {{contact_number}}
 - Blood Type: {{blood_type}}
 - Registration Date: {{registration_date}}
 
@@ -188,4 +188,4 @@ export async function down(queryInterface) {
         },
         {}
     );
-} 
+}

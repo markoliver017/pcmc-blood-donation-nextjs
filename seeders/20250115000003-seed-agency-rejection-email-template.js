@@ -122,7 +122,7 @@ export async function up(queryInterface) {
                 <h3>Agency Details:</h3>
                 <p><strong>Agency Name:</strong> {{agency_name}}</p>
                 <p><strong>Address:</strong> {{agency_address}}</p>
-                <p><strong>Contact:</strong> {{agency_contact}}</p>
+                <p><strong>Contact:</strong> +63 {{agency_contact}}</p>
                 <p><strong>Application Date:</strong> {{approval_date}}</p>
             </div>
 
@@ -172,7 +172,7 @@ We regret to inform you that your agency application has been REJECTED after car
 AGENCY DETAILS:
 - Agency Name: {{agency_name}}
 - Address: {{agency_address}}
-- Contact: {{agency_contact}}
+- Contact: +63 {{agency_contact}}
 - Application Date: {{approval_date}}
 
 REJECTION REASON:
@@ -214,14 +214,14 @@ Please do not reply to this email. For support, contact {{support_email}}
                 "system_name",
                 "support_email",
                 "domain_url",
-                "rejected_by"
+                "rejected_by",
             ]),
             is_active: true,
             created_by: null,
             updated_by: null,
             createdAt: new Date(),
-            updatedAt: new Date()
-        }
+            updatedAt: new Date(),
+        },
     ];
 
     await queryInterface.bulkInsert("email_templates", emailTemplates, {});
@@ -231,8 +231,8 @@ export async function down(queryInterface) {
     await queryInterface.bulkDelete(
         "email_templates",
         {
-            category: "AGENCY_REJECTION"
+            category: "AGENCY_REJECTION",
         },
         {}
     );
-} 
+}

@@ -659,17 +659,39 @@ For support, contact us at {{support_email}}`;
                             {/* Text Content */}
                             <FormField
                                 control={control}
+                                name="html_content"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <Label htmlFor="html_content">
+                                            HTML Content
+                                        </Label>
+                                        <FormControl>
+                                            <Textarea
+                                                id="html_content"
+                                                placeholder="Enter HTML version of the email"
+                                                rows={20}
+                                                className="w-full mt-1 p-2"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            {/* Text Content */}
+                            <FormField
+                                control={control}
                                 name="text_content"
                                 render={({ field }) => (
                                     <FormItem>
                                         <Label htmlFor="text_content">
-                                            Plain Text Content
+                                            Plain Text Content (Optional)
                                         </Label>
                                         <FormControl>
                                             <Textarea
                                                 id="text_content"
                                                 placeholder="Enter plain text version of the email"
-                                                rows={4}
+                                                rows={10}
                                                 className="w-full mt-1 p-2"
                                                 {...field}
                                             />

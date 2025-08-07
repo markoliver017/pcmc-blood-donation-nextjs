@@ -31,6 +31,8 @@ export default function LoginForm({
     //?callbackUrl=/portal/admin/profile
     const callbackUrl = searchParams.get("callbackUrl") || "/portal";
 
+    console.log("callbackUrl", callbackUrl);
+
     const [isLoading, setIsLoading] = useState({});
     const [showPasswordReset, setShowPasswordReset] = useState(false);
     const {

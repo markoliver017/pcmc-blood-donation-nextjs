@@ -17,11 +17,21 @@ import {
 } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import Link from "next/link";
-import { Calendar, MapPin, Clock, Building, User } from "lucide-react";
+import {
+    Calendar,
+    MapPin,
+    Clock,
+    Building,
+    User,
+    ArrowLeftCircle,
+} from "lucide-react";
 import { format, parse } from "date-fns";
 import { redirect } from "next/navigation";
 import { auth } from "@lib/auth";
 import { formatSeqObj } from "@lib/utils/object.utils";
+import WrapperHeadMain from "@components/layout/WrapperHeadMain";
+import { GiChecklist } from "react-icons/gi";
+import { formatFormalName } from "@lib/utils/string.utils";
 
 export default async function FeedbackPage({ params }) {
     const appointmentId = parseInt(params.id, 10);
@@ -135,84 +145,112 @@ export default async function FeedbackPage({ params }) {
 
     // 4. Render the form
     return (
-        <div className="container mx-auto py-10">
-            <Card className="w-full max-w-4xl mx-auto">
-                <CardHeader>
-                    <CardTitle className="text-3xl font-bold">
-                        Submit Your Feedback
-                    </CardTitle>
-                    <CardDescription className="text-lg text-muted-foreground">
-                        Your feedback on the "{event.title}" event is important
-                        to us.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="mb-8 p-4 border rounded-lg bg-secondary/50">
-                        <h3 className="text-xl font-semibold mb-3">
-                            Appointment Details
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-md">
-                            <div className="flex items-center gap-2">
-                                <Building className="w-5 h-5 text-primary" />
-                                <span>
-                                    <strong>Agency:</strong> {event.agency.name}
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <MapPin className="w-5 h-5 text-primary" />
-                                <span>
-                                    <strong>Location:</strong>{" "}
-                                    {event.agency.agency_address}
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Calendar className="w-5 h-5 text-primary" />
-                                <span>
-                                    <strong>Date:</strong>{" "}
-                                    {new Date(
-                                        timeSchedule.event.date
-                                    ).toLocaleDateString()}
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Clock className="w-5 h-5 text-primary" />
-                                <span>
-                                    <strong>Time:</strong>{" "}
-                                    {format(
-                                        parse(
-                                            timeSchedule.time_start,
-                                            "HH:mm:ss",
-                                            new Date()
-                                        ),
-                                        "hh:mm a"
-                                    )}{" "}
-                                    -{" "}
-                                    {format(
-                                        parse(
-                                            timeSchedule.time_end,
-                                            "HH:mm:ss",
-                                            new Date()
-                                        ),
-                                        "hh:mm a"
-                                    )}
-                                </span>
+        <>
+            <WrapperHeadMain
+                icon={
+                    <>
+                        <Link
+                            href="/portal/donors/appointments"
+                            className="btn btn-ghost p-2"
+                        >
+                            <ArrowLeftCircle className="w-6 h-6" />
+                        </Link>
+                    </>
+                }
+                pageTitle="Donor Feedback"
+                breadcrumbs={[
+                    {
+                        path: "/portal/donors/appointments",
+                        icon: <Calendar className="w-4" />,
+                        title: `My Appointments`,
+                    },
+                    {
+                        path: `/portal/donors/appointments`,
+                        icon: <Calendar className="w-4" />,
+                        title: formatFormalName(event?.title),
+                    },
+                ]}
+            />
+            <div className="container mx-auto pb-5">
+                <Card className="w-full max-w-4xl mx-auto">
+                    <CardHeader>
+                        <CardTitle className="text-3xl font-bold">
+                            Submit Your Feedback
+                        </CardTitle>
+                        <CardDescription className="text-lg text-muted-foreground">
+                            Your feedback on the "{event.title}" event is
+                            important to us.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="mb-8 p-4 border rounded-lg bg-secondary/50">
+                            <h3 className="text-xl font-semibold mb-3">
+                                Appointment Details
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-md">
+                                <div className="flex items-center gap-2">
+                                    <Building className="w-5 h-5 text-primary" />
+                                    <span>
+                                        <strong>Agency:</strong>{" "}
+                                        {event.agency.name}
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <MapPin className="w-5 h-5 text-primary" />
+                                    <span>
+                                        <strong>Location:</strong>{" "}
+                                        {event.agency.agency_address}
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Calendar className="w-5 h-5 text-primary" />
+                                    <span>
+                                        <strong>Date:</strong>{" "}
+                                        {new Date(
+                                            timeSchedule.event.date
+                                        ).toLocaleDateString()}
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Clock className="w-5 h-5 text-primary" />
+                                    <span>
+                                        <strong>Time:</strong>{" "}
+                                        {format(
+                                            parse(
+                                                timeSchedule.time_start,
+                                                "HH:mm:ss",
+                                                new Date()
+                                            ),
+                                            "hh:mm a"
+                                        )}{" "}
+                                        -{" "}
+                                        {format(
+                                            parse(
+                                                timeSchedule.time_end,
+                                                "HH:mm:ss",
+                                                new Date()
+                                            ),
+                                            "hh:mm a"
+                                        )}
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <h3 className="text-xl font-semibold mb-4">
-                        Feedback Questions
-                    </h3>
-                    <p className="text-muted-foreground mb-6">
-                        Please rate your experience for the following questions
-                        from 1 (Poor) to 5 (Excellent).
-                    </p>
-                    <DonorFeedbackForm
-                        questions={activeQuestions}
-                        appointmentId={appointmentId}
-                    />
-                </CardContent>
-            </Card>
-        </div>
+                        <h3 className="text-xl font-semibold mb-4">
+                            Feedback Questions
+                        </h3>
+                        <p className="text-muted-foreground mb-6">
+                            Please rate your experience for the following
+                            questions from 1 (Poor) to 5 (Excellent).
+                        </p>
+                        <DonorFeedbackForm
+                            questions={activeQuestions}
+                            appointmentId={appointmentId}
+                        />
+                    </CardContent>
+                </Card>
+            </div>
+        </>
     );
 }

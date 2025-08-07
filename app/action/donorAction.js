@@ -1604,14 +1604,14 @@ export async function getDonorDashboard() {
         }
 
         // latestDonationDate = null;
-        let lastAppointmentWhereDate = {};
+        let nextAppointmentWhereDate = {};
         if (latestDonationDate) {
-            lastAppointmentWhereDate.date = {
+            nextAppointmentWhereDate.date = {
                 [Op.gt]: latestDonationDate,
             };
         }
 
-        const lastAppointment = await DonorAppointmentInfo.findOne({
+        const nextAppointment = await DonorAppointmentInfo.findOne({
             where: {
                 donor_id: donor.id,
                 status: {
@@ -1624,7 +1624,7 @@ export async function getDonorDashboard() {
                     model: BloodDonationEvent,
                     as: "event",
                     attributes: ["date", "title"],
-                    where: lastAppointmentWhereDate,
+                    where: nextAppointmentWhereDate,
                     required: true,
                 },
                 {
@@ -1655,7 +1655,7 @@ export async function getDonorDashboard() {
                 days_remaining: donateNow ? 0 : daysRemaining,
                 latest_donation_date: latestDonationDate,
                 donateNow,
-                last_appointment: formatSeqObj(lastAppointment),
+                next_appointment: formatSeqObj(nextAppointment),
             },
         };
     } catch (err) {

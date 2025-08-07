@@ -16,6 +16,7 @@ import {
     FeedbackResponse,
     PhysicalExamination,
     Role,
+    ScreeningDetail,
     sequelize,
     User,
 } from "@lib/models";
@@ -547,6 +548,12 @@ export async function getAllAppointmentsByDonor() {
                     model: FeedbackResponse,
                     as: "feedback_responses",
                     attributes: ["id"],
+                },
+                {
+                    model: ScreeningDetail,
+                    as: "screening_details",
+                    attributes: ["id"],
+                    required: false,
                 },
             ],
         });

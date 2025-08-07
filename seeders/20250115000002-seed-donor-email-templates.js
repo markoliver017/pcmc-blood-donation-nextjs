@@ -51,7 +51,7 @@ export async function up(queryInterface) {
                     </tr>
                     <tr>
                         <td style="padding: 8px 0; font-weight: bold; color: #374151;">Contact Number:</td>
-                        <td style="padding: 8px 0; color: #374151;">{{contact_number}}</td>
+                        <td style="padding: 8px 0; color: #374151;">+63 {{contact_number}}</td>
                     </tr>
                     <tr>
                         <td style="padding: 8px 0; font-weight: bold; color: #374151;">Blood Type:</td>
@@ -118,7 +118,7 @@ export async function up(queryInterface) {
             <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; display: inline-block;">
                 <p style="margin: 5px 0; color: #374151;">
                     <strong>Email:</strong> {{support_email}}<br>
-                    <strong>Phone:</strong> +63 2 8XXX XXXX<br>
+                    <strong>Phone:</strong> {{support_contact}}<br>
                     <strong>Portal:</strong> <a href="{{domain_url}}" style="color: #dc2626; text-decoration: none;">{{domain_url}}</a>
                 </p>
             </div>
@@ -179,7 +179,7 @@ IMPORTANT NOTES:
 NEED HELP?
 If you have any questions about your registration or need assistance, please contact us:
 - Email: {{support_email}}
-- Phone: +63 2 8XXX XXXX
+- Phone: {{support_contact}}
 - Portal: {{domain_url}}
 
 Thank you for joining our mission to save lives through blood donation.
@@ -201,6 +201,7 @@ For support, contact us at {{support_email}}`,
                 "registration_date",
                 "system_name",
                 "support_email",
+                "support_contact",
                 "domain_url",
             ]),
             is_active: true,
@@ -255,7 +256,7 @@ For support, contact us at {{support_email}}`,
                     </tr>
                     <tr>
                         <td style="padding: 8px 0; font-weight: bold; color: #374151;">Contact Number:</td>
-                        <td style="padding: 8px 0; color: #374151;">{{contact_number}}</td>
+                        <td style="padding: 8px 0; color: #374151;">+63{{contact_number}}</td>
                     </tr>
                     <tr>
                         <td style="padding: 8px 0; font-weight: bold; color: #374151;">Blood Type:</td>
@@ -324,7 +325,7 @@ For support, contact us at {{support_email}}`,
             <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; display: inline-block;">
                 <p style="margin: 5px 0; color: #374151;">
                     <strong>Email:</strong> {{support_email}}<br>
-                    <strong>Phone:</strong> +63 2 8XXX XXXX<br>
+                    <strong>Phone:</strong> {{support_contact}}<br>
                     <strong>Portal:</strong> <a href="{{domain_url}}" style="color: #059669; text-decoration: none;">{{domain_url}}</a>
                 </p>
             </div>
@@ -358,7 +359,7 @@ Your donor account has been successfully activated by your partner agency. You c
 YOUR APPROVED DONOR INFORMATION:
 - Full Name: {{user_name}}
 - Email Address: {{user_email}}
-- Contact Number: {{contact_number}}
+- Contact Number: +63 {{contact_number}}
 - Blood Type: {{blood_type}}
 - Partner Agency: {{agency_name}}
 - Approval Date: {{approval_date}}
@@ -387,7 +388,7 @@ READY TO START DONATING?
 NEED HELP?
 If you have any questions about donating blood or need assistance, please contact us:
 - Email: {{support_email}}
-- Phone: +63 2 8XXX XXXX
+- Phone: {{support_contact}}
 - Portal: {{domain_url}}
 
 Welcome to our community of life-saving donors!
@@ -410,6 +411,7 @@ For support, contact us at {{support_email}}`,
                 "system_name",
                 "support_email",
                 "domain_url",
+                "support_contact",
             ]),
             is_active: true,
             created_by: null,

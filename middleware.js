@@ -6,7 +6,7 @@ export async function middleware(request) {
 
     const response = NextResponse.next({
         request: {
-            headers: request.headers,
+            headers: headers,
         },
     });
 

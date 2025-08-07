@@ -119,7 +119,7 @@ export async function up(queryInterface) {
                 <p style="margin: 5px 0; color: #374151;">
                     <strong>Admin Portal:</strong> <a href="{{domain_url}}" style="color: #1e40af; text-decoration: none;">{{domain_url}}</a><br>
                     <strong>Support Email:</strong> {{support_email}}<br>
-                    <strong>Phone:</strong> +63 2 8XXX XXXX
+                    <strong>Phone:</strong> {{support_contact}}
                 </p>
             </div>
         </div>
@@ -153,7 +153,7 @@ AGENCY INFORMATION:
 - Agency Name: {{agency_name}}
 - Contact Person: {{user_name}}
 - Email Address: {{user_email}}
-- Contact Number: {{agency_contact}}
+- Contact Number: +63 {{agency_contact}}
 - Address: {{agency_address}}
 - Registration Date: {{registration_date}}
 
@@ -181,7 +181,7 @@ NEED ASSISTANCE?
 If you need help with the review process or have questions, please contact:
 - Admin Portal: {{domain_url}}
 - Support Email: {{support_email}}
-- Phone: +63 2 8XXX XXXX
+- Phone: {{support_contact}}
 
 Thank you for your dedication to maintaining quality partnerships.
 
@@ -203,6 +203,7 @@ For support, contact us at {{support_email}}`,
                 "system_name",
                 "support_email",
                 "domain_url",
+                "support_contact",
             ]),
             is_active: true,
             created_by: null,

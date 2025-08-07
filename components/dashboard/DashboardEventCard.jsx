@@ -89,6 +89,7 @@ export default function DashboardEventCard({
                                             </span>
                                         </div>
                                         <span className="block text-lg text-slate-800 dark:text-slate-300 font-semibold">
+                                            +63
                                             {event?.requester?.coordinator
                                                 ?.contact_number ||
                                                 event?.agency?.contact_number}
