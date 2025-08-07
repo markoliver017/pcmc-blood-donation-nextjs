@@ -28,7 +28,7 @@ export async function getRoles() {
 }
 
 export async function fetchRoles() {
-    const url = new URL(`/api/roles`, process.env.NEXT_PUBLIC_DOMAIN);
+    const url = new URL(`/api/roles`, process.env.INTERNAL_API_URL);
     const response = await fetch(url, {
         method: "GET",
         cache: "no-store",

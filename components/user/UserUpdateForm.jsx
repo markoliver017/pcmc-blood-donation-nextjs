@@ -40,7 +40,7 @@ import { GrUpdate } from "react-icons/gr";
 import { useRouter } from "next/navigation";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import UserStatusUpdater from "./UserStatusUpdater";
-import FormLogger from "@lib/utils/FormLogger";
+// import FormLogger from "@lib/utils/FormLogger";
 import { MdPassword } from "react-icons/md";
 import ToggleChangePassword from "@components/reusable_components/ToggleChangePassword";
 import { fetchRoles } from "@/action/roleAction";
@@ -645,7 +645,7 @@ export default function UserUpdateForm({ userId }) {
                         </Card>
                     </form>
                 </Form>
-                <FormLogger watch={watch} errors={errors} />
+                {/* <FormLogger watch={watch} errors={errors} /> */}
             </CardContent>
         </Card>
     );

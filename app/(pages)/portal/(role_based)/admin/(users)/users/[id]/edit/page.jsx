@@ -9,6 +9,7 @@ import { ArrowLeft, User, UserPen, Users, X } from "lucide-react";
 import { fetchRoles } from "@/action/roleAction";
 import { auth } from "@lib/auth";
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
+import { getUser } from "@/action/userAction";
 
 export default async function Page({ params }) {
     const { id } = await params;
@@ -44,28 +45,27 @@ export default async function Page({ params }) {
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
             <WrapperHeadMain
-                            icon={<>
-                                <Link href="../" className="btn p-1">
-                                    
-                                        <ArrowLeft />
-                                    
-                                </Link>
-                            
-                            </>}
-                            pageTitle="Users Management"
-                            breadcrumbs={[
-                                {
-                                    path: "/portal/admin/users",
-                                    icon: <Users className="w-4" />,
-                                    title: "Users Management",
-                                },
-                                {
-                                    path: `/portal/admin/users/${id}/edit`,
-                                    icon: <UserPen className="w-4" />,
-                                    title: "User Details",
-                                },
-                            ]}
-                        />
+                icon={
+                    <>
+                        <Link href="../" className="btn p-1">
+                            <ArrowLeft />
+                        </Link>
+                    </>
+                }
+                pageTitle="Users Management"
+                breadcrumbs={[
+                    {
+                        path: "/portal/admin/users",
+                        icon: <Users className="w-4" />,
+                        title: "Users Management",
+                    },
+                    {
+                        path: `/portal/admin/users/${id}/edit`,
+                        icon: <UserPen className="w-4" />,
+                        title: "User Details",
+                    },
+                ]}
+            />
             <div className="w-full h-full md:w-8/10 2xl:w-3/4 mx-auto relative my-5">
                 <UserUpdateForm userId={id} />
             </div>
