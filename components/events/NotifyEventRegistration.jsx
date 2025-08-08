@@ -16,7 +16,7 @@ export const NotifyEventRegistration = ({ donorsData, eventData }) => {
             {
                 autoClose: false,
                 position: "bottom-right",
-                containerId
+                containerId,
             }
         );
         donors.forEach((donor, index) => {
@@ -26,21 +26,25 @@ export const NotifyEventRegistration = ({ donorsData, eventData }) => {
                 if (!res.success) {
                     failedDonors.current.push(donor);
                     toast.update(toastId.current, {
-                        render: `Sending ${donor?.user?.full_name}... ${index + 1
-                            } out of ${donors.length} (Failed: ${failedDonors.current.length
-                            })`,
+                        render: `Sending ${donor?.user?.full_name}... ${
+                            index + 1
+                        } out of ${donors.length} (Failed: ${
+                            failedDonors.current.length
+                        })`,
                         type: "error",
                         autoClose: false,
-                        containerId
+                        containerId,
                     });
                 } else {
                     toast.update(toastId.current, {
-                        render: `Sending  ${donor?.user?.full_name}... ${index + 1
-                            } out of ${donors.length} (Failed: ${failedDonors.current.length
-                            })`,
+                        render: `Sending  ${donor?.user?.full_name}... ${
+                            index + 1
+                        } out of ${donors.length} (Failed: ${
+                            failedDonors.current.length
+                        })`,
                         type: "info",
                         autoClose: false,
-                        containerId
+                        containerId,
                     });
                 }
                 if (index === donors.length - 1) {
@@ -74,7 +78,7 @@ export const NotifyEventRegistration = ({ donorsData, eventData }) => {
                                 ? "success"
                                 : "warning",
                         autoClose: false,
-                        containerId
+                        containerId,
                     });
                 }
             })();
@@ -89,7 +93,7 @@ export const NotifyEventRegistration = ({ donorsData, eventData }) => {
             {
                 autoClose: false,
                 position: "bottom-right",
-                containerId
+                containerId,
             }
         );
         failedDonorNotif.forEach((donor, index) => {
@@ -97,19 +101,21 @@ export const NotifyEventRegistration = ({ donorsData, eventData }) => {
                 const res = await notifyRegistrationOpen(donor, eventData);
                 if (!res.success) {
                     toast.update(newToastId, {
-                        render: `Resending... ${index + 1} out of ${failedDonorNotif.length
-                            } (Failed: ${failedDonorNotif.length - index - 1})`,
+                        render: `Resending... ${index + 1} out of ${
+                            failedDonorNotif.length
+                        } (Failed: ${failedDonorNotif.length - index - 1})`,
                         type: "info",
                         autoClose: false,
-                        containerId
+                        containerId,
                     });
                 } else {
                     toast.update(newToastId, {
-                        render: `Resending... ${index + 1} out of ${failedDonorNotif.length
-                            }`,
+                        render: `Resending... ${index + 1} out of ${
+                            failedDonorNotif.length
+                        }`,
                         type: "info",
                         autoClose: false,
-                        containerId
+                        containerId,
                     });
                 }
                 if (index === failedDonorNotif.length - 1) {
@@ -117,7 +123,7 @@ export const NotifyEventRegistration = ({ donorsData, eventData }) => {
                         render: `Resend complete!`,
                         type: "success",
                         autoClose: true,
-                        containerId
+                        containerId,
                     });
                 }
             })();
@@ -132,7 +138,7 @@ export const NotifyEventRegistration = ({ donorsData, eventData }) => {
             onClick={notify}
         >
             <Mail className="h-4 w-4" />
-            Notify Donors ({donorsData?.length})
+            Invite Donors ({donorsData?.length})
         </button>
     );
 };
