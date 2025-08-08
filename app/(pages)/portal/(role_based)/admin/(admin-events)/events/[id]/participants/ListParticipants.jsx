@@ -68,6 +68,7 @@ export default function ListParticipants({ eventId }) {
                 <ParticipantsDatatable
                     columns={appointmentsColumns}
                     data={participants}
+                    event={event}
                     isLoading={isLoading}
                 />
             </div>

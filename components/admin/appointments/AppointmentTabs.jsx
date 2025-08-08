@@ -249,6 +249,7 @@ export default function AppointmentTabs({
                     isLoading={isLoading}
                     eventOptions={eventOptions}
                     agencyOptions={agencyOptions}
+                    selectedStatus={selectedStatus}
                 />
             </TabsContent>
         </Tabs>

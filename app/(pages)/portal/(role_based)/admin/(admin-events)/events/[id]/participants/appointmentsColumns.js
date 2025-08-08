@@ -15,6 +15,7 @@ import Link from "next/link";
 import moment from "moment";
 import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 import { MdCheckCircleOutline } from "react-icons/md";
+import { Checkbox } from "@components/ui/checkbox";
 
 function calculateAge(dateOfBirth) {
     const today = new Date();
@@ -28,6 +29,31 @@ function calculateAge(dateOfBirth) {
 }
 
 export const appointmentsColumns = [
+    {
+        id: "select",
+        header: ({ table }) => (
+            <Checkbox
+                checked={
+                    table.getIsAllPageRowsSelected() ||
+                    (table.getIsSomePageRowsSelected() && "indeterminate")
+                }
+                onCheckedChange={(value) =>
+                    table.toggleAllPageRowsSelected(!!value)
+                }
+                aria-label="Select all"
+                className="h-4 w-4 my-5 mr-2"
+            />
+        ),
+        cell: ({ row }) => (
+            <Checkbox
+                checked={row.getIsSelected()}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
+                aria-label="Select row"
+            />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+    },
     {
         accessorKey: "id",
         header: ({ column }) => (
@@ -87,6 +113,14 @@ export const appointmentsColumns = [
                 </>
             );
         },
+        filterFn: "columnFilter",
+    },
+    {
+        accessorKey: "donor.user.email",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Email" />
+        ),
+        cell: ({ getValue }) => <span>{getValue()}</span>,
         filterFn: "columnFilter",
     },
     {

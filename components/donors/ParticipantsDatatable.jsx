@@ -20,7 +20,7 @@ import {
 } from "@components/ui/table";
 import { DataTablePagination } from "@components/reusable_components/DataTablePagination";
 import { DataTableViewOptions } from "@components/reusable_components/DataTableViewOptions";
-import { Droplet, Filter, User, UserCog2 } from "lucide-react";
+import { Droplet, Filter, Send, User, UserCog2 } from "lucide-react";
 import MultiSelect from "@components/reusable_components/MultiSelect";
 
 import Skeleton from "@components/ui/skeleton";
@@ -28,8 +28,9 @@ import { useQuery } from "@tanstack/react-query";
 import { getBloodTypes } from "@/action/bloodTypeAction";
 import Skeleton_line from "@components/ui/skeleton_line";
 import { MdBloodtype } from "react-icons/md";
+import { toast, Toaster } from "sonner";
 
-export function ParticipantsDatatable({ columns, data, isLoading }) {
+export function ParticipantsDatatable({ columns, data, event, isLoading }) {
     const { data: bloodTypes, isLoading: bloodTypesIsLoading } = useQuery({
         queryKey: ["blood_types"],
         queryFn: getBloodTypes,
@@ -114,6 +115,34 @@ export function ParticipantsDatatable({ columns, data, isLoading }) {
         });
     }
 
+    const handleSelectedEmail = () => {
+        const selectedRows = getSelectedRows();
+        const emails = selectedRows
+            .map((row) => row.donor?.user?.email)
+            .filter(Boolean);
+
+        if (emails.length > 0) {
+            const subject = "Blood Donation Event";
+            const body = `Hello,
+                \n\nWe would like to inform you about the upcoming blood donation drive.
+                \nEvent Details:
+                Event title: ${event?.title}
+                Event date: ${event?.date}
+                Event description: ${event?.description}
+                `;
+
+            const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(
+                emails.join(",")
+            )}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+                body
+            )}`;
+
+            window.open(gmailUrl, "_blank"); // open Gmail compose in new tab
+        } else {
+            toast.error("No participants selected");
+        }
+    };
+
     // const visibleData = useMemo(
     //     () => getVisibleData(data, columns, columnVisibility),
     //     [data, columns, columnVisibility]
@@ -128,14 +157,21 @@ export function ParticipantsDatatable({ columns, data, isLoading }) {
                 <Skeleton className="w-full h-80 rounded-xl" />
             ) : (
                 <>
-                    <div className="flex items-center py-2 space-x-2">
+                    <Toaster />
+                    <div className="flex flex-wrap gap-2 md:gap-1 items-center py-2 space-x-2">
+                        <button
+                            className="btn flex-none w-full md:w-auto rounded-full"
+                            onClick={handleSelectedEmail}
+                        >
+                            <Send className="w-4" /> Send Mail
+                        </button>
                         <input
                             placeholder="Search all .."
                             // value={{globalFilter}}
                             onChange={(e) =>
                                 table.setGlobalFilter(e.target.value)
                             }
-                            className="p-2 input-sm flex-none bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
+                            className="p-2 input-sm flex-1 bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
                         />
 
                         <div className="flex-1 flex justify-end pr-2">

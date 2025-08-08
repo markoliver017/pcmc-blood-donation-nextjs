@@ -20,7 +20,7 @@ import {
 } from "@components/ui/table";
 import { DataTablePagination } from "@components/reusable_components/DataTablePagination";
 import { DataTableViewOptions } from "@components/reusable_components/DataTableViewOptions";
-import { Calendar, Droplet, Filter, User, UserCog2 } from "lucide-react";
+import { Calendar, Droplet, Filter, Send, User, UserCog2 } from "lucide-react";
 import MultiSelect from "@components/reusable_components/MultiSelect";
 
 import Skeleton from "@components/ui/skeleton";
@@ -30,6 +30,7 @@ import Skeleton_line from "@components/ui/skeleton_line";
 import { MdBloodtype } from "react-icons/md";
 import moment from "moment";
 import { BiBuildings } from "react-icons/bi";
+import { toast } from "sonner";
 
 export function AppointmentDatatable({
     columns,
@@ -37,6 +38,7 @@ export function AppointmentDatatable({
     isLoading,
     eventOptions,
     agencyOptions,
+    selectedStatus,
 }) {
     const { data: bloodTypes, isLoading: bloodTypesIsLoading } = useQuery({
         queryKey: ["blood_types"],
@@ -51,6 +53,11 @@ export function AppointmentDatatable({
         donor_date_of_birth: false,
     });
     const [rowSelection, setRowSelection] = useState({});
+
+    // Reset row selection when selectedStatus changes
+    useEffect(() => {
+        setRowSelection({});
+    }, [selectedStatus]);
 
     // console.log("rolesssOptions", roleOptions);
     const table = useReactTable({
@@ -90,42 +97,30 @@ export function AppointmentDatatable({
         return selectedRows.map((row) => row.original);
     };
 
-    function getVisibleKeys() {
-        return columns
-            .filter((col) => {
-                const accesorKey = col?.accessorKey?.replaceAll(".", "_");
-                return accesorKey && columnVisibility[accesorKey] !== false;
-            })
-            .map((col) => col.accessorKey);
-    }
+    const handleSelectedEmail = () => {
+        const selectedRows = getSelectedRows();
+        const emails = selectedRows
+            .map((row) => row.donor?.user?.email)
+            .filter(Boolean);
 
-    function getVisibleData(data) {
-        // Flatten columns with accessorKey only
-        const visibleKeys = getVisibleKeys();
+        if (emails.length > 0) {
+            const subject = "Blood Donation Event";
+            const body = `Hello,
+                \n\nWe would like to inform you about the upcoming blood donation drive.
+                `;
 
-        return data.map((row) => {
-            const filteredRow = {};
-            visibleKeys.forEach((key) => {
-                const keys = key.split(".");
-                let value = row;
-                for (const k of keys) {
-                    if (value && k in value) {
-                        value = value[k];
-                    } else {
-                        value = null;
-                        break;
-                    }
-                }
-                filteredRow[key] = value;
-            });
-            return filteredRow;
-        });
-    }
+            const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(
+                emails.join(",")
+            )}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+                body
+            )}`;
 
-    // const visibleData = useMemo(
-    //     () => getVisibleData(data, columns, columnVisibility),
-    //     [data, columns, columnVisibility]
-    // );
+            window.open(gmailUrl, "_blank"); // open Gmail compose in new tab
+        } else {
+            toast.error("No participants selected");
+        }
+    };
+
     if (bloodTypesIsLoading) {
         return <Skeleton_line />;
     }
@@ -136,7 +131,14 @@ export function AppointmentDatatable({
                 <Skeleton className="w-full h-80 rounded-xl" />
             ) : (
                 <>
-                    <div className="flex flex-wrap gap-2 items-center py-2 space-x-2">
+                    <div className="flex flex-wrap items-center gap-2 py-2 space-x-2">
+                        <button
+                            className="btn flex-none w-full md:w-auto rounded-full"
+                            onClick={handleSelectedEmail}
+                        >
+                            <Send className="w-4" /> Send Mail
+                        </button>
+
                         <input
                             placeholder="Search all .."
                             // value={{globalFilter}}
