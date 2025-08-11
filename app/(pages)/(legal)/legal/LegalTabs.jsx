@@ -36,7 +36,7 @@ export default function LegalTabs() {
                         Terms and Conditions
                     </h1>
                     <p className="text-neutral-600 dark:text-neutral-400 mb-6">
-                        Effective Date: January 2025
+                        Effective Date: August 2025
                     </p>
 
                     <Card>
@@ -45,12 +45,12 @@ export default function LegalTabs() {
                                 Welcome to the{" "}
                                 <strong>
                                     PCMC Pediatric Blood Center - Medical Blood
-                                    Donation Portal
+                                    Donation Portal.
                                 </strong>{" "}
-                                (“Portal”). By accessing, registering, or using
-                                any part of this platform, you agree to be bound
-                                by the following Terms and Conditions. Please
-                                read them carefully.
+                                By accessing, registering, or using any part of
+                                this platform, you agree to be bound by the
+                                following Terms and Conditions. Please read them
+                                carefully.
                             </p>
 
                             <div>
@@ -73,7 +73,7 @@ export default function LegalTabs() {
                                 <ul className="list-disc ml-6 space-y-1">
                                     <li>
                                         Must be a registered user (Donor,
-                                        Host/Agency, or Admin).
+                                        Agency/Coordinator, or Admin).
                                     </li>
                                     <li>
                                         At least 18 years old (or with
@@ -95,7 +95,7 @@ export default function LegalTabs() {
                 <ScrollArea className="h-[70vh] pr-4">
                     <h1 className="text-xl font-bold mb-4">Privacy Policy</h1>
                     <p className="text-neutral-600 dark:text-neutral-400 mb-6">
-                        Last Updated: January 2025
+                        Last Updated: August 2025
                     </p>
 
                     <Card>
@@ -229,7 +229,7 @@ export default function LegalTabs() {
                             <p>
                                 For questions regarding this consent, I may
                                 contact the development or medical team at{" "}
-                                <strong>support@pcmc.gov.ph</strong>.
+                                <strong>pcmcpedbcmbd@gmail.com</strong>.
                             </p>
 
                             <p className="italic text-neutral-600 dark:text-neutral-400">
@@ -239,7 +239,7 @@ export default function LegalTabs() {
                             </p>
 
                             <p className="text-neutral-500 dark:text-neutral-400">
-                                Last Updated: January 2025
+                                Last Updated: August 2025
                             </p>
                         </CardContent>
                     </Card>
