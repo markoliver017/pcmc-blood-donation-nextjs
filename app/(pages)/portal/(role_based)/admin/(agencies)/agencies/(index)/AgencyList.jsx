@@ -62,7 +62,6 @@ export default function AgencyList() {
 
     return (
         <div className="relative">
-
             <div className="hidden justify-between mb-5">
                 <Link
                     href="./agencies/create"
@@ -124,7 +123,7 @@ export default function AgencyList() {
                     )}
                 </TabsContent>
                 <TabsContent value="rejected">
-                    {approvedAgencies.length === 0 ? (
+                    {rejectedAgencies.length === 0 ? (
                         <Card className="col-span-full flex flex-col justify-center items-center text-center py-16 ">
                             <Building2 className="w-12 h-12 mb-4 text-primary" />
                             <h2 className="text-xl font-semibold">

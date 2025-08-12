@@ -42,6 +42,7 @@ export default function RejectDialog({ agencyId, className = "btn-error" }) {
             return res.data;
         },
         onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ["verified-agencies"] });
             queryClient.invalidateQueries({ queryKey: ["agencies"] });
             queryClient.invalidateQueries({ queryKey: ["agency"] });
             setOpen(false);
