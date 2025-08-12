@@ -28,7 +28,7 @@ export default function AgencyList() {
 
     const queryClient = useQueryClient();
     const {
-        data: agencies,
+        data: agencies = [],
         error,
         isFetching,
         isLoading,
@@ -53,10 +53,10 @@ export default function AgencyList() {
 
     if (error) return <div>Error: {error.message}</div>;
 
-    const approvedAgencies = agencies.filter(
+    const approvedAgencies = agencies?.filter(
         (agency) => agency.status !== "rejected"
     );
-    const rejectedAgencies = agencies.filter(
+    const rejectedAgencies = agencies?.filter(
         (agency) => agency.status === "rejected"
     );
 

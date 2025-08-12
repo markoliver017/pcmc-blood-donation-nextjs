@@ -17,10 +17,13 @@ export async function uploadPicture(file) {
 
     try {
         // const res = await fetch("http://localhost:5000/api/uploads", {
-        const res = await fetch("http://10.0.0.185:5000/api/uploads", {
-            method: "POST",
-            body: formData,
-        });
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_UPLOAD_FILE_DOMAIN}/api/uploads`,
+            {
+                method: "POST",
+                body: formData,
+            }
+        );
 
         const data = await res.json();
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -56,10 +59,13 @@ export async function uploadPdfFile(file) {
     formData.append("file", file);
 
     try {
-        const res = await fetch("http://10.0.0.185:5000/api/upload-pdf", {
-            method: "POST",
-            body: formData,
-        });
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_UPLOAD_FILE_DOMAIN}/api/upload-pdf`,
+            {
+                method: "POST",
+                body: formData,
+            }
+        );
 
         const data = await res.json();
         await new Promise((resolve) => setTimeout(resolve, 1000));
