@@ -54,7 +54,7 @@ export default function AgencyList() {
     if (error) return <div>Error: {error.message}</div>;
 
     const approvedAgencies = agencies.filter(
-        (agency) => agency.status === "activated"
+        (agency) => agency.status !== "rejected"
     );
     const rejectedAgencies = agencies.filter(
         (agency) => agency.status === "rejected"
