@@ -51,12 +51,12 @@ export default function BloodTypeDistributionChart({ data, isLoading }) {
     }
 
     return (
-        <Card>
+        <Card className="overflow-x-auto">
             <CardHeader>
                 <CardTitle>Blood Type Distribution </CardTitle>
             </CardHeader>
-            <CardContent>
-                <ResponsiveContainer width="100%" height={400}>
+            <CardContent className="min-w-[450px]">
+                <ResponsiveContainer width="100%" height={450}>
                     <PieChart>
                         <Pie
                             data={data}

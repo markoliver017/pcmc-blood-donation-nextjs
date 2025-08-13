@@ -27,11 +27,11 @@ export default function DonationsChart({ data, isLoading }) {
     }
 
     return (
-        <Card>
+        <Card className="overflow-x-auto">
             <CardHeader>
                 <CardTitle>Donations Over Time (Last 6 Months)</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="min-w-[400px]">
                 <ResponsiveContainer width="100%" height={400}>
                     <LineChart
                         data={data}

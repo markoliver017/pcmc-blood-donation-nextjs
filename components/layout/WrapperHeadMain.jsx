@@ -24,7 +24,7 @@ export default function WrapperHeadMain({
                     </Link>
                 )}
                 <h1
-                    className="text-3xl font-bold flex-items-center"
+                    className="text-xl md:text-3xl font-bold flex-items-center"
                     style={{ fontFamily: "var(--font-geist-sans)" }}
                 >
                     {icon || <HomeIcon />}

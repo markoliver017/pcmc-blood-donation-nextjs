@@ -16,7 +16,7 @@ export default function WrapperHead() {
     return (
         <div className="flex-none flex flex-wrap justify-between items-center p-4 shadow">
             <h1
-                className="text-3xl font-bold flex-items-center"
+                className="text-lg md:text-3xl font-bold flex-items-center"
                 style={{ fontFamily: "var(--font-geist-sans)" }}
             >
                 {currentPage?.icon || <HomeIcon />}

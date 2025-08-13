@@ -122,7 +122,7 @@ export default function AdminEventCard({
     return (
         <Card className="hover:ring-2 hover:ring-blue-400 group transition shadow-lg/40 flex flex-col justify-between h-full">
             <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900">
-                <div className="flex justify-between items-start">
+                <div className="flex flex-col sm:flex-row justify-between items-start">
                     <CardTitle className="text-xl font-bold">
                         {event.title}
                     </CardTitle>
@@ -174,7 +174,7 @@ export default function AdminEventCard({
                             )}
                     </div>
                 </div>
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row justify-between items-center">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
                         <Calendar className="h-4 w-4" />
                         <span>{moment(event.date).format("MMMM D, YYYY")}</span>
@@ -184,7 +184,7 @@ export default function AdminEventCard({
             </CardHeader>
 
             <CardContent>
-                <div className="flex items-start gap-4 mb-4 p-2">
+                <div className="flex flex-col sm:flex-row items-start gap-4 mb-4 p-2">
                     <CustomAvatar
                         avatar={event.agency?.file_url || "/logo-1.jpeg"}
                         className="w-12 h-12 flex-none border rounded-full"

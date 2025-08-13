@@ -57,13 +57,14 @@ export default function Page() {
                         supply for children and families in need. Every drop
                         counts.
                     </p>
-                    <div className="flex gap-5">
+                    <div className="flex flex-wrap justify-center gap-5">
                         <button
                             type="button"
                             className="cursor-pointer btn-blue-500 flex-items-center justify-center min-w-48 text-blue-900 bg-[rgba(255,255,255,0.9)] rounded-2xl p-5 border shadow-[5px_5px_0px_0px_rgba(0,_0,_0,_0.5),inset_6px_6px_1px_1px_rgba(0,_0,_0,_0.3)] shadow-blue-800 hover:ring-1 hover:font-semibold"
                             onClick={() => setOpenRegister(true)}
                         >
-                            <Handshake className="h-10 w-10" /> Join Us
+                            <Handshake className="h-8 w-8 sm:h-10 sm:w-10" />{" "}
+                            Join Us
                         </button>
                         <Link href="/donation-process">
                             <button

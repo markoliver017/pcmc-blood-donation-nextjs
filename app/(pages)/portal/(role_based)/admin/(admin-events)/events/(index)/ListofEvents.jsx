@@ -278,10 +278,10 @@ export default function ListofEvents() {
                 onValueChange={handleTabChange}
                 className="mt-5 px-2 sm:px-5 mb-5 relative"
             >
-                <TabsList className="mt-4 bg-muted p-1 rounded-md w-max">
+                <TabsList className="mt-4 bg-muted p-1 rounded-md w-full">
                     <TabsTrigger
                         value="dashboard"
-                        className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600"
+                        className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border flex-1"
                     >
                         <div className="flex-items-center">
                             <BarChart3 className="h-4 w-4" />
@@ -290,7 +290,7 @@ export default function ListofEvents() {
                     </TabsTrigger>
                     <TabsTrigger
                         value="ongoing"
-                        className="data-[state=active]:bg-green-100 data-[state=active]:text-green-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600"
+                        className="data-[state=active]:bg-green-100 data-[state=active]:text-green-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border"
                     >
                         <div className="flex-items-center">
                             <Check className="h-4 w-4" />
@@ -299,7 +299,7 @@ export default function ListofEvents() {
                     </TabsTrigger>
                     <TabsTrigger
                         value="upcoming"
-                        className="data-[state=active]:bg-cyan-100 data-[state=active]:text-cyan-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600"
+                        className="data-[state=active]:bg-cyan-100 data-[state=active]:text-cyan-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border"
                     >
                         <div className="flex-items-center">
                             <MdUpcoming />
@@ -308,7 +308,7 @@ export default function ListofEvents() {
                     </TabsTrigger>
                     <TabsTrigger
                         value="all"
-                        className="data-[state=active]:bg-blue-300 data-[state=active]:text-blue-800 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600"
+                        className="data-[state=active]:bg-blue-300 data-[state=active]:text-blue-800 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border"
                     >
                         <div className="flex-items-center">
                             <Text className="h-4 w-4" />
@@ -317,7 +317,7 @@ export default function ListofEvents() {
                     </TabsTrigger>
                     <TabsTrigger
                         value="for-approval"
-                        className="data-[state=active]:bg-yellow-100 data-[state=active]:text-yellow-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600"
+                        className="data-[state=active]:bg-yellow-100 data-[state=active]:text-yellow-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border"
                     >
                         <div className="flex-items-center">
                             <QuestionMarkCircledIcon />
@@ -348,14 +348,18 @@ export default function ListofEvents() {
                                     className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-purple-700 hover:bg-purple-100 focus-visible:ring-2 focus-visible:ring-purple-400"
                                 >
                                     <CreditCard />
-                                    Card View
+                                    <span className="hidden md:block">
+                                        Card View
+                                    </span>
                                 </ViewModeTabsTrigger>
                                 <ViewModeTabsTrigger
                                     value="table"
                                     className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-blue-700 hover:bg-blue-100 focus-visible:ring-2 focus-visible:ring-blue-400"
                                 >
                                     <TableIcon />
-                                    Table View
+                                    <span className="hidden md:block">
+                                        Table View
+                                    </span>
                                 </ViewModeTabsTrigger>
                             </ViewModeTabsList>
                         </ViewModeTabs>
@@ -434,14 +438,19 @@ export default function ListofEvents() {
                                     className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-purple-700 hover:bg-purple-100 focus-visible:ring-2 focus-visible:ring-purple-400"
                                 >
                                     <CreditCard />
-                                    Card View
+
+                                    <span className="hidden md:block">
+                                        Card View
+                                    </span>
                                 </ViewModeTabsTrigger>
                                 <ViewModeTabsTrigger
                                     value="table"
                                     className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-blue-700 hover:bg-blue-100 focus-visible:ring-2 focus-visible:ring-blue-400"
                                 >
                                     <TableIcon />
-                                    Table View
+                                    <span className="hidden md:block">
+                                        Table View
+                                    </span>
                                 </ViewModeTabsTrigger>
                             </ViewModeTabsList>
                         </ViewModeTabs>
@@ -518,14 +527,18 @@ export default function ListofEvents() {
                                     className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-purple-700 hover:bg-purple-100 focus-visible:ring-2 focus-visible:ring-purple-400"
                                 >
                                     <CreditCard />
-                                    Card View
+                                    <span className="hidden md:block">
+                                        Card View
+                                    </span>
                                 </ViewModeTabsTrigger>
                                 <ViewModeTabsTrigger
                                     value="table"
                                     className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-blue-700 hover:bg-blue-100 focus-visible:ring-2 focus-visible:ring-blue-400"
                                 >
                                     <TableIcon />
-                                    Table View
+                                    <span className="hidden md:block">
+                                        Table View
+                                    </span>
                                 </ViewModeTabsTrigger>
                             </ViewModeTabsList>
                         </ViewModeTabs>

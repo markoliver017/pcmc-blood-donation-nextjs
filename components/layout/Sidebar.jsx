@@ -67,12 +67,12 @@ const Sidebar = ({ currentUser }) => {
     return (
         <motion.aside
             initial={{ width: "290px" }}
-            animate={{ width: isCollapsed ? "70px" : "290px" }}
-            className="w-64 flex-none h-screen overflow-y-auto bg-gradient-to-r from-gray-700 to-gray-800 text-white px-4 pt-5 pb-10 shadow-xl"
+            animate={{ width: isCollapsed ? "60px" : "290px" }}
+            className="w-64 flex-none h-screen overflow-y-auto bg-gradient-to-r from-gray-700 to-gray-800 text-white px-1 md:px-4 pt-5 pb-10 shadow-xl"
         >
             <div className="flex flex-col h-full">
                 <div className="flex-1">
-                    <div className="flex justify-end">
+                    <div className="flex md:justify-end">
                         <button
                             onClick={handleToggleSidebar}
                             className="block p-3 text-right rounded-2xl dark:border-neutral dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-300"

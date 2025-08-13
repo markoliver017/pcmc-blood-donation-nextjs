@@ -16,12 +16,13 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { getSingleStyle } from "@/styles/select-styles";
 import { useTheme } from "next-themes";
-import { Calendar, Search, Filter, X } from "lucide-react";
+import { Calendar, Search, Filter, X, Expand } from "lucide-react";
 import { useState, useEffect } from "react";
 import { fetchAllAgencies } from "@action/agencyAction";
 import Skeleton from "@components/ui/skeleton";
 
 import dynamic from "next/dynamic";
+import { BiCollapse } from "react-icons/bi";
 const CreatableSelectNoSSR = dynamic(() => import("react-select/creatable"), {
     ssr: false,
 });
@@ -86,7 +87,7 @@ export default function EventFilterBar({
 
     return (
         <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-6 mb-6 shadow-sm">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+            <div className="flex flex-wrap sm:items-center sm:justify-between gap-3 mb-5">
                 <div className="flex items-center gap-2">
                     <Filter className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
                     <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
@@ -99,7 +100,7 @@ export default function EventFilterBar({
                     )}
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                     {hasActiveFilters && (
                         <Button
                             type="button"
@@ -108,7 +109,7 @@ export default function EventFilterBar({
                             onClick={handleClear}
                         >
                             <X className="h-3 w-3 mr-1" />
-                            Clear All
+                            <span className="hidden sm:inline">Clear All</span>
                         </Button>
                     )}
                     <Button
@@ -117,7 +118,7 @@ export default function EventFilterBar({
                         size="sm"
                         onClick={() => setIsExpanded(!isExpanded)}
                     >
-                        {isExpanded ? "Collapse" : "Expand"}
+                        {isExpanded ? <BiCollapse /> : <Expand />}
                     </Button>
                 </div>
             </div>
@@ -149,7 +150,7 @@ export default function EventFilterBar({
 
                     {/* Expandable Filters */}
                     {isExpanded && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 border-t pt-6 border-neutral-200 dark:border-neutral-700">
+                        <div className="grid grid-cols-1 md:grid-cols-2  gap-4 border-t pt-6 border-neutral-200 dark:border-neutral-700">
                             {/* Date Range */}
                             <FormField
                                 control={form.control}
@@ -159,23 +160,23 @@ export default function EventFilterBar({
                                         <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                             Event Date Range
                                         </label>
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex flex-wrap justify-center items-center gap-2">
                                             <Input
                                                 type="date"
                                                 value={
                                                     field.value?.from
                                                         ? new Date(
-                                                            field.value.from
-                                                        )
-                                                            .toISOString()
-                                                            .split("T")[0]
+                                                              field.value.from
+                                                          )
+                                                              .toISOString()
+                                                              .split("T")[0]
                                                         : ""
                                                 }
                                                 onChange={(e) => {
                                                     const date = e.target.value
                                                         ? new Date(
-                                                            e.target.value
-                                                        )
+                                                              e.target.value
+                                                          )
                                                         : null;
                                                     field.onChange({
                                                         ...field.value,
@@ -192,17 +193,17 @@ export default function EventFilterBar({
                                                 value={
                                                     field.value?.to
                                                         ? new Date(
-                                                            field.value.to
-                                                        )
-                                                            .toISOString()
-                                                            .split("T")[0]
+                                                              field.value.to
+                                                          )
+                                                              .toISOString()
+                                                              .split("T")[0]
                                                         : ""
                                                 }
                                                 onChange={(e) => {
                                                     const date = e.target.value
                                                         ? new Date(
-                                                            e.target.value
-                                                        )
+                                                              e.target.value
+                                                          )
                                                         : null;
                                                     field.onChange({
                                                         ...field.value,

@@ -146,7 +146,7 @@ export default function UserChangePassword({ userQuery }) {
         <Form {...form}>
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="space-y-2 p-5 shadow border rounded-2xl"
+                className="space-y-2 px-2 md:px-5 py-5 shadow border rounded-2xl"
             >
                 <FormField
                     control={form.control}

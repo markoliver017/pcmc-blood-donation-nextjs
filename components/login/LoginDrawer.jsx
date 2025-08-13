@@ -20,7 +20,7 @@ export default function LoginDrawer() {
     const drawerRef = useRef();
     const router = useRouter();
     return (
-        <div className="w-full flex gap-2 justify-end sm:w-max">
+        <div className="flex gap-2 justify-end sm:w-max">
             <button
                 onClick={() => router.push("/register")}
                 className="bg-gradient-to-b from-blue-700 to-blue-500 text-white font-bold px-4 py-2 rounded-md shadow-[7px_10px_2px_0px_rgba(0,_0,_0,_0.1)] hover:from-pink-500 hover:to-purple-400 hover:ring transition duration-300"

@@ -42,11 +42,11 @@ export default function EventSuccessRateChart({ data, isLoading }) {
     }
 
     return (
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 overflow-x-auto">
             <CardHeader>
                 <CardTitle>Event Success Rate (Last 5 Events)</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="min-w-[600px]">
                 <ResponsiveContainer width="100%" height={400}>
                     <BarChart
                         data={data}

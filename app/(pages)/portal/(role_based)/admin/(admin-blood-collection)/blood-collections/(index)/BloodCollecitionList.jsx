@@ -121,7 +121,7 @@ export default function BloodCollecitionList() {
                     </p>
                 </Card>
             ) : (
-                <>
+                <div className="mb-10">
                     <div className="absolute right-10 top-[-40]">
                         <button
                             className="btn btn-circle btn-warning"
@@ -141,7 +141,7 @@ export default function BloodCollecitionList() {
                         eventOptions={eventOptions}
                         agencyOptions={agencyOptions}
                     />
-                </>
+                </div>
             )}
         </div>
     );

@@ -50,14 +50,14 @@ export default async function page() {
     });
 
     return (
-        <div className="p-5 overflow-scroll">
-            <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-800">
-                <div>
-                    <h1 className="text-3xl flex-items-center">
+        <div className="p-1 md:p-5 overflow-scroll">
+            <div className="flex flex-wrap gap-2 justify-between items-center border-b border-gray-200 dark:border-gray-800">
+                <div className="font-bold">
+                    <h1 className="text-base md:text-3xl flex-items-center">
                         <PiHandHeart /> WELCOME, {user.name}
                     </h1>
                     <h2 className="flex-items-center">
-                        <LogIn className="h-4" /> Logged In as :{" "}
+                        <LogIn className="h-4 w-4" /> Logged In as :{" "}
                         {user?.role_name || "Donor"}
                     </h2>
                 </div>

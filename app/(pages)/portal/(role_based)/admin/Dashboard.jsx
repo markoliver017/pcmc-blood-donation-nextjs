@@ -178,13 +178,13 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Calendar */}
                 <div className="lg:col-span-2">
-                    <Card className="w-full">
+                    <Card className="w-full overflow-x-auto">
                         <CardHeader>
                             <CardTitle className="text-xl">
                                 Event Calendar
                             </CardTitle>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="min-w-[600px]">
                             <AllEventCalendar />
                         </CardContent>
                     </Card>

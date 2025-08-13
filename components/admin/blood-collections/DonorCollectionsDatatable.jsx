@@ -135,19 +135,19 @@ export function DonorCollectionsDatatable({
                 <Skeleton className="w-full h-80 rounded-xl" />
             ) : (
                 <>
-                    <div className="flex items-center py-2 space-x-2">
+                    <div className="flex flex-col md:flex-row md:items-center py-2 gap-2">
                         <input
                             placeholder="Search all .."
                             // value={{globalFilter}}
                             onChange={(e) =>
                                 table.setGlobalFilter(e.target.value)
                             }
-                            className="p-2 input-sm flex-none bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
+                            className="p-2 input-sm min-w-[250px] bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
                         />
 
                         <div className="flex-1 flex justify-end pr-2">
-                            <div className="flex space-x-2">
-                                <label className="dark:text-slate-400 flex items-center space-x-1">
+                            <div className="flex flex-wrap gap-1 space-x-2">
+                                <label className="hidden sm:flex dark:text-slate-400 items-center space-x-1">
                                     <Filter className="h-4 w-4" />
                                 </label>
                                 <MultiSelect
@@ -178,7 +178,7 @@ export function DonorCollectionsDatatable({
                                             <span>Agencies</span>
                                         </>
                                     }
-                                    className="text-slate-700 bg-slate-100 hover:bg-white"
+                                    className="flex-1 text-slate-700 bg-slate-100 hover:bg-white"
                                     animation={2}
                                     maxCount={1}
                                 />
@@ -214,7 +214,7 @@ export function DonorCollectionsDatatable({
                                             <span>Blood Type</span>
                                         </>
                                     }
-                                    className="text-slate-700 bg-slate-100 hover:bg-white"
+                                    className="flex-1 text-slate-700 bg-slate-100 hover:bg-white"
                                     animation={2}
                                     maxCount={1}
                                 />
@@ -256,7 +256,7 @@ export function DonorCollectionsDatatable({
                                         </>
                                     }
                                     variant="inverted"
-                                    className="text-slate-700 bg-slate-100 hover:bg-white"
+                                    className="flex-1 text-slate-700 bg-slate-100 hover:bg-white"
                                     animation={2}
                                     maxCount={1}
                                 />

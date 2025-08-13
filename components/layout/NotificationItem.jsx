@@ -45,7 +45,11 @@ const iconMap = {
     Settings,
 };
 
-export default function NotificationItem({ notification, onAction, viewAction = true }) {
+export default function NotificationItem({
+    notification,
+    onAction,
+    viewAction = true,
+}) {
     const [isHovered, setIsHovered] = useState(false);
     const queryClient = useQueryClient();
 
@@ -101,11 +105,13 @@ export default function NotificationItem({ notification, onAction, viewAction = 
 
     return (
         <Card
-            className={`transition-all duration-300 cursor-pointer group ${notification.is_read
-                ? "bg-gray-50/80 dark:bg-gray-900/80 hover:bg-gray-100/80 dark:hover:bg-gray-800/80"
-                : "bg-white dark:bg-gray-800 border-l-8 border-l-blue-500 dark:border-l-blue-200  shadow-sm hover:shadow-md"
-                } ${isHovered ? "scale-[1.02] shadow-lg" : ""
-                } hover:border-gray-200 dark:hover:border-gray-700`}
+            className={`transition-all duration-300 cursor-pointer group ${
+                notification.is_read
+                    ? "bg-gray-50/80 dark:bg-gray-900/80 hover:bg-gray-100/80 dark:hover:bg-gray-800/80"
+                    : "bg-white dark:bg-gray-800 border-l-8 border-l-blue-500 dark:border-l-blue-200  shadow-sm hover:shadow-md"
+            } ${
+                isHovered ? "scale-[1.02] shadow-lg" : ""
+            } hover:border-gray-200 dark:hover:border-gray-700`}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onClick={handleAction}
@@ -114,44 +120,46 @@ export default function NotificationItem({ notification, onAction, viewAction = 
                 <div className="flex items-start gap-3">
                     {/* Enhanced Icon */}
                     <div
-                        className={`p-2.5 rounded-xl transition-all duration-200 group-hover:scale-110 ${config.color === "blue"
-                            ? "bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30"
-                            : config.color === "green"
+                        className={`p-2.5 rounded-xl transition-all duration-200 group-hover:scale-110 ${
+                            config.color === "blue"
+                                ? "bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30"
+                                : config.color === "green"
                                 ? "bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900/30 dark:to-green-800/30"
                                 : config.color === "orange"
-                                    ? "bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30"
-                                    : config.color === "purple"
-                                        ? "bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/30 dark:to-purple-800/30"
-                                        : config.color === "cyan"
-                                            ? "bg-gradient-to-br from-cyan-100 to-cyan-200 dark:from-cyan-900/30 dark:to-cyan-800/30"
-                                            : config.color === "red"
-                                                ? "bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/30 dark:to-red-800/30"
-                                                : config.color === "gray"
-                                                    ? "bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900/30 dark:to-gray-800/30"
-                                                    : config.color === "slate"
-                                                        ? "bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900/30 dark:to-slate-800/30"
-                                                        : "bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900/30 dark:to-gray-800/30"
-                            }`}
+                                ? "bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30"
+                                : config.color === "purple"
+                                ? "bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/30 dark:to-purple-800/30"
+                                : config.color === "cyan"
+                                ? "bg-gradient-to-br from-cyan-100 to-cyan-200 dark:from-cyan-900/30 dark:to-cyan-800/30"
+                                : config.color === "red"
+                                ? "bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/30 dark:to-red-800/30"
+                                : config.color === "gray"
+                                ? "bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900/30 dark:to-gray-800/30"
+                                : config.color === "slate"
+                                ? "bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900/30 dark:to-slate-800/30"
+                                : "bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900/30 dark:to-gray-800/30"
+                        }`}
                     >
                         <IconComponent
-                            className={`w-4 h-4 transition-colors duration-200 ${config.color === "blue"
-                                ? "text-blue-600 dark:text-blue-400"
-                                : config.color === "green"
+                            className={`w-4 h-4 transition-colors duration-200 ${
+                                config.color === "blue"
+                                    ? "text-blue-600 dark:text-blue-400"
+                                    : config.color === "green"
                                     ? "text-green-600 dark:text-green-400"
                                     : config.color === "orange"
-                                        ? "text-orange-600 dark:text-orange-400"
-                                        : config.color === "purple"
-                                            ? "text-purple-600 dark:text-purple-400"
-                                            : config.color === "cyan"
-                                                ? "text-cyan-600 dark:text-cyan-400"
-                                                : config.color === "red"
-                                                    ? "text-red-600 dark:text-red-400"
-                                                    : config.color === "gray"
-                                                        ? "text-gray-600 dark:text-gray-400"
-                                                        : config.color === "slate"
-                                                            ? "text-slate-600 dark:text-slate-400"
-                                                            : "text-gray-600 dark:text-gray-400"
-                                }`}
+                                    ? "text-orange-600 dark:text-orange-400"
+                                    : config.color === "purple"
+                                    ? "text-purple-600 dark:text-purple-400"
+                                    : config.color === "cyan"
+                                    ? "text-cyan-600 dark:text-cyan-400"
+                                    : config.color === "red"
+                                    ? "text-red-600 dark:text-red-400"
+                                    : config.color === "gray"
+                                    ? "text-gray-600 dark:text-gray-400"
+                                    : config.color === "slate"
+                                    ? "text-slate-600 dark:text-slate-400"
+                                    : "text-gray-600 dark:text-gray-400"
+                            }`}
                         />
                     </div>
 
@@ -160,34 +168,35 @@ export default function NotificationItem({ notification, onAction, viewAction = 
                         <div className="flex items-start justify-between gap-2">
                             <div className="flex-1">
                                 <h4
-                                    className={`font-semibold text-sm line-clamp-2 transition-colors duration-200 ${notification.is_read
-                                        ? "text-gray-700 dark:text-gray-300"
-                                        : "text-gray-900 dark:text-white"
-                                        }`}
+                                    className={`font-semibold text-sm line-clamp-2 transition-colors duration-200 ${
+                                        notification.is_read
+                                            ? "text-gray-700 dark:text-gray-300"
+                                            : "text-gray-900 dark:text-white"
+                                    }`}
                                 >
                                     {notification.subject}
                                 </h4>
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
                                     {notification.message}
                                 </p>
-                                <div className="flex items-center justify-between gap-2 mt-3">
+                                <div className="flex flex-wrap items-center justify-between gap-2 mt-3">
                                     <Badge
                                         variant={config.badge}
-                                        className="text-xs px-2 py-0.5 transition-all duration-200 hover:scale-105"
+                                        className="flex-1 text-xs text-center px-2 py-0.5 transition-all duration-200 hover:scale-105"
                                     >
                                         {config.label}
                                     </Badge>
                                     {/* Show type label for merged category */}
                                     {config.category ===
                                         "appointments_collections_general" && (
-                                            <Badge
-                                                variant="outline"
-                                                className="text-xs px-2 py-0.5 bg-gray-50 dark:bg-gray-800"
-                                            >
-                                                {notification.type}
-                                            </Badge>
-                                        )}
-                                    <span className="text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full">
+                                        <Badge
+                                            variant="outline"
+                                            className="flex-1text-xs px-2 py-0.5 bg-gray-50 dark:bg-gray-800"
+                                        >
+                                            {notification.type}
+                                        </Badge>
+                                    )}
+                                    <span className="flex-1 text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full">
                                         {format(
                                             new Date(notification.createdAt),
                                             "MMM dd | hh:mm a"
@@ -246,7 +255,6 @@ export default function NotificationItem({ notification, onAction, viewAction = 
                         {/* Enhanced Action Button */}
                         {/* {viewAction && config.actionUrl && config.actionUrl !== "#" && ( */}
                         {viewAction && (
-
                             <div className="mt-3">
                                 <Button
                                     variant="outline"

@@ -273,7 +273,7 @@ export default function EventsDashboard() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
                         Events Dashboard
                     </h1>
                     <p className="text-muted-foreground">
@@ -292,13 +292,15 @@ export default function EventsDashboard() {
                         value="overview"
                         className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-blue-700 hover:bg-blue-100 focus-visible:ring-2 focus-visible:ring-blue-400"
                     >
-                        <LayoutDashboard className="h-5 w-5 mr-1" /> Overview
+                        <LayoutDashboard className="h-5 w-5 mr-1" />{" "}
+                        <span className="hidden md:block">Overview</span>
                     </TabsTrigger>
                     <TabsTrigger
                         value="analytics"
                         className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-purple-700 hover:bg-purple-100 focus-visible:ring-2 focus-visible:ring-purple-400"
                     >
-                        <BarChart3 className="h-5 w-5 mr-1" /> Analytics
+                        <BarChart3 className="h-5 w-5 mr-1" />
+                        <span className="hidden md:block">Analytics</span>
                     </TabsTrigger>
                 </TabsList>
 

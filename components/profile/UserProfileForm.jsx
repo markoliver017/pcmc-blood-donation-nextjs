@@ -253,7 +253,7 @@ export default function UserProfileForm({ userQuery }) {
                                     <CustomAvatar
                                         avatar={avatar}
                                         whenClick={handleImageClick}
-                                        className="w-[250px] h-[250px]"
+                                        className=" w-[150px] h-[150px] md:w-[250px] md:h-[250px]"
                                     />
                                     <div className="flex items-center justify-center space-x-2 mt-2">
                                         <ImagePreviewComponent

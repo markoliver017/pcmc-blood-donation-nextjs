@@ -27,14 +27,14 @@ export default function UserProfileTabs({ userId, provider }) {
     });
 
     return (
-        <Card className="md:p-5 bg-gray-100">
-            <CardHeader className="text-2xl font-bold">
+        <Card className="p-0 md:p-5 bg-gray-100">
+            <CardHeader className="text-base sm:text-lg md:text-2xl font-bold">
                 <CardTitle>Account Information</CardTitle>
                 <CardDescription>
                     <div>Update your account.</div>
                 </CardDescription>
             </CardHeader>
-            <CardContent id="form-modal">
+            <CardContent id="form-modal" className="p-1 md:p-5">
                 <div className="tabs tabs-lift">
                     <label className="tab gap-2  min-w-full sm:min-w-1/2">
                         <input
@@ -45,7 +45,7 @@ export default function UserProfileTabs({ userId, provider }) {
                         <User2Icon />
                         User Profile
                     </label>
-                    <div className="tab-content bg-base-100 border-base-300 p-6">
+                    <div className="tab-content bg-base-100 border-base-300 p-1 md:p-5">
                         <UserProfileForm userQuery={userQuery} />
                     </div>
                     {provider == "credentials" && (
@@ -55,7 +55,7 @@ export default function UserProfileTabs({ userId, provider }) {
                                 <Cog />
                                 Account Credentials
                             </label>
-                            <div className="tab-content bg-base-100 border-base-300 p-6">
+                            <div className="tab-content bg-base-100 border-base-300 p-1 md:p-5">
                                 <UserChangePassword userQuery={userQuery} />
                             </div>
                         </>

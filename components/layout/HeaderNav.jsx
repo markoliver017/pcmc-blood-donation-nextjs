@@ -75,10 +75,10 @@ const HeaderNav = ({ currentUser }) => {
                             height={64}
                             alt="PCMC Pediatric Blood Center - Mobile Blood Donation Portal"
                             title="PCMC Pediatric Blood Center - Mobile Blood Donation Portal"
-                            className="rounded-full border-2 border-blue-200 dark:border-sky-700 shadow-md bg-white"
+                            className="w-8 h-8 sm:w-16 sm:h-16 rounded-full border-2 border-blue-200 dark:border-sky-700 shadow-md bg-white"
                         />
                         <div className="flex flex-col justify-center">
-                            <h1 className="inline-block md:hidden text-lg md:text-base font-extrabold italic leading-tight">
+                            <h1 className="inline-block md:hidden text-sm md:text-base font-extrabold italic leading-tight">
                                 PCMC PedBC - MBD Portal
                             </h1>
                             <h1 className="hidden md:inline-block text-lg md:text-base font-extrabold italic leading-tight">
@@ -89,7 +89,7 @@ const HeaderNav = ({ currentUser }) => {
                             </h1>
                         </div>
                     </Link>
-                    <nav className="flex-1">
+                    <nav>
                         <ul className="flex flex-wrap items-center justify-center space-x-2 md:space-x-4 font-bold text-base md:text-sm text-shadow-md italic text-shadow">
                             <li className="hidden md:block">
                                 <Link
@@ -322,76 +322,7 @@ const HeaderNav = ({ currentUser }) => {
                             </li>
                         </ul>
                     </nav>
-                    
-                        {/* <div className="hidden">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button
-                                        variant="ghost"
-                                        className="h-8 w-min p-0"
-                                    >
-                                        <span className="sr-only">Open menu</span>
-                                        <UserCog2Icon /> Developer
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent side="bottom" align="start">
-                                    <DropdownMenuLabel className="flex items-center gap-2 space-x-2">
-                                        <Command className="w-3 h-3" />
-                                        Navigate
-                                    </DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
 
-                                    <DropdownMenuItem>
-                                        <Link
-                                            href="/portal"
-                                            className="w-full hover:ring rounded flex-items-center "
-                                        >
-                                            <Users className="h-4" />
-                                            Dashboard
-                                        </Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                        <Link
-                                            href="/portal/profile"
-                                            className="w-full hover:ring rounded flex-items-center "
-                                        >
-                                            <User className="h-4" />
-                                            Profile
-                                        </Link>
-                                    </DropdownMenuItem>
-                                    {currentUser?.roles &&
-                                        currentUser?.roles?.length > 1 && (
-                                            <DropdownMenuItem>
-                                                <Link
-                                                    href="/portal/change-role"
-                                                    className="w-full hover:ring rounded flex-items-center "
-                                                >
-                                                    <PiUserSwitchBold className="h-4" />
-                                                    Switch Account
-                                                </Link>
-                                            </DropdownMenuItem>
-                                        )}
-                                    <DropdownMenuItem>
-                                        <Link
-                                            href="/portal/admin/users"
-                                            className="w-full hover:ring rounded flex-items-center "
-                                        >
-                                            <Users2Icon className="h-4" />
-                                            Users
-                                        </Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                        <Link
-                                            href="/portal/admin/agencies"
-                                            className="w-full hover:ring rounded flex-items-center "
-                                        >
-                                            <FileSliders className="h-4" />
-                                            Agencies
-                                        </Link>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </div> */}
                     {!isLoggedIn ? (
                         <LoginDrawer />
                     ) : (

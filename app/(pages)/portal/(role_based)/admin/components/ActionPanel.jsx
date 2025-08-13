@@ -9,11 +9,11 @@ import ScrollableContainer from "@components/reusable_components/ScrollableConta
 
 export default function ActionPanel({ events, agencies, isLoading }) {
     return (
-        <Card className="w-full">
+        <Card className="overflow-x-auto">
             <CardHeader>
                 <CardTitle className="text-xl">Action Needed</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 min-w-[400px]">
                 <div>
                     <Link
                         href="/portal/admin/events?tab=for-approval"
