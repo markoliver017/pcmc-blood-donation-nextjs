@@ -26,7 +26,7 @@ export async function uploadPicture(file) {
         );
 
         const data = await res.json();
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // await new Promise((resolve) => setTimeout(resolve, 1000));
 
         if (!res.ok) {
             // Handle HTTP errors
@@ -68,7 +68,7 @@ export async function uploadPdfFile(file) {
         );
 
         const data = await res.json();
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // await new Promise((resolve) => setTimeout(resolve, 1000));
 
         if (!res.ok) {
             // Handle HTTP errors

@@ -33,6 +33,11 @@ const nextConfig = {
                 pathname: "/uploads/**",
             },
             {
+                protocol: "https",
+                hostname: "pedbc.pcmc.gov.ph",
+                pathname: "/uploads/**",
+            },
+            {
                 protocol: "http",
                 hostname: "10.0.0.185",
                 port: "5000",
