@@ -37,6 +37,24 @@ export default function PdfPreviewComponent({
         setNumPages(numPages);
     }
 
+    // Create proxy URL for CORS-free PDF access
+    const getProxyPdfUrl = (originalUrl) => {
+        if (!originalUrl) return null;
+
+        // If it's already a same-origin URL, use it directly
+        if (
+            originalUrl.startsWith("/") ||
+            originalUrl.includes(window.location.host)
+        ) {
+            return originalUrl;
+        }
+
+        // Use proxy for cross-origin URLs
+        return `/api/pdf-proxy?url=${encodeURIComponent(originalUrl)}`;
+    };
+
+    const proxyPdfSrc = getProxyPdfUrl(pdfSrc);
+
     if (!pdfSrc) return null;
 
     return (

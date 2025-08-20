@@ -14,12 +14,17 @@
 export async function uploadPicture(file) {
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("environment", process.env.NODE_ENV);
+    formData.append("domain", process.env.NEXT_PUBLIC_DOMAIN);
 
     try {
         // const res = await fetch("http://localhost:5000/api/uploads", {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_UPLOAD_FILE_DOMAIN}/api/uploads`,
             {
+                headers: {
+                    Authorization: process.env.NEXT_PUBLIC_FILE_SERVER_TOKEN,
+                },
                 method: "POST",
                 body: formData,
             }
@@ -29,6 +34,7 @@ export async function uploadPicture(file) {
         // await new Promise((resolve) => setTimeout(resolve, 1000));
 
         if (!res.ok) {
+            console.log("file upload error", data);
             // Handle HTTP errors
             throw new Error(data.message || "File upload failed");
         }
@@ -57,11 +63,16 @@ export async function uploadPicture(file) {
 export async function uploadPdfFile(file) {
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("environment", process.env.NODE_ENV);
+    formData.append("domain", process.env.NEXT_PUBLIC_DOMAIN);
 
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_UPLOAD_FILE_DOMAIN}/api/upload-pdf`,
             {
+                headers: {
+                    Authorization: process.env.NEXT_PUBLIC_FILE_SERVER_TOKEN,
+                },
                 method: "POST",
                 body: formData,
             }

@@ -377,7 +377,7 @@ const HeaderNav = ({ currentUser }) => {
                                             <Link href="/portal/change-role">
                                                 <DropdownMenuItem className="flex items-center gap-2 space-x-2 text-lg">
                                                     <PiUserSwitchBold className="h-4" />
-                                                    Switch Account
+                                                    Switch Role
                                                 </DropdownMenuItem>
                                             </Link>
                                         )}

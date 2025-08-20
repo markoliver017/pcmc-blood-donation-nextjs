@@ -1,5 +1,6 @@
 // npx sequelize-cli db:seed --seed 20250115000013-seed-donors
 import { faker } from "@faker-js/faker";
+import { Donor } from "../lib/models/index.js";
 import bcrypt from "bcryptjs";
 
 /** @type {import('sequelize-cli').Seeder} */
@@ -48,7 +49,7 @@ export async function up(queryInterface, Sequelize) {
     // Create donor users first
     const donorUsers = [];
     const userRoles = [];
-    const numberOfDonors = 10; // Create 10 donors
+    const numberOfDonors = 1; // Create 10 donors
 
     for (let i = 0; i < numberOfDonors; i++) {
         const firstName = faker.person.firstName();
@@ -164,7 +165,10 @@ export async function up(queryInterface, Sequelize) {
     }
 
     // Insert the donors
-    await queryInterface.bulkInsert("donors", donors, {});
+    for (const donorData of donors) {
+        await Donor.create(donorData);
+    }
+    // await queryInterface.bulkInsert("donors", donors, {});
 }
 
 export async function down(queryInterface) {
