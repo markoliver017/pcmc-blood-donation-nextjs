@@ -34,7 +34,7 @@ const nextConfig = {
             },
             {
                 protocol: "https",
-                hostname: "pedbc.pcmc.gov.ph",
+                hostname: "assets.pcmc.gov.ph",
                 pathname: "/uploads/**",
             },
             {
