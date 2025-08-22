@@ -47,6 +47,7 @@ export async function bookDonorAppointment(formData) {
                 model: PhysicalExamination,
                 as: "last_donation_examination",
                 attributes: ["id", "eligibility_status", "deferral_reason"],
+                required: false,
             },
         ],
     });
@@ -68,8 +69,6 @@ export async function bookDonorAppointment(formData) {
                 "Sorry, you are permanently deferred. Please contact the organizer for more information.",
         };
     }
-
-    console.log("donor>>>>>>>>>>>", donor);
 
     formData.donor_id = donor.id;
 
