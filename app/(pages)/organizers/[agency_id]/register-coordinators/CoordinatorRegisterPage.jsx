@@ -1,6 +1,7 @@
 "use client";
 import NewCoordinatorForm from "@components/coordinators/NewCoordinatorForm";
 import { Card, CardContent } from "@components/ui/card";
+import { formatFormalName } from "@lib/utils/string.utils";
 import { PenLineIcon } from "lucide-react";
 import Image from "next/image";
 
@@ -32,9 +33,11 @@ export default function CoordinatorRegisterPage({ agency, agency_id }) {
                         <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1 mt-5">
                             <div>
                                 <span className="font-semibold">
-                                    Email Address:{" "}
+                                    Organization Type:{" "}
                                 </span>
-                                <span>{agency.organization_type}</span>
+                                <span>
+                                    {formatFormalName(agency.organization_type)}
+                                </span>
                             </div>
                             <div>
                                 <span className="font-semibold">

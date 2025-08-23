@@ -91,7 +91,7 @@ export default function BecomeDonorWizard() {
                 text: "You have successfully registered as a donor. Thank you for your willingness to help. You can now switch to donor login.",
                 icon: "success",
                 onConfirm: async () => {
-                    console.log("Registration Complete response", res);
+                    // console.log("Registration Complete response", res);
                     await update({
                         updated_roles: res.updated_roles,
                         role_name: "",

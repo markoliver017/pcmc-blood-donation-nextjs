@@ -117,41 +117,36 @@ export default function NotificationComponent() {
 
     const handleNotificationAction = (notification) => {
         // Handle navigation based on notification type
-        console.log("notification", notification);
+        // console.log("notification", notification);
 
         const config = getNotificationTypeConfig(notification.type);
-        console.log("config", config);
+        // console.log("config", config);
         if (config.actionUrl && config.actionUrl !== "#") {
-
             if (config?.category === "AGENCY_APPROVAL") {
                 router.push(
                     currentLoggedInRole?.url +
-                    config.actionUrl +
-                    notification?.reference_id
-                );
-            } else
-
-                if (config?.category === "AGENCY_COORDINATOR_APPROVAL") {
-                    router.push(
-                        currentLoggedInRole?.url +
                         config.actionUrl +
                         notification?.reference_id
-                    );
-                } else
-
-                    if (config?.category === "AGENCY_DONOR_APPROVAL") {
-                        router.push(
-                            currentLoggedInRole?.url +
-                            config.actionUrl +
-                            notification?.reference_id
-                        );
-                    } else {
-                        router.push(
-                            currentLoggedInRole?.url +
-                            config.actionUrl +
-                            notification?.reference_id
-                        );
-                    }
+                );
+            } else if (config?.category === "AGENCY_COORDINATOR_APPROVAL") {
+                router.push(
+                    currentLoggedInRole?.url +
+                        config.actionUrl +
+                        notification?.reference_id
+                );
+            } else if (config?.category === "AGENCY_DONOR_APPROVAL") {
+                router.push(
+                    currentLoggedInRole?.url +
+                        config.actionUrl +
+                        notification?.reference_id
+                );
+            } else {
+                router.push(
+                    currentLoggedInRole?.url +
+                        config.actionUrl +
+                        notification?.reference_id
+                );
+            }
         } else {
             setNotification(notification);
             setIsAgencyModalOpen(true);
@@ -190,8 +185,9 @@ export default function NotificationComponent() {
                             {/* Enhanced Badge for unread notifications */}
                             {unreadCount > 0 && (
                                 <span
-                                    className={`absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1 shadow-lg border-2 border-white dark:border-gray-900 ${unreadCount > 0 ? "animate-pulse" : ""
-                                        }`}
+                                    className={`absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1 shadow-lg border-2 border-white dark:border-gray-900 ${
+                                        unreadCount > 0 ? "animate-pulse" : ""
+                                    }`}
                                 >
                                     {unreadCount > 99 ? "99+" : unreadCount}
                                 </span>
@@ -234,10 +230,11 @@ export default function NotificationComponent() {
                                     className="hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                                 >
                                     <RefreshCw
-                                        className={`w-4 h-4 ${notificationsLoading
-                                            ? "animate-spin"
-                                            : ""
-                                            }`}
+                                        className={`w-4 h-4 ${
+                                            notificationsLoading
+                                                ? "animate-spin"
+                                                : ""
+                                        }`}
                                     />
                                 </Button>
                                 {unreadCount > 0 && (
@@ -391,9 +388,7 @@ export default function NotificationComponent() {
                 {notification && (
                     <NotificationItem
                         notification={notification}
-                        onAction={
-                            handleNotificationAction
-                        }
+                        onAction={handleNotificationAction}
                         viewAction={false}
                     />
                 )}

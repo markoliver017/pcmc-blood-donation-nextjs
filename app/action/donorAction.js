@@ -1963,39 +1963,48 @@ export async function registerExistingUserAsDonor(formData) {
         };
     }
 
-    const transaction = await sequelize.transaction();
+    const { success: agencyIdSuccess, agency_id } =
+        await getAgencyIdBySession();
+    if (!agencyIdSuccess) {
+        return {
+            success: false,
+            message: "Could not determine your agency affiliation.",
+        };
+    }
+
+    const parsed = existingUserAsDonorSchema.safeParse(formData);
+
+    if (!parsed.success) {
+        const fieldErrors = parsed.error.flatten().fieldErrors;
+        return {
+            success: false,
+            type: "validation",
+            message: "Please check your input and try again.",
+            errorObj: parsed.error.flatten().fieldErrors,
+            errorArr: Object.values(fieldErrors).flat(),
+        };
+    }
+
+    const { data } = parsed;
+
+    // Convert empty strings in parsed data to null
+    Object.keys(data).forEach((key) => {
+        if (data[key] === "") {
+            data[key] = null;
+        }
+    });
+
+    // Find the 'Donor' role
+    const donorRole = await Role.findOne({ where: { role_name: "Donor" } });
+    if (!donorRole) {
+        return {
+            success: false,
+            message: "Donor role not found in the system.",
+        };
+    }
 
     try {
-        const { success: agencyIdSuccess, agency_id } =
-            await getAgencyIdBySession();
-        if (!agencyIdSuccess) {
-            return {
-                success: false,
-                message: "Could not determine your agency affiliation.",
-            };
-        }
-
-        const parsed = existingUserAsDonorSchema.safeParse(formData);
-
-        if (!parsed.success) {
-            const fieldErrors = parsed.error.flatten().fieldErrors;
-            return {
-                success: false,
-                type: "validation",
-                message: "Please check your input and try again.",
-                errorObj: parsed.error.flatten().fieldErrors,
-                errorArr: Object.values(fieldErrors).flat(),
-            };
-        }
-
-        const { data } = parsed;
-
-        // Convert empty strings in parsed data to null
-        Object.keys(data).forEach((key) => {
-            if (data[key] === "") {
-                data[key] = null;
-            }
-        });
+        const transaction = await sequelize.transaction();
 
         // Create Donor record
         await Donor.create(
@@ -2007,15 +2016,6 @@ export async function registerExistingUserAsDonor(formData) {
             },
             { transaction }
         );
-
-        // Find the 'Donor' role
-        const donorRole = await Role.findOne({ where: { role_name: "Donor" } });
-        if (!donorRole) {
-            return {
-                success: false,
-                message: "Donor role not found in the system.",
-            };
-        }
 
         // Assign the 'Donor' role to the user
         await UserRole.create(

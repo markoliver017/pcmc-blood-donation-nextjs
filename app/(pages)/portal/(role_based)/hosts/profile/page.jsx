@@ -16,7 +16,7 @@ export default async function Page() {
 
     const { user } = session;
 
-    console.log("Organizer session user:", user);
+    // console.log("Organizer session user:", user);
 
     if (!user) throw "No Authenticated users found!";
 

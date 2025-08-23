@@ -78,7 +78,9 @@ export const donorCollectionColumns = [
         cell: ({ getValue }) => {
             return (
                 <>
-                    <span className="flex-items-center"><Mail className="w-3" /> {getValue()}</span>{" "}
+                    <span className="flex-items-center">
+                        <Mail className="w-3" /> {getValue()}
+                    </span>{" "}
                 </>
             );
         },
@@ -141,22 +143,68 @@ export const donorCollectionColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader
                 column={column}
-                title="Total Blood Donations"
+                title="System Collected Donations"
+            />
+        ),
+        cell: ({ getValue }) => {
+            const blood_collections = getValue();
+            const donationCount = Number(
+                Array.isArray(blood_collections) ? blood_collections.length : 0
+            );
+            const donationVolume = Array.isArray(blood_collections)
+                ? blood_collections.reduce(
+                      (acc, collection) => acc + Number(collection?.volume),
+                      0
+                  )
+                : 0;
+
+            return (
+                <span className="btn text-center text-xl font-bold border-0 rounded-2xl text-red-500 text-shadow-lg/25 text-shadow-red-400 ">
+                    <span>{donationCount}</span>
+                    <span className="text-base font-semibold italic">
+                        ({donationVolume} ml)
+                    </span>
+                    <MdBloodtype className="text-xs" />
+                </span>
+            );
+        },
+        filterFn: "columnFilter",
+    },
+    {
+        accessorKey: "blood_collections",
+        header: ({ column }) => (
+            <DataTableColumnHeader
+                column={column}
+                title="System + Manual Donations"
             />
         ),
         cell: ({ getValue, row }) => {
             const blood_collections = getValue();
             const data = row.original;
-            const prevCount = Number(data?.blood_history?.previous_donation_count || 0);
-            const donationCount = Number(Array.isArray(blood_collections) ? blood_collections.length : 0) + prevCount;
+            const prevCount = Number(
+                data?.blood_history?.previous_donation_count || 0
+            );
+            const donationCount =
+                Number(
+                    Array.isArray(blood_collections)
+                        ? blood_collections.length
+                        : 0
+                ) + prevCount;
 
-            const prevVolume = Number(data?.blood_history?.previous_donation_volume || 0);
-            const donationVolume = (Array.isArray(blood_collections) ? blood_collections.reduce((acc, collection) => acc + Number(collection?.volume), 0) : 0) + prevVolume;
+            const prevVolume = Number(
+                data?.blood_history?.previous_donation_volume || 0
+            );
+            const donationVolume =
+                (Array.isArray(blood_collections)
+                    ? blood_collections.reduce(
+                          (acc, collection) => acc + Number(collection?.volume),
+                          0
+                      )
+                    : 0) + prevVolume;
 
             return (
                 <span className="btn text-center text-xl font-bold border-0 rounded-2xl text-red-500 text-shadow-lg/25 text-shadow-red-400 ">
-                    <span>{donationCount}
-                    </span>
+                    <span>{donationCount}</span>
                     <span className="text-base font-semibold italic">
                         ({donationVolume} ml)
                     </span>
@@ -198,7 +246,9 @@ export const donorCollectionColumns = [
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
 
-                        <Link href={`/portal/admin/blood-collections/${data.id}`}>
+                        <Link
+                            href={`/portal/admin/blood-collections/${data.id}`}
+                        >
                             <DropdownMenuItem className="flex items-center space-x-2">
                                 <Eye className="w-4 h-4" />
                                 <span>More Details</span>
