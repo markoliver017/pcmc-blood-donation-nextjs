@@ -1932,6 +1932,7 @@ export async function getDonorAnnouncements(limit = 5) {
 }
 
 export async function registerExistingUserAsDonor(formData) {
+    console.log("Registering existing user as donor", formData);
     const session = await auth();
     if (!session) {
         return {
@@ -1972,6 +1973,8 @@ export async function registerExistingUserAsDonor(formData) {
         };
     }
 
+    console.log("Agency ID:", agency_id);
+
     const parsed = existingUserAsDonorSchema.safeParse(formData);
 
     if (!parsed.success) {
@@ -1986,6 +1989,8 @@ export async function registerExistingUserAsDonor(formData) {
     }
 
     const { data } = parsed;
+
+    console.log("Parsed data:", data);
 
     // Convert empty strings in parsed data to null
     Object.keys(data).forEach((key) => {
@@ -2003,9 +2008,8 @@ export async function registerExistingUserAsDonor(formData) {
         };
     }
 
+    const transaction = await sequelize.transaction();
     try {
-        const transaction = await sequelize.transaction();
-
         // Create Donor record
         await Donor.create(
             {
