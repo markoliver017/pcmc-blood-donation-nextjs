@@ -139,6 +139,7 @@ export const donorCollectionColumns = [
         filterFn: "columnFilter",
     },
     {
+        id: "system_collected_donations",
         accessorKey: "blood_collections",
         header: ({ column }) => (
             <DataTableColumnHeader

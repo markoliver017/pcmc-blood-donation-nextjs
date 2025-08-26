@@ -62,6 +62,7 @@ export default function ContactForm() {
             return response;
         },
         onSuccess: (response) => {
+            console.log("response", response);
             SweetAlert({
                 title: "Message Sent Successfully! 🎉",
                 text:
@@ -81,7 +82,7 @@ export default function ContactForm() {
                 onConfirm: () => {
                     setSubmissionDetails({
                         timestamp: new Date().toLocaleString(),
-                        referenceId: response.data?.id,
+                        referenceId: response.data?.contact_form_reference_id,
                         subject: form.getValues("subject"),
                         name: form.getValues("name"),
                         email: form.getValues("email"),

@@ -145,27 +145,27 @@ export default function AdminEmergencyRequestsPage() {
         handleShowDetails
     );
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <div className="container mx-auto px-1 md:px-6 space-y-6">
             <Toaster />
             <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold">
+                <h1 className="text-lg md:text-2xl font-bold">
                     All Emergency Blood Requests
                 </h1>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
                 <Card>
                     <CardHeader>
-                        <h3 className="text-lg font-semibold">Pending</h3>
+                        <h3 className="md:text-lg font-semibold">Pending</h3>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-orange-500">
+                        <div className="text-3xl font-bold text-orange-500 ">
                             {stats.pending}
                         </div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader>
-                        <h3 className="text-lg font-semibold">Fulfilled</h3>
+                        <h3 className="md:text-lg font-semibold">Fulfilled</h3>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-green-500">
@@ -175,7 +175,7 @@ export default function AdminEmergencyRequestsPage() {
                 </Card>
                 <Card>
                     <CardHeader>
-                        <h3 className="text-lg font-semibold">Rejected</h3>
+                        <h3 className="md:text-lg font-semibold">Rejected</h3>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-red-500">
@@ -185,7 +185,7 @@ export default function AdminEmergencyRequestsPage() {
                 </Card>
                 <Card>
                     <CardHeader>
-                        <h3 className="text-lg font-semibold">Cancelled</h3>
+                        <h3 className="md:text-lg font-semibold">Cancelled</h3>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-gray-500">
@@ -252,7 +252,7 @@ export default function AdminEmergencyRequestsPage() {
                     </div>
                 </div>
             </div>
-            <div className="bg-white dark:bg-neutral-900 rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-neutral-900 rounded-lg shadow p-1 md:p-6">
                 <DataTable
                     columns={columns}
                     data={filteredRequests}

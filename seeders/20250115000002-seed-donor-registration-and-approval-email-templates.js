@@ -1,4 +1,4 @@
-// npx sequelize-cli db:seed --seed 20250115000002-seed-donor-email-templates.js
+// npx sequelize-cli db:seed --seed 20250115000002-seed-donor-registration-and-approval-email-templates.js
 "use strict";
 
 /** @type {import('sequelize-cli').Migration} */
@@ -295,7 +295,7 @@ For support, contact us at {{support_email}}`,
                 <ul style="color: #92400e; line-height: 1.8; margin: 0; padding-left: 20px;">
                     <li><strong>Age Requirement:</strong> You must be at least 18 years old to donate blood</li>
                     <li><strong>Health Check:</strong> You'll undergo a health screening before each donation</li>
-                    <li><strong>Donation Interval:</strong> Wait at least 56 days between whole blood donations</li>
+                    <li><strong>Donation Interval:</strong> Wait at least 90 days between whole blood donations</li>
                     <li><strong>Pre-donation:</strong> Get adequate sleep, eat a healthy meal, and stay hydrated</li>
                     <li><strong>Post-donation:</strong> Rest for 10-15 minutes and avoid strenuous activity for 24 hours</li>
                 </ul>
@@ -308,7 +308,7 @@ For support, contact us at {{support_email}}`,
             <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; border: 1px solid #bae6fd;">
                 <ol style="color: #0c4a6e; line-height: 1.8; margin: 0; padding-left: 20px;">
                     <li><strong>Log In:</strong> Access your donor portal using your registered credentials</li>
-                    <li><strong>Browse Events:</strong> Find blood donation events near you</li>
+                    <li><strong>Browse Events:</strong> Find blood donation events posted by your agency.</li>
                     <li><strong>Book Appointment:</strong> Schedule your first donation appointment</li>
                     <li><strong>Prepare:</strong> Follow the pre-donation guidelines for a successful donation</li>
                     <li><strong>Donate:</strong> Make your first life-saving blood donation!</li>

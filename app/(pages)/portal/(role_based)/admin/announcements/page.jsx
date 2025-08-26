@@ -57,8 +57,8 @@ export default function AdminAnnouncementsPage() {
     };
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
+        <div className="container mx-auto p-1 md:p-6 space-y-6">
+            <div className="flex flex-wrap gap-2 justify-between items-center">
                 <h1 className="text-2xl font-bold">Announcements Management</h1>
                 <Button onClick={() => setIsCreateModalOpen(true)}>
                     <Plus className="w-4 h-4 mr-2" />

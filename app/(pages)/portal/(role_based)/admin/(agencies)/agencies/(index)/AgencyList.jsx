@@ -86,18 +86,27 @@ export default function AgencyList() {
                 onValueChange={handleTabChange}
                 className="mt-2 px-1 md:px-5"
             >
-                <TabsList>
-                    <TabsTrigger value="approved">
+                <TabsList className="mt-4 bg-muted p-1 rounded-md flex flex-col md:flex-row">
+                    <TabsTrigger
+                        value="approved"
+                        className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border flex-1"
+                    >
                         <span className="text-green-600 text-lg font-semibold px-5">
                             Approved ({approvedAgencies.length})
                         </span>
                     </TabsTrigger>
-                    <TabsTrigger value="for-approval">
+                    <TabsTrigger
+                        value="for-approval"
+                        className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border flex-1"
+                    >
                         <span className="text-warning text-lg font-semibold px-5">
                             For Approval ({forApprovalAgencies?.length || 0})
                         </span>
                     </TabsTrigger>
-                    <TabsTrigger value="rejected">
+                    <TabsTrigger
+                        value="rejected"
+                        className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border flex-1"
+                    >
                         <span className="text-error text-lg font-semibold px-5">
                             Rejected ({rejectedAgencies.length})
                         </span>

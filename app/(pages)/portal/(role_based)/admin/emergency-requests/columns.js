@@ -17,10 +17,12 @@ import { format } from "date-fns";
 import { Badge } from "@components/ui/badge";
 
 const colors = {
-    pending: "bg-orange-100 text-orange-800",
-    fulfilled: "bg-green-100 text-green-800",
-    rejected: "bg-red-100 text-red-800",
-    cancelled: "bg-gray-200 text-gray-600",
+    pending:
+        "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100",
+    fulfilled:
+        "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100",
+    rejected: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100",
+    cancelled: "bg-gray-200 text-gray-600 dark:bg-gray-900 dark:text-gray-100",
 };
 
 export const getColumns = (updateRequestStatus, isApproving, onShowDetails) => {

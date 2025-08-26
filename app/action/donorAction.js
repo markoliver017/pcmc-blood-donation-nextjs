@@ -383,7 +383,8 @@ export async function storeDonor(formData) {
                                             agency?.name || newDonor.agency_id,
                                         donor_name: `${newUser.first_name} ${newUser.last_name}`,
                                         donor_email: newUser.email,
-                                        donor_contact: newUser.contact_number,
+                                        contact_number:
+                                            newDonor?.contact_number,
                                         blood_type:
                                             bloodType?.blood_type ||
                                             "Not specified",

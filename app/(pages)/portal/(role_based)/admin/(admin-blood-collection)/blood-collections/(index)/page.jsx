@@ -17,7 +17,7 @@ export default function Page() {
                     },
                 ]}
             />
-            <div className="w-full 2xl:px-5 mx-auto mt-5 space-y-6">
+            <div className="w-full px-1 2xl:px-5 mx-auto mt-5 space-y-6">
                 <BloodCollectionDashboard />
                 <div className="shadow-lg rounded-lg">
                     <BloodCollecitionList />

@@ -278,7 +278,7 @@ export default function ListofEvents() {
                 onValueChange={handleTabChange}
                 className="mt-5 px-2 sm:px-5 mb-5 relative"
             >
-                <TabsList className="mt-4 bg-muted p-1 rounded-md w-full">
+                <TabsList className="mt-4 bg-muted p-1 rounded-md flex flex-col md:flex-row">
                     <TabsTrigger
                         value="dashboard"
                         className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border flex-1"
@@ -290,7 +290,7 @@ export default function ListofEvents() {
                     </TabsTrigger>
                     <TabsTrigger
                         value="ongoing"
-                        className="data-[state=active]:bg-green-100 data-[state=active]:text-green-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border"
+                        className="data-[state=active]:bg-green-100 data-[state=active]:text-green-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border flex-1"
                     >
                         <div className="flex-items-center">
                             <Check className="h-4 w-4" />
@@ -299,7 +299,7 @@ export default function ListofEvents() {
                     </TabsTrigger>
                     <TabsTrigger
                         value="upcoming"
-                        className="data-[state=active]:bg-cyan-100 data-[state=active]:text-cyan-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border"
+                        className="data-[state=active]:bg-cyan-100 data-[state=active]:text-cyan-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border flex-1"
                     >
                         <div className="flex-items-center">
                             <MdUpcoming />
@@ -308,7 +308,7 @@ export default function ListofEvents() {
                     </TabsTrigger>
                     <TabsTrigger
                         value="all"
-                        className="data-[state=active]:bg-blue-300 data-[state=active]:text-blue-800 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border"
+                        className="data-[state=active]:bg-blue-300 data-[state=active]:text-blue-800 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border flex-1"
                     >
                         <div className="flex-items-center">
                             <Text className="h-4 w-4" />
@@ -317,7 +317,7 @@ export default function ListofEvents() {
                     </TabsTrigger>
                     <TabsTrigger
                         value="for-approval"
-                        className="data-[state=active]:bg-yellow-100 data-[state=active]:text-yellow-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border"
+                        className="data-[state=active]:bg-yellow-100 data-[state=active]:text-yellow-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border flex-1"
                     >
                         <div className="flex-items-center">
                             <QuestionMarkCircledIcon />

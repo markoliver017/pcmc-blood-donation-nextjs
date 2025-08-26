@@ -65,6 +65,8 @@ export async function storeContactForm(formData) {
                                 to: adminUsers.map((a) => a.email),
                                 templateCategory: "CONTACT_FORM",
                                 templateData: {
+                                    reference_id:
+                                        newContactForm?.contact_form_reference_id,
                                     contact_name: data.name,
                                     contact_email: data.email,
                                     contact_phone: data.phone || "Not provided",
@@ -72,12 +74,19 @@ export async function storeContactForm(formData) {
                                     contact_message: data.message,
                                     submission_date:
                                         new Date().toLocaleDateString(),
-                                    system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
-                                    support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
-                                    support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
-                                    domain_url:
-                                        process.env.NEXT_PUBLIC_APP_URL ||
+                                    system_name:
+                                        process.env.NEXT_PUBLIC_SYSTEM_NAME ||
                                         "",
+                                    support_email:
+                                        process.env
+                                            .NEXT_PUBLIC_SMTP_SUPPORT_EMAIL ||
+                                        "",
+                                    support_contact:
+                                        process.env
+                                            .NEXT_PUBLIC_SMTP_SUPPORT_CONTACT ||
+                                        "",
+                                    domain_url:
+                                        process.env.NEXT_PUBLIC_APP_URL || "",
                                 },
                             },
                         });

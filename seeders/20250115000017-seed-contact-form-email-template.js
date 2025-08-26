@@ -32,6 +32,10 @@ export async function up(queryInterface) {
             <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
+                        <td style="padding: 8px 0; font-weight: bold; color: #374151; width: 140px;">Reference ID:</td>
+                        <td style="padding: 8px 0; color: #374151;">{{reference_id}}</td>
+                    </tr>
+                    <tr>
                         <td style="padding: 8px 0; font-weight: bold; color: #374151; width: 140px;">Submitted By:</td>
                         <td style="padding: 8px 0; color: #374151;">{{contact_name}}</td>
                     </tr>

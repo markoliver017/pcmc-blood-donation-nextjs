@@ -1,6 +1,6 @@
-npx sequelize-cli db:seed --seed 20250115000000-seed-email-templates.js;
+npx sequelize-cli db:seed --seed 20250115000000-seed-agency-registration-and-approval-email-templates.js;
 npx sequelize-cli db:seed --seed 20250115000001-seed-coordinator-email-templates.js;
-npx sequelize-cli db:seed --seed 20250115000002-seed-donor-email-templates.js;
+npx sequelize-cli db:seed --seed 20250115000002-seed-donor-registration-and-approval-email-templates.js;
 npx sequelize-cli db:seed --seed 20250115000003-seed-mbdt-email-templates.js;
 npx sequelize-cli db:seed --seed 20250115000003-seed-agency-donor-notification-template.js;
 npx sequelize-cli db:seed --seed 20250115000003-seed-agency-rejection-email-template.js;
@@ -19,5 +19,6 @@ npx sequelize-cli db:seed --seed 20250115000018-seed-blood-drive-approval-email-
 npx sequelize-cli db:seed --seed 20250115000017-seed-event-creation-email-template.js;
 npx sequelize-cli db:seed --seed 20250115000019-seed-blood-drive-cancellation-email-template.js;
 npx sequelize-cli db:seed --seed 20250115000017-seed-contact-form-email-template.js;
+npx sequelize-cli db:seed --seed 20250115000015-seed-donor-appointment-confirmation-email-template.js;
 npx sequelize-cli db:seed --seed 20250726164800-seed-feedback-questions.js;
 npx sequelize-cli db:seed --seed 20250725000000-seed-screening-questions.js;
