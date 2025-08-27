@@ -36,6 +36,7 @@ import moment from "moment";
 import { Op } from "sequelize";
 import { handleValidationError } from "@lib/utils/validationErrorHandler";
 import { getAgencyIdBySession } from "./hostEventAction";
+import { format, parse } from "date-fns";
 
 export async function getApprovedEventsByAgency() {
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -1808,6 +1809,8 @@ export async function notifyRegistrationOpen(donor, eventData = null) {
             console.error("Donor notification failed:", err);
         }
 
+        const to12h = (t) => format(parse(t, "HH:mm:ss", new Date()), "h:mm a");
+
         // Send email notification to donor
         if (eventData) {
             try {
@@ -1821,7 +1824,11 @@ export async function notifyRegistrationOpen(donor, eventData = null) {
                                 eventData.date
                             ).toLocaleDateString(),
                             event_time: eventData.time_schedules?.[0]
-                                ? `${eventData.time_schedules[0].time_start} - ${eventData.time_schedules[0].time_end}`
+                                ? `${to12h(
+                                      eventData.time_schedules[0].time_start
+                                  )} - ${to12h(
+                                      eventData.time_schedules[0].time_end
+                                  )}`
                                 : "TBD",
                             agency_name: eventData?.agency?.name,
                             event_location: eventData?.agency?.agency_address,
