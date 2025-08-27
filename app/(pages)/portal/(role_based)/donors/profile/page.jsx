@@ -9,12 +9,12 @@ import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 import { User } from "lucide-react";
 
 import DonorProfilePage from "@components/donors/DonorProfilePage";
+import { MdDashboard } from "react-icons/md";
 
 export default async function Page() {
     const session = await auth();
 
     const { user } = session;
-
 
     if (!user) throw "No Authenticated users found!";
 
@@ -38,13 +38,18 @@ export default async function Page() {
                 pageTitle="Profile"
                 breadcrumbs={[
                     {
+                        path: "/portal",
+                        icon: <MdDashboard className="w-4" />,
+                        title: "Dashboard",
+                    },
+                    {
                         path: "/portal/admin/profile",
                         icon: <User className="w-4" />,
                         title: "Account Information",
                     },
                 ]}
             />
-            <div className="w-full h-full md:w-8/10 lg:w-3/4 mx-auto p-1 md:p-5">
+            <div className="w-full lg:w-9/10 mx-auto p-1 md:p-5">
                 <DonorProfilePage user={user} />
             </div>
         </HydrationBoundary>

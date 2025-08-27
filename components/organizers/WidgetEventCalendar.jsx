@@ -32,7 +32,7 @@ export default function WidgetEventCalendar() {
 
     return (
         <Card>
-            <CardHeader>
+            <CardHeader className="hidden">
                 <CardTitle></CardTitle>
             </CardHeader>
             <CardContent>
@@ -78,13 +78,11 @@ export default function WidgetEventCalendar() {
                                     <div className="absolute w-7 h-7 top-0 right-0 ">
                                         <Image
                                             src={
-                                                eventInfo.event
-                                                    .extendedProps
+                                                eventInfo.event.extendedProps
                                                     .agency_avatar
                                             }
                                             alt={
-                                                eventInfo.event
-                                                    .extendedProps
+                                                eventInfo.event.extendedProps
                                                     .agency_name
                                             }
                                             fill
@@ -92,7 +90,6 @@ export default function WidgetEventCalendar() {
                                         />
                                     </div>
                                 </>
-
                             </div>
                         )}
                         headerToolbar={{
@@ -117,7 +114,7 @@ export default function WidgetEventCalendar() {
                         }
                         height="100%"
                         contentHeight="auto"
-                    // aspectRatio={3} //Sets the aspect ratio of the calendar. A higher value will make the calendar wider, while a lower value will make it taller.
+                        // aspectRatio={3} //Sets the aspect ratio of the calendar. A higher value will make the calendar wider, while a lower value will make it taller.
                     />
                 </div>
             </CardContent>

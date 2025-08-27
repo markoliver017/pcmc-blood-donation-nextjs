@@ -14,6 +14,7 @@ import Skeleton_line from "@components/ui/skeleton_line";
 import { useQuery } from "@tanstack/react-query";
 import { startOfToday } from "date-fns";
 import moment from "moment";
+import { MdDashboard } from "react-icons/md";
 
 export default function Page() {
     const [selectedAppointment, setSelectedAppointment] = useState(null);
@@ -89,9 +90,14 @@ export default function Page() {
                 pageTitle="My Appointments"
                 breadcrumbs={[
                     {
+                        path: "/portal",
+                        icon: <MdDashboard className="w-4" />,
+                        title: "Dashboard",
+                    },
+                    {
                         path: "/portal/donors/donor-appointments",
                         icon: <Calendar className="w-4" />,
-                        title: "My Appointments",
+                        title: "Appointments",
                     },
                 ]}
             />

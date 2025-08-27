@@ -20,7 +20,7 @@ const Card = ({
     isHighlight,
 }) => (
     <div
-        className={`relative flex flex-col items-center justify-center p-6 rounded-xl shadow-lg border transition-all duration-300 hover:shadow-xl hover:scale-105 ${
+        className={`relative flex flex-col items-center justify-center p-2 md:p-6 rounded-xl shadow-lg border transition-all duration-300 hover:shadow-xl hover:scale-105 ${
             gradient
                 ? `bg-gradient-to-br ${gradient}`
                 : "bg-white dark:bg-gray-800"
@@ -33,10 +33,10 @@ const Card = ({
                 <Sparkles className="w-5 h-5 text-yellow-400 animate-pulse" />
             </div>
         )}
-        <div className="mb-3 p-2 rounded-full bg-white/20 dark:bg-black/20">
+        <div className="mb-2 md:mb-3 p-2 rounded-full bg-white/20 dark:bg-black/20">
             {icon}
         </div>
-        <div className="text-3xl font-bold text-center mb-1 text-gray-200 dark:text-white">
+        <div className="text-2xl md:text-3xl font-bold text-center mb-1 text-gray-200 dark:text-white">
             {value}
         </div>
         <div className="text-sm font-medium text-gray-300 dark:text-gray-300 text-center mb-2">
@@ -79,7 +79,7 @@ const SummaryCards = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Next Appointment */}
             <Card
-                icon={<Calendar className="w-8 h-8 text-white" />}
+                icon={<Calendar className="w-6 h-6 md:w-8 md:h-8 text-white" />}
                 label="Next Appointment"
                 value={
                     nextAppointment
@@ -97,7 +97,7 @@ const SummaryCards = ({
             />
             {/* Total Donations */}
             <Card
-                icon={<Heart className="w-8 h-8 text-white" />}
+                icon={<Heart className="w-6 h-6 md:w-8 md:h-8 text-white" />}
                 label="Total Donations"
                 value={totalDonations || 0}
                 subtext={
@@ -113,9 +113,9 @@ const SummaryCards = ({
             <Card
                 icon={
                     isLastDonationSuccess ? (
-                        <Clock className="w-8 h-8 text-white" />
+                        <Clock className="w-6 h-6 md:w-8 md:h-8 text-white" />
                     ) : (
-                        <ExclamationTriangleIcon className="w-8 h-8 text-white" />
+                        <ExclamationTriangleIcon className="w-6 h-6 md:w-8 md:h-8 text-white" />
                     )
                 }
                 label="Last Appointment"
@@ -145,11 +145,11 @@ const SummaryCards = ({
             <Card
                 icon={
                     isLastDonationSuccess ? (
-                        <ShieldCheck className="w-8 h-8 text-white" />
+                        <ShieldCheck className="w-6 h-6 md:w-8 md:h-8 text-white" />
                     ) : isPermanentlyDeferred ? (
-                        <ShieldAlert className="w-8 h-8 text-white" />
+                        <ShieldAlert className="w-6 h-6 md:w-8 md:h-8 text-white" />
                     ) : (
-                        <ShieldAlert className="w-8 h-8 text-white" />
+                        <ShieldAlert className="w-6 h-6 md:w-8 md:h-8 text-white" />
                     )
                 }
                 label="Eligibility Status"

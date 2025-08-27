@@ -279,7 +279,7 @@ export default function UserProfileForm({ userQuery }) {
                     />
                 </div>
 
-                <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
+                <Card className="px-2 md:px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
                     <FormField
                         control={form.control}
                         name="id"

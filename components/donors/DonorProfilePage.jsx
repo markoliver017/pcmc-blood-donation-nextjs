@@ -55,11 +55,11 @@ export default function DonorProfilePage({ user }) {
                     <div>Update your account.</div>
                 </CardDescription>
             </CardHeader>
-            <CardContent id="form-modal">
-                <Tabs defaultValue="user-profile" className="p-5">
-                    <TabsList className="flex flex-wrap">
+            <CardContent id="form-modal" className="p-1 md:p-5">
+                <Tabs defaultValue="user-profile" className="p-1 md:p-5">
+                    <TabsList className="flex flex-row">
                         <TabsTrigger value="user-profile" title="User Profile">
-                            <User2Icon />
+                            <User2Icon className="w-4 h-4 mr-1" />
                             <span className="hidden md:inline-block">
                                 User Profile
                             </span>
@@ -68,13 +68,13 @@ export default function DonorProfilePage({ user }) {
                             value="donor-profile"
                             title="Donor's Profile"
                         >
-                            <UserCircle />
+                            <UserCircle className="w-4 h-4 mr-1" />
                             <span className="hidden md:inline-block">
                                 Donor's Profile
                             </span>
                         </TabsTrigger>
                         <TabsTrigger value="blood-type" title="Blood Type">
-                            <Droplet />
+                            <Droplet className="w-4 h-4 mr-1" />
                             <span className="hidden md:inline-block">
                                 Blood Type
                             </span>
@@ -85,7 +85,7 @@ export default function DonorProfilePage({ user }) {
                                 value="user-credentials"
                                 title="Account Credentials"
                             >
-                                <Cog />
+                                <Cog className="w-4 h-4 mr-1" />
                                 <span className="hidden md:inline-block">
                                     Account Credentials
                                 </span>
@@ -95,13 +95,13 @@ export default function DonorProfilePage({ user }) {
                             value="agency-details"
                             title="Agency Details"
                         >
-                            <Building />
+                            <Building className="w-4 h-4 mr-1" />
                             <span className="hidden md:inline-block">
                                 Agency Details
                             </span>
                         </TabsTrigger>
                     </TabsList>
-                    <TabsContent className="p-2" value="user-profile">
+                    <TabsContent className="md:p-2" value="user-profile">
                         <UserProfileForm userQuery={userQuery} />
                     </TabsContent>
                     <TabsContent className="p-2" value="donor-profile">

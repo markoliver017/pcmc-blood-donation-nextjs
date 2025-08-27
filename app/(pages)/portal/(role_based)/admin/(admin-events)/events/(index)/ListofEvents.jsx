@@ -278,7 +278,7 @@ export default function ListofEvents() {
                 onValueChange={handleTabChange}
                 className="mt-5 px-2 sm:px-5 mb-5 relative"
             >
-                <TabsList className="mt-4 bg-muted p-1 rounded-md flex flex-col md:flex-row">
+                <TabsList className="mt-4 p-1 rounded-md flex flex-col md:flex-row">
                     <TabsTrigger
                         value="dashboard"
                         className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border flex-1"

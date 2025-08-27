@@ -11,7 +11,7 @@ export default function SessionTimer() {
     if (status === "loading") return <div className="skeleton h-12 w-64"></div>;
 
     return (
-        <div className="btn p-3 mt-2 rounded-2xl border-0 btn-warning">
+        <div className="btn btn-xs md:btn-md p-3 mt-2 rounded-2xl border-0 btn-warning">
             <Timer className="h-4" />
             Session expires: {moment(session?.expires).format(
                 "MMM DD, YYYY"
