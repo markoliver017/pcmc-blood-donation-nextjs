@@ -129,7 +129,7 @@ const HeaderNav = ({ currentUser }) => {
                                     Why Donate
                                 </Link>
                             </li>
-                            <li className="hidden xl:block">
+                            <li className="hidden 2xl:block">
                                 <Link
                                     href="/donation-process"
                                     className={clsx(
@@ -256,7 +256,7 @@ const HeaderNav = ({ currentUser }) => {
                                         </DropdownMenuItem>
                                         <DropdownMenuItem
                                             className={clsx(
-                                                "block xl:hidden p-3 shadow-xs ",
+                                                "block 2xl:hidden p-3 shadow-xs ",
                                                 pathname ===
                                                     "/donation-process" &&
                                                     "bg-blue-400/50"

@@ -553,7 +553,7 @@ export async function getAllEvents() {
             ],
         });
 
-        console.log("all events", formatSeqObj(events));
+        // console.log("all events", formatSeqObj(events));
 
         const formattedEvents = formatSeqObj(events);
 
@@ -572,6 +572,7 @@ export async function getPresentEvents() {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     const currentDate = moment().format("YYYY-MM-DD");
+
     try {
         const events = await BloodDonationEvent.findAll({
             where: {
@@ -634,6 +635,7 @@ export async function getPresentEvents() {
                             [Op.ne]: "cancelled",
                         },
                     },
+                    required: false,
                 },
             ],
         });

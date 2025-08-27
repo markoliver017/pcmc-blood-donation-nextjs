@@ -279,8 +279,8 @@ For support, contact us at {{support_email}}`,
             <h3 style="color: #1f2937; margin-bottom: 15px; font-size: 18px;">🚀 What You Can Do Now</h3>
             <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; border: 1px solid #bae6fd;">
                 <ul style="color: #0c4a6e; line-height: 1.8; margin: 0; padding-left: 20px;">
-                    <li><strong>Browse Events:</strong> View all available blood donation events in your area</li>
-                    <li><strong>Book Appointments:</strong> Schedule donation appointments at your preferred time and location</li>
+                    <li><strong>Browse Events:</strong> View all available blood donation events in {{agency_name}}</li>
+                    <li><strong>Book Appointments:</strong> Schedule blood donation appointments</li>
                     <li><strong>Update Profile:</strong> Keep your contact information and health details up-to-date</li>
                     <li><strong>Track Donations:</strong> Monitor your donation history and eligibility status</li>
                     <li><strong>Receive Notifications:</strong> Get updates about upcoming events and donation reminders</li>
