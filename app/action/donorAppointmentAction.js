@@ -28,6 +28,8 @@ import { getLastDonationDateDonated } from "./donorAction";
 import moment from "moment";
 import { appointmentDetailsSchema } from "@lib/zod/appointmentSchema";
 import { sendNotificationAndEmail } from "@lib/notificationEmail.utils";
+import { format, parse } from "date-fns";
+import QRCode from "qrcode";
 
 export async function bookDonorAppointment(formData) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -48,6 +50,20 @@ export async function bookDonorAppointment(formData) {
                 as: "last_donation_examination",
                 attributes: ["id", "eligibility_status", "deferral_reason"],
                 required: false,
+            },
+            {
+                model: User,
+                as: "user",
+                attributes: [
+                    "id",
+                    "name",
+                    "first_name",
+                    "middle_name",
+                    "last_name",
+                    "full_name",
+                    "email",
+                    "image",
+                ],
             },
         ],
     });
@@ -88,7 +104,27 @@ export async function bookDonorAppointment(formData) {
     const { data } = parsed;
 
     const event = await BloodDonationEvent.findByPk(data?.event_id, {
-        attributes: ["id", "date", "title", "requester_id"],
+        attributes: ["id", "date", "title", "description", "requester_id"],
+        include: [
+            {
+                model: EventTimeSchedule,
+                as: "time_schedules",
+                attributes: ["id", "time_start", "time_end"],
+            },
+            {
+                model: Agency,
+                as: "agency",
+                attributes: [
+                    "id",
+                    "name",
+                    "address",
+                    "barangay",
+                    "city_municipality",
+                    "province",
+                    "agency_address",
+                ],
+            },
+        ],
     });
 
     if (!event) {
@@ -212,7 +248,7 @@ export async function bookDonorAppointment(formData) {
             userId: user.id,
             controller: "donorAppointmentAction",
             action: "BOOK DONOR APPOINTMENT",
-            details: `New appointment has been successfully booked to User ID: ${user.id} Name: ${user?.name} (${user?.email}). Appointment ID#: ${newAppointment?.id}`,
+            details: `New appointment has been successfully booked to User ID: ${user.id} Name: ${user?.name} (${user?.email}). Appointment ID#: ${newAppointment?.appointment_reference_id}`,
         });
 
         //  Notify all admins & organizer
@@ -251,6 +287,51 @@ export async function bookDonorAppointment(formData) {
             }
         } catch (err) {
             console.error("Admin notification failed:", err);
+        }
+        const to12h = (t) => format(parse(t, "HH:mm:ss", new Date()), "h:mm a");
+
+        const verificationUrl = `${process.env.NEXT_PUBLIC_DOMAIN}/verify-appointment/${newAppointment?.id}`;
+        const qrCodeBuffer = await QRCode.toBuffer(verificationUrl);
+
+        //notify donor through email
+        try {
+            await sendNotificationAndEmail({
+                emailData: {
+                    to: donor?.user?.email,
+                    templateCategory: "DONOR_APPOINTMENT_CONFIRMATION",
+                    attachments: [
+                        {
+                            filename: "qrcode.png",
+                            content: qrCodeBuffer,
+                            cid: "appointment_qr_code", // This CID must match the src in the email template
+                        },
+                    ],
+                    templateData: {
+                        donor_name: donor?.user?.full_name,
+                        appointment_reference:
+                            newAppointment?.appointment_reference_id,
+                        appointment_date: event?.date,
+                        appointment_time: event?.time_schedules?.[0]
+                            ? `${to12h(
+                                  event?.time_schedules[0].time_start
+                              )} - ${to12h(event?.time_schedules[0].time_end)}`
+                            : "TBD",
+                        agency_name: event?.agency?.name,
+                        agency_address: event?.agency?.agency_address,
+                        event_name: event?.title,
+                        event_description: event?.description,
+                        appointment_qr_code: "cid:appointment_qr_code", // Use CID in template data
+                        system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                        support_email:
+                            process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                        support_contact:
+                            process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
+                        domain_url: process.env.NEXT_PUBLIC_APP_URL || "",
+                    },
+                },
+            });
+        } catch (err) {
+            console.error("Donor notification email failed:", err);
         }
 
         return {

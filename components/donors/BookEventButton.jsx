@@ -60,9 +60,11 @@ export default function BookEventButton({
             }
             return res;
         },
-        onSuccess: (data) => {
+        onSuccess: (res) => {
             queryClient.invalidateQueries({ queryKey: ["blood_drives"] });
+            eventDetails.id = res?.data?.appointment_reference_id;
             showBookingSuccessAlert(eventDetails);
+
             // SweetAlert({
             //     title: "Blood Donation Booked",
             //     text: `You have successfully booked an appointment for ${event?.title

@@ -1,3 +1,5 @@
+// npx sequelize-cli db:seed --seed 20250115000015-seed-donor-appointment-confirmation-email-template.js
+
 "use strict";
 
 /** @type {import('sequelize-cli').Migration} */
@@ -6,7 +8,7 @@ export async function up(queryInterface) {
         {
             name: "Appointment Confirmation",
             category: "DONOR_APPOINTMENT_CONFIRMATION",
-            subject: "✅ Appointment Confirmed - {{event_title}}",
+            subject: "✅ Appointment Confirmed - {{event_name}}",
             html_content: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
     <div style="background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
@@ -62,11 +64,13 @@ export async function up(queryInterface) {
         </div>
 
         <!-- QR Code -->
-        <div style="text-align: center; margin: 30px 0;">
-            <p style="color: #374151; font-size: 16px; margin-bottom: 15px;">
-                Please present the QR code below upon arrival:
+        <div style="text-align: center; margin-top: 20px;">
+            <p style="color: #374151; font-size: 16px; margin-bottom: 10px;">
+                Please present this QR code upon arrival for a faster check-in process.
             </p>
-            <img src="{{appointment_qr_code}}" alt="Appointment QR Code" style="width: 200px; height: 200px;"/>
+            <div style="padding: 15px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; display: inline-block;">
+                <img src="{{appointment_qr_code}}" alt="Appointment QR Code" style="width: 180px; height: 180px;">
+            </div>
         </div>
 
         <!-- Preparation Tips -->
@@ -107,7 +111,7 @@ Date: {{appointment_date}}
 Time: {{appointment_time}}
 Location: {{appointment_location}}
 
-Please bring your QR code: {{appointment_qr_code}}
+(A QR code is included in the HTML version of this email for scanning.)
 
 Thank you,
 {{system_name}}
@@ -142,7 +146,7 @@ For questions, contact {{support_email}}`,
 export async function down(queryInterface) {
     await queryInterface.bulkDelete(
         "email_templates",
-        { category: "APPOINTMENT_CONFIRMATION" },
+        { category: "DONOR_APPOINTMENT_CONFIRMATION" },
         {}
     );
 }

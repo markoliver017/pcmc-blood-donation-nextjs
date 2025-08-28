@@ -81,7 +81,8 @@ const VerificationPage = async ({ params }) => {
                                 </p>
                                 <p className="flex items-center gap-2">
                                     <Tag className="w-5 h-5 text-gray-500" />{" "}
-                                    <strong>Appointment ID:</strong> {apt_id}
+                                    <strong>Appointment ID:</strong>{" "}
+                                    {appointment?.appointment_reference_id}
                                 </p>
                             </div>
                             <div>

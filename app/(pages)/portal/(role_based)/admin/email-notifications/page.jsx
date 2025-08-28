@@ -186,6 +186,10 @@ export default function EmailNotificationsDashboard() {
         { value: "MBDT_NOTIFICATION", label: "MBDT Notification" }, //done
         { value: "GENERAL", label: "General" },
         { value: "BLOOD_COLLECTION", label: "Blood Collection" },
+        {
+            value: "DONOR_APPOINTMENT_CONFIRMATION",
+            label: "Donor Appointment Confirmation",
+        },
         { value: "SYSTEM_NOTIFICATION", label: "System Notification" },
     ];
 

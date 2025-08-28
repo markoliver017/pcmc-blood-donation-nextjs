@@ -393,9 +393,15 @@ export async function getTemplatesByCategory(category) {
  * @param {string} category - The template category (e.g., "AGENCY_REGISTRATION")
  * @param {string} to - The recipient's email address
  * @param {object} templateData - The data to replace dynamic fields in the template
+ * @param {Array} attachments - An array of attachment objects for the email
  * @returns {Promise<object>} - { success, message }
  */
-export async function sendEmailByCategory(category, to, templateData = {}) {
+export async function sendEmailByCategory(
+    category,
+    to,
+    templateData = {},
+    attachments = []
+) {
     try {
         // Find the active template for the given category
         const template = await EmailTemplate.findOne({
@@ -429,6 +435,7 @@ export async function sendEmailByCategory(category, to, templateData = {}) {
             subject,
             html,
             text,
+            attachFiles: attachments, // Pass attachments to send_mail
         });
 
         if (result && result.success) {

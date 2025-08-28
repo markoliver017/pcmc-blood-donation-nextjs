@@ -28,7 +28,7 @@ export async function GET(request, { params }) {
                     [Op.notIn]: ["cancelled"],
                 },
             },
-            attributes: [],
+            attributes: ["appointment_reference_id"],
             include: [
                 {
                     model: Donor,
