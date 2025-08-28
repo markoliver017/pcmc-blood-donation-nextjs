@@ -1,4 +1,4 @@
-import { DashboardIcon } from "@radix-ui/react-icons";
+import { CardStackIcon, DashboardIcon } from "@radix-ui/react-icons";
 import {
     Calendar,
     CalendarCheck,
@@ -170,14 +170,14 @@ export const usePagesStore = create((set) => ({
             is_role_based: true,
             has_child: false,
         },
-        // {
-        //     title: "View Donor Card",
-        //     path: "/donor-card",
-        //     icon: <CardStackIcon />,
-        //     roles: ["Donor"],
-        //     is_role_based: true,
-        //     has_child: false,
-        // },
+        {
+            title: "View Donor Card",
+            path: "/id-card",
+            icon: <CardStackIcon />,
+            roles: ["Donor"],
+            is_role_based: true,
+            has_child: false,
+        },
         {
             title: "Emergency Requests",
             path: "/emergency-requests",

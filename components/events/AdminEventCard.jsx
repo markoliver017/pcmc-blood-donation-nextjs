@@ -212,7 +212,10 @@ export default function AdminEventCard({
 
             <CardFooter className="flex flex-wrap items-center justify-start gap-2 bg-gray-50 dark:bg-gray-900/50 p-4 mt-auto">
                 <Button asChild variant="outline" size="sm">
-                    <Link href={`/portal/admin/events/${event.id}`}>
+                    <Link
+                        href={`/portal/admin/events/${event.id}`}
+                        scroll={false}
+                    >
                         <Eye className="w-4 h-4 mr-2" />
                         Details
                     </Link>
