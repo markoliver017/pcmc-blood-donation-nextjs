@@ -84,7 +84,10 @@ const UpcomingAppointmentsList = ({ appointments = [], onViewDetails }) => {
                                             {event?.title || "Untitled Event"}
                                         </h3>
                                         <p className="text-sm text-gray-500 dark:text-gray-400">
-                                            Appointment #{appt.id}
+                                            Appointment ID:{" "}
+                                            <b>
+                                                {appt.appointment_reference_id}
+                                            </b>
                                         </p>
                                     </div>
                                 </div>

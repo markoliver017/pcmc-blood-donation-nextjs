@@ -71,6 +71,7 @@ export default function ListParticipants({ eventId }) {
                 <ParticipantsDatatable
                     columns={hostsParticipantsColumns}
                     data={participants}
+                    event={event}
                     isLoading={isLoading}
                 />
             </div>
