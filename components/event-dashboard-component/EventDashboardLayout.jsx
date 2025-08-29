@@ -3,7 +3,6 @@ import React from "react";
 import EventDashboardHeader from "./EventDashboardHeader";
 import { useRouter } from "next/navigation";
 
-
 export default function EventDashboardLayout({
     event,
     activeTab,
@@ -14,6 +13,7 @@ export default function EventDashboardLayout({
     lastUpdated,
     onBack,
     children,
+    onProgress,
 }) {
     const router = useRouter();
     return (
@@ -87,7 +87,7 @@ export default function EventDashboardLayout({
 
             <div className="p-2">
                 {/* Event Dashboard Header */}
-                <EventDashboardHeader event={event} />
+                <EventDashboardHeader event={event} onProgress={onProgress} />
 
                 {/* Tab Navigation */}
                 <div className="mt-2 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">

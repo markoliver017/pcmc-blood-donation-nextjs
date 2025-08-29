@@ -93,7 +93,7 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
         onSuccess: () => {
             // Invalidate relevant queries
             queryClient.invalidateQueries({
-                queryKey: ["event-dashboard", eventId],
+                queryKey: ["event-dashboard"],
             });
             queryClient.invalidateQueries({
                 queryKey: ["event-statistics", eventId],
@@ -322,7 +322,7 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                                         <Text className="h-3" />
                                         <input
                                             type="text"
-                                            tabIndex={2}
+                                            tabIndex={1}
                                             placeholder="Enter first name"
                                             {...field}
                                         />
@@ -349,7 +349,7 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                                         <Text className="h-3" />
                                         <input
                                             type="text"
-                                            tabIndex={3}
+                                            tabIndex={2}
                                             placeholder="Enter middle name"
                                             {...field}
                                         />
@@ -438,7 +438,7 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                                         <Calendar className="h-3" />
                                         <input
                                             type="date"
-                                            tabIndex={1}
+                                            tabIndex={5}
                                             placeholder="Enter user birth date"
                                             {...field}
                                         />
@@ -466,7 +466,7 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                                         <Users className="h-3" />
                                         <select
                                             className="w-full dark:bg-inherit"
-                                            tabIndex={8}
+                                            tabIndex={6}
                                             {...field}
                                         >
                                             <option value="">
@@ -508,7 +508,7 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                                         <Flag className="h-3" />
                                         <select
                                             className="w-full dark:bg-inherit"
-                                            tabIndex={9}
+                                            tabIndex={7}
                                             {...field}
                                         >
                                             <option value="">
@@ -561,7 +561,7 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                                         +63
                                         <input
                                             type="text"
-                                            tabIndex={10}
+                                            tabIndex={8}
                                             placeholder="+63#########"
                                             {...field}
                                         />
@@ -593,7 +593,7 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                                         <Text className="h-3" />
                                         <input
                                             type="text"
-                                            tabIndex={5}
+                                            tabIndex={9}
                                             placeholder="Enter occupation"
                                             {...field}
                                         />
@@ -744,6 +744,7 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                                         type="checkbox"
                                         className="checkbox checkbox-success border bg-red-400 dark:bg-red-500 border-red-500 checked:border-green-500"
                                         {...field}
+                                        tabIndex={10}
                                         checked={field.value}
                                     />
                                     <div>

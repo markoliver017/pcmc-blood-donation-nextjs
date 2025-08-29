@@ -16,7 +16,12 @@ import {
 } from "lucide-react";
 import moment from "moment";
 
-export default function CollectedDonorsList({ eventId, appointments, onManageAppointment, roleName }) {
+export default function CollectedDonorsList({
+    eventId,
+    appointments,
+    onManageAppointment,
+    roleName,
+}) {
     const [searchTerm, setSearchTerm] = useState("");
 
     const filteredAppointments = appointments.filter((appointment) => {
@@ -82,7 +87,7 @@ export default function CollectedDonorsList({ eventId, appointments, onManageApp
 
     // Calculate total blood volume
     const totalVolume = appointments.reduce((total, appointment) => {
-        return total + (appointment.blood_collection?.volume || 0);
+        return total + (Number(appointment.blood_collection?.volume) || 0);
     }, 0);
 
     return (
@@ -100,14 +105,15 @@ export default function CollectedDonorsList({ eventId, appointments, onManageApp
                                     Successful Collections
                                 </h3>
                                 <p className="text-sm text-green-600 dark:text-green-300">
-                                    {appointments.length} donors • {totalVolume}
+                                    {appointments.length} donors •{" "}
+                                    {totalVolume.toLocaleString()}
                                     ml total volume
                                 </p>
                             </div>
                         </div>
                         <div className="text-right">
                             <div className="text-2xl font-bold text-green-800 dark:text-green-200">
-                                {totalVolume}ml
+                                {totalVolume.toLocaleString()} ml
                             </div>
                             <div className="text-sm text-green-600 dark:text-green-300">
                                 Total Blood Volume
@@ -216,7 +222,6 @@ export default function CollectedDonorsList({ eventId, appointments, onManageApp
                                                 Details
                                             </span>
                                         </Button>
-
                                     </div>
                                 )}
                             </div>
@@ -245,10 +250,10 @@ export default function CollectedDonorsList({ eventId, appointments, onManageApp
                                             {appointment.blood_collection
                                                 .created_at
                                                 ? moment(
-                                                    appointment
-                                                        .blood_collection
-                                                        .created_at
-                                                ).format("HH:mm")
+                                                      appointment
+                                                          .blood_collection
+                                                          .created_at
+                                                  ).format("HH:mm")
                                                 : "N/A"}
                                         </div>
                                         <div>
@@ -258,10 +263,10 @@ export default function CollectedDonorsList({ eventId, appointments, onManageApp
                                             {appointment.blood_collection
                                                 .created_at
                                                 ? moment(
-                                                    appointment
-                                                        .blood_collection
-                                                        .created_at
-                                                ).format("MMM DD, YYYY")
+                                                      appointment
+                                                          .blood_collection
+                                                          .created_at
+                                                  ).format("MMM DD, YYYY")
                                                 : "N/A"}
                                         </div>
                                         <div>

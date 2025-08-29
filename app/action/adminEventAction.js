@@ -1769,7 +1769,9 @@ export async function getEventDashboardData(eventId) {
         const formattedAppointments = formatSeqObj(appointments);
 
         // Calculate statistics
-        const totalRegistered = appointments.length;
+        const totalRegistered = appointments.filter(
+            (apt) => apt.status !== "cancelled"
+        ).length;
         const pendingExamination = appointments.filter(
             (apt) =>
                 !apt.physical_exam &&

@@ -12,12 +12,12 @@ import { Flag, Text } from "lucide-react";
 import clsx from "clsx";
 import InlineLabel from "@components/form/InlineLabel";
 import FieldError from "@components/form/FieldError";
-import notify from "@components/ui/notify";
 import { appointmentDetailsSchema } from "@lib/zod/appointmentSchema";
 import { updateAppointmentStatus } from "@/action/adminEventAction";
 import { Form, FormItem } from "@components/ui/form";
 import { Textarea } from "@components/ui/textarea";
 import FormLogger from "@lib/utils/FormLogger";
+import { toast } from "sonner";
 
 export default function EventDashboardAppointmentForm({
     appointment,
@@ -63,19 +63,14 @@ export default function EventDashboardAppointmentForm({
                 queryKey: ["appointment", appointment.id],
             });
             queryClient.invalidateQueries({
-                queryKey: ["event-dashboard", eventId],
+                queryKey: ["event-dashboard"],
             });
-            notify({
-                error: false,
-                message: "Appointment details updated successfully.",
-            });
+            toast.success("Appointment details updated successfully.");
         },
         onError: (error) => {
-            notify({
-                error: true,
-                message:
-                    error?.message || "Failed to update appointment details.",
-            });
+            toast.error(
+                error?.message || "Failed to update appointment details."
+            );
         },
     });
 

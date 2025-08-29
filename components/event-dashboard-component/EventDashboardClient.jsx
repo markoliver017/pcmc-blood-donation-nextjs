@@ -34,6 +34,7 @@ import {
     updateAppointmentStatus,
 } from "@/action/adminEventAction";
 import CancelledDonorsList from "./CancelledDonorsList";
+import { Toaster } from "sonner";
 
 export default function EventDashboardClient({ eventId, roleName }) {
     const router = useRouter();
@@ -60,8 +61,8 @@ export default function EventDashboardClient({ eventId, roleName }) {
             }
             return res.data;
         },
-        staleTime: 30 * 1000, // Data is fresh for 30 seconds
-        cacheTime: 5 * 60 * 1000, // Cache persists for 5 minutes
+        // staleTime: 30 * 1000, // Data is fresh for 30 seconds
+        // cacheTime: 5 * 60 * 1000, // Cache persists for 5 minutes
     });
 
     const {
@@ -355,6 +356,12 @@ export default function EventDashboardClient({ eventId, roleName }) {
                 isRefreshing={isFetching}
                 lastUpdated={new Date()}
                 onBack={handleBack}
+                onProgress={
+                    getAppointmentsByStatus("registered").length
+                        ? getAppointmentsByStatus("registered").length /
+                          statistics.total_registered
+                        : 1
+                }
             >
                 {/* Tab Content */}
                 <div className="p-6">{tabData[activeTab]?.component}</div>
@@ -371,6 +378,7 @@ export default function EventDashboardClient({ eventId, roleName }) {
             )} */}
 
             {/* Appointment Management Modal */}
+            <Toaster />
             {selectedAppointment && (
                 <AppointmentManagementModal
                     isOpen={isManagementModalOpen}

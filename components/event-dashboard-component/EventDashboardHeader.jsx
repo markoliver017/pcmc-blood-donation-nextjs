@@ -17,7 +17,7 @@ import {
 import { useRouter } from "next/navigation";
 import moment from "moment";
 
-export default function EventDashboardHeader({ event }) {
+export default function EventDashboardHeader({ event, onProgress }) {
     const router = useRouter();
 
     if (!event) {
@@ -172,7 +172,6 @@ export default function EventDashboardHeader({ event }) {
                         </div>
                     </div>
                 </div>
-
                 {/* Event Description */}
                 {event.description && (
                     <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
@@ -184,7 +183,6 @@ export default function EventDashboardHeader({ event }) {
                         </div>
                     </div>
                 )}
-
                 {/* Event Organizer Info */}
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
@@ -234,7 +232,6 @@ export default function EventDashboardHeader({ event }) {
                         </div>
                     </div>
                 </div>
-
                 {/* Event Progress Indicator */}
                 <div className="mt-4">
                     <div className="flex items-center justify-between mb-2">
@@ -245,20 +242,28 @@ export default function EventDashboardHeader({ event }) {
                             {moment(event.date).isBefore(moment())
                                 ? "Completed"
                                 : moment(event.date).isSame(moment(), "day")
-                                    ? "Today"
-                                    : "Upcoming"}
+                                ? "Today"
+                                : "Upcoming"}
                         </span>
                     </div>
                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                        <div
+                        {/* <div
                             className={`h-2 rounded-full transition-all duration-300 ${moment(event.date).isBefore(moment())
                                 ? "bg-green-500 w-full"
                                 : moment(event.date).isSame(moment(), "day")
                                     ? "bg-blue-500 w-3/4"
                                     : "bg-gray-400 w-1/4"
                                 }`}
+                        /> */}
+                        <div
+                            className={`h-2 rounded-full transition-all duration-300 bg-green-500 w-[${
+                                (onProgress || 0) * 100
+                            }%]`}
                         />
                     </div>
+                </div>
+                <div className="text-sm text-muted-foreground text-end">
+                    {(onProgress || 0) * 100}%
                 </div>
             </CardContent>
         </Card>

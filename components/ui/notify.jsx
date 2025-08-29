@@ -4,16 +4,15 @@ import parse from "html-react-parser"; // Import html-react-parser
 import { useToastStore } from "@/store/toastStore";
 
 export default function notify(res, type = null, position = "bottom-right") {
-
     const { error, message } = res;
     // const containerId = res?.containerId || "main";
     const containerId = useToastStore.getState().containerId;
+    console.log("containerId", containerId);
 
     // If the message is a string, parse it. Otherwise, render it as a component.
     const content = typeof message === "string" ? parse(message) : message;
 
     if (!type) {
-
         if (error) {
             toast.error(content, {
                 position,
@@ -25,12 +24,11 @@ export default function notify(res, type = null, position = "bottom-right") {
                 progress: undefined,
                 theme: "light",
                 transition: Bounce,
-                containerId
+                containerId,
             });
         } else {
             toast.success(content);
         }
-
     } else {
         toast[type](content, {
             position,
@@ -42,7 +40,7 @@ export default function notify(res, type = null, position = "bottom-right") {
             progress: undefined,
             theme: "light",
             transition: Bounce,
-            containerId
+            containerId,
         });
     }
 }

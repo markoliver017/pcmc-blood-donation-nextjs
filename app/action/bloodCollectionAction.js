@@ -46,9 +46,6 @@ export async function storeUpdateBloodCollection(appointmentId, formData) {
 
     const { data } = parsed;
 
-    console.log("formData", formData);
-    console.log("parsed data", data);
-
     const appointment = await DonorAppointmentInfo.findByPk(appointmentId, {
         include: [
             {

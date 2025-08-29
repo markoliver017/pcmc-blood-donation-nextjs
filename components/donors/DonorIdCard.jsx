@@ -140,7 +140,10 @@ export default function DonorIdCard({ donor, donations }) {
                             <div className="flex flex-col items-center">
                                 <Avatar className="h-24 w-24 print:h-20 print:w-20 mb-3 print:mb-2 border-2 border-gray-300">
                                     <Image
-                                        src={donor.user?.image}
+                                        src={
+                                            donor.user?.image ||
+                                            "/default_avatar.png"
+                                        }
                                         alt={donor.user?.full_name || "Donor"}
                                         width={100}
                                         height={100}

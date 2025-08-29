@@ -201,62 +201,74 @@ export default function CreateBloodRequestForm({ agency_id, onSuccess }) {
                 className="space-y-6 dark:text-white"
             >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium">
-                            Blood Component
-                        </label>
-                        <Select
-                            onValueChange={(value) =>
-                                form.setValue("blood_component", value)
-                            }
-                            value={form.watch("blood_component")}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select component" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="whole blood">
-                                    Whole Blood
-                                </SelectItem>
-                                <SelectItem value="plasma">Plasma</SelectItem>
-                                <SelectItem value="platelets">
-                                    Platelets
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <FieldError
-                            field={form.formState.errors.blood_component}
-                        />
-                    </div>
+                    <FormField
+                        control={form.control}
+                        name="blood_component"
+                        render={({ field }) => (
+                            <FormItem>
+                                <label className="text-sm font-medium">
+                                    Blood Component
+                                </label>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select component" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="whole blood">
+                                            Whole Blood
+                                        </SelectItem>
+                                        <SelectItem value="plasma">
+                                            Plasma
+                                        </SelectItem>
+                                        <SelectItem value="platelets">
+                                            Platelets
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FieldError
+                                    field={
+                                        form.formState.errors.blood_component
+                                    }
+                                />
+                            </FormItem>
+                        )}
+                    />
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium">
-                            Blood Type
-                        </label>
-                        <Select
-                            onValueChange={(value) =>
-                                form.setValue("blood_type_id", value)
-                            }
-                            value={form.watch("blood_type_id")}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select blood type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {bloodTypes?.map((type) => (
-                                    <SelectItem
-                                        key={type.id}
-                                        value={type.id.toString()}
-                                    >
-                                        {type.blood_type}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        <FieldError
-                            field={form.formState.errors.blood_type_id}
-                        />
-                    </div>
+                    <FormField
+                        control={form.control}
+                        name="blood_type_id"
+                        render={({ field }) => (
+                            <FormItem>
+                                <label className="text-sm font-medium">
+                                    Blood Type
+                                </label>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select blood type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {bloodTypes?.map((type) => (
+                                            <SelectItem
+                                                key={type.id}
+                                                value={type.id.toString()}
+                                            >
+                                                {type.blood_type}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FieldError
+                                    field={form.formState.errors.blood_type_id}
+                                />
+                            </FormItem>
+                        )}
+                    />
 
                     <FormField
                         control={form.control}

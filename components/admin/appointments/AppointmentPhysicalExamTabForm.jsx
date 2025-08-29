@@ -28,22 +28,16 @@ import {
 } from "@components/ui/form";
 
 import { GrUpdate } from "react-icons/gr";
-import FormLogger from "@lib/utils/FormLogger";
-import { userWithDonorSchema } from "@lib/zod/donorSchema";
-import { formatFormalName } from "@lib/utils/string.utils";
 
-import { updateUserDonor } from "@/action/donorAction";
-import { BiCollection } from "react-icons/bi";
 import { IoInformationCircle } from "react-icons/io5";
 import { toastError } from "@lib/utils/toastError.utils";
-import { PiStool } from "react-icons/pi";
+
 import { getSingleStyle } from "@/styles/select-styles";
 import { useTheme } from "next-themes";
 import { FaTemperatureHigh } from "react-icons/fa";
 import { physicalExaminationSchema } from "@lib/zod/physicalExaminationSchema";
 import { z } from "zod";
 import { storeUpdatePhysicalExam } from "@/action/physicalExamAction";
-import { ToastContainer } from "react-toastify";
 
 export default function AppointmentPhysicalExamTabForm({ appointment }) {
     const { resolvedTheme } = useTheme();
@@ -62,7 +56,6 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
             return res;
         },
         onSuccess: (res) => {
-
             // Invalidate the posts query to refetch the updated list
             queryClient.invalidateQueries({ queryKey: ["appointment"] });
             queryClient.invalidateQueries({
@@ -162,7 +155,6 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
 
     return (
         <Form {...form}>
-            <ToastContainer />
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="space-y-2 flex flex-col gap-2 justify-center"

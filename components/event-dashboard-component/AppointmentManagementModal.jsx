@@ -3,19 +3,17 @@ import React from "react";
 import { Button } from "@components/ui/button";
 import {
     Dialog,
-    DialogContent,
     DialogContentNoX,
     DialogDescription,
     DialogHeader,
     DialogTitle,
 } from "@components/ui/dialog";
-import { User, Droplets, Building, Clock, X } from "lucide-react";
+import { User, Droplets, Building, Clock, X, IdCard, File } from "lucide-react";
 
 import { getAppointmentById } from "@/action/adminEventAction";
 import { useQuery } from "@tanstack/react-query";
 import Skeleton from "@components/ui/skeleton";
 
-import { Toaster } from "sonner";
 import { Badge } from "@components/ui/badge";
 import DonorAppointmentTabComponent from "./DonorAppointmentTabComponent";
 import { Card, CardContent } from "@components/ui/card";
@@ -27,7 +25,6 @@ export default function AppointmentManagementModal({
     appointmentId,
     eventId,
 }) {
-    useModalToastContainer();
     const { data: appointment, isLoading } = useQuery({
         queryKey: ["appointment", appointmentId],
         queryFn: async () => {
@@ -39,6 +36,7 @@ export default function AppointmentManagementModal({
         },
     });
 
+    useModalToastContainer();
     if (isLoading) return <Skeleton />;
 
     const donor = appointment?.donor;
@@ -82,7 +80,6 @@ export default function AppointmentManagementModal({
                 onInteractOutside={(event) => event.preventDefault()}
                 className="max-w-7xl h-[90vh] overflow-hidden flex flex-col"
             >
-                <Toaster />
                 <DialogHeader className="pb-4">
                     <div className="flex items-center justify-between">
                         <div>
@@ -119,7 +116,14 @@ export default function AppointmentManagementModal({
                                         <h3 className="font-medium text-lg">
                                             {user?.name || "Unknown Donor"}
                                         </h3>
-                                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                                            <div className="flex items-center gap-1">
+                                                <IdCard className="h-3 w-3" />
+                                                <span>
+                                                    {donor?.donor_reference_id ||
+                                                        "Not specified"}
+                                                </span>
+                                            </div>
                                             <div className="flex items-center gap-1">
                                                 <Droplets className="h-3 w-3" />
                                                 <span>
@@ -133,6 +137,13 @@ export default function AppointmentManagementModal({
                                                 <span>
                                                     {donor?.agency?.name ||
                                                         "Unknown Agency"}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <File className="h-3 w-3" />
+                                                <span>
+                                                    {appointment?.appointment_reference_id ||
+                                                        "Not specified"}
                                                 </span>
                                             </div>
                                             <div className="flex items-center gap-1">

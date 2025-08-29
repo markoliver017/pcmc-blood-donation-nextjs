@@ -45,7 +45,7 @@ export default function EventDashboardBloodTypeForm({ donor, eventId }) {
 
             // Invalidate relevant queries for real-time updates
             queryClient.invalidateQueries({
-                queryKey: ["event-dashboard", eventId],
+                queryKey: ["event-dashboard"],
             });
             queryClient.invalidateQueries({
                 queryKey: ["event-statistics", eventId],
