@@ -257,6 +257,7 @@ export async function getAllEventsByAgency() {
                             where: {
                                 status: "activated",
                             },
+                            required: false,
                             include: {
                                 model: User,
                                 as: "user",
@@ -283,6 +284,12 @@ export async function getAllEventsByAgency() {
                     include: {
                         model: DonorAppointmentInfo,
                         as: "donors",
+                        where: {
+                            status: {
+                                [Op.ne]: "cancelled",
+                            },
+                        },
+                        required: false,
                         include: {
                             model: Donor,
                             as: "donor",
@@ -445,10 +452,10 @@ export async function getEventsById(id) {
                 {
                     model: DonorAppointmentInfo,
                     as: "donors",
-                    attributes: ["id"],
+                    attributes: ["id", "status", "feedback_average"],
                     where: {
                         status: {
-                            [Op.in]: ["registered", "examined", "collected"],
+                            [Op.ne]: "cancelled",
                         },
                     },
                     required: false,
@@ -459,6 +466,12 @@ export async function getEventsById(id) {
                     include: {
                         model: DonorAppointmentInfo,
                         as: "donors",
+                        where: {
+                            status: {
+                                [Op.ne]: "cancelled",
+                            },
+                        },
+                        required: false,
                         include: {
                             model: Donor,
                             as: "donor",
@@ -474,17 +487,6 @@ export async function getEventsById(id) {
                             ],
                         },
                     },
-                },
-                {
-                    model: DonorAppointmentInfo,
-                    as: "donors",
-                    attributes: ["id", "status", "feedback_average"],
-                    where: {
-                        status: {
-                            [Op.ne]: "cancelled",
-                        },
-                    },
-                    required: false,
                 },
             ],
         });
@@ -1536,6 +1538,7 @@ export async function getPresentEventsByAgency() {
                         where: {
                             status: "activated",
                         },
+                        required: false,
                         include: {
                             model: User,
                             as: "user",
@@ -1568,6 +1571,12 @@ export async function getPresentEventsByAgency() {
                     include: {
                         model: DonorAppointmentInfo,
                         as: "donors",
+                        where: {
+                            status: {
+                                [Op.ne]: "cancelled",
+                            },
+                        },
+                        required: false,
                         include: {
                             model: Donor,
                             as: "donor",
