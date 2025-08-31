@@ -25,6 +25,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
+import DataTableColumnHeader from "@components/reusable_components/DataTableColumnHeader";
 
 const getColumns = (handleUpdate) => {
     const queryClient = useQueryClient();
@@ -50,8 +51,17 @@ const getColumns = (handleUpdate) => {
     });
     return [
         {
+            accessorKey: "blood_request_reference_id",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="ID#" />
+            ),
+            filterFn: "columnFilter",
+        },
+        {
             accessorKey: "blood_component",
-            header: "Component",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Component" />
+            ),
             cell: ({ row }) => {
                 const component = row.original.blood_component;
                 return component.charAt(0).toUpperCase() + component.slice(1);
@@ -59,15 +69,21 @@ const getColumns = (handleUpdate) => {
         },
         {
             accessorKey: "blood_type.blood_type",
-            header: "Blood Type",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Blood Type" />
+            ),
         },
         {
             accessorKey: "no_of_units",
-            header: "Units",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Units" />
+            ),
         },
         {
             accessorKey: "patient_name",
-            header: "Patient Name",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Patient Name" />
+            ),
             cell: ({ row }) => {
                 const donor = row.original.user;
                 return donor
@@ -77,17 +93,23 @@ const getColumns = (handleUpdate) => {
         },
         {
             accessorKey: "hospital_name",
-            header: "Hospital",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Hospital" />
+            ),
         },
         {
             accessorKey: "date",
-            header: "Date Needed",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Date Needed" />
+            ),
             cell: ({ row }) =>
                 format(new Date(row.original.date), "MMM dd, yyyy"),
         },
         {
             accessorKey: "status",
-            header: "Status",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Status" />
+            ),
             cell: ({ row }) => {
                 const status = row.original.status;
                 const colors = {
@@ -125,7 +147,9 @@ const getColumns = (handleUpdate) => {
                                 onClick={() => handleUpdate(id)}
                                 className="flex items-center gap-1"
                             >
-                                {data.status !== "pending" ? (
+                                <Eye className="w-4 h-4" />
+                                <span className="hidden md:inline">View</span>
+                                {/* {data.status !== "pending" ? (
                                     <Eye className="w-4 h-4" />
                                 ) : (
                                     <Pencil className="w-4 h-4" />
@@ -134,7 +158,7 @@ const getColumns = (handleUpdate) => {
                                     {data.status !== "pending"
                                         ? "View"
                                         : "Update"}
-                                </span>
+                                </span> */}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 size="sm"

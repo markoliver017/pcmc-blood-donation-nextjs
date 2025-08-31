@@ -246,11 +246,13 @@ function BloodRequestForm({ req, donors, bloodTypes, onSuccess }) {
     };
 
     return (
-        <Card className="my-8 shadow-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
+        <Card className=" shadow-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
             <CardHeader>
-                <CardTitle className="text-2xl">Update Blood Request</CardTitle>
+                <CardTitle className="text-2xl">
+                    Blood Request - {req?.blood_request_reference_id || req?.id}
+                </CardTitle>
                 <CardDescription>
-                    Update the details and attach a PDF if needed.
+                    Update the blood request details.
                 </CardDescription>
             </CardHeader>
             <CardContent>

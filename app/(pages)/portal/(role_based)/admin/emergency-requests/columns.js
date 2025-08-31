@@ -18,7 +18,7 @@ import { Badge } from "@components/ui/badge";
 
 const colors = {
     pending:
-        "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100",
+        "bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-100",
     fulfilled:
         "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100",
     rejected: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100",
@@ -28,7 +28,7 @@ const colors = {
 export const getColumns = (updateRequestStatus, isApproving, onShowDetails) => {
     return [
         {
-            accessorKey: "id",
+            accessorKey: "blood_request_reference_id",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="ID#" />
             ),

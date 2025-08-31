@@ -2,18 +2,8 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader } from "@components/ui/card";
-import { Badge } from "@components/ui/badge";
-import { Text } from "lucide-react";
-import { format } from "date-fns";
-import { DataTable } from "@components/reusable_components/Datatable";
 
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-} from "@components/ui/dialog";
+import { DataTable } from "@components/reusable_components/Datatable";
 
 import { useState } from "react";
 
@@ -22,30 +12,14 @@ import {
     updateBloodRequestStatus,
 } from "@action/bloodRequestAction";
 
-import {
-    User,
-    Hospital,
-    Calendar,
-    Building2,
-    FileText,
-    Droplet,
-    BadgeCheck,
-    ClipboardList,
-    Search,
-} from "lucide-react";
+import { Search } from "lucide-react";
 import DateRangePickerComponent from "@components/reusable_components/DateRangePickerComponent";
 import moment from "moment";
 import { useQuery as useQueryTanstack } from "@tanstack/react-query";
 import { fetchBloodTypes } from "@action/bloodRequestAction";
 import { toast, Toaster } from "sonner";
 import { getColumns } from "./columns";
-
-const colors = {
-    pending: "bg-orange-100 text-orange-800",
-    fulfilled: "bg-green-100 text-green-800",
-    rejected: "bg-red-100 text-red-800",
-    cancelled: "bg-gray-200 text-gray-600",
-};
+import DetailsModal from "@components/blood_request/DetailsModal";
 
 export default function AdminEmergencyRequestsPage() {
     const queryClient = useQueryClient();
@@ -89,10 +63,12 @@ export default function AdminEmergencyRequestsPage() {
                 queryClient.invalidateQueries({
                     queryKey: ["admin-blood-requests"],
                 });
-                toast("Request updated successfully");
+                setDetailsOpen(false);
+                setSelectedRequest(null);
+                toast.success("Request updated successfully");
             },
             onError: (error) => {
-                toast(error?.message || "Failed to approve request");
+                toast.error(error?.message || "Failed to approve request");
             },
         }
     );
@@ -259,159 +235,13 @@ export default function AdminEmergencyRequestsPage() {
                     isLoading={isLoading}
                 />
             </div>
-            <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-                <DialogContent className="max-w-xl">
-                    <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2">
-                            <ClipboardList className="w-5 h-5 text-blue-500" />{" "}
-                            Blood Request Details
-                        </DialogTitle>
-                        <DialogDescription>
-                            Detailed information for this blood request.
-                        </DialogDescription>
-                    </DialogHeader>
-                    {selectedRequest && (
-                        <div className="space-y-5 space-x-5 mt-2">
-                            <div className="flex items-center justify-between gap-2">
-                                <b className="flex-items-center">
-                                    <Droplet className="w-4 h-4 text-red-500" />
-                                    Component:
-                                </b>{" "}
-                                <div className="flex-none w-48">
-                                    {selectedRequest.blood_component}
-                                </div>
-                            </div>
-                            <div className="flex items-center justify-between gap-2">
-                                <b className="flex-items-center">
-                                    <BadgeCheck className="w-4 h-4 text-purple-500" />
-                                    Blood Type:
-                                </b>{" "}
-                                <div className="flex-none w-48">
-                                    {selectedRequest.blood_type?.blood_type}
-                                </div>
-                            </div>
-                            <div className="flex items-center justify-between gap-2">
-                                <b className="flex-items-center">
-                                    <BadgeCheck className="w-4 h-4 text-yellow-500" />
-                                    Units:
-                                </b>{" "}
-                                <div className="flex-none w-48">
-                                    {selectedRequest.no_of_units}
-                                </div>
-                            </div>
-                            <div className="flex items-center justify-between gap-2">
-                                <b className="flex-items-center">
-                                    <User className="w-4 h-4 text-blue-400" />
-                                    Patient Name:
-                                </b>{" "}
-                                <div className="flex-none w-48">
-                                    {selectedRequest.patient_name ||
-                                        (selectedRequest.user
-                                            ? `${selectedRequest.user.first_name} ${selectedRequest.user.last_name}`
-                                            : "-")}
-                                </div>
-                            </div>
-                            <div className="flex items-center justify-between gap-2">
-                                <b className="flex-items-center">
-                                    <Hospital className="w-4 h-4 text-pink-500" />
-                                    Hospital:
-                                </b>{" "}
-                                <div className="flex-none w-48">
-                                    {selectedRequest.hospital_name}
-                                </div>
-                            </div>
-                            <div className="flex items-center justify-between gap-2">
-                                <b className="flex-items-center">
-                                    <Calendar className="w-4 h-4 text-green-500" />
-                                    Date Needed:
-                                </b>{" "}
-                                <div className="flex-none w-48">
-                                    {format(
-                                        new Date(selectedRequest.date),
-                                        "MMM dd, yyyy"
-                                    )}
-                                </div>
-                            </div>
-                            <div className="flex items-center justify-between gap-2">
-                                <b className="flex-items-center">
-                                    <Building2 className="w-4 h-4 text-gray-700" />
-                                    Agency:
-                                </b>{" "}
-                                <div className="flex-none w-48">
-                                    {selectedRequest.user?.donor?.agency
-                                        ?.name || (
-                                        <span className="italic text-gray-400">
-                                            N/A
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-between gap-2">
-                                <b className="flex-items-center">
-                                    <ClipboardList className="w-4 h-4 text-indigo-500" />
-                                    Diagnosis:
-                                </b>{" "}
-                                <div className="flex-none w-48">
-                                    {selectedRequest.diagnosis}
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-between gap-2">
-                                <b className="flex-items-center">
-                                    <FileText className="w-4 h-4 text-blue-600" />
-                                    File:
-                                </b>{" "}
-                                <div className="flex-none w-48">
-                                    {selectedRequest.file_url ? (
-                                        <a
-                                            href={selectedRequest.file_url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="underline text-blue-600"
-                                        >
-                                            View PDF
-                                        </a>
-                                    ) : (
-                                        <span className="italic text-gray-400">
-                                            N/A
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="flex items-center justify-between gap-2">
-                                <b className="flex-items-center">
-                                    <Badge className="w-4 h-4 text-gray-500" />
-                                    Status:
-                                </b>{" "}
-                                <div className="flex-none w-48">
-                                    <Badge
-                                        variant="outline"
-                                        className={
-                                            colors[selectedRequest.status] ||
-                                            "bg-gray-200 text-gray-600"
-                                        }
-                                    >
-                                        {selectedRequest.status
-                                            .charAt(0)
-                                            .toUpperCase() +
-                                            selectedRequest.status.slice(1)}
-                                    </Badge>
-                                </div>
-                            </div>
-                            <div className="flex items-center justify-between gap-2">
-                                <b className="flex-items-center">
-                                    <Text className="w-4 h-4 " />
-                                    Remarks:
-                                </b>{" "}
-                                <div className="flex-none w-48">
-                                    {selectedRequest.remarks}
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </DialogContent>
-            </Dialog>
+            <DetailsModal
+                detailsOpen={detailsOpen}
+                setDetailsOpen={setDetailsOpen}
+                selectedRequest={selectedRequest}
+                isApproving={isApproving}
+                updateRequestStatus={updateRequestStatus}
+            />
         </div>
     );
 }

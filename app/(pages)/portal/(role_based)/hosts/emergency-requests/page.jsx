@@ -125,9 +125,7 @@ export default function EmergencyRequestPage() {
                     onInteractOutside={(event) => event.preventDefault()}
                 >
                     <ToastContainer />
-                    <DialogTitle className="text-xl font-bold">
-                        Update Blood Request
-                    </DialogTitle>
+                    <DialogTitle className="hidden"></DialogTitle>
                     <UpdateBloodRequestForm
                         bloodRequestId={bloodRequestId}
                         onSuccess={() => setIsUpdateModalOpen(false)}

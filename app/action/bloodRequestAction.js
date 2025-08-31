@@ -327,12 +327,13 @@ export async function storeBloodRequest(formData) {
                                 notificationData: {
                                     subject: "New Blood Request Submitted",
                                     message: `A new blood request (ID: ${
-                                        newBloodRequest.id
+                                        newBloodRequest?.blood_request_reference_id
                                     }) has been submitted by ${
                                         user.name || user.email
                                     }. Please review and process the request.`,
                                     type: "BLOOD_REQUEST_APPROVAL",
-                                    reference_id: newBloodRequest.id.toString(),
+                                    reference_id:
+                                        newBloodRequest?.id.toString(),
                                     created_by: user.id,
                                 },
                             });
@@ -378,41 +379,41 @@ export async function storeBloodRequest(formData) {
                                         templateCategory: "NEW_BLOOD_REQUEST",
                                         templateData: {
                                             blood_request_id:
-                                                newBloodRequest.id.toString(),
+                                                newBloodRequest?.blood_request_reference_id.toString(),
                                             blood_component:
-                                                newBloodRequest.blood_component,
+                                                newBloodRequest?.blood_component,
                                             patient_name: donor
                                                 ? donor.user.full_name
-                                                : newBloodRequest.patient_name ||
+                                                : newBloodRequest?.patient_name ||
                                                   "Not specified",
                                             patient_gender: donor
                                                 ? donor.user.gender
-                                                : newBloodRequest.patient_gender ||
+                                                : newBloodRequest?.patient_gender ||
                                                   "Not specified",
                                             patient_date_of_birth: donor
                                                 ? new Date(
                                                       donor?.date_of_birth
                                                   ).toLocaleDateString()
-                                                : newBloodRequest.patient_date_of_birth
+                                                : newBloodRequest?.patient_date_of_birth
                                                 ? new Date(
-                                                      newBloodRequest.patient_date_of_birth
+                                                      newBloodRequest?.patient_date_of_birth
                                                   ).toLocaleDateString()
                                                 : "Not specified",
                                             blood_type:
-                                                newBloodRequest.blood_type_id
+                                                newBloodRequest?.blood_type_id
                                                     ? (
                                                           await sequelize.models.BloodType.findByPk(
-                                                              newBloodRequest.blood_type_id
+                                                              newBloodRequest?.blood_type_id
                                                           )
                                                       )?.blood_type ||
                                                       "Not specified"
                                                     : "Not specified",
                                             no_of_units:
-                                                newBloodRequest.no_of_units.toString(),
+                                                newBloodRequest?.no_of_units.toString(),
                                             diagnosis:
-                                                newBloodRequest.diagnosis,
+                                                newBloodRequest?.diagnosis,
                                             hospital_name:
-                                                newBloodRequest.hospital_name,
+                                                newBloodRequest?.hospital_name,
                                             request_date: new Date(
                                                 newBloodRequest.date
                                             ).toLocaleDateString(),
@@ -667,6 +668,7 @@ export async function updateBloodRequestStatus(formData) {
                 controller: "blood_requests",
                 action: "UPDATE STATUS",
                 details: `Blood request status updated from "${currentStatus}" to "${status}" for ID#: ${
+                    updatedBloodRequest.blood_request_reference_id ||
                     updatedBloodRequest.id
                 }. ${remarks ? `Remarks: ${remarks}` : ""}`,
             });
@@ -680,7 +682,10 @@ export async function updateBloodRequestStatus(formData) {
                         userIds: user.id,
                         notificationData: {
                             subject: "Blood Request Status Update",
-                            message: `Your blood request (ID: ${bloodRequest.id}) status has been updated from "${currentStatus}" to "${status}".`,
+                            message: `Your blood request (ID: ${
+                                bloodRequest?.blood_request_reference_id ||
+                                bloodRequest?.id
+                            }) status has been updated from "${currentStatus}" to "${status}".`,
                             type: "BLOOD_REQUEST_APPROVAL",
                             reference_id: bloodRequest.id.toString(),
                             created_by: user.id,
@@ -729,7 +734,9 @@ export async function updateBloodRequestStatus(formData) {
                             templateData: {
                                 user_name: user.name,
                                 user_email: user.email,
-                                blood_request_id: bloodRequest.id.toString(),
+                                blood_request_id:
+                                    bloodRequest?.blood_request_reference_id ||
+                                    bloodRequest.id.toString(),
                                 blood_component:
                                     bloodRequest?.blood_component?.toUpperCase(),
                                 patient_name:
