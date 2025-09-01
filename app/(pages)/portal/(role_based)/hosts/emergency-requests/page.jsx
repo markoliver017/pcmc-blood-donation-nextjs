@@ -105,7 +105,6 @@ export default function EmergencyRequestPage() {
                     className="max-w-3xl max-h-[90vh] overflow-y-auto dark:text-white"
                     onInteractOutside={(event) => event.preventDefault()}
                 >
-                    <ToastContainer />
                     <DialogTitle className="text-xl font-bold">
                         New Blood Request
                     </DialogTitle>
@@ -124,7 +123,6 @@ export default function EmergencyRequestPage() {
                     className="max-w-3xl max-h-[90vh] overflow-y-auto dark:text-white"
                     onInteractOutside={(event) => event.preventDefault()}
                 >
-                    <ToastContainer />
                     <DialogTitle className="hidden"></DialogTitle>
                     <UpdateBloodRequestForm
                         bloodRequestId={bloodRequestId}

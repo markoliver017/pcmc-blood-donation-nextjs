@@ -46,6 +46,7 @@ import {
 } from "@components/ui/card";
 import React from "react";
 import { BiExport, BiTrash, BiUpload } from "react-icons/bi";
+import { useModalToastContainer } from "@lib/hooks/useModalToastContainer";
 
 // Disable SSR for PdfPreviewComponent
 const PdfPreviewComponent = dynamic(
@@ -116,6 +117,8 @@ function BloodRequestForm({ req, donors, bloodTypes, onSuccess }) {
     const queryClient = useQueryClient();
     const [isUploading, setIsUploading] = React.useState(false);
     const fileInputRef = useRef(null);
+
+    useModalToastContainer();
 
     const form = useForm({
         mode: "onChange",

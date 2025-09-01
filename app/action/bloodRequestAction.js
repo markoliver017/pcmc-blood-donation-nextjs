@@ -16,7 +16,7 @@ import { extractErrorMessage } from "@lib/utils/extractErrorMessage";
 import { formatSeqObj } from "@lib/utils/object.utils";
 import { bloodRequestSchema } from "@lib/zod/bloodRequestSchema";
 import { handleValidationError } from "@lib/utils/validationErrorHandler";
-import { getAgencyId } from "./hostEventAction";
+import { getAgencyId, getAgencyIdBySession } from "./hostEventAction";
 
 export async function fetchBloodRequests() {
     try {
@@ -256,17 +256,24 @@ export async function storeBloodRequest(formData) {
             ])
         );
 
+        formattedData.created_by = user.id;
+
+        const { success, message, agency_id } = await getAgencyIdBySession();
+
+        if (!success) {
+            return {
+                success: false,
+                message,
+            };
+        }
+
         // If user_id is provided, verify it belongs to the current agency
         if (data.user_id) {
-            const agency = await sequelize.models.Agency.findOne({
-                where: { head_id: user.id },
-            });
-
-            if (agency) {
+            if (agency_id) {
                 const donor = await sequelize.models.Donor.findOne({
                     where: {
                         user_id: data.user_id,
-                        agency_id: agency.id,
+                        agency_id,
                     },
                 });
 
@@ -679,7 +686,7 @@ export async function updateBloodRequestStatus(formData) {
                 // Send system notification to blood request user
                 try {
                     await sendNotificationAndEmail({
-                        userIds: user.id,
+                        userIds: bloodRequest?.created_by,
                         notificationData: {
                             subject: "Blood Request Status Update",
                             message: `Your blood request (ID: ${

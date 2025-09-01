@@ -40,6 +40,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { Eye, Plus } from "lucide-react";
 import { BiExport, BiTrash, BiUpload } from "react-icons/bi";
+import { useModalToastContainer } from "@lib/hooks/useModalToastContainer";
 const PdfPreviewComponent = dynamic(
     () => import("@components/reusable_components/PdfPreviewComponent"),
     { ssr: false }
@@ -54,6 +55,8 @@ export default function CreateBloodRequestForm({ agency_id, onSuccess }) {
     const queryClient = useQueryClient();
     const [isUploading, setIsUploading] = useState(false);
     const fileInputRef = useRef(null);
+
+    useModalToastContainer();
 
     const form = useForm({
         mode: "onChange",
@@ -124,6 +127,7 @@ export default function CreateBloodRequestForm({ agency_id, onSuccess }) {
             });
         },
         onError: (error) => {
+            console.log("error::::::::", error);
             if (error?.type === "validation" && error?.errorArr.length) {
                 toastError(error);
             } else if (
