@@ -346,6 +346,8 @@ export async function updateAnnouncement(id, formData) {
         console.log("updateAnnouncement formData received on server", formData);
         const parsed = updateAnnouncementSchema.safeParse(formData);
 
+        console.log("updateAnnouncement parse received on server", parsed);
+
         if (!parsed.success) {
             const fieldErrors = parsed.error.flatten().fieldErrors;
             return {

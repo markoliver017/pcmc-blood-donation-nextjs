@@ -34,6 +34,7 @@ export default function AdminEmergencyRequestsPage() {
             key: "selection",
         },
     ]);
+
     const [searchText, setSearchText] = useState("");
     const { data: response, isLoading } = useQuery({
         queryKey: ["admin-blood-requests"],
@@ -182,7 +183,7 @@ export default function AdminEmergencyRequestsPage() {
                         <option value="">All</option>
                         <option value="pending">Pending</option>
                         <option value="fulfilled">Fulfilled</option>
-                        <option value="expired">Expired</option>
+                        <option value="rejected">Rejected</option>
                         <option value="cancelled">Cancelled</option>
                     </select>
                 </div>

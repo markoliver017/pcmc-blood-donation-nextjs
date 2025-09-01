@@ -17,6 +17,7 @@ import { formatSeqObj } from "@lib/utils/object.utils";
 import { bloodRequestSchema } from "@lib/zod/bloodRequestSchema";
 import { handleValidationError } from "@lib/utils/validationErrorHandler";
 import { getAgencyId, getAgencyIdBySession } from "./hostEventAction";
+import { format } from "date-fns";
 
 export async function fetchBloodRequests() {
     try {
@@ -203,6 +204,16 @@ export async function fetchAllBloodRequests() {
                                 },
                             ],
                         },
+                    ],
+                },
+                {
+                    model: User,
+                    as: "creator",
+                    attributes: [
+                        "first_name",
+                        "middle_name",
+                        "last_name",
+                        "full_name",
                     ],
                 },
                 {
@@ -398,13 +409,15 @@ export async function storeBloodRequest(formData) {
                                                 : newBloodRequest?.patient_gender ||
                                                   "Not specified",
                                             patient_date_of_birth: donor
-                                                ? new Date(
-                                                      donor?.date_of_birth
-                                                  ).toLocaleDateString()
+                                                ? format(
+                                                      donor?.date_of_birth,
+                                                      "PPPP"
+                                                  )
                                                 : newBloodRequest?.patient_date_of_birth
-                                                ? new Date(
-                                                      newBloodRequest?.patient_date_of_birth
-                                                  ).toLocaleDateString()
+                                                ? format(
+                                                      newBloodRequest?.patient_date_of_birth,
+                                                      "PPPP"
+                                                  )
                                                 : "Not specified",
                                             blood_type:
                                                 newBloodRequest?.blood_type_id
@@ -421,9 +434,12 @@ export async function storeBloodRequest(formData) {
                                                 newBloodRequest?.diagnosis,
                                             hospital_name:
                                                 newBloodRequest?.hospital_name,
-                                            request_date: new Date(
-                                                newBloodRequest.date
-                                            ).toLocaleDateString(),
+                                            request_date: newBloodRequest?.date
+                                                ? format(
+                                                      newBloodRequest?.date,
+                                                      "PPPP"
+                                                  )
+                                                : "Not specified",
                                             requested_by:
                                                 user.name || user.email,
                                             system_name:
@@ -645,6 +661,26 @@ export async function updateBloodRequestStatus(formData) {
                             "first_name",
                             "last_name",
                             "full_name",
+                            "gender",
+                        ],
+                        include: [
+                            {
+                                model: sequelize.models.Donor,
+                                as: "donor",
+                                attributes: ["date_of_birth"],
+                            },
+                        ],
+                    },
+                    {
+                        model: User,
+                        as: "creator",
+                        attributes: [
+                            "id",
+                            "email",
+                            "first_name",
+                            "middle_name",
+                            "last_name",
+                            "full_name",
                         ],
                     },
                     {
@@ -736,28 +772,36 @@ export async function updateBloodRequestStatus(formData) {
 
                     await sendNotificationAndEmail({
                         emailData: {
-                            to: user.email,
+                            to: bloodRequest?.creator?.email,
                             templateCategory: "BLOOD_REQUEST_APPROVAL",
                             templateData: {
-                                user_name: user.name,
-                                user_email: user.email,
+                                user_name: bloodRequest?.creator?.full_name,
+                                user_email: bloodRequest?.creator?.email,
                                 blood_request_id:
                                     bloodRequest?.blood_request_reference_id ||
                                     bloodRequest.id.toString(),
                                 blood_component:
                                     bloodRequest?.blood_component?.toUpperCase(),
-                                patient_name:
-                                    bloodRequest.patient_name ||
-                                    "Not specified",
-                                patient_gender:
-                                    bloodRequest?.patient_gender?.toUpperCase() ||
-                                    "Not specified",
-                                patient_date_of_birth:
-                                    bloodRequest?.patient_date_of_birth
-                                        ? new Date(
-                                              bloodRequest.patient_date_of_birth
-                                          ).toLocaleDateString()
-                                        : "Not specified",
+                                patient_name: bloodRequest?.user
+                                    ? bloodRequest?.user?.full_name
+                                    : bloodRequest?.patient_name ||
+                                      "Not specified",
+                                patient_gender: bloodRequest?.user
+                                    ? bloodRequest?.user?.gender
+                                    : bloodRequest?.patient_gender ||
+                                      "Not specified",
+                                patient_date_of_birth: bloodRequest?.user
+                                    ? format(
+                                          bloodRequest?.user?.donor
+                                              ?.date_of_birth,
+                                          "PPPP"
+                                      )
+                                    : bloodRequest?.patient_date_of_birth
+                                    ? format(
+                                          bloodRequest?.patient_date_of_birth,
+                                          "PPPP"
+                                      )
+                                    : "Not specified",
                                 blood_type:
                                     bloodRequest.blood_type?.blood_type ||
                                     "Not specified",
@@ -765,9 +809,9 @@ export async function updateBloodRequestStatus(formData) {
                                     bloodRequest.no_of_units.toString(),
                                 diagnosis: bloodRequest.diagnosis,
                                 hospital_name: bloodRequest.hospital_name,
-                                request_date: new Date(
-                                    bloodRequest.date
-                                ).toLocaleDateString(),
+                                request_date: bloodRequest?.date
+                                    ? format(bloodRequest.date, "PPPP")
+                                    : "Not specified",
                                 request_status: status.toUpperCase(),
                                 status_update_date:
                                     new Date().toLocaleDateString(),

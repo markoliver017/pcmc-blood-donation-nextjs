@@ -104,6 +104,17 @@ export const getColumns = (updateRequestStatus, isApproving, onShowDetails) => {
             filterFn: "columnFilter",
         },
         {
+            accessorKey: "creator.full_name",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Requested By" />
+            ),
+            cell: ({ row }) => {
+                // Try to get agency name from donor->agency
+                return row.original.creator?.full_name;
+            },
+            filterFn: "columnFilter",
+        },
+        {
             accessorKey: "status",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Status" />

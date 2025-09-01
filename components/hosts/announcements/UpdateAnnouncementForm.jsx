@@ -14,7 +14,10 @@ import {
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
 import { Button } from "@components/ui/button";
-import { updateAnnouncementSchema } from "@lib/zod/announcementSchema";
+import {
+    updateAnnouncementSchema,
+    updateHostAnnouncementSchema,
+} from "@lib/zod/announcementSchema";
 import DisplayValidationErrors from "@components/form/DisplayValidationErrors";
 import notify from "@components/ui/notify";
 import LoadingModal from "@components/layout/LoadingModal";
@@ -88,6 +91,7 @@ function AnnouncementForm({ announcement, agency }) {
             body: announcement?.body || "",
             is_public: announcement?.is_public || false, // Keep existing value
             file_url: announcement?.file_url || null,
+            agency_id: announcement?.agency_id || null,
             file: null,
         },
     });
@@ -419,7 +423,7 @@ function AnnouncementForm({ announcement, agency }) {
                         />
                     </form>
                 </Form>
-                <FormLogger watch={watch} errors={errors} />
+                {/* <FormLogger watch={watch} errors={errors} /> */}
             </CardContent>
         </Card>
     );
