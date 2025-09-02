@@ -97,6 +97,7 @@ const Sidebar = ({ currentUser }) => {
                             height={50}
                             layout="intrinsic"
                             alt="Logo"
+                            unoptimized
                         />
 
                         {!isCollapsed && (
