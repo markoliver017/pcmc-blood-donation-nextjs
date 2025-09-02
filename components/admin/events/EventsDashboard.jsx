@@ -199,7 +199,7 @@ export default function EventsDashboard() {
             value: dashboardData?.approvedEventCount || 0,
             icon: Calendar,
             color: "bg-blue-500",
-            subtitle: "All blood donation events",
+            subtitle: "Approved blood donation events",
         },
         {
             title: "Active Events",
