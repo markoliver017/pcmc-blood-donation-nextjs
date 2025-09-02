@@ -97,7 +97,10 @@ const Sidebar = ({ currentUser }) => {
                             height={50}
                             layout="intrinsic"
                             alt="Logo"
-                            unoptimized
+                            unoptimized={
+                                process.env.NEXT_PUBLIC_NODE_ENV ===
+                                "production"
+                            }
                         />
 
                         {!isCollapsed && (

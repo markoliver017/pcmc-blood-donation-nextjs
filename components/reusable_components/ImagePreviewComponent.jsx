@@ -49,7 +49,9 @@ export default function ImagePreviewComponent({
                         width={1000}
                         height={1000}
                         className="object-cover rounded-md"
-                        unoptimized
+                        unoptimized={
+                            process.env.NEXT_PUBLIC_NODE_ENV === "production"
+                        }
                     />
                 </div>
             </DialogContent>
