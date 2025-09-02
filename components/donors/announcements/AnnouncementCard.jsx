@@ -72,6 +72,7 @@ export default function AnnouncementCard({ announcement, onView }) {
                             width={300}
                             height={200}
                             className="w-full h-32 object-cover rounded-md"
+                            unoptimized
                         />
                     </div>
                 )}

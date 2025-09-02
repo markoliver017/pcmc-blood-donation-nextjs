@@ -49,6 +49,7 @@ export default function ImagePreviewComponent({
                         width={1000}
                         height={1000}
                         className="object-cover rounded-md"
+                        unoptimized
                     />
                 </div>
             </DialogContent>

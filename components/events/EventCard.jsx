@@ -26,8 +26,8 @@ import CancelEventButton from "@components/donors/CancelEventButton";
 
 export default function EventCard({
     event,
-    onLoad = () => { },
-    onFinish = () => { },
+    onLoad = () => {},
+    onFinish = () => {},
     isRegistrationOpen = false,
     isAlreadyBooked = () => true,
     appointmentId = null,
@@ -94,6 +94,7 @@ export default function EventCard({
                                             style={{
                                                 objectFit: "contain",
                                             }}
+                                            unoptimized
                                         />
                                     </div>
                                     <div className="max-w-68">
@@ -105,7 +106,8 @@ export default function EventCard({
                                                 ({event?.requester?.email})
                                             </span>
                                         </div>
-                                        <span className="block text-lg text-slate-800 dark:text-slate-300 font-semibold">+63
+                                        <span className="block text-lg text-slate-800 dark:text-slate-300 font-semibold">
+                                            +63
                                             {event?.requester?.coordinator
                                                 ?.contact_number ||
                                                 event?.agency?.contact_number}
@@ -142,9 +144,9 @@ export default function EventCard({
                                     className={clsx(
                                         "font-semibold text-green-700 dark:text-green-600",
                                         isAlreadyBooked(sched.id) &&
-                                        "font-bold italic text-slate-400 dark:text-slate-400",
+                                            "font-bold italic text-slate-400 dark:text-slate-400",
                                         sched.status === "closed" &&
-                                        "font-medium italic text-red-400 dark:text-red-500"
+                                            "font-medium italic text-red-400 dark:text-red-500"
                                     )}
                                 >
                                     {/* <TableCell>{sched.id}</TableCell> */}
