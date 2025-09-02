@@ -363,7 +363,7 @@ export default function NotificationComponent() {
 
                     {/* Enhanced Footer */}
                     {notifications.length > 0 && (
-                        <div className="p-4 border-t border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-gray-50/30 to-gray-100/30 dark:from-gray-800/30 dark:to-gray-900/30">
+                        <div className="hidden p-4 border-t border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-gray-50/30 to-gray-100/30 dark:from-gray-800/30 dark:to-gray-900/30">
                             <Button
                                 variant="outline"
                                 size="sm"
