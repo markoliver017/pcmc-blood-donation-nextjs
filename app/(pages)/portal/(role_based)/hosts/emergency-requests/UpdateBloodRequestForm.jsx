@@ -47,6 +47,7 @@ import {
 import React from "react";
 import { BiExport, BiTrash, BiUpload } from "react-icons/bi";
 import { useModalToastContainer } from "@lib/hooks/useModalToastContainer";
+import { Badge } from "@components/ui/badge";
 
 // Disable SSR for PdfPreviewComponent
 const PdfPreviewComponent = dynamic(
@@ -248,14 +249,30 @@ function BloodRequestForm({ req, donors, bloodTypes, onSuccess }) {
         });
     };
 
+    const colors = {
+        pending:
+            "bg-slate-100 text-orange-800 dark:bg-slate-900 dark:text-orange-200",
+        fulfilled:
+            "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+        rejected: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+    };
+    const label = {
+        pending: "Pending",
+        fulfilled: "Approved",
+        rejected: "Rejected",
+    };
+
     return (
         <Card className=" shadow-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
             <CardHeader>
                 <CardTitle className="text-2xl">
                     Blood Request - {req?.blood_request_reference_id || req?.id}
                 </CardTitle>
-                <CardDescription>
-                    Update the blood request details.
+                <CardDescription className="flex justify-between">
+                    <span>Update the blood request details.</span>
+                    <Badge className={colors[req?.status]}>
+                        {label[req?.status] || "Unknown"}
+                    </Badge>
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -633,6 +650,7 @@ function BloodRequestForm({ req, donors, bloodTypes, onSuccess }) {
                                             type="file"
                                             className="hidden"
                                             accept="application/pdf"
+                                            disabled={req?.status !== "pending"}
                                             ref={fileInputRef}
                                             onChange={(e) => {
                                                 const file = e.target.files[0];

@@ -11,6 +11,7 @@ import {
 import { Button } from "@components/ui/button";
 import {
     CheckCircle2,
+    CircleCheck,
     Command,
     Eye,
     MoreHorizontal,
@@ -22,8 +23,12 @@ import moment from "moment";
 import EventRegistrationStatus from "@components/organizers/EventRegistrationStatus";
 import { GiClosedDoors, GiOpenBook } from "react-icons/gi";
 import { formatFormalName } from "@lib/utils/string.utils";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import {
+    ExclamationTriangleIcon,
+    QuestionMarkCircledIcon,
+} from "@radix-ui/react-icons";
 import { NotifyEventRegistration } from "@components/events/NotifyEventRegistration";
+import { FaExclamation } from "react-icons/fa";
 // import parse from "html-react-parser";
 
 export const eventColumns = (setIsLoading) => [
@@ -117,40 +122,40 @@ export const eventColumns = (setIsLoading) => [
         cell: ({ getValue }) => moment(getValue()).format("MMM DD, YYYY"),
         filterFn: "columnFilter",
     },
-    // {
-    //     accessorKey: "status",
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="Status" />
-    //     ),
-    //     filterFn: "columnFilter",
-    //     cell: ({ row }) => {
-    //         const data = row.original;
-    //         const status = data.status.toUpperCase();
-    //         if (status == "APPROVED") {
-    //             return (
-    //                 <div className="space-x-2 space-y-1">
-    //                     <div className="badge p-2 font-semibold text-xs badge-success">
-    //                         <CircleCheck className="h-4" />
-    //                         {status}
-    //                     </div>
-    //                 </div>
-    //             );
-    //         } else if (status == "FOR APPROVAL") {
-    //             return (
-    //                 <div className="badge p-2 font-semibold text-xs badge-warning">
-    //                     <QuestionMarkCircledIcon className="h-4" />
-    //                     {status}
-    //                 </div>
-    //             );
-    //         } else {
-    //             return (
-    //                 <div className="badge p-2 font-semibold text-xs badge-error">
-    //                     <FaExclamation className="h-3" /> {status}
-    //                 </div>
-    //             );
-    //         }
-    //     },
-    // },
+    {
+        accessorKey: "status",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Status" />
+        ),
+        filterFn: "columnFilter",
+        cell: ({ row }) => {
+            const data = row.original;
+            const status = data.status.toUpperCase();
+            if (status == "APPROVED") {
+                return (
+                    <div className="space-x-2 space-y-1">
+                        <div className="badge p-2 font-semibold text-xs badge-success">
+                            <CircleCheck className="h-4" />
+                            {status}
+                        </div>
+                    </div>
+                );
+            } else if (status == "FOR APPROVAL") {
+                return (
+                    <div className="badge p-2 font-semibold text-xs badge-warning">
+                        <QuestionMarkCircledIcon className="h-4" />
+                        {status}
+                    </div>
+                );
+            } else {
+                return (
+                    <div className="badge p-2 font-semibold text-xs badge-error">
+                        <FaExclamation className="h-3" /> {status}
+                    </div>
+                );
+            }
+        },
+    },
     {
         accessorKey: "registration_status",
         header: ({ column }) => (

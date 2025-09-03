@@ -113,13 +113,23 @@ const getColumns = (handleUpdate) => {
             cell: ({ row }) => {
                 const status = row.original.status;
                 const colors = {
-                    pending: "bg-orange-100 text-orange-800",
-                    fulfilled: "bg-green-100 text-green-800",
-                    expired: "bg-red-100 text-red-800",
+                    pending:
+                        "bg-slate-100 text-orange-800 dark:bg-slate-900 dark:text-orange-200",
+                    fulfilled:
+                        "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+                    rejected:
+                        "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+                };
+                const label = {
+                    pending: "Pending",
+                    fulfilled: "Approved",
+                    rejected: "Rejected",
                 };
                 return (
-                    <Badge className={colors[status]}>
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                    <Badge
+                        className={`${colors[status]} hover:bg-blue-200 dark:hover:bg-blue-600`}
+                    >
+                        {label[status] || "Unknown"}
                     </Badge>
                 );
             },

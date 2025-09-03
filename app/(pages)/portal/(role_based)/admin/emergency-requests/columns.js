@@ -16,15 +16,6 @@ import { Button } from "@components/ui/button";
 import { format } from "date-fns";
 import { Badge } from "@components/ui/badge";
 
-const colors = {
-    pending:
-        "bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-100",
-    fulfilled:
-        "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100",
-    rejected: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100",
-    cancelled: "bg-gray-200 text-gray-600 dark:bg-gray-900 dark:text-gray-100",
-};
-
 export const getColumns = (updateRequestStatus, isApproving, onShowDetails) => {
     return [
         {
@@ -121,15 +112,25 @@ export const getColumns = (updateRequestStatus, isApproving, onShowDetails) => {
             ),
             cell: ({ row }) => {
                 const status = row.original.status;
-
+                const colors = {
+                    pending:
+                        "bg-slate-100 text-orange-800 dark:bg-slate-900 dark:text-orange-200",
+                    fulfilled:
+                        "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+                    rejected:
+                        "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+                };
+                const label = {
+                    pending: "Pending",
+                    fulfilled: "Approved",
+                    rejected: "Rejected",
+                };
                 return (
                     <Badge
                         variant="outline"
-                        className={
-                            colors[status] || "bg-gray-200 text-gray-600"
-                        }
+                        className={`${colors[status]} hover:bg-blue-200 dark:hover:bg-blue-600`}
                     >
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                        {label[status] || "Unknown"}
                     </Badge>
                 );
             },

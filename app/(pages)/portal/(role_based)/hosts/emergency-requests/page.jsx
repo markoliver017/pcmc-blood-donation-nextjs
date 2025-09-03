@@ -72,7 +72,7 @@ export default function EmergencyRequestPage() {
                 <Card>
                     <CardHeader>
                         <h3 className="text-lg font-semibold">
-                            Fulfilled Requests
+                            Approved Requests
                         </h3>
                     </CardHeader>
                     <CardContent>

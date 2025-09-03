@@ -142,7 +142,7 @@ export default function AdminEmergencyRequestsPage() {
                 </Card>
                 <Card>
                     <CardHeader>
-                        <h3 className="md:text-lg font-semibold">Fulfilled</h3>
+                        <h3 className="md:text-lg font-semibold">Approved</h3>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-green-500">
@@ -176,13 +176,13 @@ export default function AdminEmergencyRequestsPage() {
                 <div className="flex flex-col">
                     <label className="text-xs font-semibold mb-1">Status</label>
                     <select
-                        className="border rounded-md px-2 py-1 dark:bg-neutral-800 dark:text-neutral-50"
+                        className="border rounded-md dark:bg-neutral-800 dark:text-neutral-50"
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
                     >
                         <option value="">All</option>
                         <option value="pending">Pending</option>
-                        <option value="fulfilled">Fulfilled</option>
+                        <option value="fulfilled">Approved</option>
                         <option value="rejected">Rejected</option>
                         <option value="cancelled">Cancelled</option>
                     </select>
