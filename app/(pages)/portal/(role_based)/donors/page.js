@@ -9,7 +9,7 @@ export default async function page() {
     if (!session) throw "You are not allowed to access this page.";
     const { user } = session;
     return (
-        <div className="p-5 overflow-scroll">
+        <div className="py-2 px-1 md:px-5 overflow-scroll">
             <div className="flex flex-wrap gap-2 justify-between items-center border-b border-gray-200 dark:border-gray-800">
                 <div className="font-bold">
                     <h1 className="text-base md:text-3xl flex-items-center">

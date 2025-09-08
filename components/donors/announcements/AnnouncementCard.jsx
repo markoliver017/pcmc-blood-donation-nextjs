@@ -72,7 +72,10 @@ export default function AnnouncementCard({ announcement, onView }) {
                             width={300}
                             height={200}
                             className="w-full h-32 object-cover rounded-md"
-                            unoptimized
+                            unoptimized={
+                                process.env.NEXT_PUBLIC_NODE_ENV ===
+                                "production"
+                            }
                         />
                     </div>
                 )}

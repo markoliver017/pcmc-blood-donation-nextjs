@@ -11,7 +11,7 @@ export default function WrapperHeadMain({
     allowBackButton = false,
 }) {
     return (
-        <div className="flex-none flex flex-wrap justify-between items-center p-4 shadow">
+        <div className="flex-none flex flex-wrap justify-between items-center p-1 md:p-4 shadow">
             <div className="flex">
                 {allowBackButton && (
                     <Link href="/portal/admin/agencies">

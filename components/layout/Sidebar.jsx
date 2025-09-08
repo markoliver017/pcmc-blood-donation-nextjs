@@ -68,7 +68,7 @@ const Sidebar = ({ currentUser }) => {
         <motion.aside
             initial={{ width: "290px" }}
             animate={{ width: isCollapsed ? "60px" : "290px" }}
-            className="w-64 flex-none h-screen overflow-y-auto bg-gradient-to-r from-gray-700 to-gray-800 text-white px-1 md:px-4 pt-5 pb-10 shadow-xl"
+            className="hidden md:block w-64 flex-none h-screen overflow-y-auto bg-gradient-to-r from-gray-700 to-gray-800 text-white px-1 md:px-4 pt-5 pb-10 shadow-xl"
         >
             <div className="flex flex-col h-full">
                 <div className="flex-1">

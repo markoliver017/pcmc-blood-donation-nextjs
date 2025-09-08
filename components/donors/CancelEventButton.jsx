@@ -1,7 +1,10 @@
 "use client";
 import { updateEventStatus } from "@/action/adminEventAction";
 import { updateAgencyStatus } from "@/action/agencyAction";
-import { bookDonorAppointment, cancelDonorAppointment } from "@/action/donorAppointmentAction";
+import {
+    bookDonorAppointment,
+    cancelDonorAppointment,
+} from "@/action/donorAppointmentAction";
 
 import { Form } from "@components/ui/form";
 import notify from "@components/ui/notify";
@@ -17,12 +20,12 @@ export default function CancelEventButton({
     event,
     schedule,
     appointmentId,
-    icon = <XIcon />,
+    icon = <XIcon className="w-4 h-4" />,
     label = "Cancel",
     className = "btn-error",
     formClassName = "",
-    onLoad = () => { },
-    onFinish = () => { },
+    onLoad = () => {},
+    onFinish = () => {},
 }) {
     const queryClient = useQueryClient();
 
@@ -43,14 +46,15 @@ export default function CancelEventButton({
             queryClient.invalidateQueries({ queryKey: ["donor-appointments"] });
             SweetAlert({
                 title: "Cancel Blood Donation Appointment",
-                text: `You have successfully cancelled an appointment for ${event?.title
-                    } on ${moment(schedule?.date).format(
-                        "MMM DD, YYYY"
-                    )} from ${moment(schedule?.time_start, "HH:mm:ss").format(
-                        "hh:mm A"
-                    )} to ${moment(schedule?.time_end, "HH:mm:ss").format(
-                        "hh:mm A"
-                    )}.`,
+                text: `You have successfully cancelled an appointment for ${
+                    event?.title
+                } on ${moment(schedule?.date).format(
+                    "MMM DD, YYYY"
+                )} from ${moment(schedule?.time_start, "HH:mm:ss").format(
+                    "hh:mm A"
+                )} to ${moment(schedule?.time_end, "HH:mm:ss").format(
+                    "hh:mm A"
+                )}.`,
 
                 icon: "info",
                 confirmButtonText: "Done",
@@ -109,7 +113,7 @@ export default function CancelEventButton({
                     type="submit"
                     disabled={isPending}
                     className={clsx(
-                        "btn hover:bg-neutral-800 hover:text-green-300",
+                        "btn btn-error btn-sm md:btn-md hover:bg-neutral-800 hover:text-green-300",
                         className
                     )}
                 >
@@ -121,7 +125,7 @@ export default function CancelEventButton({
                     ) : (
                         <>
                             {icon}
-                            <span className="hidden md:inline-block">{label}</span>
+                            <span>{label}</span>
                         </>
                     )}
                 </button>

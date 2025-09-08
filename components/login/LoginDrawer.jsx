@@ -19,6 +19,18 @@ import { useRouter } from "next/navigation";
 export default function LoginDrawer() {
     const drawerRef = useRef();
     const router = useRouter();
+    const handleSignInClick = () => {
+        if (
+            typeof window !== "undefined" &&
+            window.matchMedia("(max-width: 767px)").matches
+        ) {
+            // Mobile: go to dedicated login page
+            router.push("/login");
+        } else {
+            // Desktop/tablet: open the drawer
+            drawerRef.current?.open();
+        }
+    };
     return (
         <div className="flex gap-2 justify-end sm:w-max">
             <button
@@ -31,7 +43,7 @@ export default function LoginDrawer() {
                 </div>
             </button>
             <button
-                onClick={() => drawerRef.current.open()}
+                onClick={handleSignInClick}
                 className="bg-gradient-to-b from-green-700 to-green-500 text-white font-bold px-4 py-2 rounded-md shadow-[7px_10px_2px_0px_rgba(0,_0,_0,_0.1)] hover:from-pink-500 hover:to-purple-400 hover:ring transition duration-300"
             >
                 <div className="flex justify-center items-center gap-2">
@@ -40,10 +52,18 @@ export default function LoginDrawer() {
                 </div>
             </button>
 
-            <Drawer ref={drawerRef} direction="top">
-                <DrawerContent className="dark:bg-neutral-900 dark:text-slate-100">
-                    <DialogTitle></DialogTitle>
-                    <div className="relative  min-h-screen p w-full flex items-center justify-center overflow-hidden py-8 px-2 sm:px-8">
+            <Drawer
+                ref={drawerRef}
+                direction="top"
+                dismissible={false}
+                modal={false}
+            >
+                <DrawerContent className="dark:bg-neutral-900 dark:text-slate-100 min-h-screen overflow-y-auto">
+                    <DrawerTitle></DrawerTitle>
+                    <div
+                        className="relative w-full flex items-center justify-center py-8 px-2 sm:px-8"
+                        // data-vaul-no-drag
+                    >
                         {/* Background Image */}
                         <Image
                             src="/blood-bg.jpg"
@@ -53,15 +73,19 @@ export default function LoginDrawer() {
                             quality={100}
                             priority
                         />
+
                         {/* Overlay for readability */}
                         <div
                             className="absolute inset-0 bg-black/30 dark:bg-black/60 backdrop-blur-sm z-10"
                             aria-hidden="true"
                         />
                         {/* Logo and Heading */}
-                        <div className="w-full max-h-screen overflow-y-auto md:w-9/10 lg:w-6/10 xl:w-5/12 2xl:w-4/12">
+                        <div className="">
                             {/* Login Form */}
-                            <div className="relative z-20 w-full mx-auto bg-white/90 dark:bg-slate-900/90 rounded-2xl shadow-2xl p-6 flex flex-col items-center gap-6 border border-blue-100 dark:border-slate-800">
+                            <div
+                                className="relative z-20 w-full mx-auto bg-white/90 dark:bg-slate-900/90 rounded-2xl shadow-2xl p-6 flex flex-col items-center gap-6 border border-blue-100 dark:border-slate-800"
+                                // data-vaul-no-drag
+                            >
                                 <div className="flex flex-col items-center gap-2">
                                     <Image
                                         src="/pcmc_logo.png"

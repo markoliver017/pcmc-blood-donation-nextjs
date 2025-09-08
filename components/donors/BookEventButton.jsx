@@ -27,7 +27,7 @@ export default function BookEventButton({
     event,
     schedule,
     isDisabled = false,
-    icon = <CalendarPlus />,
+    icon = <CalendarPlus className="w-4 h-4" />,
     label = "Book",
     className = "btn-neutral",
     formClassName = "",
@@ -159,7 +159,7 @@ export default function BookEventButton({
                     type="submit"
                     disabled={isPending || isDisabled}
                     className={clsx(
-                        "btn btn-neutral hover:bg-neutral-800 hover:text-green-300",
+                        "btn btn-neutral btn-sm md:btn-md hover:bg-neutral-800 hover:text-green-300",
                         className
                     )}
                 >
@@ -171,9 +171,7 @@ export default function BookEventButton({
                     ) : (
                         <>
                             {icon}
-                            <span className="hidden md:inline-block">
-                                {label}
-                            </span>
+                            <span>{label}</span>
                         </>
                     )}
                 </button>

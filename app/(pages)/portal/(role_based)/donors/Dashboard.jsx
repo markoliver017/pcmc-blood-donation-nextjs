@@ -107,9 +107,9 @@ export default function Dashboard() {
 
     let appointmentCard = (
         <Card className="flex-1">
-            <CardHeader className="flex flex-col items-center gap-2">
-                <CardTitle className="text-2xl flex items-center gap-2">
-                    <CalendarArrowUp className="w-6 h-6" />
+            <CardHeader className="flex flex-col pb-1 items-center gap-2 ">
+                <CardTitle className="text-lg md:text-2xl flex items-center gap-2">
+                    <CalendarArrowUp className="w-4 h-4 md:w-6 md:h-6" />
                     Next Eligible Donation
                     <Popover open={isInfoOpen} onOpenChange={setIsInfoOpen}>
                         <PopoverTrigger asChild>
@@ -155,14 +155,14 @@ export default function Dashboard() {
                 <CardDescription>Days to Go</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col items-center gap-4">
-                <h2 className="text-4xl font-bold text-blue-500 text-shadow-lg/25 text-shadow-blue-400">
+                <h2 className="w-4 h-4 md:w-6 md:h-6 font-bold text-blue-500 text-shadow-lg/25 text-shadow-blue-400">
                     {dashboardIsLoading ? (
                         <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
                     ) : (
                         <span>{dashboard?.days_remaining}</span>
                     )}
                 </h2>
-                <span className="p-2 italic text-link font-semibold text-lg text-blue-700 dark:text-blue-300 ">
+                <span className="p-2 italic text-link font-semibold md:text-lg text-blue-700 dark:text-blue-300 ">
                     {dashboardIsLoading ? (
                         <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
                     ) : (
@@ -281,9 +281,9 @@ export default function Dashboard() {
         } else {
             appointmentCard = (
                 <Card className="flex-1">
-                    <CardHeader className="flex flex-col items-center gap-2">
-                        <CardTitle className="text-2xl flex items-center gap-2">
-                            <Calendar className="w-6 h-6" />
+                    <CardHeader className="flex flex-col pb-1 items-center gap-2">
+                        <CardTitle className="text-lg md:text-2xl flex items-center gap-2">
+                            <Calendar className="w-4 h-4 md:w-6 md:h-6" />
                             Next Appointment
                         </CardTitle>
                         <CardDescription>Status</CardDescription>
@@ -301,7 +301,7 @@ export default function Dashboard() {
                                 </span>
                             )}
                         </h2>
-                        <span className="p-2 italic text-link font-semibold text-lg">
+                        <span className="p-2 italic text-link font-semibold text-sm md:text-lg">
                             {dashboardIsLoading ? (
                                 <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
                             ) : (
@@ -326,11 +326,11 @@ export default function Dashboard() {
     return (
         <div className="space-y-6">
             {/* Metrics */}
-            <div className="flex flex-wrap gap-6">
+            <div className="flex flex-col md:flex-row flex-wrap gap-6">
                 <Card className="flex-1">
-                    <CardHeader className="flex flex-col items-center gap-2">
-                        <CardTitle className="text-2xl flex items-center gap-2">
-                            <MdBloodtype className="w-6 h-6" />
+                    <CardHeader className="flex flex-col pb-1 items-center gap-2">
+                        <CardTitle className="text-lg md:text-2xl flex items-center gap-2">
+                            <MdBloodtype className="w-4 h-4 md:w-6 md:h-6" />
                             Blood Type
                         </CardTitle>
                         <CardDescription>
@@ -338,7 +338,7 @@ export default function Dashboard() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="flex flex-col items-center gap-4">
-                        <h2 className="text-4xl font-bold text-red-500 text-shadow-lg/25 text-shadow-red-400">
+                        <h2 className="text-lg md:text-4xl font-bold text-red-500 text-shadow-lg/25 text-shadow-red-400">
                             {dashboardIsLoading ? (
                                 <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
                             ) : (
@@ -350,12 +350,12 @@ export default function Dashboard() {
                         {dashboardIsLoading ? (
                             <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
                         ) : dashboard?.is_bloodtype_verified ? (
-                            <div className="badge badge-success px-2 py-5">
+                            <div className="badge badge-success px-2 py-2 md:py-5">
                                 <CheckCircle />
                                 Verified
                             </div>
                         ) : (
-                            <div className="badge badge-warning px-2 py-5">
+                            <div className="badge badge-warning px-2 py-2 md:py-5">
                                 <QuestionMarkCircledIcon /> Not Verified
                             </div>
                         )}
@@ -369,9 +369,9 @@ export default function Dashboard() {
                 </Card>
 
                 <Card className="flex-1">
-                    <CardHeader className="flex flex-col items-center gap-2">
-                        <CardTitle className="text-2xl flex items-center gap-2">
-                            <CalendarCheck2 className="w-6 h-6" />
+                    <CardHeader className="flex flex-col items-center gap-2 pb-1">
+                        <CardTitle className="text-lg md:text-2xl flex items-center gap-2">
+                            <CalendarCheck2 className="w-4 h-4 md:w-6 md:h-6" />
                             Successful Donations
                         </CardTitle>
                         <CardDescription>
@@ -379,7 +379,7 @@ export default function Dashboard() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="flex flex-col items-center gap-4">
-                        <h2 className="text-4xl font-bold text-green-500 text-shadow-lg/25 text-shadow-green-400">
+                        <h2 className="text-2xl md:text-4xl font-bold text-green-500 text-shadow-lg/25 text-shadow-green-400">
                             {dashboardIsLoading ? (
                                 <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
                             ) : (
@@ -387,7 +387,7 @@ export default function Dashboard() {
                             )}
                         </h2>
                         <Link
-                            className="btn btn-primary btn-outline"
+                            className="btn btn-xs md:btn-md px-4 btn-primary btn-outline"
                             href="/portal/donors/appointments"
                         >
                             Details
@@ -402,7 +402,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Announcements */}
                 <div className="lg:col-span-2 space-y-5">
-                    <div className="max-h-screen overflow-y-auto">
+                    <div>
                         <AnnouncementsFeed
                             onViewAnnouncement={handleViewAnnouncement}
                         />

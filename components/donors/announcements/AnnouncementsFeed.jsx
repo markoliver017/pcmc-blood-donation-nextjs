@@ -24,7 +24,7 @@ export default function AnnouncementsFeed({ onViewAnnouncement }) {
         return (
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-xl flex items-center gap-2">
+                    <CardTitle className="text-xl text-blue-500 flex items-center gap-2">
                         <Bell className="w-5 h-5" />
                         Recent Announcements
                     </CardTitle>
@@ -42,7 +42,7 @@ export default function AnnouncementsFeed({ onViewAnnouncement }) {
         return (
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-xl flex items-center gap-2">
+                    <CardTitle className="text-xl text-blue-500 flex items-center gap-2">
                         <Bell className="w-5 h-5" />
                         Recent Announcements
                     </CardTitle>
@@ -62,7 +62,7 @@ export default function AnnouncementsFeed({ onViewAnnouncement }) {
         <Card>
             <CardHeader>
                 <div className="flex items-center justify-between">
-                    <CardTitle className="text-xl flex items-center gap-2">
+                    <CardTitle className="text-xl text-orange-300 md:text-orange-500 flex items-center gap-2">
                         <Bell className="w-5 h-5" />
                         Recent Announcements
                     </CardTitle>

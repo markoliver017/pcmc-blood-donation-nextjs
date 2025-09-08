@@ -12,8 +12,34 @@ import {
 import { Button } from "@components/ui/button";
 import { Command, Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
+import { Checkbox } from "@components/ui/checkbox";
 
 export const adminCoordinatorColumns = [
+    {
+        id: "select",
+        header: ({ table }) => (
+            <Checkbox
+                checked={
+                    table.getIsAllPageRowsSelected() ||
+                    (table.getIsSomePageRowsSelected() && "indeterminate")
+                }
+                onCheckedChange={(value) =>
+                    table.toggleAllPageRowsSelected(!!value)
+                }
+                aria-label="Select all"
+                className="h-4 w-4 my-5 mr-2"
+            />
+        ),
+        cell: ({ row }) => (
+            <Checkbox
+                checked={row.getIsSelected()}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
+                aria-label="Select row"
+            />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+    },
     {
         accessorKey: "id",
         header: ({ column }) => (
@@ -50,7 +76,7 @@ export const adminCoordinatorColumns = [
     {
         accessorKey: "agency.name",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Display Name" />
+            <DataTableColumnHeader column={column} title="Agency Name" />
         ),
         filterFn: "columnFilter",
     },

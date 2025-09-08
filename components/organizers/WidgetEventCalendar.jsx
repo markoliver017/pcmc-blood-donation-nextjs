@@ -28,15 +28,13 @@ export default function WidgetEventCalendar() {
     if (isLoading || agencyIdIsLoading || session.status === "loading")
         return <Skeleton_line />;
 
-    const currentRole = session?.data?.user?.role_name;
-
     return (
         <Card>
             <CardHeader className="hidden">
                 <CardTitle></CardTitle>
             </CardHeader>
-            <CardContent>
-                <div className="h-full">
+            <CardContent className="overflow-x-scroll p-2">
+                <div className="min-w-[550px]">
                     <FullCalendar
                         plugins={[dayGridPlugin, timeGridPlugin]}
                         initialView="dayGridMonth"
@@ -114,7 +112,7 @@ export default function WidgetEventCalendar() {
                         }
                         height="100%"
                         contentHeight="auto"
-                        // aspectRatio={3} //Sets the aspect ratio of the calendar. A higher value will make the calendar wider, while a lower value will make it taller.
+                        aspectRatio={2} //Sets the aspect ratio of the calendar. A higher value will make the calendar wider, while a lower value will make it taller.
                     />
                 </div>
             </CardContent>

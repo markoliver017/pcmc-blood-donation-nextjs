@@ -20,12 +20,14 @@ import {
 } from "@components/ui/table";
 import { DataTablePagination } from "@components/reusable_components/DataTablePagination";
 import { DataTableViewOptions } from "@components/reusable_components/DataTableViewOptions";
-import { Filter, User, UserCog2 } from "lucide-react";
+import { Building2, Filter, Send, User, UserCog2 } from "lucide-react";
 import MultiSelect from "@components/reusable_components/MultiSelect";
 
 import Skeleton from "@components/ui/skeleton";
+import { toast } from "react-toastify";
+import { GrStatusGood } from "react-icons/gr";
 
-export function DataTable({ columns, data, isLoading }) {
+export function DataTable({ columns, data, isLoading, agencyOptions }) {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [globalFilter, setGlobalFilter] = useState([]);
@@ -72,6 +74,36 @@ export function DataTable({ columns, data, isLoading }) {
         return selectedRows.map((row) => row.original);
     };
 
+    const handleSelectedEmail = () => {
+        const selectedRows = getSelectedRows();
+        const emails = selectedRows
+            .map((row) => row?.user?.email)
+            .filter(Boolean);
+
+        if (emails.length > 0) {
+            const subject = "Agency Coordinators Notification";
+            const body = `Good day,
+                    ${selectedRows
+                        .map((row) => row?.user?.full_name)
+                        .join(", ")}
+                    \n\n
+                    `;
+
+            const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(
+                emails.join(",")
+            )}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+                body
+            )}`;
+
+            window.open(gmailUrl, "_blank"); // open Gmail compose in new tab
+        } else {
+            toast.error("No participants selected", {
+                containerId: "main",
+                position: "bottom-right",
+            });
+        }
+    };
+
     function getVisibleKeys() {
         return columns
             .filter((col) => {
@@ -116,13 +148,19 @@ export function DataTable({ columns, data, isLoading }) {
             ) : (
                 <>
                     <div className="flex items-center py-2 space-x-2">
+                        <button
+                            className="btn flex-none w-full md:w-auto rounded-full"
+                            onClick={handleSelectedEmail}
+                        >
+                            <Send className="w-4" /> Compose Email
+                        </button>
                         <input
                             placeholder="Search all .."
                             // value={{globalFilter}}
                             onChange={(e) =>
                                 table.setGlobalFilter(e.target.value)
                             }
-                            className="p-2 input-sm flex-none bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
+                            className="flex-1 p-2 input-sm  bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
                         />
 
                         <div className="flex-1 flex justify-end pr-2">
@@ -130,6 +168,76 @@ export function DataTable({ columns, data, isLoading }) {
                                 <label className="dark:text-slate-400 flex items-center space-x-1">
                                     <Filter className="h-4 w-4" />
                                 </label>
+                                <MultiSelect
+                                    options={
+                                        ["activated", "rejected"].map(
+                                            (type) => ({
+                                                label:
+                                                    type
+                                                        .charAt(0)
+                                                        .toUpperCase() +
+                                                    type.slice(1),
+                                                value: type,
+                                                number: data.filter(
+                                                    (row) => row.status == type
+                                                ).length,
+                                            })
+                                        ) || []
+                                    }
+                                    onValueChange={(selectedOptions) => {
+                                        table
+                                            .getColumn("status")
+                                            ?.setFilterValue(selectedOptions);
+                                    }}
+                                    value={
+                                        table
+                                            .getColumn("status")
+                                            ?.getFilterValue() ?? []
+                                    }
+                                    placeholder={
+                                        <>
+                                            {
+                                                <GrStatusGood className="h-3 w-3" />
+                                            }{" "}
+                                            <span>Status</span>
+                                        </>
+                                    }
+                                    className="text-slate-700 bg-slate-100 hover:bg-white flex-1"
+                                    animation={2}
+                                    maxCount={1}
+                                />
+                                <MultiSelect
+                                    options={
+                                        agencyOptions.map((agency) => ({
+                                            label: agency.name,
+                                            value: agency.name,
+                                            number: data.filter(
+                                                (row) =>
+                                                    row.agency.name ==
+                                                    agency.name
+                                            ).length,
+                                        })) || []
+                                    }
+                                    onValueChange={(selectedOptions) => {
+                                        table
+                                            .getColumn("agency_name")
+                                            ?.setFilterValue(selectedOptions);
+                                    }}
+                                    value={
+                                        table
+                                            .getColumn("agency_name")
+                                            ?.getFilterValue() ?? []
+                                    }
+                                    placeholder={
+                                        <>
+                                            {<Building2 className="h-3 w-3" />}{" "}
+                                            <span>Agency</span>
+                                        </>
+                                    }
+                                    className="text-slate-700 bg-slate-100 hover:bg-white flex-1"
+                                    animation={2}
+                                    maxCount={1}
+                                />
 
                                 <DataTableViewOptions table={table} />
                             </div>

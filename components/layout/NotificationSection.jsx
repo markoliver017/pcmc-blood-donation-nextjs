@@ -38,7 +38,7 @@ export default function NotificationSection({
                 className="flex items-center justify-between p-3 gap-5 cursor-pointer hover:bg-gray-50/80 dark:hover:bg-gray-800/80 rounded-lg transition-all duration-200 group border border-transparent hover:border-gray-200 dark:hover:border-gray-700"
                 onClick={() => setExpanded(!expanded)}
             >
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap md:flex-nowrap items-center gap-3">
                     <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white text-sm font-bold">
                         {iconMap[config.icon]}
                     </div>

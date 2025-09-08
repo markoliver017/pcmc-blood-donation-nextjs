@@ -148,6 +148,7 @@ export default function UserChangePassword({ userQuery }) {
                 onSubmit={handleSubmit(onSubmit)}
                 className="space-y-2 px-2 md:px-5 py-5 shadow border rounded-2xl"
             >
+                <p className="text-xl font-bold">Account Credentials</p>
                 <FormField
                     control={form.control}
                     name="email"

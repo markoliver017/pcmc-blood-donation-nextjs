@@ -117,7 +117,7 @@ export default function NotificationItem({
             onClick={handleAction}
         >
             <CardContent className="p-4">
-                <div className="flex items-start gap-3">
+                <div className="flex flex-wrap items-start gap-3">
                     {/* Enhanced Icon */}
                     <div
                         className={`p-2.5 rounded-xl transition-all duration-200 group-hover:scale-110 ${
@@ -176,7 +176,7 @@ export default function NotificationItem({
                                 >
                                     {notification.subject}
                                 </h4>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                     {notification.message}
                                 </p>
                                 <div className="flex flex-wrap items-center justify-between gap-2 mt-3">

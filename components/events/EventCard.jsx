@@ -65,7 +65,7 @@ export default function EventCard({
                     <div>
                         <CustomAvatar
                             avatar={event?.file_url || "/logo-1.jpeg"}
-                            className="flex-none w-[150px] h-[150px] "
+                            className="flex-none w-[100px] h-[100px] md:w-[150px] md:h-[150px] "
                         />
                     </div>
                     <div className="md:flex-1 flex flex-col gap-2">
@@ -82,8 +82,8 @@ export default function EventCard({
                         <div>
                             <div>
                                 <label className="text-xs">Organizer:</label>
-                                <div className="flex flex-wrap items-center justify-center md:justify-start  gap-2 md:gap-5 py-2">
-                                    <div className="relative w-12 h-12 border rounded-full">
+                                <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 md:gap-5 py-2">
+                                    <div className="relative w-12 h-12">
                                         <Image
                                             src={
                                                 event?.requester?.image ||
@@ -91,21 +91,25 @@ export default function EventCard({
                                             }
                                             alt="Avatar"
                                             fill
+                                            className="rounded-full border"
                                             style={{
                                                 objectFit: "contain",
                                             }}
-                                            unoptimized
+                                            unoptimized={
+                                                process.env
+                                                    .NEXT_PUBLIC_NODE_ENV ===
+                                                "production"
+                                            }
                                         />
                                     </div>
-                                    <div className="max-w-68">
-                                        <div className="flex-items-center flex-wrap">
-                                            <span className="text-lg text-slate-800 dark:text-slate-300 font-semibold">
-                                                {event?.requester?.name}
-                                            </span>
-                                            <span className="text-blue-800 dark:text-blue-300 font-semibold">
-                                                ({event?.requester?.email})
-                                            </span>
+                                    <div>
+                                        <div className="text-lg text-slate-800 dark:text-slate-300 font-semibold">
+                                            {event?.requester?.name}
                                         </div>
+                                        <div className="text-blue-800 dark:text-blue-300 font-semibold">
+                                            ({event?.requester?.email})
+                                        </div>
+
                                         <span className="block text-lg text-slate-800 dark:text-slate-300 font-semibold">
                                             +63
                                             {event?.requester?.coordinator
@@ -119,103 +123,208 @@ export default function EventCard({
                     </div>
                 </div>
                 <div className="py-5">
-                    <h2 className="text-blue-600 font-semibold text-xl">
+                    <h2 className="text-blue-600 font-semibold md:text-xl">
                         Time Schedule(s)
                     </h2>
-                    <Table>
-                        <TableCaption>Available time schedules.</TableCaption>
-                        <TableHeader>
-                            <TableRow>
-                                {/* <TableHead>ID</TableHead> */}
-                                <TableHead>Time</TableHead>
-                                {isRegistrationOpen && (
-                                    <>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead>Participants</TableHead>
-                                        <TableHead>Action</TableHead>
-                                    </>
-                                )}
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {event?.time_schedules.map((sched) => (
-                                <TableRow
-                                    key={sched.id}
-                                    className={clsx(
-                                        "font-semibold text-green-700 dark:text-green-600",
-                                        isAlreadyBooked(sched.id) &&
-                                            "font-bold italic text-slate-400 dark:text-slate-400",
-                                        sched.status === "closed" &&
-                                            "font-medium italic text-red-400 dark:text-red-500"
-                                    )}
-                                >
-                                    {/* <TableCell>{sched.id}</TableCell> */}
-                                    <TableCell>
-                                        <span>
-                                            {moment(
-                                                sched.time_start,
-                                                "HH:mm"
-                                            ).format("hh:mm A")}
-                                        </span>
-                                        {" - "}
-                                        <span>
-                                            {moment(
-                                                sched.time_end,
-                                                "HH:mm"
-                                            ).format("hh:mm A")}
-                                        </span>
-                                    </TableCell>
+                    {/* Desktop/Tablet table */}
+                    <div className="hidden md:block overflow-x-auto">
+                        <Table className="min-w-[500px]">
+                            <TableCaption>
+                                Available time schedules.
+                            </TableCaption>
+                            <TableHeader>
+                                <TableRow>
+                                    {/* <TableHead>ID</TableHead> */}
+
                                     {isRegistrationOpen && (
                                         <>
-                                            <TableCell>
-                                                <span>
-                                                    {sched?.status.toUpperCase()}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell>
-                                                <span>
-                                                    {sched.donors.length}
-                                                </span>
-                                                {sched?.has_limit && (
-                                                    <span>
-                                                        /{sched?.max_limit}
-                                                    </span>
-                                                )}
-                                            </TableCell>
-                                            <TableCell className="flex-items-center flex-wrap">
-                                                <BookEventButton
-                                                    event={event}
-                                                    schedule={sched}
-                                                    isDisabled={
-                                                        isAlreadyBooked(
-                                                            sched.id
-                                                        ) ||
-                                                        sched.status == "closed"
-                                                    }
-                                                    onLoad={onLoad}
-                                                    onFinish={onFinish}
-                                                />
-                                                {isCancellable &&
-                                                    isAlreadyBooked(
-                                                        sched.id
-                                                    ) && (
-                                                        <CancelEventButton
-                                                            event={event}
-                                                            schedule={sched}
-                                                            appointmentId={
-                                                                appointmentId
-                                                            }
-                                                            onLoad={onLoad}
-                                                            onFinish={onFinish}
-                                                        />
-                                                    )}
-                                            </TableCell>
+                                            <TableHead>Time</TableHead>
+                                            <TableHead>Status</TableHead>
+                                            <TableHead>Participants</TableHead>
+                                            <TableHead>Action</TableHead>
                                         </>
                                     )}
                                 </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {event?.time_schedules.map((sched) => (
+                                    <TableRow
+                                        key={sched.id}
+                                        className={clsx(
+                                            "font-semibold text-green-700 dark:text-green-600",
+                                            isAlreadyBooked(sched.id) &&
+                                                "font-bold italic text-slate-400 dark:text-slate-400",
+                                            sched.status === "closed" &&
+                                                "font-medium italic text-red-400 dark:text-red-500"
+                                        )}
+                                    >
+                                        {/* <TableCell>{sched.id}</TableCell> */}
+                                        <TableCell className="whitespace-normal break-words">
+                                            <span>
+                                                {moment(
+                                                    sched.time_start,
+                                                    "HH:mm"
+                                                ).format("hh:mm A")}
+                                            </span>
+                                            {" - "}
+                                            <span>
+                                                {moment(
+                                                    sched.time_end,
+                                                    "HH:mm"
+                                                ).format("hh:mm A")}
+                                            </span>
+                                        </TableCell>
+                                        {isRegistrationOpen && (
+                                            <>
+                                                <TableCell className="whitespace-normal break-words">
+                                                    <span>
+                                                        {sched?.status.toUpperCase()}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell className="whitespace-normal break-words">
+                                                    <span>
+                                                        {sched.donors.length}
+                                                    </span>
+                                                    {sched?.has_limit && (
+                                                        <span>
+                                                            /{sched?.max_limit}
+                                                        </span>
+                                                    )}
+                                                </TableCell>
+                                                <TableCell className="flex items-center flex-wrap gap-2">
+                                                    <BookEventButton
+                                                        event={event}
+                                                        schedule={sched}
+                                                        isDisabled={
+                                                            isAlreadyBooked(
+                                                                sched.id
+                                                            ) ||
+                                                            sched.status ==
+                                                                "closed"
+                                                        }
+                                                        onLoad={onLoad}
+                                                        onFinish={onFinish}
+                                                    />
+                                                    {isCancellable &&
+                                                        isAlreadyBooked(
+                                                            sched.id
+                                                        ) && (
+                                                            <CancelEventButton
+                                                                event={event}
+                                                                schedule={sched}
+                                                                appointmentId={
+                                                                    appointmentId
+                                                                }
+                                                                onLoad={onLoad}
+                                                                onFinish={
+                                                                    onFinish
+                                                                }
+                                                            />
+                                                        )}
+                                                </TableCell>
+                                            </>
+                                        )}
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                    {/* Mobile stacked list */}
+                    <div className="md:hidden">
+                        <div className="space-y-3">
+                            {event?.time_schedules.map((sched) => (
+                                <div
+                                    key={sched.id}
+                                    className={clsx(
+                                        "rounded-lg border p-3 bg-white dark:bg-slate-900",
+                                        "text-green-700 dark:text-green-500",
+                                        isAlreadyBooked(sched.id) &&
+                                            "italic text-slate-500 dark:text-slate-400",
+                                        sched.status === "closed" &&
+                                            "italic text-red-500 dark:text-red-400"
+                                    )}
+                                >
+                                    <div className="flex flex-col gap-1 text-sm">
+                                        <div className="flex justify-between">
+                                            <span className="font-medium text-slate-600 dark:text-slate-300">
+                                                Time
+                                            </span>
+                                            <span className="font-semibold">
+                                                {moment(
+                                                    sched.time_start,
+                                                    "HH:mm"
+                                                ).format("hh:mm A")}{" "}
+                                                -{" "}
+                                                {moment(
+                                                    sched.time_end,
+                                                    "HH:mm"
+                                                ).format("hh:mm A")}
+                                            </span>
+                                        </div>
+                                        {isRegistrationOpen && (
+                                            <>
+                                                <div className="flex justify-between">
+                                                    <span className="font-medium text-slate-600 dark:text-slate-300">
+                                                        Status
+                                                    </span>
+                                                    <span className="font-semibold">
+                                                        {sched?.status.toUpperCase()}
+                                                    </span>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                    <span className="font-medium text-slate-600 dark:text-slate-300">
+                                                        Participants
+                                                    </span>
+                                                    <span className="font-semibold">
+                                                        {sched.donors.length}
+                                                        {sched?.has_limit && (
+                                                            <>
+                                                                {"/"}
+                                                                {
+                                                                    sched?.max_limit
+                                                                }
+                                                            </>
+                                                        )}
+                                                    </span>
+                                                </div>
+                                                <div className="mt-2 flex flex-wrap gap-2">
+                                                    <BookEventButton
+                                                        event={event}
+                                                        schedule={sched}
+                                                        isDisabled={
+                                                            isAlreadyBooked(
+                                                                sched.id
+                                                            ) ||
+                                                            sched.status ===
+                                                                "closed"
+                                                        }
+                                                        onLoad={onLoad}
+                                                        onFinish={onFinish}
+                                                    />
+                                                    {isCancellable &&
+                                                        isAlreadyBooked(
+                                                            sched.id
+                                                        ) && (
+                                                            <CancelEventButton
+                                                                event={event}
+                                                                schedule={sched}
+                                                                appointmentId={
+                                                                    appointmentId
+                                                                }
+                                                                onLoad={onLoad}
+                                                                onFinish={
+                                                                    onFinish
+                                                                }
+                                                            />
+                                                        )}
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
                             ))}
-                        </TableBody>
-                    </Table>
+                        </div>
+                    </div>
                 </div>
             </CardContent>
         </Card>

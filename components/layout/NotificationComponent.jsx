@@ -201,7 +201,7 @@ export default function NotificationComponent() {
                     </button>
                 </PopoverTrigger>
 
-                <PopoverContent className=" p-0 max-h-[80vh] overflow-hidden bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 shadow-2xl rounded-2xl w-96 sm:w-80 md:w-96 lg:w-140">
+                <PopoverContent className=" p-0 max-h-[80vh] overflow-hidden bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 shadow-2xl rounded-2xl w-screen sm:w-140 lg:w-140">
                     {/* Enhanced Header */}
                     <div className="p-4 border-b border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-gray-50/50 to-gray-100/50 dark:from-gray-800/50 dark:to-gray-900/50">
                         <div className="flex items-center justify-between">

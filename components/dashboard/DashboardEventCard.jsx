@@ -65,8 +65,8 @@ export default function DashboardEventCard({
                         <div>
                             <div>
                                 <label className="text-xs">Organizer:</label>
-                                <div className="flex flex-wrap items-center justify-center md:justify-start  gap-2 md:gap-5 py-2">
-                                    <div className="relative w-12 h-12 border rounded-full">
+                                <div className="flex flex-wrap items-center justify-center gap-2 md:gap-5 py-2">
+                                    <div className="relative w-12 h-12">
                                         <Image
                                             src={
                                                 event?.requester?.image ||
@@ -74,13 +74,19 @@ export default function DashboardEventCard({
                                             }
                                             alt="Avatar"
                                             fill
+                                            className="rounded-full border"
                                             style={{
                                                 objectFit: "contain",
                                             }}
+                                            unoptimized={
+                                                process.env
+                                                    .NEXT_PUBLIC_NODE_ENV ===
+                                                "production"
+                                            }
                                         />
                                     </div>
-                                    <div className="max-w-68">
-                                        <div className="flex-items-center flex-wrap">
+                                    <div className="text-center">
+                                        <div className="">
                                             <span className="text-lg text-slate-800 dark:text-slate-300 font-semibold">
                                                 {event?.requester?.name}
                                             </span>

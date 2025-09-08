@@ -40,6 +40,7 @@ import NotificationComponent from "./NotificationComponent";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import { PiUserSwitchBold } from "react-icons/pi";
+import SidebarMobile from "./SidebarMobile";
 
 const HeaderNav = ({ currentUser }) => {
     let isLoggedIn = false;
@@ -61,10 +62,11 @@ const HeaderNav = ({ currentUser }) => {
             onConfirm: () => signOut({ callbackUrl: "/" }),
         });
     };
+
     return (
         <>
             <header className="sticky top-0 z-40 flex-none border-b border-gray-200 dark:border-slate-700 p-2 shadow-lg bg-gradient-to-b from-blue-50/80 via-white/90 to-blue-100/80 dark:from-sky-900 dark:via-slate-900 dark:to-sky-800/80 backdrop-blur-md rounded-b-2xl transition-all duration-300">
-                <div className="flex-1 flex flex-wrap justify-between md:justify-evenly gap-2 items-center min-h-[70px]">
+                <div className="flex-1 flex justify-between md:justify-evenly gap-2 items-center min-h-[70px]">
                     <Link
                         href="/"
                         className="flex-none flex gap-2 items-center rounded-xl p-2 z-1 text-blue-700 dark:text-slate-100 text-shadow-sm/100 text-shadow-yellow-300 dark:text-shadow-yellow-800 hover:bg-blue-100/60 dark:hover:bg-sky-900/40 transition-colors duration-200"
@@ -78,8 +80,8 @@ const HeaderNav = ({ currentUser }) => {
                             className="w-8 h-8 sm:w-16 sm:h-16 rounded-full border-2 border-blue-200 dark:border-sky-700 shadow-md bg-white"
                         />
                         <div className="flex flex-col justify-center">
-                            <h1 className="inline-block md:hidden text-sm md:text-base font-extrabold italic leading-tight">
-                                PCMC PedBC - MBD Portal
+                            <h1 className="inline-block md:hidden text-xs md:text-base font-extrabold italic leading-tight">
+                                PCMC PedBC MBD Portal
                             </h1>
                             <h1 className="hidden md:inline-block text-lg md:text-base font-extrabold italic leading-tight">
                                 PCMC Pediatric Blood Center <br />{" "}
@@ -182,7 +184,7 @@ const HeaderNav = ({ currentUser }) => {
                                     Contact Us
                                 </Link>
                             </li>
-                            <li className="block 2xl:hidden">
+                            <li className="hidden md:block 2xl:hidden">
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button
@@ -326,7 +328,7 @@ const HeaderNav = ({ currentUser }) => {
                     {!isLoggedIn ? (
                         <LoginDrawer />
                     ) : (
-                        <div className="flex items-center justify-center gap-5">
+                        <div className="flex items-center justify-center gap-3">
                             <NotificationComponent />
                             <DropdownMenu className="text-xl">
                                 <DropdownMenuTrigger asChild>
@@ -372,6 +374,19 @@ const HeaderNav = ({ currentUser }) => {
                                             <span>Dashboard</span>
                                         </DropdownMenuItem>
                                     </Link>
+                                    <Link href="/">
+                                        <DropdownMenuItem className="flex items-center space-x-2 text-lg">
+                                            <Home className="w-4 h-4" />
+                                            <span>Home</span>
+                                        </DropdownMenuItem>
+                                    </Link>
+                                    <Link href="/about-us">
+                                        <DropdownMenuItem className="flex items-center space-x-2 text-lg">
+                                            <TextSelect className="w-4 h-4" />
+                                            <span>About Us</span>
+                                        </DropdownMenuItem>
+                                    </Link>
+                                    <DropdownMenuSeparator />
                                     {currentUser?.roles &&
                                         currentUser?.roles?.length > 1 && (
                                             <Link href="/portal/change-role">
@@ -393,6 +408,7 @@ const HeaderNav = ({ currentUser }) => {
                         </div>
                     )}
                 </div>
+                <SidebarMobile currentUser={currentUser} />
             </header>
         </>
     );

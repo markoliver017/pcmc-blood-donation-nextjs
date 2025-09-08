@@ -7,7 +7,12 @@ import React, { useState } from "react";
 import { CircleChevronDown, CircleChevronRight } from "lucide-react";
 import { filterUrlWithDotSlash } from "@lib/utils/string.utils";
 
-export default function SideNavLink({ isCollapsed, menu, currentRoleUrl }) {
+export default function SideNavLink({
+    isCollapsed,
+    menu,
+    currentRoleUrl,
+    callback = () => {},
+}) {
     const currentRoute = usePathname();
     const [dropdownOpen, setDropdownOpen] = useState({});
     const { path: menu_path, icon, title } = menu;
@@ -71,12 +76,13 @@ export default function SideNavLink({ isCollapsed, menu, currentRoleUrl }) {
                                         ? "text-blue-700 bg-gray-200 font-semibold dark:text-blue-800 dark:bg-slate-200 hover:bg-gray-300"
                                         : "text-slate-200 hover:bg-gray-200 hover:text-blue-700 dark:hover:text-blue-100 dark:hover:bg-gray-700"
                                 )}
-                                onClick={() =>
+                                onClick={() => {
                                     setDropdownOpen({
                                         ...dropdownOpen,
                                         dropdown: !dropdownOpen["dropdown"],
-                                    })
-                                }
+                                    });
+                                    callback();
+                                }}
                             >
                                 {m.icon}
                                 {!isCollapsed && <span>{m.title}</span>}
@@ -97,6 +103,7 @@ export default function SideNavLink({ isCollapsed, menu, currentRoleUrl }) {
                         ? "text-blue-700 bg-gray-200 font-semibold dark:text-blue-800 dark:bg-slate-200 hover:bg-gray-300"
                         : "text-slate-200 hover:bg-gray-200 hover:text-blue-700 dark:hover:text-blue-100 dark:hover:bg-gray-700"
                 )}
+                onClick={callback}
             >
                 {icon}
                 {!isCollapsed && <span>{title}</span>}

@@ -129,7 +129,7 @@ export default function BloodDriveEvents() {
                 onValueChange={handleTabChange}
                 className="w-full"
             >
-                <TabsList className="mt-4 bg-muted p-1 rounded-md flex flex-col md:flex-row">
+                <TabsList className="bg-muted p-1 rounded-md flex flex-col md:flex-row">
                     <TabsTrigger
                         value="ongoing"
                         className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-blue-700 hover:bg-blue-100 focus-visible:ring-2 focus-visible:ring-blue-400 border"

@@ -264,7 +264,7 @@ export default function DonorProfileTabForm({ donor }) {
                                     <CustomAvatar
                                         avatar={avatar}
                                         whenClick={handleImageClick}
-                                        className="w-[250px] h-[250px]"
+                                        className="w-[150px] h-[150px] md:w-[250px] md:h-[250px]"
                                     />
                                     <div className="flex justify-center gap-2">
                                         <ImagePreviewComponent

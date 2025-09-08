@@ -20,7 +20,7 @@ import {
 } from "@components/ui/table";
 import { DataTablePagination } from "@components/reusable_components/DataTablePagination";
 import { DataTableViewOptions } from "@components/reusable_components/DataTableViewOptions";
-import { Droplet, Filter, User, UserCog2 } from "lucide-react";
+import { Droplet, Filter, Send, User, UserCog2 } from "lucide-react";
 import MultiSelect from "@components/reusable_components/MultiSelect";
 
 import Skeleton from "@components/ui/skeleton";
@@ -28,6 +28,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getBloodTypes } from "@/action/bloodTypeAction";
 import Skeleton_line from "@components/ui/skeleton_line";
 import { GrStatusGood } from "react-icons/gr";
+import { toast } from "react-toastify";
 
 export function DataTable({ columns, data, isLoading }) {
     const { data: bloodTypes, isLoading: bloodTypesIsLoading } = useQuery({
@@ -82,6 +83,34 @@ export function DataTable({ columns, data, isLoading }) {
         return selectedRows.map((row) => row.original);
     };
 
+    const handleSelectedEmail = () => {
+        const selectedRows = getSelectedRows();
+        const emails = selectedRows
+            .map((row) => row?.user?.email)
+            .filter(Boolean);
+
+        if (emails.length > 0) {
+            const subject = "Blood Donors Notification";
+            const body = `Good day,
+                ${selectedRows.map((row) => row?.user?.full_name).join(", ")}
+                \n\n
+                `;
+
+            const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(
+                emails.join(",")
+            )}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+                body
+            )}`;
+
+            window.open(gmailUrl, "_blank"); // open Gmail compose in new tab
+        } else {
+            toast.error("No participants selected", {
+                containerId: "main",
+                position: "bottom-right",
+            });
+        }
+    };
+
     function getVisibleKeys() {
         return columns
             .filter((col) => {
@@ -123,24 +152,30 @@ export function DataTable({ columns, data, isLoading }) {
     }
 
     return (
-        <div className="p-2">
+        <div>
             {isLoading ? (
                 <Skeleton className="w-full h-80 rounded-xl" />
             ) : (
                 <>
-                    <div className="flex items-center py-2 space-x-2">
+                    <div className="flex items-center gap-2 flex-wrap md:flex-nowrap py-2 space-x-2">
+                        <button
+                            className="btn flex-none w-full md:w-auto rounded-full"
+                            onClick={handleSelectedEmail}
+                        >
+                            <Send className="w-4" /> Compose Email
+                        </button>
                         <input
                             placeholder="Search all .."
                             // value={{globalFilter}}
                             onChange={(e) =>
                                 table.setGlobalFilter(e.target.value)
                             }
-                            className="p-2 input-sm flex-none bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
+                            className="p-2 input-sm flex-1 bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
                         />
 
                         <div className="flex-1 flex justify-end pr-2">
-                            <div className="flex space-x-2">
-                                <label className="dark:text-slate-400 flex items-center space-x-1">
+                            <div className="flex space-x-2 flex-wrap gap-1 sm:flex-nowrap">
+                                <label className="hidden sm:flex dark:text-slate-400 items-center space-x-1">
                                     <Filter className="h-4 w-4" />
                                 </label>
                                 <MultiSelect
@@ -178,7 +213,7 @@ export function DataTable({ columns, data, isLoading }) {
                                             <span>Status</span>
                                         </>
                                     }
-                                    className="text-slate-700 bg-slate-100 hover:bg-white"
+                                    className="text-slate-700 bg-slate-100 hover:bg-white flex-1"
                                     animation={2}
                                     maxCount={1}
                                 />
@@ -215,7 +250,7 @@ export function DataTable({ columns, data, isLoading }) {
                                             <span>Blood Type</span>
                                         </>
                                     }
-                                    className="text-slate-700 bg-slate-100 hover:bg-white"
+                                    className="text-slate-700 bg-slate-100 hover:bg-white flex-1"
                                     animation={2}
                                     maxCount={1}
                                 />
@@ -257,7 +292,7 @@ export function DataTable({ columns, data, isLoading }) {
                                         </>
                                     }
                                     variant="inverted"
-                                    className="text-slate-700 bg-slate-100 hover:bg-white"
+                                    className="text-slate-700 bg-slate-100 hover:bg-white flex-1"
                                     animation={2}
                                     maxCount={1}
                                 />
