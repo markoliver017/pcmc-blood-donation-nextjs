@@ -37,8 +37,8 @@ export default function ForApprovalEventList({
 
     if (!events || events.length === 0)
         return (
-            <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
-                <FileClock className="w-12 h-12 mb-4 text-primary" />
+            <Card className="col-span-full flex flex-col justify-center items-center text-center py-5 md:py-16">
+                <FileClock className="md:w-12 md:h-12 md:mb-4 " />
                 <h2 className="text-xl font-semibold">No Pending Approvals</h2>
                 <p className="text-gray-500 mt-2">You're all caught up! 🎉</p>
             </Card>
@@ -85,7 +85,11 @@ export default function ForApprovalEventList({
                         <CardContent className="flex flex-wrap items-center justify-center gap-4 px-2 md:px-15 transform transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-110">
                             <div>
                                 <CustomAvatar
-                                    avatar={event?.file_url || event?.agency?.file_url || "/default_company_avatar.png"}
+                                    avatar={
+                                        event?.file_url ||
+                                        event?.agency?.file_url ||
+                                        "/default_company_avatar.png"
+                                    }
                                     className={clsx(
                                         "flex-none w-[50px] h-[50px]",
                                         avatarClassName

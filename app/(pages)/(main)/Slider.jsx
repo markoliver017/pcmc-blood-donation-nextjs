@@ -24,53 +24,40 @@ export default function MainSlider() {
         <>
             <div className="relative z-10">
                 <Slider className="h-full" {...settings}>
-                    <div className="h-180 relative group transition-all duration-700 hover:cursor-pointer">
+                    <div className="h-80 sm:h-[500px] lg:h-[600px] relative group transition-all duration-700 hover:cursor-pointer">
                         <Image
                             src="/slide-main.jpg"
                             className="h-full w-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-700"
-                            width={1500}
-                            height={1000}
+                            // width={1500}
+                            // height={1000}
+                            fill
                             alt="Philippine Children's Medical Center"
                             title="Philippine Children's Medical Center"
                         />
-                        {/* <p className="absolute top-10 left-10 z-50 bg-white/70 p-4 rounded w-120 dark:text-slate-600 transform transition-transform duration-700 group-hover:-translate-x-2 group-hover:scale-[1.01]">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Odit temporibus laborum cum inventore
-                            molestiae nisi tempora nostrum rem praesentium ea
-                            quam dolores aliquam ad, voluptas vel corporis vero
-                            eaque laudantium est, hic facilis! Magnam reiciendis
-                            ipsam aperiam nihil facere eius voluptas, eaque
-                            natus libero, labore distinctio. Quaerat doloribus,
-                            saepe nam veniam harum tempora quis enim voluptas
-                            officiis neque minima ducimus exercitationem id
-                            animi odio officia quia labore adipisci hic atque
-                            temporibus aperiam tenetur. Atque officia beatae est
-                            nostrum tempora non itaque velit voluptatum rem quam
-                            vel eius veniam quisquam ex totam repellat, facilis
-                            dolorum ipsam, impedit soluta obcaecati nesciunt
-                            quibusdam!
-                        </p> */}
                     </div>
-                    <div className="h-180 relative group  transition-all duration-700 hover:cursor-pointer">
+                    <div className="h-80 sm:h-[500px] lg:h-[600px] relative group  transition-all duration-700 hover:cursor-pointer">
                         <Image
                             src="/bg-image-new-1.png"
                             className="h-full w-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-700"
-                            width={1500}
-                            height={1000}
+                            // width={1500}
+                            // height={1000}
+                            fill
                             alt="Philippine Children's Medical Center"
                             title="Philippine Children's Medical Center"
                         />
                     </div>
-                    <div className="h-180 relative group  transition-all duration-700 hover:cursor-pointer">
+                    <div className="h-80 sm:h-[500px] lg:h-[600px] relative group  transition-all duration-700 hover:cursor-pointer">
                         <Image
                             src="/slider-main-2.png"
                             className="h-full w-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-700"
-                            width={1500}
-                            height={1000}
+                            // width={1500}
+                            // height={1000}
+                            fill
                             alt="Philippine Children's Medical Center"
                             title="Philippine Children's Medical Center"
                         />
                     </div>
+
                     {/* <div className="h-180 relative group  transition-all duration-700 hover:cursor-pointer">
                         <Image
                             src="/loader_main.gif"

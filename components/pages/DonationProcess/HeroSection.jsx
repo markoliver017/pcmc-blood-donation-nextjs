@@ -5,7 +5,7 @@ import { Clock, Shield, Heart, CheckCircle } from "lucide-react";
 
 export default function HeroSection({ onOpenRegister }) {
     return (
-        <section className="relative min-h-[500px] lg:min-h-[600px] flex items-center justify-center overflow-hidden">
+        <section className="relative h-80 sm:h-[500px] lg:h-[600px] flex items-center justify-center overflow-hidden">
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <Image
@@ -25,24 +25,24 @@ export default function HeroSection({ onOpenRegister }) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
-                    <div className="flex justify-center mb-6">
-                        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-blue-500/20 backdrop-blur-sm border border-blue-300/30">
-                            <Clock className="w-10 h-10 text-blue-300" />
+                    <div className="hidden sm:flex justify-center mb-6">
+                        <div className="inline-flex items-center justify-center w-14 h-14 md:w-20 md:h-20 rounded-full bg-blue-500/20 backdrop-blur-sm border border-blue-300/30">
+                            <Clock className="w-10 h-10 md:w-14 md:h-14 text-blue-300" />
                         </div>
                     </div>
 
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                    <h1 className="text-xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-6 leading-tight">
                         Your Donation Journey
                     </h1>
 
-                    <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed">
+                    <p className="text-xs sm:text-xl md:text-2xl mb-4 md:mb-8 max-w-3xl mx-auto leading-relaxed">
                         From registration to recovery, we guide you through
                         every step of the blood donation process. It's simple,
                         safe, and takes less than an hour.
                     </p>
 
                     {/* Process Overview */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-8">
+                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-2 md:mb-8">
                         {[
                             {
                                 icon: Shield,
@@ -68,15 +68,15 @@ export default function HeroSection({ onOpenRegister }) {
                                     duration: 0.6,
                                     delay: index * 0.1,
                                 }}
-                                className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+                                className="bg-white/10 backdrop-blur-sm rounded-lg p-1 md:p-4 border border-white/20"
                             >
-                                <div className="flex justify-center mb-2">
-                                    <item.icon className="w-6 h-6 text-blue-300" />
+                                <div className="flex justify-center mb-1 md:mb-2">
+                                    <item.icon className="w-4 h-4 md:w-6 md:h-6 text-blue-300" />
                                 </div>
-                                <div className="text-2xl font-bold text-blue-300">
+                                <div className="text-xs md:text-2xl font-bold text-blue-300">
                                     {item.value}
                                 </div>
-                                <div className="text-sm text-gray-200">
+                                <div className="text-xs md:text-sm text-gray-200">
                                     {item.label}
                                 </div>
                             </motion.div>
@@ -87,11 +87,11 @@ export default function HeroSection({ onOpenRegister }) {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.4 }}
-                        className="flex flex-col sm:flex-row gap-4 justify-center"
+                        className="flex gap-4 justify-center"
                     >
                         <button
                             onClick={onOpenRegister}
-                            className="btn btn-primary btn-lg px-8 py-3 text-lg font-semibold"
+                            className="btn btn-primary btn-sm md:btn-lg md:px-8 md:py-3 text-sm md:text-lg font-semibold"
                         >
                             Start Your Journey
                         </button>
@@ -104,7 +104,7 @@ export default function HeroSection({ onOpenRegister }) {
                                     el.scrollIntoView({ behavior: "smooth" });
                                 }
                             }}
-                            className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-blue-600"
+                            className="btn btn-outline btn-sm md:btn-lg md:px-8 md:py-3 text-sm md:text-lg font-semibold border-white text-white hover:bg-white hover:text-blue-600"
                         >
                             View All Steps
                         </a>

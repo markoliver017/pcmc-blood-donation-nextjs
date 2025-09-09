@@ -50,7 +50,7 @@ const SidebarMobile = ({ currentUser }) => {
             <PopoverTrigger className="md:hidden px-5">
                 <div className="flex items-center gap-2">
                     <GiHamburgerMenu title="Collapse the left navigation pane" />
-                    <span>Main Menu</span>
+                    <span>Account Menu</span>
                 </div>
             </PopoverTrigger>
             <PopoverContent>

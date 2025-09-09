@@ -60,21 +60,21 @@ export default function Dashboard() {
     });
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-2 md:space-y-6">
             {/* Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-6">
                 <Card className="w-full">
-                    <CardHeader className="flex flex-col items-center gap-2">
-                        <CardTitle className="text-2xl flex items-center gap-2">
-                            <Users className="w-6 h-6" />
+                    <CardHeader className="py-1 md:py-5 flex flex-col items-center gap-2">
+                        <CardTitle className="text-xl md:text-2xl flex items-center gap-2">
+                            <Users className="w-4 h-4 md:w-6 md:h-6" />
                             Registered Donors
                         </CardTitle>
                         <CardDescription>
                             View all verified donors
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="flex flex-col items-center gap-4">
-                        <h2 className="text-4xl font-bold">
+                    <CardContent className="flex md:pt-0 flex-col items-center gap-4">
+                        <h2 className="text-2xl md:text-4xl font-bold">
                             {donorsCountIsLoading ? (
                                 <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
                             ) : (
@@ -82,7 +82,7 @@ export default function Dashboard() {
                             )}
                         </h2>
                         <Link
-                            className="btn btn-primary btn-outline"
+                            className="btn btn-sm md:btn-md btn-primary btn-outline"
                             href="/portal/hosts/donors"
                         >
                             View List
@@ -91,17 +91,17 @@ export default function Dashboard() {
                 </Card>
 
                 <Card className="w-full">
-                    <CardHeader className="flex flex-col items-center gap-2">
-                        <CardTitle className="text-2xl flex items-center gap-2">
-                            <CalendarCheck2 className="w-6 h-6" />
+                    <CardHeader className="py-1 md:py-5 flex flex-col items-center gap-2">
+                        <CardTitle className="text-xl md:text-2xl flex items-center gap-2">
+                            <CalendarCheck2 className="w-4 h-4 md:w-6 md:h-6" />
                             Blood Drives
                         </CardTitle>
                         <CardDescription>
                             Track blood drive events
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="flex flex-col items-center gap-4">
-                        <h2 className="text-4xl font-bold">
+                    <CardContent className="flex md:pt-0 flex-col items-center gap-4">
+                        <h2 className="text-2xl md:text-4xl font-bold">
                             {eventsCountIsLoading ? (
                                 <div className="skeleton h-12 w-20 shrink-0 rounded-full"></div>
                             ) : (
@@ -109,7 +109,7 @@ export default function Dashboard() {
                             )}
                         </h2>
                         <Link
-                            className="btn btn-primary btn-outline"
+                            className="btn btn-sm md:btn-md btn-primary btn-outline"
                             href="/portal/hosts/events"
                         >
                             View List
@@ -123,12 +123,12 @@ export default function Dashboard() {
                 {/* Calendar */}
                 <div className="lg:col-span-2">
                     <Card className="w-full h-full">
-                        <CardHeader>
+                        <CardHeader className="pb-2">
                             <CardTitle className="text-xl">
                                 Event Calendar
                             </CardTitle>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="overflow-x-auto">
                             <AllEventCalendar />
                         </CardContent>
                     </Card>
@@ -137,7 +137,7 @@ export default function Dashboard() {
                 {/* Action Panel */}
                 <div className="w-full">
                     <Card className="min-h-full">
-                        <CardHeader>
+                        <CardHeader className="pb-2">
                             <CardTitle className="text-xl">
                                 Action Needed
                             </CardTitle>
@@ -146,7 +146,7 @@ export default function Dashboard() {
                             <div>
                                 <Link
                                     href="/portal/hosts/donors?tab=for-approval"
-                                    className="btn btn-block justify-between text-green-700 dark:text-green-400"
+                                    className="btn btn-block justify-between rounded-2xl text-green-700 dark:text-green-400"
                                 >
                                     Donors For Approval (
                                     {donorsForApproval?.length || 0})
@@ -166,9 +166,9 @@ export default function Dashboard() {
                             <div>
                                 <Link
                                     href="/portal/hosts/events?tab=for-approval"
-                                    className="btn btn-block justify-between text-orange-700 dark:text-orange-400"
+                                    className="btn btn-block justify-between rounded-2xl text-orange-700 dark:text-orange-400"
                                 >
-                                    <span>
+                                    <span className="text-xs md:text-sm">
                                         Donation Drives Awaiting Approval (
                                         {eventsForApproval?.length || 0})
                                     </span>

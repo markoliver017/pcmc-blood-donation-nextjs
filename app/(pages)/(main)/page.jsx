@@ -37,9 +37,9 @@ export default function Page() {
                 open={openRegister}
                 setOpen={setOpenRegister}
             />
-            <header className="mb-16 relative w-full min-h-[400px] sm:min-h-[500px] lg:min-h-[600px] flex items-stretch justify-center">
+            <header className="mb-16 relative w-full h-80 sm:h-[500px] lg:h-[600px] flex items-stretch justify-center">
                 {/* The MainSlider will fill the header height */}
-                <div className="w-full h-full min-h-[400px] sm:min-h-[500px] lg:min-h-[600px]">
+                <div className="w-full ">
                     <MainSlider />
                 </div>
                 {/* Overlay for text readability */}
@@ -49,10 +49,10 @@ export default function Page() {
                 /> */}
                 <div className="absolute inset-0 bg-gradient-to-r from-red-900/65 dark:from-red-900/85 via-blue-800/65 dark:via-blue-800/75 to-yellow-900/60 dark:to-yellow-900/80 z-10 pointer-events-none" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-20 px-4 w-full">
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white drop-shadow-lg mb-4">
+                    <h1 className="text-2xl md:text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white drop-shadow-lg mb-4">
                         Donate Blood, Save Lives
                     </h1>
-                    <p className="text-lg sm:text-2xl text-slate-100 font-medium mb-8 max-w-2xl mx-auto drop-shadow">
+                    <p className="md:text-2xl text-slate-100 font-medium mb-4 md:mb-8 max-w-2xl mx-auto drop-shadow">
                         Join our mission to provide a safe, reliable blood
                         supply for children and families in need. Every drop
                         counts.
@@ -60,19 +60,19 @@ export default function Page() {
                     <div className="flex flex-wrap justify-center gap-5">
                         <button
                             type="button"
-                            className="cursor-pointer btn-blue-500 flex-items-center justify-center min-w-48 text-blue-900 bg-[rgba(255,255,255,0.9)] rounded-2xl p-5 border shadow-[5px_5px_0px_0px_rgba(0,_0,_0,_0.5),inset_6px_6px_1px_1px_rgba(0,_0,_0,_0.3)] shadow-blue-800 hover:ring-1 hover:font-semibold"
+                            className="cursor-pointer btn-blue-500 text-sm md:text-base flex-items-center justify-center md:min-w-48 text-blue-900 bg-[rgba(255,255,255,0.9)] rounded-2xl p-5 border shadow-[5px_5px_0px_0px_rgba(0,_0,_0,_0.5),inset_6px_6px_1px_1px_rgba(0,_0,_0,_0.3)] shadow-blue-800 hover:ring-1 hover:font-semibold"
                             onClick={() => setOpenRegister(true)}
                         >
-                            <Handshake className="h-8 w-8 sm:h-10 sm:w-10" />{" "}
+                            <Handshake className="h-4 w-4 md:h-10 md:w-10" />{" "}
                             Join Us
                         </button>
                         <Link href="/donation-process">
                             <button
                                 type="button"
-                                className="cursor-pointer flex-items-center text-blue-900 bg-[rgba(255,255,255,0.9)] rounded-2xl p-5 border shadow-[5px_5px_0px_0px_rgba(0,_0,_0,_0.5),inset_6px_6px_1px_1px_rgba(0,_0,_0,_0.3)] shadow-blue-800 hover:ring-1 hover:font-semibold"
+                                className="cursor-pointer text-sm md:text-base flex-items-center justify-center md:min-w-48 text-blue-900 bg-[rgba(255,255,255,0.9)] rounded-2xl p-5 border shadow-[5px_5px_0px_0px_rgba(0,_0,_0,_0.5),inset_6px_6px_1px_1px_rgba(0,_0,_0,_0.3)] shadow-blue-800 hover:ring-1 hover:font-semibold"
                             >
-                                <GiCycle className="h-10 w-10" /> Donation
-                                Process
+                                <GiCycle className="h-4 w-4 md:h-10 md:w-10" />{" "}
+                                Donation Process
                             </button>
                         </Link>
                     </div>
@@ -88,7 +88,7 @@ export default function Page() {
                     viewport={{ once: true, amount: 0.3 }}
                     className="flex-1 text-justify text-slate-700 dark:text-slate-200 space-y-4"
                 >
-                    <h2 className="text-4xl text-left font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                    <h2 className="text-2xl md:text-4xl text-left font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                         <span className="inline-block align-middle">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -114,7 +114,7 @@ export default function Page() {
                         accessible and meaningful – bridging compassion with
                         action.
                     </p> */}
-                    <p className="text-lg leading-relaxed">
+                    <p className="text-base md:text-lg leading-relaxed">
                         The Pediatric Blood Center Mobile Blood Donation Portal
                         is a user-friendly, secure digital platform designed to
                         connect volunteer blood donors with pediatric patients
@@ -123,7 +123,7 @@ export default function Page() {
                         register, schedule, and track their donations, while
                         providing critical updates about pediatric blood needs.
                     </p>
-                    <p className="text-lg leading-relaxed">
+                    <p className="text-base md:text-lg leading-relaxed">
                         Our center ensures every donation is safe, secure, and
                         reaches those who need it most. We are committed to
                         saving and improving the lives of children in need by
@@ -169,7 +169,7 @@ export default function Page() {
                     </ul> */}
                     <div className="text-right">
                         <Link href="/about-us">
-                            <button className="btn btn-primary btn-lg shadow-lg px-8 py-3 text-lg hover:scale-105 transition-transform">
+                            <button className="btn btn-primary btn-lg shadow-lg px-8 py-3 text-base md:text-lg hover:scale-105 transition-transform">
                                 Learn More About Us
                             </button>
                         </Link>
@@ -534,7 +534,7 @@ export default function Page() {
                                     Be a hero—donate today and help save lives.
                                 </span>
                             </p>
-                            <div className="space-x-4">
+                            <div className="flex gap-4 justify-center flex-wrap">
                                 <Link href="/login">
                                     <button
                                         type="button"

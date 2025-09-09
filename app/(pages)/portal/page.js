@@ -10,7 +10,7 @@ export default async function PortalPage({ searchParams }) {
     if (!session?.user) return null;
 
     const { roles, role_name: session_role } = session.user;
-    const callbackUrl = searchParams?.callbackUrl;
+    const callbackUrl = (await searchParams)?.callbackUrl;
 
     const currentLoggedInRole = roles.find(
         (role) => role.role_name == session_role

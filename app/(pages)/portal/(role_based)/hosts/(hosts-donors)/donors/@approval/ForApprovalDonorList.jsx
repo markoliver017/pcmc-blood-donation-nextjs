@@ -31,8 +31,8 @@ export default function ForApprovalDonorList({
 
     if (!donors || donors.length === 0)
         return (
-            <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
-                <FileClock className="w-12 h-12 mb-4 text-primary" />
+            <Card className="col-span-full flex flex-col justify-center items-center text-center py-5 md:py-16">
+                <FileClock className="md:w-12 md:h-12 md:mb-4" />
                 <h2 className="text-xl font-semibold">No Pending Approvals</h2>
                 <p className="text-gray-500 mt-2">You're all caught up! 🎉</p>
             </Card>

@@ -12,24 +12,17 @@ import {
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
 import {
-    Calendar,
     Command,
     Droplet,
-    FileSliders,
     Home,
-    HomeIcon,
-    House,
     Info,
     LogOut,
+    MenuIcon,
     PhoneCall,
     SquareMenu,
     Text,
     TextSelect,
-    User,
-    UserCog2Icon,
     UserRoundCheck,
-    Users,
-    Users2Icon,
 } from "lucide-react";
 import SweetAlert from "@components/ui/SweetAlert";
 import { useSession } from "next-auth/react";
@@ -37,15 +30,17 @@ import { signOut } from "next-auth/react";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import { MdAmpStories, MdEmail } from "react-icons/md";
 import NotificationComponent from "./NotificationComponent";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import clsx from "clsx";
 import { PiUserSwitchBold } from "react-icons/pi";
 import SidebarMobile from "./SidebarMobile";
+import { DashboardIcon } from "@radix-ui/react-icons";
 
 const HeaderNav = ({ currentUser }) => {
     let isLoggedIn = false;
     const { status, data } = useSession();
     const pathname = usePathname();
+    const router = useRouter();
 
     if (status == "authenticated") {
         isLoggedIn = true;
@@ -66,7 +61,7 @@ const HeaderNav = ({ currentUser }) => {
     return (
         <>
             <header className="sticky top-0 z-40 flex-none border-b border-gray-200 dark:border-slate-700 p-2 shadow-lg bg-gradient-to-b from-blue-50/80 via-white/90 to-blue-100/80 dark:from-sky-900 dark:via-slate-900 dark:to-sky-800/80 backdrop-blur-md rounded-b-2xl transition-all duration-300">
-                <div className="flex-1 flex justify-between md:justify-evenly gap-2 items-center min-h-[70px]">
+                <div className="flex-1 overflow-x-auto flex justify-between md:justify-evenly items-center min-h-[70px]">
                     <Link
                         href="/"
                         className="flex-none flex gap-2 items-center rounded-xl p-2 z-1 text-blue-700 dark:text-slate-100 text-shadow-sm/100 text-shadow-yellow-300 dark:text-shadow-yellow-800 hover:bg-blue-100/60 dark:hover:bg-sky-900/40 transition-colors duration-200"
@@ -92,7 +87,7 @@ const HeaderNav = ({ currentUser }) => {
                         </div>
                     </Link>
                     <nav>
-                        <ul className="flex flex-wrap items-center justify-center space-x-2 md:space-x-4 font-bold text-base md:text-sm text-shadow-md italic text-shadow">
+                        <ul className="flex flex-wrap items-center justify-center md:space-x-4 font-bold text-base md:text-sm text-shadow-md italic text-shadow">
                             <li className="hidden md:block">
                                 <Link
                                     href="/"
@@ -184,111 +179,92 @@ const HeaderNav = ({ currentUser }) => {
                                     Contact Us
                                 </Link>
                             </li>
-                            <li className="hidden md:block 2xl:hidden">
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button
-                                            variant="ghost"
-                                            className="h-8 w-min p-0"
-                                        >
-                                            <span className="sr-only">
-                                                Open menu
-                                            </span>
-                                            <SquareMenu />
-                                            <span className="block md:hidden">
-                                                Menus
-                                            </span>
-                                        </Button>
-                                    </DropdownMenuTrigger>
+                        </ul>
+                    </nav>
+                    <DropdownMenu className="md:block 2xl:hidden">
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-min p-0">
+                                <span className="sr-only">Open menu</span>
+                                <SquareMenu />
+                            </Button>
+                        </DropdownMenuTrigger>
 
-                                    <DropdownMenuContent
-                                        side="bottom"
-                                        align="start"
-                                        className="rounded-xl shadow-lg bg-white dark:bg-slate-900 border border-blue-200 dark:border-sky-800"
-                                    >
-                                        <DropdownMenuLabel className="flex items-center gap-2 space-x-2 py-2">
-                                            <Command className="w-3 h-3" />
-                                            Navigate
-                                        </DropdownMenuLabel>
-                                        {/* <Link href={`/`}> */}
-                                        <DropdownMenuItem
-                                            className={clsx(
-                                                "block md:hidden p-3 shadow-xs ",
-                                                pathname === "/" &&
-                                                    "bg-blue-400/50"
-                                            )}
-                                        >
-                                            <Link
-                                                href="/"
-                                                className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
-                                            >
-                                                <Home className="h-4" />
-                                                Home
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            className={clsx(
-                                                "block lg:hidden p-3 shadow-xs ",
-                                                pathname === "/about-us" &&
-                                                    "bg-blue-400/50"
-                                            )}
-                                        >
-                                            <Link
-                                                href="/about-us"
-                                                className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
-                                            >
-                                                <TextSelect className="h-4" />
-                                                About Us
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            className={clsx(
-                                                "block lg:hidden p-3 shadow-xs ",
-                                                pathname === "/why-donate" &&
-                                                    "bg-blue-400/50"
-                                            )}
-                                        >
-                                            <Link
-                                                href="/why-donate"
-                                                className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
-                                            >
-                                                <Droplet className="h-4" />
-                                                Why Donate
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            className={clsx(
-                                                "block 2xl:hidden p-3 shadow-xs ",
-                                                pathname ===
-                                                    "/donation-process" &&
-                                                    "bg-blue-400/50"
-                                            )}
-                                        >
-                                            <Link
-                                                href="/donation-process"
-                                                className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
-                                            >
-                                                <Text className="h-4" />
-                                                Donation Process
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            className={clsx(
-                                                "block 2xl:hidden p-3 shadow-xs ",
-                                                pathname ===
-                                                    "/eligibility-requirements" &&
-                                                    "bg-blue-400/50"
-                                            )}
-                                        >
-                                            <Link
-                                                href="/eligibility-requirements"
-                                                className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
-                                            >
-                                                <Text className="h-4" />
-                                                Eligibility Requirements
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        {/* <DropdownMenuItem
+                        <DropdownMenuContent
+                            side="bottom"
+                            align="start"
+                            className="rounded-xl shadow-lg bg-white dark:bg-slate-900 border border-blue-200 dark:border-sky-800"
+                        >
+                            <DropdownMenuLabel className="flex items-center gap-2 space-x-2 py-2">
+                                <Command className="w-3 h-3" />
+                                Navigate
+                            </DropdownMenuLabel>
+                            {/* <Link href={`/`}> */}
+                            <DropdownMenuItem
+                                className={clsx(
+                                    "block md:hidden p-3 shadow-xs",
+                                    pathname === "/" && "bg-blue-400/50"
+                                )}
+                                onClick={() => router.push("/")}
+                            >
+                                <span className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40">
+                                    <Home className="h-4" />
+                                    Home
+                                </span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                className={clsx(
+                                    "block lg:hidden p-3 shadow-xs ",
+                                    pathname === "/about-us" && "bg-blue-400/50"
+                                )}
+                                onClick={() => router.push("/about-us")}
+                            >
+                                <span className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40">
+                                    <TextSelect className="h-4" />
+                                    About Us
+                                </span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                className={clsx(
+                                    "block lg:hidden p-3 shadow-xs ",
+                                    pathname === "/why-donate" &&
+                                        "bg-blue-400/50"
+                                )}
+                                onClick={() => router.push("/why-donate")}
+                            >
+                                <span className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40">
+                                    <Droplet className="h-4" />
+                                    Why Donate
+                                </span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                className={clsx(
+                                    "block 2xl:hidden p-3 shadow-xs ",
+                                    pathname === "/donation-process" &&
+                                        "bg-blue-400/50"
+                                )}
+                                onClick={() => router.push("/donation-process")}
+                            >
+                                <span className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40">
+                                    <Text className="h-4" />
+                                    Donation Process
+                                </span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                className={clsx(
+                                    "block 2xl:hidden p-3 shadow-xs ",
+                                    pathname === "/eligibility-requirements" &&
+                                        "bg-blue-400/50"
+                                )}
+                                onClick={() =>
+                                    router.push("/eligibility-requirements")
+                                }
+                            >
+                                <span className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40">
+                                    <Text className="h-4" />
+                                    Eligibility Requirements
+                                </span>
+                            </DropdownMenuItem>
+                            {/* <DropdownMenuItem
                                             className={clsx(
                                                 "block 2xl:hidden p-3 shadow-xs ",
                                                 pathname ===
@@ -304,27 +280,21 @@ const HeaderNav = ({ currentUser }) => {
                                                 Success Stories
                                             </Link>
                                         </DropdownMenuItem> */}
-                                        <DropdownMenuItem
-                                            className={clsx(
-                                                "block 2xl:hidden p-3 shadow-xs ",
-                                                pathname === "/contact-us" &&
-                                                    "bg-blue-400/50"
-                                            )}
-                                        >
-                                            <Link
-                                                href="/contact-us"
-                                                className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40"
-                                            >
-                                                <PhoneCall className="h-4" />
-                                                Contact Us
-                                            </Link>
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </li>
-                        </ul>
-                    </nav>
-
+                            <DropdownMenuItem
+                                className={clsx(
+                                    "block 2xl:hidden p-3 shadow-xs ",
+                                    pathname === "/contact-us" &&
+                                        "bg-blue-400/50"
+                                )}
+                                onClick={() => router.push("/contact-us")}
+                            >
+                                <span className="w-full rounded flex items-center gap-1 hover:bg-blue-100/60 dark:hover:bg-sky-900/40">
+                                    <PhoneCall className="h-4" />
+                                    Contact Us
+                                </span>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                     {!isLoggedIn ? (
                         <LoginDrawer />
                     ) : (
@@ -370,7 +340,7 @@ const HeaderNav = ({ currentUser }) => {
 
                                     <Link href={`/portal`}>
                                         <DropdownMenuItem className="flex items-center space-x-2 text-lg">
-                                            <HomeIcon className="w-4 h-4" />
+                                            <DashboardIcon className="w-4 h-4" />
                                             <span>Dashboard</span>
                                         </DropdownMenuItem>
                                     </Link>
@@ -408,7 +378,9 @@ const HeaderNav = ({ currentUser }) => {
                         </div>
                     )}
                 </div>
-                <SidebarMobile currentUser={currentUser} />
+                <div className="flex items-center">
+                    <SidebarMobile currentUser={currentUser} />
+                </div>
             </header>
         </>
     );

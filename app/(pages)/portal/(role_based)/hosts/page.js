@@ -9,8 +9,8 @@ export default async function page() {
     if (!session) throw "You are not allowed to access this page.";
     const { user } = session;
     return (
-        <div className="p-5 overflow-scroll">
-            <div className="flex justify-between border-b border-gray-200 dark:border-gray-800">
+        <div className="p-1 md:p-5 overflow-scroll">
+            <div className="flex flex-wrap md:flex-nowrap justify-between border-b border-gray-200 dark:border-gray-800">
                 <div>
                     <h1 className="text-3xl flex-items-center">
                         <PiHandHeart /> WELCOME, {user.name}
