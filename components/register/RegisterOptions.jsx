@@ -47,18 +47,20 @@ export default function RegisterOptions() {
     return (
         <div className="w-full max-w-6xl mx-auto px-4 py-10 md:py-16">
             {/* Logo & Title */}
-            <div className="text-center mb-10">
+            <div className="text-center mb-6 md:mb-10">
                 <div className="flex flex-col items-center justify-center gap-3">
-                    <Image
-                        src="/pcmc_logo.png"
-                        width={70}
-                        height={70}
-                        alt="PCMC Logo"
-                        className="rounded-full border-2 border-blue-300 dark:border-blue-700 shadow bg-white"
-                    />
-                    <h1 className="text-3xl md:text-4xl font-extrabold text-red-700 text-shadow-sm/100 dark:text-shadow-sm/50 text-shadow-yellow-300 dark:text-shadow-yellow-300">
-                        Register an Account
-                    </h1>
+                    <div className="flex items-center gap-2 p-2 md:p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <Image
+                            src="/pcmc_logo.png"
+                            width={70}
+                            height={70}
+                            alt="PCMC Logo"
+                            className="rounded-full w-12 h-12 md:w-16 md:h-16 border-2 border-blue-300 dark:border-blue-700 shadow bg-white"
+                        />
+                        <h1 className="text-3xl md:text-4xl font-extrabold text-red-700 text-shadow-sm/100 dark:text-shadow-sm/50 text-shadow-yellow-300 dark:text-shadow-yellow-300">
+                            Register an Account
+                        </h1>
+                    </div>
                     <p className="text-base md:text-lg text-slate-50 text-shadow-sm/300 text-shadow-yellow-500 dark:text-shadow-yellow-300 dark:text-slate-300 max-w-2xl font-medium text-center">
                         Select the type of account you want to register for the
                         PCMC Pediatric Blood Center Portal.
@@ -68,7 +70,7 @@ export default function RegisterOptions() {
 
             {/* Search */}
             <div className="flex justify-center mb-8">
-                <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-lg">
+                <div className="flex items-center justify-center w-full max-w-lg gap-1">
                     <label className="input border rounded">
                         <SearchCheck className="h-4 w-4" />
                         <input
@@ -82,16 +84,17 @@ export default function RegisterOptions() {
                     </label>
                     <button
                         type="button"
-                        className="btn btn-primary w-48 sm:w-auto flex items-center gap-2 font-semibold"
+                        className="btn btn-primary rounded-0 flex items-center gap-2 font-semibold"
                         aria-label="Search"
                     >
-                        <Search className="h-4 w-4" /> Search
+                        <Search className="h-4 w-4" />
+                        <span className="hidden md:inline">Search</span>
                     </button>
                 </div>
             </div>
 
             {/* Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 justify-items-center">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-6 mb-10 justify-items-center">
                 {filteredOptions.length === 0 ? (
                     <div className="col-span-full text-center text-slate-500 dark:text-slate-400 py-16 font-semibold">
                         No registration options found.
@@ -109,9 +112,9 @@ export default function RegisterOptions() {
                             <Card
                                 className={`h-full flex flex-col justify-between hover:ring-2 ${opt.color} border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 shadow-lg rounded-xl`}
                             >
-                                <CardHeader className="flex flex-col items-center gap-2 pt-6">
+                                <CardHeader className="flex flex-col items-center gap-2 pt-3 md:pt-6">
                                     {opt.icon}
-                                    <CardTitle className="text-xl font-bold text-slate-800 dark:text-white tracking-tight drop-shadow">
+                                    <CardTitle className="text-base md:text-xl font-bold text-slate-800 dark:text-white tracking-tight drop-shadow">
                                         {opt.title}
                                     </CardTitle>
                                 </CardHeader>

@@ -181,9 +181,12 @@ const HeaderNav = ({ currentUser }) => {
                             </li>
                         </ul>
                     </nav>
-                    <DropdownMenu className="md:block 2xl:hidden">
+                    <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-min p-0">
+                            <Button
+                                variant="ghost"
+                                className="h-8 w-min p-0 2xl:hidden"
+                            >
                                 <span className="sr-only">Open menu</span>
                                 <SquareMenu />
                             </Button>

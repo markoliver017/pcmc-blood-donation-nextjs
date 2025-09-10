@@ -19,30 +19,30 @@ export default function HeroSection() {
             </div>
 
             {/* Content */}
-            <div className="relative z-10 max-w-6xl mx-auto px-4 text-center text-white">
+            <div className="relative z-10 max-w-6xl mx-auto px-2 md:px-4 text-center text-white">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
-                    <div className="flex justify-center mb-6">
-                        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-blue-500/20 backdrop-blur-sm border border-blue-300/30">
-                            <CheckCircle className="w-10 h-10 text-blue-300" />
+                    <div className="flex justify-center mb-2 md:mb-6">
+                        <div className="inline-flex items-center justify-center md:w-20 md:h-20 rounded-full bg-blue-500/20 backdrop-blur-sm border border-blue-300/30">
+                            <CheckCircle className="w-6 h-6 md:w-10 md:h-10 text-blue-300" />
                         </div>
                     </div>
 
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                    <h1 className="text-lg md:text-5xl lg:text-6xl font-bold mb-2 md:mb-6 leading-tight">
                         Eligibility Requirements
                     </h1>
 
-                    <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed">
+                    <p className="text-xs md:text-2xl mb-4 md:mb-8 max-w-3xl mx-auto leading-relaxed">
                         Learn about the requirements to become a blood donor and
                         help save children's lives. Your safety and the safety
                         of recipients are our top priorities.
                     </p>
 
                     {/* Key Highlights */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-8">
+                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-4 md:mb-8">
                         {[
                             {
                                 icon: CheckCircle,
@@ -68,15 +68,15 @@ export default function HeroSection() {
                                     duration: 0.6,
                                     delay: index * 0.1,
                                 }}
-                                className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+                                className="bg-white/10 backdrop-blur-sm rounded-lg p-2 md:p-4 border border-white/20"
                             >
-                                <div className="flex justify-center mb-2">
-                                    <item.icon className="w-6 h-6 text-blue-300" />
+                                <div className="flex justify-center mb-1 md:mb-2">
+                                    <item.icon className="md:w-6 md:h-6 text-blue-300" />
                                 </div>
-                                <div className="text-2xl font-bold text-blue-300">
+                                <div className="text-xs md:text-2xl font-bold text-blue-300">
                                     {item.value}
                                 </div>
-                                <div className="text-sm text-gray-200">
+                                <div className="text-xs md:text-sm text-gray-200">
                                     {item.label}
                                 </div>
                             </motion.div>
@@ -87,7 +87,7 @@ export default function HeroSection() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.4 }}
-                        className="flex flex-col sm:flex-row gap-4 justify-center"
+                        className="flex gap-4 justify-center"
                     >
                         <a
                             href="#eligibility-quiz"
@@ -99,7 +99,7 @@ export default function HeroSection() {
                                     el.scrollIntoView({ behavior: "smooth" });
                                 }
                             }}
-                            className="btn btn-primary btn-lg px-8 py-3 text-lg font-semibold"
+                            className="btn btn-primary btn-sm md:btn-lg md:px-8 md:py-3 text-sm md:text-lg font-semibold"
                         >
                             Check Your Eligibility
                         </a>
@@ -113,7 +113,7 @@ export default function HeroSection() {
                                     el.scrollIntoView({ behavior: "smooth" });
                                 }
                             }}
-                            className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-blue-600"
+                            className="btn btn-outline btn-sm md:btn-lg md:px-8 md:py-3 text-sm md:text-lg font-semibold border-white text-white hover:bg-white hover:text-blue-600"
                         >
                             View Requirements
                         </a>

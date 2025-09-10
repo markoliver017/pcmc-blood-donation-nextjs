@@ -5,7 +5,7 @@ import { Phone, Mail, MapPin } from "lucide-react";
 
 export default function HeroSection() {
     return (
-        <section className="relative min-h-[500px] lg:min-h-[600px] flex items-center justify-center overflow-hidden">
+        <section className="relative h-80 sm:h-[500px] lg:h-[600px] flex items-center justify-center overflow-hidden">
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <Image
@@ -19,30 +19,30 @@ export default function HeroSection() {
             </div>
 
             {/* Content */}
-            <div className="relative z-10 max-w-6xl mx-auto px-4 text-center text-white">
+            <div className="relative z-10 max-w-6xl mx-auto px-2 md:px-4 text-center text-white">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
-                    <div className="flex justify-center mb-6">
-                        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-teal-500/20 backdrop-blur-sm border border-teal-300/30">
-                            <Phone className="w-10 h-10 text-teal-300" />
+                    <div className="flex justify-center mb-2 md:mb-6">
+                        <div className="inline-flex items-center justify-center w-12 h-12 md:w-20 md:h-20 rounded-full bg-teal-500/20 backdrop-blur-sm border border-teal-300/30">
+                            <Phone className="w-6 h-6 md:w-10 md:h-10 text-teal-300" />
                         </div>
                     </div>
 
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                    <h1 className="text-lg md:text-5xl lg:text-6xl font-bold mb-2 md:mb-6 leading-tight">
                         Contact Us
                     </h1>
 
-                    <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed">
+                    <p className="text-xs md:text-2xl mb-2 md:mb-8 max-w-3xl mx-auto leading-relaxed">
                         Get in touch with our team. We're here to help with any
                         questions about blood donation, scheduling, or our
                         services.
                     </p>
 
                     {/* Contact Highlights */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-8">
+                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-4 md:mb-8">
                         {[
                             {
                                 icon: Phone,
@@ -68,15 +68,15 @@ export default function HeroSection() {
                                     duration: 0.6,
                                     delay: index * 0.1,
                                 }}
-                                className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+                                className="bg-white/10 backdrop-blur-sm rounded-lg p-2 md:p-4 border border-white/20"
                             >
                                 <div className="flex justify-center mb-2">
                                     <item.icon className="w-6 h-6 text-teal-300" />
                                 </div>
-                                <div className="text-2xl font-bold text-teal-300">
+                                <div className="text-xs md:text-2xl font-bold text-teal-300">
                                     {item.value}
                                 </div>
-                                <div className="text-sm text-gray-200">
+                                <div className="text-xs md:text-sm text-gray-200">
                                     {item.label}
                                 </div>
                             </motion.div>
@@ -87,7 +87,7 @@ export default function HeroSection() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.4 }}
-                        className="flex flex-col sm:flex-row gap-4 justify-center"
+                        className="flex gap-4 justify-center"
                     >
                         <a
                             href="#contact-form"
@@ -101,7 +101,7 @@ export default function HeroSection() {
                                     });
                                 }
                             }}
-                            className="btn btn-primary btn-lg px-8 py-3 text-lg font-semibold"
+                            className="btn btn-primary btn-sm md:btn-lg px-6 md:px-8 md:py-3 text-sm md:text-lg font-semibold"
                         >
                             Send Message
                         </a>
@@ -117,7 +117,7 @@ export default function HeroSection() {
                                     });
                                 }
                             }}
-                            className="btn btn-outline btn-lg px-8 py-3 text-lg font-semibold border-white text-white hover:bg-white hover:text-teal-600"
+                            className="btn btn-outline btn-sm md:btn-lg md:px-8 md:py-3 text-sm md:text-lg font-semibold border-white text-white hover:bg-white hover:text-teal-600"
                         >
                             View Contact Info
                         </a>
