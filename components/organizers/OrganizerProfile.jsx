@@ -54,14 +54,14 @@ export default function OrganizerProfile({ user }) {
     // return <SessionLogger />;
     return (
         <Card className="md:p-5 bg-gray-100">
-            <CardHeader className="text-2xl font-bold">
+            <CardHeader className="text-2xl font-bold pb-2">
                 <CardTitle>Account Information</CardTitle>
                 <CardDescription>
                     <div>Update your account.</div>
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <Tabs defaultValue="user-profile" className="p-5">
+                <Tabs defaultValue="user-profile" className="px-5">
                     <TabsList className="flex flex-wrap">
                         <TabsTrigger value="user-profile" title="User Profile">
                             <User2Icon />

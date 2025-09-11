@@ -11,7 +11,6 @@ export default async function PortalLayout({ children }) {
     const session = await auth();
     const headerList = await headers();
     const pathname = headerList.get("x-current-path");
-    console.log("Portal layout pathname", pathname);
 
     if (!session || !session.user) redirect("/login?callbackUrl=" + pathname);
 

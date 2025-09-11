@@ -53,8 +53,8 @@ const SidebarMobile = ({ currentUser }) => {
                     <span>Account Menu</span>
                 </div>
             </PopoverTrigger>
-            <PopoverContent>
-                <div className="flex flex-col gap-5 max-h-[calc(100vh-56px)] overflow-y-auto">
+            <PopoverContent className="max-h-[calc(100vh-56px)] overflow-y-auto ">
+                <div className="flex flex-col gap-5 mb-10">
                     {/* User Profile */}
                     <div className="flex items-center mt-4 hover:bg-gray-500 truncate rounded cursor-pointer group transition ">
                         <Image
@@ -74,10 +74,10 @@ const SidebarMobile = ({ currentUser }) => {
                             <h5 className="text-lg font-bold transform transition-transform duration-300 group-hover:text-2xl">
                                 {currentUser.name || "Juan Dela Cruz"}
                             </h5>
-                            <p className="text-slate-300 truncate w-full overflow-hidden whitespace-nowrap dark:text-slate-200">
+                            <p className="text-slate-700 truncate w-full overflow-hidden whitespace-nowrap dark:text-slate-200">
                                 {currentRole?.role_name || "Donor"}
                             </p>
-                            <p className="text-blue-300 truncate w-full overflow-hidden whitespace-nowrap dark:text-slate-200">
+                            <p className="text-blue-400 truncate w-full overflow-hidden whitespace-nowrap dark:text-slate-200">
                                 {currentUser.email}
                             </p>
                         </div>

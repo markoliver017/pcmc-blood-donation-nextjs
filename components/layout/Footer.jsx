@@ -69,8 +69,8 @@ const Footer = () => {
                                         📞 Trunk Line: (02) 8588-9900 local 1165
                                     </li>
                                     <li>📧 Email: pcmcpedbcmbd@gmail.com</li>
-                                    <li>
-                                        📘 Facebook:{" "}
+                                    <li className="flex items-center gap-1">
+                                        <FaFacebook /> Facebook:{" "}
                                         <a
                                             className="hover:text-blue-500 hover:underline"
                                             href="https://www.facebook.com/pcmc.pedbc"
@@ -80,35 +80,27 @@ const Footer = () => {
                                             PCMC Pedbc
                                         </a>
                                     </li>
+                                    <li>
+                                        <a
+                                            href="https://pcmc.gov.ph/"
+                                            aria-label="PCMC Website"
+                                            target="_blank"
+                                            rel="noreferrer noopener"
+                                            className="inline-flex items-center gap-1 text-gray-600 dark:text-slate-300 text-xs"
+                                        >
+                                            <Image
+                                                src="/pcmc_logo.png"
+                                                alt="PCMC Logo"
+                                                width={16}
+                                                height={16}
+                                            />
+                                            Official Website
+                                            <span className="underline">
+                                                www.pcmc.gov.ph
+                                            </span>
+                                        </a>
+                                    </li>
                                 </ul>
-                                <div className="mt-2 flex items-center gap-3">
-                                    <a
-                                        href="https://www.facebook.com/pcmc.pedbc"
-                                        aria-label="Facebook"
-                                        target="_blank"
-                                        rel="noreferrer noopener"
-                                        className="text-blue-600 text-lg"
-                                    >
-                                        <FaFacebook />
-                                    </a>
-                                    <a
-                                        href="https://pcmc.gov.ph/"
-                                        aria-label="PCMC Website"
-                                        target="_blank"
-                                        rel="noreferrer noopener"
-                                        className="inline-flex items-center gap-1 text-gray-600 dark:text-slate-300 text-xs"
-                                    >
-                                        <Image
-                                            src="/pcmc_logo.png"
-                                            alt="PCMC Logo"
-                                            width={16}
-                                            height={16}
-                                        />
-                                        <span className="underline">
-                                            pcmc.gov.ph
-                                        </span>
-                                    </a>
-                                </div>
                             </div>
                         </details>
                     </div>
@@ -123,10 +115,10 @@ const Footer = () => {
                             <li>☎️ Landline (Direct Line): (02) 8921 9781</li>
                             <li>📞 Trunk Line: (02) 8588-9900 local 1165</li>
                             <li>📧 Email: pcmcpedbcmbd@gmail.com</li>
-                            <li>
-                                📘 Facebook:{" "}
+                            <li className="flex items-center gap-1">
+                                <FaFacebook /> Facebook:{" "}
                                 <a
-                                    className="hover:text-blue-500 hover:underline"
+                                    className="hover:text-blue-500 underline hover:font-semibold"
                                     href="https://www.facebook.com/pcmc.pedbc"
                                     target="_blank"
                                     rel="noreferrer noopener"

@@ -29,7 +29,6 @@ const DialogContent = React.forwardRef(
     ({ className, children, ...props }, ref) => (
         <DialogPortal>
             <DialogOverlay id="form-modal">
-
                 <ToastContainer containerId="modal-toast" />
                 <DialogPrimitive.Content
                     ref={ref}
@@ -78,7 +77,6 @@ const DialogContentNoX = React.forwardRef(
 );
 DialogContentNoX.displayName = DialogPrimitive.Content.displayName;
 
-
 const DialogContentNoToast = React.forwardRef(
     ({ className, children, ...props }, ref) => (
         <DialogPortal>
@@ -93,9 +91,7 @@ const DialogContentNoToast = React.forwardRef(
                 {...props}
             >
                 {children}
-
             </DialogPrimitive.Content>
-
         </DialogPortal>
     )
 );

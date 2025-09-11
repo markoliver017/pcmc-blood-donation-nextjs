@@ -52,58 +52,64 @@ export default function ShowAgency({ agencyId }) {
     }
     // return "";
     return (
-        <Card className="mt-2 p-5 h-full">
+        <Card className="mt-2 p-1 md:p-5 h-full">
             <CardHeader>
-                <CardTitle className="flex items-center justify-between gap-5">
-                    <div className="text-4xl">{agency.name}</div>
-                    <Button
-                        onClick={() => router.push(`./${agency.id}/edit`)}
-                        variant="secondary"
-                        className="hidden hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200"
-                    >
-                        <Pencil />
-                    </Button>
-                    {session &&
-                        session?.user.role_name === "Admin" &&
-                        agency.status === "for approval" && (
-                            <div className="flex gap-2">
-                                <VerifyAgency
-                                    agencyData={{
-                                        id: agencyId,
-                                        status: "activated",
-                                    }}
-                                    label="Approve"
-                                    className="btn btn-success"
-                                    icon={<CheckIcon />}
-                                />
-                                <RejectDialog
-                                    agencyId={agencyId}
-                                    className="btn-error"
-                                />
-                            </div>
-                        )}
-                </CardTitle>
-                <CardDescription>Agency Information</CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-wrap xl:flex-nowrap gap-2">
-                <div>
+                <div className="flex flex-wrap justify-between">
                     <div>
-                        <CustomAvatar
-                            avatar={
-                                agency.file_url || "/default_company_avatar.png"
-                            }
-                            className="w-[150px] h-[150px] sm:w-[200px] sm:h-[200px] md:w-[250px] md:h-[250px] xl:w-[350px] xl:h-[350px] flex-none"
-                        />
-                        <div className="text-center">
-                            <ImagePreviewComponent
-                                imgSrc={
-                                    agency.file_url ||
-                                    "/default_company_avatar.png"
+                        <CardTitle className="flex items-center justify-between gap-5">
+                            <div className="text-4xl">{agency.name}</div>
+                            <Button
+                                onClick={() =>
+                                    router.push(`./${agency.id}/edit`)
                                 }
-                            />
-                        </div>
+                                variant="secondary"
+                                className="hidden hover:bg-orange-300 active:ring-2 active:ring-orange-800 dark:active:ring-orange-200"
+                            >
+                                <Pencil />
+                            </Button>
+                        </CardTitle>
+                        <CardDescription>Agency Information</CardDescription>
+                    </div>
+                    <div className="flex">
+                        {session &&
+                            session?.user.role_name === "Admin" &&
+                            agency.status === "for approval" && (
+                                <div className="flex gap-2">
+                                    <VerifyAgency
+                                        agencyData={{
+                                            id: agencyId,
+                                            status: "activated",
+                                        }}
+                                        label="Approve"
+                                        className="btn btn-success"
+                                        icon={<CheckIcon />}
+                                    />
+                                    <RejectDialog
+                                        agencyId={agencyId}
+                                        className="btn-error"
+                                    />
+                                </div>
+                            )}
                     </div>
                 </div>
+            </CardHeader>
+            <CardContent className="flex justify-center flex-wrap xl:flex-nowrap gap-2">
+                <div>
+                    <CustomAvatar
+                        avatar={
+                            agency.file_url || "/default_company_avatar.png"
+                        }
+                        className="w-[150px] h-[150px] sm:w-[200px] sm:h-[200px] md:w-[250px] md:h-[250px] xl:w-[350px] xl:h-[350px] flex-none"
+                    />
+                    <div className="text-center">
+                        <ImagePreviewComponent
+                            imgSrc={
+                                agency.file_url || "/default_company_avatar.png"
+                            }
+                        />
+                    </div>
+                </div>
+
                 <Table className="w-full sm:min-w-sm">
                     <TableBody>
                         <TableRow>

@@ -26,10 +26,9 @@ export default function InterceptModal({ children, className = "" }) {
             onOpenChange={handleOpenChange}
             modal={true}
         >
-
             <DialogContent
                 onInteractOutside={(event) => event.preventDefault()}
-                className={`min-w-full md:min-w-8/10 2xl:min-w-7/10  max-h-97/100 overflow-y-scroll pt-10 ${className}`}
+                className={`min-w-full md:min-w-8/10 2xl:min-w-7/10 p-2 max-h-97/100 overflow-y-scroll pt-10 ${className}`}
                 tabIndex={-1}
             >
                 <DialogHeader className="hidden">

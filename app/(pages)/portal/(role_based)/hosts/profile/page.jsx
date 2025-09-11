@@ -46,7 +46,7 @@ export default async function Page() {
                     },
                 ]}
             />
-            <div className="w-full h-full md:w-8/10 lg:w-3/4 mx-auto p-1 md:p-5">
+            <div className="w-full h-full md:w-8/10 lg:w-3/4 mx-auto p-1 md:px-5">
                 <OrganizerProfile user={user} />
             </div>
         </HydrationBoundary>

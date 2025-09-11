@@ -38,7 +38,7 @@ export default function SideNavLink({
                         isCollapsed && "justify-center",
                         currentRoute === path
                             ? "text-blue-700 bg-gray-200 font-semibold dark:text-blue-800 dark:bg-slate-200 hover:bg-gray-300"
-                            : "text-slate-200 hover:bg-gray-200 hover:text-blue-700 dark:hover:text-blue-100 dark:hover:bg-gray-700"
+                            : "text-slate-700 md:text-slate-200 hover:bg-gray-200 hover:text-blue-700 dark:hover:text-blue-100 dark:hover:bg-gray-700"
                     )}
                     onClick={handleDropdownToggle}
                 >
@@ -60,8 +60,8 @@ export default function SideNavLink({
                     className={clsx(
                         "transition-all duration-300",
                         dropdownOpen[path]
-                            ? "max-h-screen opacity-100"
-                            : "max-h-0 opacity-0 pointer-events-none",
+                            ? "block max-h-screen opacity-100"
+                            : "hidden max-h-0 opacity-0 pointer-events-none",
                         !isCollapsed && "ml-5"
                     )}
                 >
@@ -74,7 +74,7 @@ export default function SideNavLink({
                                     isCollapsed && "justify-center",
                                     currentRoute === m.path
                                         ? "text-blue-700 bg-gray-200 font-semibold dark:text-blue-800 dark:bg-slate-200 hover:bg-gray-300"
-                                        : "text-slate-200 hover:bg-gray-200 hover:text-blue-700 dark:hover:text-blue-100 dark:hover:bg-gray-700"
+                                        : "text-slate-700 md:text-slate-200 hover:bg-gray-200 hover:text-blue-700 dark:hover:text-blue-100 dark:hover:bg-gray-700"
                                 )}
                                 onClick={() => {
                                     setDropdownOpen({
@@ -101,7 +101,7 @@ export default function SideNavLink({
                     isCollapsed && "justify-center",
                     currentRoute === path
                         ? "text-blue-700 bg-gray-200 font-semibold dark:text-blue-800 dark:bg-slate-200 hover:bg-gray-300"
-                        : "text-slate-200 hover:bg-gray-200 hover:text-blue-700 dark:hover:text-blue-100 dark:hover:bg-gray-700"
+                        : "text-slate-700 md:text-slate-200 hover:bg-gray-200 hover:text-blue-700 dark:hover:text-blue-100 dark:hover:bg-gray-700"
                 )}
                 onClick={callback}
             >
