@@ -13,6 +13,7 @@ import TansactProviders from "@components/layout/TansactProvider";
 
 import MainWrapper from "@components/layout/MainWrapper";
 import BackToTop from "@components/pages/shared/BackToTop";
+import { SocketProvider } from "@components/layout/SocketProvider";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -63,22 +64,25 @@ export default async function RootLayout({ children, rootLayoutModal }) {
                     {/* next-theme */}
                     <ThemeProvider>
                         <TansactProviders>
-                            <div className="flex dark:bg-black dark:text-slate-100">
-                                <Sidebar currentUser={currentUser} />
+                            <SocketProvider>
+                                <div className="flex dark:bg-black dark:text-slate-100">
+                                    <Sidebar currentUser={currentUser} />
 
-                                <MainWrapper>
-                                    {/* <Preloader /> */}
-                                    <HeaderNav currentUser={currentUser} />
-                                    {/* <Header /> */}
-                                    {/* <WrapperHead /> */}
-                                    <main className="flex-1 ">
-                                        {rootLayoutModal}
-                                        {children}
-                                    </main>
-                                    <Footer />
-                                    <BackToTop />
-                                </MainWrapper>
-                            </div>
+                                    <MainWrapper>
+                                        {/* <Preloader /> */}
+                                        <HeaderNav currentUser={currentUser} />
+                                        {/* <Header /> */}
+                                        {/* <WrapperHead /> */}
+                                        <main className="flex-1 ">
+                                            {rootLayoutModal}
+                                            {children}
+                                        </main>
+                                        <Footer />
+                                        {/* <OnlineUsers /> */}
+                                        <BackToTop />
+                                    </MainWrapper>
+                                </div>
+                            </SocketProvider>
                         </TansactProviders>
                     </ThemeProvider>
                 </Providers>

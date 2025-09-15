@@ -47,7 +47,7 @@ export default function NotificationComponent() {
         refetch: refetchNotifications,
     } = useQuery({
         queryKey: ["user-notifications"],
-        queryFn: () => getUserNotifications(1, 50),
+        queryFn: () => getUserNotifications(1, 500),
         enabled: !!session,
         staleTime: 1000 * 30, // 30 seconds
         gcTime: 1000 * 60 * 5, // 5 minutes
@@ -75,6 +75,18 @@ export default function NotificationComponent() {
         notifications,
         session?.user?.role_name || "Admin"
     );
+
+    const notificationsGroup = notifications.reduce((acc, notification) => {
+        if (!acc[notification.type]) {
+            acc[notification.type] = [];
+        }
+        acc[notification.type].push(notification);
+        return acc;
+    }, {});
+
+    // console.log("notificationsGroup: ", notificationsGroup);
+    // console.log("Notifications: ", notifications);
+    // console.log("groupedNotifications: ", groupedNotifications);
 
     // Mark all as read mutation
     const markAllAsReadMutation = useMutation({

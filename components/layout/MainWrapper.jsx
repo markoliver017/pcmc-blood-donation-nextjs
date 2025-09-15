@@ -9,6 +9,7 @@ export default function MainWrapper({ children }) {
         className =
             "bg-[url('/change-role-bg.jpg')] bg-cover bg-center bg-no-repeat bg-fixed";
     }
+
     return (
         <div
             id="main-container"

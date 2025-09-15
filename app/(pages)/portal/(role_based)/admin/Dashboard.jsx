@@ -9,15 +9,12 @@ import {
 } from "@components/ui/card";
 import { Calendar, HandCoins, Users } from "lucide-react";
 import Link from "next/link";
-import React from "react";
-import { FaArrowRight } from "react-icons/fa";
+import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { getDashboardData } from "@/action/adminDashboardAction";
 import { BiBuildings } from "react-icons/bi";
-import MetricCard from "./components/MetricCard";
 import ActionPanel from "./components/ActionPanel";
-import EventCalendarCard from "./components/EventCalendarCard";
 import DonationsChart from "./components/DonationsChart";
 import BloodTypeDistributionChart from "./components/BloodTypeDistributionChart";
 import EventSuccessRateChart from "./components/EventSuccessRateChart";

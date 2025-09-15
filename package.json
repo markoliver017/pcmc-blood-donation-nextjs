@@ -109,6 +109,7 @@
         "recharts": "^2.15.4",
         "sequelize": "^6.37.7",
         "slick-carousel": "^1.8.1",
+        "socket.io-client": "^4.8.1",
         "sonner": "^2.0.5",
         "sweetalert2": "^11.17.2",
         "sweetalert2-react-content": "^5.1.0",

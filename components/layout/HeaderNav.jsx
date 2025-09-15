@@ -35,6 +35,7 @@ import clsx from "clsx";
 import { PiUserSwitchBold } from "react-icons/pi";
 import SidebarMobile from "./SidebarMobile";
 import { DashboardIcon } from "@radix-ui/react-icons";
+import OnlineUsers from "@components/pages/shared/OnlineUsers";
 
 const HeaderNav = ({ currentUser }) => {
     let isLoggedIn = false;
@@ -303,6 +304,7 @@ const HeaderNav = ({ currentUser }) => {
                     ) : (
                         <div className="flex items-center justify-center gap-3">
                             <NotificationComponent />
+                            <OnlineUsers />
                             <DropdownMenu className="text-xl">
                                 <DropdownMenuTrigger asChild>
                                     <Button
