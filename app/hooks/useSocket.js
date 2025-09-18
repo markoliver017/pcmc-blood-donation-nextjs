@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { io } from "socket.io-client";
 
 // Custom hook for Socket.IO connection and management
-export const useSocket = (serverURL = "http://localhost:5050") => {
+export const useSocket = (serverURL = process.env.NEXT_PUBLIC_SOCKET_URL) => {
     // State to track connection status
     const [isConnected, setIsConnected] = useState(false);
     // State to store received notifications
