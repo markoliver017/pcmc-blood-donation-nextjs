@@ -185,10 +185,12 @@ export default function DetailsModal({
                                         "bg-gray-200 text-gray-600"
                                     }
                                 >
-                                    {selectedRequest.status
-                                        .charAt(0)
-                                        .toUpperCase() +
-                                        selectedRequest.status.slice(1)}
+                                    {selectedRequest.status !== "fulfilled"
+                                        ? selectedRequest.status
+                                              .charAt(0)
+                                              .toUpperCase() +
+                                          selectedRequest.status.slice(1)
+                                        : "Approved"}
                                 </Badge>
                             </div>
                         </div>

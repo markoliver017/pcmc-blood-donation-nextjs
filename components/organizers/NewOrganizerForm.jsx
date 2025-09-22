@@ -79,7 +79,7 @@ const form_sections = [
 
 export default function NewOrganizerForm({ role_name }) {
     const router = useRouter();
-    const { socket, user } = useSocket();
+    const { socket } = useSocket();
     const [isUploading, setIsUploading] = useState(false);
 
     const { data: user_role, isLoading: user_role_loading } = useQuery({
@@ -114,17 +114,12 @@ export default function NewOrganizerForm({ role_name }) {
                 sentNotifications.forEach((notification) => {
                     if (!socket) return;
 
-                    socket.emit(
-                        "send_notification",
-                        notification.notificationData,
-                        (res) => {
-                            console.log("Notification sent", res);
-                            playBeep();
-                        }
-                    );
+                    socket.emit("send_notification", {
+                        ...notification,
+                        type: "info",
+                    });
                 });
             }
-            console.log("On Success data", res);
             /** note: the return data will be accessible in the debugger
              *so no need to console the onSuccess(data) here **/
             // Invalidate the posts query to refetch the updated list
@@ -135,7 +130,8 @@ export default function NewOrganizerForm({ role_name }) {
                 text: "You've successfully submitted a request to become one of our partner agencies. You'll be notified once your application is approved.",
                 icon: "success",
                 confirmButtonText: "I understand.",
-                // onConfirm: () => router.push("/"),
+                onConfirm: () => router.push("/"),
+                onCancel: () => router.push("/"),
             });
         },
         onError: (error) => {

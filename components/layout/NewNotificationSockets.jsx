@@ -3,22 +3,34 @@ import { useSocket } from "./SocketProvider";
 import { Bell } from "lucide-react";
 import notify from "@components/ui/notify";
 import { playBeep } from "@lib/utils/sound.utils";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function NewNotificationSockets() {
     const { socket, user } = useSocket();
-
+    const queryClient = useQueryClient();
     const sendNotification = () => {
         if (!socket) return;
 
-        playBeep();
-
-        socket.emit("send_notification", {
+        const notificationData = {
+            subject: "New Agency Registration",
+            message: `A new agency (Agency Name) has registered and is pending approval.`,
             type: "info",
-            title: "New Notification",
-            message: "Notification Message!",
-            sender: user?.name || "Admin",
-            targetUserId: "b284b85b-cda1-4f98-9804-08563b0a06c9",
-        });
+            reference_id: 33,
+            created_by: "62e044f9-97b9-42e0-b1f9-504f0530713f",
+            userIds: [
+                "b284b85b-cda1-4f98-9804-08563b0a06c9",
+                "207ac622-41c8-4f4d-948d-419bd6c0a795",
+            ],
+        };
+        socket.emit("send_notification", notificationData);
+
+        // socket.emit("send_notification", {
+        //     type: "info",
+        //     title: "New Notification",
+        //     message: "Notification Message!",
+        //     sender: user?.name || "Admin",
+        //     targetUserId: "b284b85b-cda1-4f98-9804-08563b0a06c9",
+        // });
     };
 
     useEffect(() => {
@@ -31,7 +43,7 @@ export default function NewNotificationSockets() {
                     error: false,
                     message: (
                         <div>
-                            <h3>{data?.subject}</h3>
+                            <h3 className="font-bold">{data?.subject}</h3>
                             <p>{data?.message}</p>
                         </div>
                     ),
@@ -39,6 +51,10 @@ export default function NewNotificationSockets() {
                 data?.type || "info"
             );
             playBeep();
+            queryClient.invalidateQueries({
+                queryKey: ["user-notifications"],
+            });
+            queryClient.invalidateQueries({ queryKey: ["unread-count"] });
         });
 
         return () => {
