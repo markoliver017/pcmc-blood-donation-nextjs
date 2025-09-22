@@ -15,6 +15,7 @@ export const useSocket = (serverURL = process.env.NEXT_PUBLIC_SOCKET_URL) => {
 
     // Ref to store socket instance (persists across re-renders)
     const socketRef = useRef(null);
+
     // Ref to store user data
     const userRef = useRef(null);
 

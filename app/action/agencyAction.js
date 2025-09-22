@@ -592,146 +592,150 @@ export async function storeAgency(formData) {
         // Registration is successful! Now handle notifications and emails as non-critical operations
         data.agency_address = newAgency.agency_address;
 
-        // Use the new global utility for notifications and emails
-        (async () => {
-            // 1. Notify the registering user
-            try {
-                await sendNotificationAndEmail({
-                    userIds: newUser.id,
-                    notificationData: {
-                        subject: "Registration Received",
-                        message:
-                            "Thank you for registering your agency. Your application is pending approval.",
-                        type: "GENERAL",
+        const sentNotifications = [];
+
+        // 1. Notify the registering user
+        try {
+            const notificationData = {
+                subject: "Registration Received",
+                message:
+                    "Thank you for registering your agency. Your application is pending approval.",
+                type: "GENERAL",
+                reference_id: newAgency.id,
+                created_by: newUser.id,
+            };
+
+            await sendNotificationAndEmail({
+                userIds: newUser.id,
+                notificationData,
+            });
+        } catch (err) {
+            console.error("User notification failed:", err);
+        }
+
+        // 2. Send email to the registering user (template only)
+        try {
+            await sendNotificationAndEmail({
+                emailData: {
+                    to: newUser.email,
+                    templateCategory: "AGENCY_REGISTRATION",
+                    templateData: {
+                        user_first_name: newUser.first_name,
+                        user_last_name: newUser.last_name,
+                        user_email: newUser.email,
+                        user_name: `${newUser.first_name} ${newUser.last_name}`,
+                        agency_name: newAgency.name,
+                        agency_address: newAgency.address,
+                        system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
+                        support_email:
+                            process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
+                        support_contact:
+                            process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
+                        domain_url: process.env.NEXT_PUBLIC_APP_URL || "",
+                        registration_date: new Date().toLocaleDateString(),
+                    },
+                },
+            });
+        } catch (err) {
+            console.error("User email failed:", err);
+        }
+
+        // 3. Notify all admins
+        try {
+            const adminRole = await Role.findOne({
+                where: { role_name: "Admin" },
+            });
+
+            if (adminRole) {
+                const adminUsers = await User.findAll({
+                    include: [
+                        {
+                            model: Role,
+                            as: "roles",
+                            where: { id: adminRole.id },
+                            through: { attributes: [] },
+                        },
+                    ],
+                });
+                if (adminUsers.length > 0) {
+                    const notificationData = {
+                        subject: "New Agency Registration",
+                        message: `A new agency (${newAgency.name}) has registered and is pending approval.`,
+                        type: "AGENCY_APPROVAL",
                         reference_id: newAgency.id,
                         created_by: newUser.id,
-                    },
-                });
-            } catch (err) {
-                console.error("User notification failed:", err);
-            }
+                    };
 
-            // 2. Send email to the registering user (template only)
-            try {
-                await sendNotificationAndEmail({
-                    emailData: {
-                        to: newUser.email,
-                        templateCategory: "AGENCY_REGISTRATION",
-                        templateData: {
-                            user_first_name: newUser.first_name,
-                            user_last_name: newUser.last_name,
-                            user_email: newUser.email,
-                            user_name: `${newUser.first_name} ${newUser.last_name}`,
-                            agency_name: newAgency.name,
-                            agency_address: newAgency.address,
-                            system_name:
-                                process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
-                            support_email:
-                                process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL ||
-                                "",
-                            support_contact:
-                                process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT ||
-                                "",
-                            domain_url: process.env.NEXT_PUBLIC_APP_URL || "",
-                            registration_date: new Date().toLocaleDateString(),
-                        },
-                    },
-                });
-            } catch (err) {
-                console.error("User email failed:", err);
-            }
-
-            // 3. Notify all admins
-            try {
-                const adminRole = await Role.findOne({
-                    where: { role_name: "Admin" },
-                });
-
-                if (adminRole) {
-                    const adminUsers = await User.findAll({
-                        include: [
-                            {
-                                model: Role,
-                                as: "roles",
-                                where: { id: adminRole.id },
-                                through: { attributes: [] },
-                            },
-                        ],
+                    await sendNotificationAndEmail({
+                        userIds: adminUsers.map((a) => a.id),
+                        notificationData,
                     });
-                    if (adminUsers.length > 0) {
+
+                    sentNotifications.push({
+                        userIds: adminUsers.map((a) => a.id),
+                        ...notificationData,
+                    });
+
+                    for (const adminUser of adminUsers) {
                         await sendNotificationAndEmail({
-                            userIds: adminUsers.map((a) => a.id),
-                            notificationData: {
-                                subject: "New Agency Registration",
-                                message: `A new agency (${newAgency.name}) has registered and is pending approval.`,
-                                type: "AGENCY_APPROVAL",
-                                reference_id: newAgency.id,
-                                created_by: newUser.id,
+                            emailData: {
+                                to: adminUser.email,
+                                templateCategory: "MBDT_NOTIFICATION",
+                                templateData: {
+                                    agency_name: newAgency.name,
+                                    user_name: `${newUser.first_name} ${newUser.last_name}`,
+                                    user_email: newUser.email,
+                                    user_first_name: newUser.first_name,
+                                    user_last_name: newUser.last_name,
+                                    agency_address: newAgency.address,
+                                    agency_contact:
+                                        newAgency.contact_number ||
+                                        "Not provided",
+                                    registration_date:
+                                        new Date().toLocaleDateString(),
+                                    system_name:
+                                        process.env.NEXT_PUBLIC_SYSTEM_NAME ||
+                                        "",
+                                    support_email:
+                                        process.env
+                                            .NEXT_PUBLIC_SMTP_SUPPORT_EMAIL ||
+                                        "",
+                                    support_contact:
+                                        process.env
+                                            .NEXT_PUBLIC_SMTP_SUPPORT_CONTACT ||
+                                        "",
+                                    domain_url:
+                                        process.env.NEXT_PUBLIC_APP_URL || "",
+                                },
                             },
                         });
-
-                        for (const adminUser of adminUsers) {
-                            await sendNotificationAndEmail({
-                                emailData: {
-                                    to: adminUser.email,
-                                    templateCategory: "MBDT_NOTIFICATION",
-                                    templateData: {
-                                        agency_name: newAgency.name,
-                                        user_name: `${newUser.first_name} ${newUser.last_name}`,
-                                        user_email: newUser.email,
-                                        user_first_name: newUser.first_name,
-                                        user_last_name: newUser.last_name,
-                                        agency_address: newAgency.address,
-                                        agency_contact:
-                                            newAgency.contact_number ||
-                                            "Not provided",
-                                        registration_date:
-                                            new Date().toLocaleDateString(),
-                                        system_name:
-                                            process.env
-                                                .NEXT_PUBLIC_SYSTEM_NAME || "",
-                                        support_email:
-                                            process.env
-                                                .NEXT_PUBLIC_SMTP_SUPPORT_EMAIL ||
-                                            "",
-                                        support_contact:
-                                            process.env
-                                                .NEXT_PUBLIC_SMTP_SUPPORT_CONTACT ||
-                                            "",
-                                        domain_url:
-                                            process.env.NEXT_PUBLIC_APP_URL ||
-                                            "",
-                                    },
-                                },
-                            });
-                        }
                     }
                 }
-            } catch (err) {
-                console.error("Admin notification failed:", err);
             }
+        } catch (err) {
+            console.error("Admin notification failed:", err);
+        }
 
-            // 4. Log audit trail
-            try {
-                await logAuditTrail({
-                    userId: newUser.id,
-                    controller: "agencies",
-                    action: "CREATE",
-                    details: `A new agency has been successfully created. Agency ID#: ${newAgency.id} (${newAgency?.name}) with User account: ${newUser.id} (${newUser?.email})`,
-                });
-            } catch (err) {
-                console.error("Audit trail failed:", err);
-            }
-        })();
+        // 4. Log audit trail
+        try {
+            await logAuditTrail({
+                userId: newUser.id,
+                controller: "agencies",
+                action: "CREATE",
+                details: `A new agency has been successfully created. Agency ID#: ${newAgency.id} (${newAgency?.name}) with User account: ${newUser.id} (${newUser?.email})`,
+            });
+        } catch (err) {
+            console.error("Audit trail failed:", err);
+        }
 
         return {
             success: true,
             data,
+            sentNotifications,
             message:
                 "Agency registration completed successfully. Notifications are being processed in the background.",
         };
     } catch (err) {
-        // console.log("storeAgency error:", err);
         logErrorToFile(err, "CREATE AGENCY");
         await transaction.rollback();
 

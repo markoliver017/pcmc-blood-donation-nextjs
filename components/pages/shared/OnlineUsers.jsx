@@ -12,11 +12,6 @@ import {
 import Image from "next/image";
 
 export default function OnlineUsers() {
-    // fetch("https://pedbc.pcmc.gov.ph/socket.io/api/connected-users")
-    //     .then((res) => res.json())
-    //     .then((data) => {
-    //         console.log(data);
-    //     });
     const conn = useSocket();
     const [isVisible, setIsVisible] = useState(false);
 

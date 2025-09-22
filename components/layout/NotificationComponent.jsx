@@ -28,6 +28,7 @@ import {
 import AgencyNotificationModal from "@components/notification/AgencyNotificationModal";
 import { useRouter } from "next/navigation";
 import NotificationItem from "./NotificationItem";
+import NewNotificationSockets from "./NewNotificationSockets";
 
 export default function NotificationComponent() {
     const router = useRouter();
@@ -183,6 +184,7 @@ export default function NotificationComponent() {
 
     return (
         <>
+            <NewNotificationSockets />
             <Popover open={isOpen} onOpenChange={setIsOpen}>
                 <PopoverTrigger asChild>
                     <button

@@ -10,6 +10,7 @@ export function SocketProvider({ children }) {
     const [isConnected, setIsConnected] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [connectedUsers, setConnectedUsers] = useState([]);
+    const [newNotifications, setNewNotifications] = useState([]);
     const { data: session, status } = useSession();
 
     // console.log("SESSION: ", session);
@@ -79,6 +80,14 @@ export function SocketProvider({ children }) {
         // Cleanup on unmount or session change
         return () => {
             if (socketConnection) {
+                // Remove ALL listeners
+                socketConnection.off("connect");
+                socketConnection.off("disconnect");
+                socketConnection.off("connect_error");
+                socketConnection.off("authenticated");
+                socketConnection.off("connected_users");
+
+                // Then disconnect the socket
                 socketConnection.disconnect();
             }
         };
