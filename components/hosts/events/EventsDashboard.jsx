@@ -41,14 +41,14 @@ const StatCard = ({
     const CardWrapper = onClick ? Button : Card;
     const cardProps = onClick
         ? {
-            variant: "outline",
-            className:
-                "w-full h-full p-0 hover:shadow-md transition-all duration-200 cursor-pointer",
-            onClick,
-        }
+              variant: "outline",
+              className:
+                  "w-full h-full p-0 hover:shadow-md transition-all duration-200 cursor-pointer",
+              onClick,
+          }
         : {
-            className: "hover:shadow-md transition-shadow duration-200",
-        };
+              className: "hover:shadow-md transition-shadow duration-200",
+          };
 
     return (
         <CardWrapper {...cardProps}>
@@ -68,10 +68,11 @@ const StatCard = ({
                                     variant={
                                         trend > 0 ? "default" : "secondary"
                                     }
-                                    className={`text-xs ${trend > 0
-                                        ? "bg-green-100 text-green-800"
-                                        : "bg-red-100 text-red-800"
-                                        }`}
+                                    className={`text-xs ${
+                                        trend > 0
+                                            ? "bg-green-100 text-green-800"
+                                            : "bg-red-100 text-red-800"
+                                    }`}
                                 >
                                     {trend > 0 ? "+" : ""}
                                     {trend}%
@@ -104,11 +105,11 @@ const QuickActionCard = ({
 }) => {
     const variantStyles = {
         default:
-            "bg-blue-50 border-blue-200 hover:bg-blue-100 dark:bg-blue-900/20 dark:border-blue-800",
+            "bg-blue-50 border-blue-200 hover:bg-blue-100 dark:bg-blue-900/20 dark:border-blue-800 dark:text-slate-600",
         success:
-            "bg-green-50 border-green-200 hover:bg-green-100 dark:bg-green-900/20 dark:border-green-800",
+            "bg-green-50 border-green-200 hover:bg-green-100 dark:bg-green-900/20 dark:border-green-800 dark:text-slate-600",
         warning:
-            "bg-yellow-50 border-yellow-200 hover:bg-yellow-100 dark:bg-yellow-900/20 dark:border-yellow-800",
+            "bg-yellow-50 border-yellow-200 hover:bg-yellow-100 dark:bg-yellow-900/20 dark:border-yellow-800 dark:text-slate-600",
     };
 
     return (
@@ -253,8 +254,8 @@ export default function EventsDashboard() {
             icon: BarChart3,
             variant: "success",
             onClick: () =>
-            (window.location.href =
-                "/portal/hosts/events?dashboardTab=analytics"),
+                (window.location.href =
+                    "/portal/hosts/events?dashboardTab=analytics"),
         },
         {
             title: "Create New Event",
@@ -274,7 +275,8 @@ export default function EventsDashboard() {
                         Agency Dashboard
                     </h1>
                     <p className="text-muted-foreground">
-                        Overview of your agency's blood donation events and statistics
+                        Overview of your agency's blood donation events and
+                        statistics
                     </p>
                 </div>
             </div>
@@ -305,7 +307,7 @@ export default function EventsDashboard() {
                         onClick={() => refetch()}
                         variant="outline"
                         size="sm"
-                        className={`absolute top-[-50px] right-0 ring-offset-2 ring-offset-white dark:ring-offset-black hover:ring-2 hover:ring-blue-400`}
+                        className={`absolute top-[-110px] right-0 ring-offset-2 ring-offset-white dark:ring-offset-black hover:ring-2 hover:ring-blue-400`}
                     >
                         <RefreshCw className="h-4 w-4" />
                     </Button>
@@ -380,7 +382,7 @@ export default function EventsDashboard() {
                                             <span className="font-semibold">
                                                 {numeral(
                                                     dashboardData?.totalEventCount ||
-                                                    0
+                                                        0
                                                 ).format("0,0")}
                                             </span>
                                         </div>
@@ -391,7 +393,7 @@ export default function EventsDashboard() {
                                             <span className="font-semibold">
                                                 {numeral(
                                                     dashboardData?.recentEventCount ||
-                                                    0
+                                                        0
                                                 ).format("0,0")}
                                             </span>
                                         </div>
@@ -415,7 +417,7 @@ export default function EventsDashboard() {
                                             <span className="font-semibold">
                                                 {numeral(
                                                     dashboardData?.donorCount ||
-                                                    0
+                                                        0
                                                 ).format("0,0")}
                                             </span>
                                         </div>
@@ -426,7 +428,7 @@ export default function EventsDashboard() {
                                             <span className="font-semibold">
                                                 {numeral(
                                                     dashboardData?.donationCount ||
-                                                    0
+                                                        0
                                                 ).format("0,0")}
                                             </span>
                                         </div>

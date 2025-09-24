@@ -257,19 +257,6 @@ export default function ListofEvents() {
                 onValueChange={handleTabChange}
                 className="mt-5 px-2 sm:px-5 relative"
             >
-                <Link
-                    href="/portal/hosts/events/create"
-                    className={clsx(
-                        "btn absolute right-5 bg-gradient-to-b from-red-700 to-red-500 text-white text-lg md:text-xl font-bold px-4 py-6 rounded-md shadow-[7px_5px_2px_0px_rgba(0,_0,_0,_0.3)] dark:shadow-red-400/60 hover:from-pink-500 hover:to-purple-400 hover:ring transition duration-300",
-                        approvedEvents.length === 0 && "hidden"
-                    )}
-                >
-                    <MdBloodtype className="h-6 w-6" />
-                    <span className="hidden sm:inline-block">
-                        New Blood Drive
-                    </span>
-                </Link>
-
                 <TabsList className="mt-4 bg-muted p-1 rounded-md w-max">
                     <TabsTrigger
                         value="dashboard"
@@ -327,6 +314,16 @@ export default function ListofEvents() {
                         </div>
                     </TabsTrigger>
                 </TabsList>
+                {/* <Link
+                    href="/portal/hosts/events/create"
+                    className={clsx(
+                        "btn absolute right-5 bg-gradient-to-b from-red-700 to-red-500 text-white text-lg md:text-xl font-bold md:px-4 md:py-6 rounded-md shadow-[7px_5px_2px_0px_rgba(0,_0,_0,_0.3)] dark:shadow-red-400/60 hover:from-pink-500 hover:to-purple-400 hover:ring transition duration-300",
+                        approvedEvents.length === 0 && "hidden"
+                    )}
+                >
+                    <MdBloodtype className="h-6 w-6" />
+                    <span>New Blood Drive</span>
+                </Link> */}
 
                 <TabsContent value="dashboard">
                     <EventsDashboard />
@@ -334,6 +331,16 @@ export default function ListofEvents() {
 
                 {/* Ongoing Tab Content */}
                 <TabsContent value="ongoing">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                Ongoing Events
+                            </h1>
+                            <p className="text-muted-foreground">
+                                List of ongoing events
+                            </p>
+                        </div>
+                    </div>
                     <div className="flex justify-end mt-5">
                         <ViewModeTabs
                             value={ongoingViewMode}
@@ -346,14 +353,20 @@ export default function ListofEvents() {
                                     className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-purple-700 hover:bg-purple-100 focus-visible:ring-2 focus-visible:ring-purple-400"
                                 >
                                     <CreditCard />
-                                    Card View
+                                    Card{" "}
+                                    <span className="hidden sm:inline-block">
+                                        View
+                                    </span>
                                 </ViewModeTabsTrigger>
                                 <ViewModeTabsTrigger
                                     value="table"
                                     className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-blue-700 hover:bg-blue-100 focus-visible:ring-2 focus-visible:ring-blue-400"
                                 >
                                     <TableIcon />
-                                    Table View
+                                    Table
+                                    <span className="hidden sm:inline-block">
+                                        View
+                                    </span>
                                 </ViewModeTabsTrigger>
                             </ViewModeTabsList>
                         </ViewModeTabs>
@@ -419,6 +432,16 @@ export default function ListofEvents() {
 
                 {/* Upcoming Tab Content */}
                 <TabsContent value="upcoming">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                Upcoming Events
+                            </h1>
+                            <p className="text-muted-foreground">
+                                List of upcoming events
+                            </p>
+                        </div>
+                    </div>
                     <div className="flex justify-end mt-5">
                         <ViewModeTabs
                             value={upcomingViewMode}
@@ -431,14 +454,20 @@ export default function ListofEvents() {
                                     className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-purple-700 hover:bg-purple-100 focus-visible:ring-2 focus-visible:ring-purple-400"
                                 >
                                     <CreditCard />
-                                    Card View
+                                    Card
+                                    <span className="hidden sm:inline-block">
+                                        View
+                                    </span>
                                 </ViewModeTabsTrigger>
                                 <ViewModeTabsTrigger
                                     value="table"
                                     className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-blue-700 hover:bg-blue-100 focus-visible:ring-2 focus-visible:ring-blue-400"
                                 >
                                     <TableIcon />
-                                    Table View
+                                    Table
+                                    <span className="hidden sm:inline-block">
+                                        View
+                                    </span>
                                 </ViewModeTabsTrigger>
                             </ViewModeTabsList>
                         </ViewModeTabs>
@@ -504,6 +533,16 @@ export default function ListofEvents() {
 
                 {/* All Tab Content */}
                 <TabsContent value="all">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                All Events
+                            </h1>
+                            <p className="text-muted-foreground">
+                                List of all events
+                            </p>
+                        </div>
+                    </div>
                     <div className="flex justify-end mt-5">
                         <ViewModeTabs
                             value={allViewMode}
@@ -516,14 +555,20 @@ export default function ListofEvents() {
                                     className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-purple-700 hover:bg-purple-100 focus-visible:ring-2 focus-visible:ring-purple-400"
                                 >
                                     <CreditCard />
-                                    Card View
+                                    Card
+                                    <span className="hidden sm:inline-block">
+                                        View
+                                    </span>
                                 </ViewModeTabsTrigger>
                                 <ViewModeTabsTrigger
                                     value="table"
                                     className="flex items-center gap-2 px-6 py-2 rounded-full transition-colors font-semibold text-base data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow data-[state=inactive]:bg-transparent data-[state=inactive]:text-blue-700 hover:bg-blue-100 focus-visible:ring-2 focus-visible:ring-blue-400"
                                 >
                                     <TableIcon />
-                                    Table View
+                                    Table
+                                    <span className="hidden sm:inline-block">
+                                        View
+                                    </span>
                                 </ViewModeTabsTrigger>
                             </ViewModeTabsList>
                         </ViewModeTabs>
@@ -610,7 +655,17 @@ export default function ListofEvents() {
                 </TabsContent>
 
                 {/* For Approval Tab Content */}
-                <TabsContent value="for-approval" className="mt-6">
+                <TabsContent value="for-approval">
+                    <div className="flex items-center justify-between mb-2">
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                For Approval Events
+                            </h1>
+                            <p className="text-muted-foreground">
+                                List of for approval events
+                            </p>
+                        </div>
+                    </div>
                     <EventFilterBar
                         onChange={setForApprovalFilters}
                         defaultValues={forApprovalFilters}

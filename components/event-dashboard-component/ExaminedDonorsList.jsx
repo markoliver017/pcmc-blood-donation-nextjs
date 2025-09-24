@@ -17,7 +17,12 @@ import {
 } from "lucide-react";
 import UpdateStatusModal from "./UpdateStatusModal";
 
-export default function ExaminedDonorsList({ eventId, appointments, onManageAppointment, roleName }) {
+export default function ExaminedDonorsList({
+    eventId,
+    appointments,
+    onManageAppointment,
+    roleName,
+}) {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -131,86 +136,81 @@ export default function ExaminedDonorsList({ eventId, appointments, onManageAppo
                                 className="hover:shadow-md transition-shadow duration-200"
                             >
                                 <CardContent className="p-4">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-4 flex-1">
-                                            {/* Donor Avatar */}
-                                            <div
-                                                className={`w-12 h-12 rounded-full flex items-center justify-center ${isEligible
+                                    <div className="flex items-center gap-4 flex-1">
+                                        {/* Donor Avatar */}
+                                        <div
+                                            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                                                isEligible
                                                     ? "bg-green-100 dark:bg-green-900"
                                                     : "bg-red-100 dark:bg-red-900"
-                                                    }`}
-                                            >
-                                                <User
-                                                    className={`h-6 w-6 ${isEligible
+                                            }`}
+                                        >
+                                            <User
+                                                className={`h-6 w-6 ${
+                                                    isEligible
                                                         ? "text-green-600"
                                                         : "text-red-600"
-                                                        }`}
-                                                />
-                                            </div>
+                                                }`}
+                                            />
+                                        </div>
 
-                                            {/* Donor Info */}
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <h4 className="font-medium truncate">
-                                                        {appointment.donor?.user
-                                                            ?.name ||
-                                                            "Unknown Donor"}
-                                                    </h4>
-                                                    {getStatusBadge(
-                                                        appointment.status
-                                                    )}
-                                                    {appointment.physical_exam &&
-                                                        getEligibilityBadge(
-                                                            appointment
-                                                                .physical_exam
-                                                                .eligibility_status
-                                                        )}
-                                                </div>
-
-                                                <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                                                    <div className="flex items-center gap-1">
-                                                        <Droplets className="h-3 w-3" />
-                                                        <span>
-                                                            {appointment.donor
-                                                                ?.blood_type
-                                                                ?.blood_type ||
-                                                                "Not specified"}
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex items-center gap-1">
-                                                        <Building className="h-3 w-3" />
-                                                        <span>
-                                                            {appointment.donor
-                                                                ?.agency
-                                                                ?.name ||
-                                                                "Unknown Agency"}
-                                                        </span>
-                                                    </div>
-                                                    {appointment.physical_exam && (
-                                                        <div className="flex items-center gap-1">
-                                                            <Activity className="h-3 w-3" />
-                                                            <span>
-                                                                BP:{" "}
-                                                                {appointment
-                                                                    .physical_exam
-                                                                    .blood_pressure ||
-                                                                    "N/A"}{" "}
-                                                                | HR:{" "}
-                                                                {appointment
-                                                                    .physical_exam
-                                                                    .pulse_rate ||
-                                                                    "N/A"}
-                                                            </span>
-                                                        </div>
-                                                    )}
-                                                </div>
+                                        {/* Donor Info */}
+                                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                                            <h4 className="font-medium truncate">
+                                                {appointment.donor?.user
+                                                    ?.name || "Unknown Donor"}
+                                            </h4>
+                                            {getStatusBadge(appointment.status)}
+                                            {appointment.physical_exam &&
+                                                getEligibilityBadge(
+                                                    appointment.physical_exam
+                                                        .eligibility_status
+                                                )}
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-between gap-2">
+                                        <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm text-muted-foreground">
+                                            <div className="flex items-center gap-1">
+                                                <Droplets className="h-3 w-3" />
+                                                <span>
+                                                    {appointment.donor
+                                                        ?.blood_type
+                                                        ?.blood_type ||
+                                                        "Not specified"}
+                                                </span>
                                             </div>
+                                            <div className="flex items-center gap-1">
+                                                <Building className="h-3 w-3" />
+                                                <span>
+                                                    {appointment.donor?.agency
+                                                        ?.name ||
+                                                        "Unknown Agency"}
+                                                </span>
+                                            </div>
+                                            {appointment.physical_exam && (
+                                                <div className="flex items-center gap-1">
+                                                    <Activity className="h-3 w-3" />
+                                                    <span>
+                                                        BP:{" "}
+                                                        {appointment
+                                                            .physical_exam
+                                                            .blood_pressure ||
+                                                            "N/A"}{" "}
+                                                        | HR:{" "}
+                                                        {appointment
+                                                            .physical_exam
+                                                            .pulse_rate ||
+                                                            "N/A"}
+                                                    </span>
+                                                </div>
+                                            )}
                                         </div>
 
                                         {/* Action Buttons */}
                                         <div className="flex items-center gap-2">
                                             {roleName === "Admin" &&
-                                                isEligible && !hasCollection && (
+                                                isEligible &&
+                                                !hasCollection && (
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
@@ -227,8 +227,7 @@ export default function ExaminedDonorsList({ eventId, appointments, onManageAppo
                                                             Mark Collected
                                                         </span>
                                                     </Button>
-                                                )
-                                            }
+                                                )}
                                             {!isEligible && (
                                                 <div className="flex items-center gap-1 text-xs text-red-600">
                                                     <AlertTriangle className="h-3 w-3" />
@@ -246,7 +245,9 @@ export default function ExaminedDonorsList({ eventId, appointments, onManageAppo
                                                     variant="ghost"
                                                     size="sm"
                                                     onClick={() =>
-                                                        onManageAppointment(appointment)
+                                                        onManageAppointment(
+                                                            appointment
+                                                        )
                                                     }
                                                 >
                                                     <Eye className="h-4 w-4" />
@@ -296,30 +297,30 @@ export default function ExaminedDonorsList({ eventId, appointments, onManageAppo
                                             </div>
                                             {appointment.physical_exam
                                                 .deferral_reason && (
-                                                    <div className="mt-2 p-2 bg-red-50 dark:bg-red-900/20 rounded text-xs">
-                                                        <span className="font-medium text-red-700 dark:text-red-300">
-                                                            Deferral Reason:
-                                                        </span>{" "}
-                                                        {
-                                                            appointment
-                                                                .physical_exam
-                                                                .deferral_reason
-                                                        }
-                                                    </div>
-                                                )}
+                                                <div className="mt-2 p-2 bg-red-50 dark:bg-red-900/20 rounded text-xs">
+                                                    <span className="font-medium text-red-700 dark:text-red-300">
+                                                        Deferral Reason:
+                                                    </span>{" "}
+                                                    {
+                                                        appointment
+                                                            .physical_exam
+                                                            .deferral_reason
+                                                    }
+                                                </div>
+                                            )}
                                             {appointment.physical_exam
                                                 .remarks && (
-                                                    <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-xs">
-                                                        <span className="font-medium text-blue-700 dark:text-blue-300">
-                                                            Remarks:
-                                                        </span>{" "}
-                                                        {
-                                                            appointment
-                                                                .physical_exam
-                                                                .remarks
-                                                        }
-                                                    </div>
-                                                )}
+                                                <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-xs">
+                                                    <span className="font-medium text-blue-700 dark:text-blue-300">
+                                                        Remarks:
+                                                    </span>{" "}
+                                                    {
+                                                        appointment
+                                                            .physical_exam
+                                                            .remarks
+                                                    }
+                                                </div>
+                                            )}
                                         </div>
                                     )}
 
@@ -340,17 +341,17 @@ export default function ExaminedDonorsList({ eventId, appointments, onManageAppo
                                                 ml
                                                 {appointment.blood_collection
                                                     .remarks && (
-                                                        <span className="ml-4">
-                                                            <span className="font-medium">
-                                                                Remarks:
-                                                            </span>{" "}
-                                                            {
-                                                                appointment
-                                                                    .blood_collection
-                                                                    .remarks
-                                                            }
-                                                        </span>
-                                                    )}
+                                                    <span className="ml-4">
+                                                        <span className="font-medium">
+                                                            Remarks:
+                                                        </span>{" "}
+                                                        {
+                                                            appointment
+                                                                .blood_collection
+                                                                .remarks
+                                                        }
+                                                    </span>
+                                                )}
                                             </div>
                                         </div>
                                     )}

@@ -232,20 +232,20 @@ export default function CreateEventForm({ agency }) {
             />
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="p-5 shadow border rounded-2xl"
+                className="md:p-5 shadow border rounded-2xl"
             >
-                <Card className="md:p-4 bg-slate-100 p-3">
-                    <CardHeader className="text-2xl font-bold">
+                <Card className="md:p-4 bg-slate-100">
+                    <CardHeader className="px-3 py-5 md:px-4 md:py-5 text-2xl font-bold">
                         <CardTitle className="flex justify-between">
-                            <div className="text-2xl">
+                            <div className="text-base md:text-2xl ">
                                 Blood Donation Event Request
                             </div>
                             <div className="flex justify-end">
                                 <DrawerComponent
                                     title="Event Calendar"
                                     trigger={
-                                        <DrawerTrigger className="btn btn-primary">
-                                            <CalendarPlus2 />{" "}
+                                        <DrawerTrigger className="btn btn-primary btn-xs md:btn-lg">
+                                            <CalendarPlus2 className="w-4 md:w-6" />{" "}
                                             <span className="hidden md:inline-block">
                                                 Event Calendar
                                             </span>
@@ -263,7 +263,7 @@ export default function CreateEventForm({ agency }) {
                         </CardDescription>
                     </CardHeader>
 
-                    <CardContent className="flex flex-wrap gap-5">
+                    <CardContent className="flex flex-wrap md:flex-nowrap gap-5">
                         <FormField
                             control={control}
                             name="file"
@@ -277,7 +277,7 @@ export default function CreateEventForm({ agency }) {
                                     }
                                 };
                                 return (
-                                    <FormItem className="flex-none text-center w-full md:w-max">
+                                    <FormItem className="flex-none text-center w-full">
                                         <div className="hidden">
                                             <FormControl ref={fileInputRef}>
                                                 <Input
@@ -330,7 +330,7 @@ export default function CreateEventForm({ agency }) {
                             }}
                         />
 
-                        <div className="flex-1 md:min-w-[350px] flex flex-col justify-evenly gap-2">
+                        <div className="flex-1 flex flex-col justify-evenly gap-2">
                             {isError && (
                                 <div className="alert alert-error">
                                     {error?.message}
@@ -473,10 +473,7 @@ export default function CreateEventForm({ agency }) {
                                                 />
                                             </PopoverContent>
                                         </Popover>
-                                        {/* <FormDescription className="pl-5 dark:text-slate-300">
-                                            * Dates filled with red are not
-                                            available for booking.
-                                        </FormDescription> */}
+
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -532,8 +529,8 @@ export default function CreateEventForm({ agency }) {
                                                 className=" p-5 flex-1 mb-2 bg-inherit border-l-5 border-l-blue-900 dark:border-l-blue-600"
                                             >
                                                 <CardTitle>
-                                                    <div className="flex justify-between ">
-                                                        <p className="flex items-center text-2xl gap-1">
+                                                    <div className="flex flex-wrap justify-between ">
+                                                        <p className="flex items-center md:text-2xl gap-1">
                                                             <BiTime /> Time
                                                             Schedule {index + 1}
                                                         </p>
@@ -750,10 +747,10 @@ export default function CreateEventForm({ agency }) {
                                 </CardContent>
                             </Card>
 
-                            <div className="space-y-2 mt-4 relative flex md:justify-end gap-2">
+                            <div className="space-y-2 mt-4 relative flex flex-wrap md:justify-end gap-2">
                                 <button
                                     disabled={!isDirty || isPending}
-                                    className="py-5 flex rounded-2xl text-2xl btn btn-primary ring-offset-2 ring-offset-blue-500 hover:ring-2 "
+                                    className="md:py-5 flex rounded-2xl md:text-2xl btn btn-primary ring-offset-2 ring-offset-blue-500 hover:ring-2 "
                                 >
                                     {isPending ? (
                                         <>
@@ -770,7 +767,7 @@ export default function CreateEventForm({ agency }) {
                                 <button
                                     onClick={() => router.back()}
                                     type="button"
-                                    className="p-5 flex rounded-2xl text-2xl btn btn-outline btn-error ring-offset-2 ring-offset-red-500 hover:ring-2"
+                                    className="md:p-5 flex rounded-2xl md:text-2xl btn btn-outline btn-error ring-offset-2 ring-offset-red-500 hover:ring-2"
                                 >
                                     <X /> Cancel
                                 </button>

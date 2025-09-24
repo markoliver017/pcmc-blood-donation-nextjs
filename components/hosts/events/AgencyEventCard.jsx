@@ -124,7 +124,7 @@ export default function AgencyEventCard({
     return (
         <Card className="overflow-hidden transition-all hover:shadow-md">
             <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900">
-                <div className="flex justify-between items-start">
+                <div className="flex justify-between flex-wrap items-start">
                     <CardTitle className="text-xl font-bold">
                         {event.title}
                     </CardTitle>
@@ -181,7 +181,10 @@ export default function AgencyEventCard({
                         className="btn btn-sm btn-outline rounded-4xl"
                         onClick={() => onView(event)}
                     >
-                        <Eye className="mr-2 h-4 w-4" /> View Details
+                        <Eye className=" h-4 w-4" />
+                        <span className="hidden sm:inline-block">
+                            View Details
+                        </span>
                     </button>
 
                     {event.status === "for approval" && (
@@ -189,7 +192,8 @@ export default function AgencyEventCard({
                             className="btn btn-sm btn-outline rounded-4xl"
                             onClick={() => onEdit(event)}
                         >
-                            <Pencil className="mr-2 h-4 w-4" /> Edit
+                            <Pencil className="mr-2 h-4 w-4" />
+                            <span className="hidden sm:inline-block">Edit</span>
                         </button>
                     )}
 
@@ -200,7 +204,10 @@ export default function AgencyEventCard({
                                 href={`/portal/hosts/events/${event.id}/event-dashboard`}
                                 className="btn btn-sm btn-outline rounded-4xl"
                             >
-                                <DashboardIcon className="h-4 w-4" /> Dashboard
+                                <DashboardIcon className="h-4 w-4" />
+                                <span className="hidden sm:inline-block">
+                                    Dashboard
+                                </span>
                             </Link>
                             {(event.registration_status === "not started" ||
                                 event.registration_status === "ongoing") && (
@@ -219,7 +226,10 @@ export default function AgencyEventCard({
                         <DropdownMenu className="flex-none">
                             <DropdownMenuTrigger asChild>
                                 <Button variant="outline" size="sm">
-                                    <Settings className="h-4 w-4" /> Others
+                                    <Settings className="h-4 w-4" />
+                                    <span className="hidden sm:inline-block">
+                                        Others
+                                    </span>
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="flex-none">

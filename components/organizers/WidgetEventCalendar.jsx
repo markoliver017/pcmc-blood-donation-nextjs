@@ -17,7 +17,18 @@ export default function WidgetEventCalendar() {
     // console.log("session", session);
     const { data: events, isLoading } = useQuery({
         queryKey: ["agency_event_schedules"],
-        queryFn: getDonorEventCalendar,
+        queryFn: async () => {
+            const res = await getDonorEventCalendar();
+            console.log("res", res);
+            if (!res.success) {
+                notify({
+                    error: true,
+                    message: res.message,
+                });
+                return [];
+            }
+            return res.data;
+        },
     });
 
     const { data: agency_id, isLoading: agencyIdIsLoading } = useQuery({
@@ -27,6 +38,8 @@ export default function WidgetEventCalendar() {
 
     if (isLoading || agencyIdIsLoading || session.status === "loading")
         return <Skeleton_line />;
+
+    // if (!events?.length) return <div>No events found</div>;
 
     return (
         <Card>

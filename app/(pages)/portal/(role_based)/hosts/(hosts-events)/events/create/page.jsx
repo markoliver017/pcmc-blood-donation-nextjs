@@ -4,6 +4,8 @@ import { CalendarCheck, CalendarPlus } from "lucide-react";
 import { getAgencyId } from "@/action/hostEventAction";
 import { Agency } from "@lib/models";
 import CreateEventForm from "@components/events/CreateEventForm";
+import { BiArrowBack } from "react-icons/bi";
+import Link from "next/link";
 
 export default async function page() {
     const agency_id = await getAgencyId();
@@ -15,13 +17,17 @@ export default async function page() {
     return (
         <>
             <WrapperHeadMain
-                icon={<CalendarCheck />}
+                icon={
+                    <Link href="/portal/hosts/events">
+                        <BiArrowBack />
+                    </Link>
+                }
                 pageTitle="Blood Drives"
                 breadcrumbs={[
                     {
                         path: "/portal/hosts/events",
                         icon: <CalendarCheck className="w-4" />,
-                        title: "Blood Drives",
+                        title: "List of Events",
                     },
                     {
                         path: "/portal/hosts/events/create",
@@ -30,7 +36,7 @@ export default async function page() {
                     },
                 ]}
             />
-            <div className="p-2 md:px-5">
+            <div className="p-1 md:px-5">
                 <CreateEventForm agency={agency.get({ plain: true })} />
             </div>
         </>

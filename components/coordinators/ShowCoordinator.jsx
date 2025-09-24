@@ -36,9 +36,9 @@ export default function ShowCoordinator({ coorId }) {
     }
     // return "";
     return (
-        <Card className="p-5 h-full">
+        <Card className="p-2 md:p-5 h-full">
             <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between">
                     <div>
                         <CardTitle className="flex">
                             <div className="text-4xl">

@@ -375,7 +375,7 @@ export default function EventDashboardDataTable({
                 </div>
 
                 {/* Data Table */}
-                <div className="rounded-md border">
+                <div className="rounded-md border overflow-x-scroll">
                     <Table>
                         <TableHeader>
                             <TableRow>

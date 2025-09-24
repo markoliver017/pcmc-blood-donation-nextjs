@@ -225,10 +225,10 @@ export default function NewCoordinatorForm({ role_name, agency_id }) {
     return (
         <>
             <Card className="bg-slate-100 ">
-                <CardHeader className="text-2xl font-bold">
+                <CardHeader className="text-2xl font-bold px-1">
                     <CardTitle></CardTitle>
                     <CardDescription>
-                        <div className="flex justify-center rounded items-center dark:bg-slate-800 ">
+                        <div className="flex justify-center rounded items-center dark:bg-slate-800 p-2 ">
                             <ul className="steps ">
                                 {form_sections.map((sec, i) => (
                                     <li
@@ -327,7 +327,7 @@ export default function NewCoordinatorForm({ role_name, agency_id }) {
                                         Errors
                                     </LoadingModal>
                                     <Card>
-                                        <CardHeader>
+                                        <CardHeader className="px-1 py-2">
                                             <CardTitle className="text-2xl">
                                                 Registration Summary
                                             </CardTitle>
@@ -377,7 +377,7 @@ export default function NewCoordinatorForm({ role_name, agency_id }) {
                                                     name="termsAccepted"
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <label className="flex-items-center mt-2 text-2xl italic">
+                                                            <label className="flex-items-center space-x-2 mt-2 text-sm md:text-2xl italic">
                                                                 <input
                                                                     type="checkbox"
                                                                     className="checkbox border-orange-600 bg-orange-500 checked:border-green-500 checked:bg-green-400 checked:text-green-800"

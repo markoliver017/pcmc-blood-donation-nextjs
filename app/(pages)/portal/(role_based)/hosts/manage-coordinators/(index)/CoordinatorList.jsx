@@ -6,6 +6,7 @@ import { Card } from "@components/ui/card";
 import { DataTable } from "@components/coordinators/Datatable";
 import { hostCoordinatorColumns } from "@components/coordinators/hostCoordinatorColumns";
 import { getVerifiedCoordinatorsByAgency } from "@/action/hostCoordinatorAction";
+import { getAllAgencyOptions } from "@/action/adminEventAction";
 
 export default function CoordinatorList() {
     const queryClient = useQueryClient();
@@ -21,9 +22,24 @@ export default function CoordinatorList() {
         cacheTime: 2 * 60 * 1000, // Cache persists for 2 minute
     });
 
-    if (isLoading || isFetching) return <Skeleton />;
+    const {
+        data: agencyOptions,
+        error: errorAgency,
+        isLoading: isLoadingAgency,
+    } = useQuery({
+        queryKey: ["all-agency-options"],
+        queryFn: async () => {
+            const res = await getAllAgencyOptions();
+            if (!res.success) {
+                throw res;
+            }
+            return res.data;
+        },
+    });
 
-    if (error) return <div>Error: {error.message}</div>;
+    if (isLoading || isFetching || isLoadingAgency) return <Skeleton />;
+
+    if (error || errorAgency) return <div>Error: {error.message}</div>;
 
     // return <pre>{JSON.stringify(coordinators, null, 2)}</pre>;
     return (
@@ -56,6 +72,7 @@ export default function CoordinatorList() {
                         columns={hostCoordinatorColumns}
                         data={coordinators}
                         isLoading={isLoading}
+                        agencyOptions={agencyOptions}
                     />
                 </>
             )}

@@ -65,7 +65,7 @@ export default async function RootLayout({ children, rootLayoutModal }) {
                     <ThemeProvider>
                         <TansactProviders>
                             <SocketProvider>
-                                <div className="flex dark:bg-black dark:text-slate-100">
+                                <div className="flex dark:bg-black dark:text-slate-100 ">
                                     <Sidebar currentUser={currentUser} />
 
                                     <MainWrapper>

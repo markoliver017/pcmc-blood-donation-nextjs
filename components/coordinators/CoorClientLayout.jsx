@@ -41,7 +41,7 @@ export default function CoorClientLayout({ children, approval }) {
                 <Tabs
                     defaultValue={currentTab}
                     onValueChange={handleTabChange}
-                    className="p-5"
+                    className="p-2 md:p-5"
                 >
                     <TabsList>
                         <TabsTrigger value="all">All</TabsTrigger>

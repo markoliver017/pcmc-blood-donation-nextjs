@@ -158,7 +158,7 @@ const getColumns = (handleUpdate) => {
                                 className="flex items-center gap-1"
                             >
                                 <Eye className="w-4 h-4" />
-                                <span className="hidden md:inline">View</span>
+                                <span>View</span>
                                 {/* {data.status !== "pending" ? (
                                     <Eye className="w-4 h-4" />
                                 ) : (
@@ -190,7 +190,7 @@ const getColumns = (handleUpdate) => {
                                 className="flex items-center gap-1"
                             >
                                 <XCircle className="w-4 h-4" />
-                                <span className="hidden md:inline">Cancel</span>
+                                <span>Cancel</span>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -223,7 +223,7 @@ export default function BloodRequestList({ handleUpdate }) {
     }
 
     return (
-        <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow md:p-6">
             <DataTable columns={columns} data={requests} />
         </div>
     );

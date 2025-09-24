@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader } from "@components/ui/card";
 import { Button } from "@components/ui/button";
-import { Plus } from "lucide-react";
+import { Bell, List, Plus } from "lucide-react";
 import { Dialog, DialogContent } from "@components/ui/dialog";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAnnouncements } from "@action/announcementAction";
@@ -15,6 +15,7 @@ import UpdateAnnouncementForm from "@components/hosts/announcements/UpdateAnnoun
 import ViewAnnouncementModal from "@components/hosts/announcements/ViewAnnouncementModal";
 import Skeleton from "@components/ui/skeleton";
 import { fetchAgencyByRole } from "@/action/agencyAction";
+import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 
 export default function HostAnnouncementsPage() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -84,48 +85,58 @@ export default function HostAnnouncementsPage() {
     };
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold">My Announcements</h1>
+        <div className="container mx-auto p-2 md:p-6 space-y-2 md:space-y-6">
+            <WrapperHeadMain
+                icon={<Bell />}
+                pageTitle="Announcements"
+                breadcrumbs={[
+                    {
+                        path: "/portal/hosts/announcements",
+                        icon: <List className="w-4" />,
+                        title: "List of Announcements",
+                    },
+                ]}
+            />
+            <div className="flex md:justify-end">
                 <Button onClick={() => setIsCreateModalOpen(true)}>
                     <Plus className="w-4 h-4 mr-2" />
                     New Announcement
                 </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6">
                 <Card>
-                    <CardHeader>
-                        <h3 className="text-lg font-semibold">
+                    <CardHeader className="px-2 md:px-8">
+                        <h3 className="text-xs md:text-lg font-semibold line-clamp-2 text-ellipsis">
                             Total Announcements
                         </h3>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-blue-500">
+                        <div className="text-xs md:text-3xl font-bold text-blue-500">
                             {stats.total}
                         </div>
                     </CardContent>
                 </Card>
                 <Card>
-                    <CardHeader>
-                        <h3 className="text-lg font-semibold">
+                    <CardHeader className="px-2 md:px-8">
+                        <h3 className="text-xs md:text-lg font-semibold line-clamp-2 text-ellipsis">
                             Public Announcements
                         </h3>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-green-500">
+                        <div className="text-xs md:text-3xl font-bold text-green-500">
                             {stats.public}
                         </div>
                     </CardContent>
                 </Card>
                 <Card>
-                    <CardHeader>
-                        <h3 className="text-lg font-semibold">
+                    <CardHeader className="px-2 md:px-8">
+                        <h3 className="text-xs md:text-lg font-semibold line-clamp-2 text-ellipsis">
                             Agency-Specific
                         </h3>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-orange-500">
+                        <div className="text-xs md:text-3xl font-bold text-orange-500">
                             {stats.agency_specific}
                         </div>
                     </CardContent>

@@ -61,7 +61,7 @@ export default function OrganizerProfile({ user }) {
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <Tabs defaultValue="user-profile" className="px-5">
+                <Tabs defaultValue="user-profile" className="md:px-5">
                     <TabsList className="flex flex-wrap">
                         <TabsTrigger value="user-profile" title="User Profile">
                             <User2Icon />
@@ -114,7 +114,7 @@ export default function OrganizerProfile({ user }) {
                             </TabsTrigger>
                         )}
                     </TabsList>
-                    <TabsContent className="p-2" value="user-profile">
+                    <TabsContent className="md:p-2" value="user-profile">
                         <UserProfileForm userQuery={userQuery} />
                     </TabsContent>
                     <TabsContent value="coordinator-contact">

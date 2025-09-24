@@ -190,8 +190,8 @@ export function DataTable({ columns, data, isLoading }) {
                                 )}
                             </TableBody>
                         </Table>
-                        <DataTablePagination table={table} />
                     </div>
+                    <DataTablePagination table={table} />
                 </>
             )}
         </div>

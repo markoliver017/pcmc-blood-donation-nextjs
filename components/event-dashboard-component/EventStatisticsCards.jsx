@@ -133,7 +133,7 @@ export default function EventStatisticsCards({ statistics }) {
                         className="hover:shadow-md transition-shadow duration-200"
                     >
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium text-muted-foreground">
+                            <CardTitle className="text-sm font-bold text-muted-foreground">
                                 {card.title}
                             </CardTitle>
                             <div className={`p-2 rounded-lg ${card.bgColor}`}>
@@ -143,7 +143,7 @@ export default function EventStatisticsCards({ statistics }) {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between px-5">
                                 <div className="space-y-1">
                                     <div className="text-2xl font-bold">
                                         {card.value}

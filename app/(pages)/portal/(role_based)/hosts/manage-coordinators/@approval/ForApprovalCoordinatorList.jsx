@@ -36,7 +36,7 @@ export default function ForApprovalCoordinatorList() {
     if (!coordinators || coordinators.length === 0)
         return (
             <Card className="col-span-full flex flex-col justify-center items-center text-center py-16">
-                <FileClock className="w-12 h-12 mb-4 text-primary" />
+                <FileClock className="w-12 h-12 mb-4 text-primary dark:text-white" />
                 <h2 className="text-xl font-semibold">No Pending Approvals</h2>
                 <p className="text-gray-500 mt-2">You're all caught up! 🎉</p>
             </Card>

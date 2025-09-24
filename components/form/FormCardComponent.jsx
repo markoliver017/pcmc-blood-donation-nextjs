@@ -12,9 +12,9 @@ export default function FormCardComponent({ children, details }) {
     return (
         <>
             <Preloader3 />
-            <Card className="md:p-4 bg-slate-100 p-3">
-                <CardHeader className="text-2xl font-bold">
-                    <CardTitle className="text-2xl">
+            <Card className="md:p-4 bg-slate-100 p-2">
+                <CardHeader className="font-bold p-2">
+                    <CardTitle className="text-lg md:text-2xl">
                         {details?.title || "Form"}
                     </CardTitle>
                     <CardDescription>

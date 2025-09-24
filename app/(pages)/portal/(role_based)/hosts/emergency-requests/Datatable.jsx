@@ -135,7 +135,7 @@ export function DataTable({ columns, data, isLoading }) {
                         </div>
                     </div>
 
-                    <div className="rounded-md max-w-screen overflow-x-scroll">
+                    <div className="rounded-md w-full overflow-x-auto">
                         <Table className="dark:bg-slate-700 dark:text-slate-200">
                             <TableHeader>
                                 {table.getHeaderGroups().map((headerGroup) => (
@@ -189,8 +189,8 @@ export function DataTable({ columns, data, isLoading }) {
                                 )}
                             </TableBody>
                         </Table>
-                        <DataTablePagination table={table} />
                     </div>
+                    <DataTablePagination table={table} />
                 </>
             )}
         </div>

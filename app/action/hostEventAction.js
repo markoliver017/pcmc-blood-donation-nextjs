@@ -183,6 +183,7 @@ export async function getDonorEventCalendar() {
         return {
             success: false,
             message: "Agency not found or inactive!",
+            data: [],
         };
     }
     try {
@@ -202,7 +203,11 @@ export async function getDonorEventCalendar() {
 
         const formattedEvents = formatSeqObj(events);
 
-        return formattedEvents;
+        return {
+            success: true,
+            data: formattedEvents,
+            message: "",
+        };
     } catch (err) {
         logErrorToFile(err, "getDonorEventCalendar ERROR");
         return {

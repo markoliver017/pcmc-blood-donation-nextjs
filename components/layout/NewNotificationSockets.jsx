@@ -12,15 +12,15 @@ export default function NewNotificationSockets() {
         if (!socket) return;
 
         const notificationData = {
-            subject: "New Agency Registration",
-            message: `A new agency (Agency Name) has registered and is pending approval.`,
+            subject: "New Notification",
+            message: `A new notification has been sent.`,
             type: "info",
             reference_id: 33,
             created_by: "62e044f9-97b9-42e0-b1f9-504f0530713f",
-            userIds: [
-                "b284b85b-cda1-4f98-9804-08563b0a06c9",
-                "207ac622-41c8-4f4d-948d-419bd6c0a795",
-            ],
+            // userIds: [
+            //     "b284b85b-cda1-4f98-9804-08563b0a06c9",
+            //     "207ac622-41c8-4f4d-948d-419bd6c0a795",
+            // ],
         };
         socket.emit("send_notification", notificationData);
 
@@ -62,14 +62,14 @@ export default function NewNotificationSockets() {
         };
     }, [socket]);
 
-    return (
-        <div>
-            <button
-                className="btn btn-xs btn-primary"
-                onClick={sendNotification}
-            >
-                <Bell size={16} />
-            </button>
-        </div>
-    );
+    // return (
+    //     <div>
+    //         <button
+    //             className="btn btn-xs btn-primary"
+    //             onClick={sendNotification}
+    //         >
+    //             <Bell size={16} />
+    //         </button>
+    //     </div>
+    // );
 }

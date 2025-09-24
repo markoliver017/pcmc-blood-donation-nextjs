@@ -61,11 +61,11 @@ const HeaderNav = ({ currentUser }) => {
 
     return (
         <>
-            <header className="sticky top-0 z-40 flex-none border-b border-gray-200 dark:border-slate-700 p-2 shadow-lg bg-gradient-to-b from-blue-50/80 via-white/90 to-blue-100/80 dark:from-sky-900 dark:via-slate-900 dark:to-sky-800/80 backdrop-blur-md rounded-b-2xl transition-all duration-300">
-                <div className="flex-1 overflow-x-auto flex justify-between md:justify-evenly items-center min-h-[70px]">
+            <header className="sticky top-0 z-40 flex-none border-b border-gray-200 dark:border-slate-700 p-2 shadow-lg bg-gradient-to-b from-blue-50/80 via-white/90 to-blue-100/80 dark:from-sky-900 dark:via-slate-900 dark:to-sky-800/80 backdrop-blur-md rounded-b-2xl transition-all duration-300 overflow-x-hidden">
+                <div className=" flex-1 min-w-0 overflow-x-auto flex justify-between md:justify-evenly items-center min-h-[70px]">
                     <Link
                         href="/"
-                        className="flex-none flex gap-2 items-center rounded-xl p-2 z-1 text-blue-700 dark:text-slate-100 text-shadow-sm/100 text-shadow-yellow-300 dark:text-shadow-yellow-800 hover:bg-blue-100/60 dark:hover:bg-sky-900/40 transition-colors duration-200"
+                        className="shrink-0 flex gap-2 items-center rounded-xl p-2 z-1 text-blue-700 dark:text-slate-100 text-shadow-sm/100 text-shadow-yellow-300 dark:text-shadow-yellow-800 hover:bg-blue-100/60 dark:hover:bg-sky-900/40 transition-colors duration-200"
                     >
                         <Image
                             src="/pcmc_logo.png"
@@ -88,7 +88,7 @@ const HeaderNav = ({ currentUser }) => {
                         </div>
                     </Link>
                     <nav>
-                        <ul className="flex flex-wrap items-center justify-center md:space-x-4 font-bold text-base md:text-sm text-shadow-md italic text-shadow">
+                        <ul className="flex flex-nowrap whitespace-nowrap items-center justify-center md:space-x-4 font-bold text-base md:text-sm text-shadow-md italic text-shadow">
                             <li className="hidden md:block">
                                 <Link
                                     href="/"

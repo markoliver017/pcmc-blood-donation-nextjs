@@ -104,26 +104,29 @@ export default function CancelledDonorsList({ appointments, roleName }) {
                     return (
                         <Card
                             key={appointment.id}
-                            className={`hover:shadow-md transition-shadow duration-200 ${isCancelled
-                                ? "border-red-200 dark:border-red-800"
-                                : "border-gray-200 dark:border-gray-700"
-                                }`}
+                            className={`hover:shadow-md transition-shadow duration-200 ${
+                                isCancelled
+                                    ? "border-red-200 dark:border-red-800"
+                                    : "border-gray-200 dark:border-gray-700"
+                            }`}
                         >
                             <CardContent className="p-4">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4 flex-1">
                                         {/* Donor Avatar */}
                                         <div
-                                            className={`w-12 h-12 rounded-full flex items-center justify-center ${isDeferred
-                                                ? "bg-red-100 dark:bg-red-900"
-                                                : "bg-gray-100 dark:bg-gray-800"
-                                                }`}
+                                            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                                                isDeferred
+                                                    ? "bg-red-100 dark:bg-red-900"
+                                                    : "bg-gray-100 dark:bg-gray-800"
+                                            }`}
                                         >
                                             <User
-                                                className={`h-6 w-6 ${isDeferred
-                                                    ? "text-red-600"
-                                                    : "text-gray-600"
-                                                    }`}
+                                                className={`h-6 w-6 ${
+                                                    isDeferred
+                                                        ? "text-red-600"
+                                                        : "text-gray-600"
+                                                }`}
                                             />
                                         </div>
 
@@ -140,7 +143,7 @@ export default function CancelledDonorsList({ appointments, roleName }) {
                                                 )}
                                             </div>
 
-                                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                            <div className="flex flex-wrap items-center gap-1 md:gap-4 text-sm text-muted-foreground">
                                                 <div className="flex items-center gap-1">
                                                     <Droplets className="h-3 w-3" />
                                                     <span>
@@ -178,7 +181,9 @@ export default function CancelledDonorsList({ appointments, roleName }) {
                                                 variant="outline"
                                                 size="sm"
                                                 onClick={() =>
-                                                    handleViewDetails(appointment)
+                                                    handleViewDetails(
+                                                        appointment
+                                                    )
                                                 }
                                                 disabled
                                                 className="flex items-center gap-1"
@@ -220,7 +225,7 @@ export default function CancelledDonorsList({ appointments, roleName }) {
                                                 <span className="ml-1">
                                                     {appointment.physical_exam
                                                         .eligibility_status ===
-                                                        "TEMPORARILY-DEFERRED"
+                                                    "TEMPORARILY-DEFERRED"
                                                         ? "Temporary"
                                                         : "Permanent"}
                                                 </span>
@@ -233,28 +238,28 @@ export default function CancelledDonorsList({ appointments, roleName }) {
                                                     {appointment.physical_exam
                                                         .createdAt
                                                         ? moment(
-                                                            appointment
-                                                                .physical_exam
-                                                                .createdAt
-                                                        ).format(
-                                                            "MMM DD, YYYY"
-                                                        )
+                                                              appointment
+                                                                  .physical_exam
+                                                                  .createdAt
+                                                          ).format(
+                                                              "MMM DD, YYYY"
+                                                          )
                                                         : "N/A"}
                                                 </span>
                                             </div>
                                         </div>
                                         {appointment.physical_exam
                                             .deferral_reason && (
-                                                <div className="mt-2 p-2 bg-white dark:bg-gray-800 rounded text-xs">
-                                                    <span className="font-medium">
-                                                        Reason:
-                                                    </span>{" "}
-                                                    {
-                                                        appointment.physical_exam
-                                                            .deferral_reason
-                                                    }
-                                                </div>
-                                            )}
+                                            <div className="mt-2 p-2 bg-white dark:bg-gray-800 rounded text-xs">
+                                                <span className="font-medium">
+                                                    Reason:
+                                                </span>{" "}
+                                                {
+                                                    appointment.physical_exam
+                                                        .deferral_reason
+                                                }
+                                            </div>
+                                        )}
                                         {appointment.physical_exam.remarks && (
                                             <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-xs">
                                                 <span className="font-medium">

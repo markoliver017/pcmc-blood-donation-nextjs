@@ -14,6 +14,8 @@ import { ToastContainer } from "react-toastify";
 import UpdateBloodRequestForm from "./UpdateBloodRequestForm";
 import { getAgencyId } from "@/action/hostEventAction";
 import Skeleton_line from "@components/ui/skeleton_line";
+import WrapperHeadMain from "@components/layout/WrapperHeadMain";
+import { GrEmergency } from "react-icons/gr";
 
 export default function EmergencyRequestPage() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -47,89 +49,101 @@ export default function EmergencyRequestPage() {
     };
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold">Emergency Blood Requests</h1>
-                <Button onClick={() => setIsCreateModalOpen(true)}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    New Request
-                </Button>
-            </div>
+        <div className="mb-5">
+            <WrapperHeadMain
+                icon={<GrEmergency />}
+                pageTitle="Emergency Blood Requests"
+                breadcrumbs={[
+                    {
+                        path: "/portal/hosts/emergency-requests",
+                        icon: <GrEmergency className="w-4" />,
+                        title: "List of Blood Requests",
+                    },
+                ]}
+            />
+            <div className="container mx-auto p-2 md:p-6 space-y-6">
+                <div className="flex md:justify-end">
+                    <Button onClick={() => setIsCreateModalOpen(true)}>
+                        <Plus className="w-4 h-4" />
+                        New Request
+                    </Button>
+                </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <Card>
-                    <CardHeader>
-                        <h3 className="text-lg font-semibold">
-                            Pending Requests
-                        </h3>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-orange-500">
-                            {stats.pending}
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <h3 className="text-lg font-semibold">
-                            Approved Requests
-                        </h3>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-green-500">
-                            {stats.fulfilled}
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <h3 className="text-lg font-semibold">
-                            Rejected Requests
-                        </h3>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-red-500">
-                            {stats.rejected}
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
+                <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+                    <Card>
+                        <CardHeader className="pb-2 md:pb-4">
+                            <h3 className="text-xs md:text-lg font-semibold">
+                                Pending Requests
+                            </h3>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-xs md:text-3xl font-bold text-center text-orange-500">
+                                {stats.pending}
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="pb-2 md:pb-4">
+                            <h3 className="text-xs md:text-lg font-semibold">
+                                Approved Requests
+                            </h3>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-xs md:text-3xl font-bold text-center text-green-500">
+                                {stats.fulfilled}
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="pb-2 md:pb-4">
+                            <h3 className="text-xs md:text-lg font-semibold">
+                                Rejected Requests
+                            </h3>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-xs md:text-3xl font-bold text-center text-red-500">
+                                {stats.rejected}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
 
-            <BloodRequestList handleUpdate={handleUpdate} />
+                <BloodRequestList handleUpdate={handleUpdate} />
 
-            <Dialog
-                open={isCreateModalOpen}
-                onOpenChange={setIsCreateModalOpen}
-            >
-                <DialogContent
-                    className="max-w-3xl max-h-[90vh] overflow-y-auto dark:text-white"
-                    onInteractOutside={(event) => event.preventDefault()}
+                <Dialog
+                    open={isCreateModalOpen}
+                    onOpenChange={setIsCreateModalOpen}
                 >
-                    <DialogTitle className="text-xl font-bold">
-                        New Blood Request
-                    </DialogTitle>
-                    <CreateBloodRequestForm
-                        agency_id={agency_id}
-                        onSuccess={() => setIsCreateModalOpen(false)}
-                    />
-                </DialogContent>
-            </Dialog>
+                    <DialogContent
+                        className="max-w-3xl max-h-[90vh] overflow-y-auto dark:text-white"
+                        onInteractOutside={(event) => event.preventDefault()}
+                    >
+                        <DialogTitle className="text-xl font-bold">
+                            New Blood Request
+                        </DialogTitle>
+                        <CreateBloodRequestForm
+                            agency_id={agency_id}
+                            onSuccess={() => setIsCreateModalOpen(false)}
+                        />
+                    </DialogContent>
+                </Dialog>
 
-            <Dialog
-                open={isUpdateModalOpen}
-                onOpenChange={setIsUpdateModalOpen}
-            >
-                <DialogContent
-                    className="max-w-3xl max-h-[90vh] overflow-y-auto dark:text-white"
-                    onInteractOutside={(event) => event.preventDefault()}
+                <Dialog
+                    open={isUpdateModalOpen}
+                    onOpenChange={setIsUpdateModalOpen}
                 >
-                    <DialogTitle className="hidden"></DialogTitle>
-                    <UpdateBloodRequestForm
-                        bloodRequestId={bloodRequestId}
-                        onSuccess={() => setIsUpdateModalOpen(false)}
-                    />
-                </DialogContent>
-            </Dialog>
+                    <DialogContent
+                        className="max-w-3xl max-h-[90vh] overflow-y-auto dark:text-white"
+                        onInteractOutside={(event) => event.preventDefault()}
+                    >
+                        <DialogTitle className="hidden"></DialogTitle>
+                        <UpdateBloodRequestForm
+                            bloodRequestId={bloodRequestId}
+                            onSuccess={() => setIsUpdateModalOpen(false)}
+                        />
+                    </DialogContent>
+                </Dialog>
+            </div>
         </div>
     );
 }

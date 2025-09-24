@@ -78,10 +78,10 @@ export default function ShowEvents({ eventId }) {
     const currentRole = session?.data?.user?.role_name;
 
     return (
-        <Card className="mt-2 p-5 h-full">
+        <Card className="mt-2 p-2 md:p-5 h-full">
             <CardHeader>
-                <CardTitle className="flex justify-between items-center">
-                    <div className="text-4xl">{event?.title}</div>
+                <CardTitle className="flex flex-wrap justify-between items-center">
+                    <div className="text-2xl md:text-4xl">{event?.title}</div>
                     {event?.status !== "for approval" && (
                         <div>
                             <StarRating
@@ -96,7 +96,7 @@ export default function ShowEvents({ eventId }) {
             </CardHeader>
             <CardContent
                 id="form-modal"
-                className="flex flex-wrap xl:flex-nowrap gap-2"
+                className="flex flex-wrap xl:flex-nowrap justify-center gap-2"
             >
                 <LoadingModal imgSrc="/loader_3.gif" isLoading={isLoading} />
                 <div>

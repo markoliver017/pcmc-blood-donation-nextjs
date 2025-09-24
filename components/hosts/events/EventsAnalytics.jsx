@@ -105,9 +105,9 @@ export default function EventsAnalytics() {
                 </Button>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6">
                 {/* Events Over Time */}
-                <Card className="col-span-1 lg:col-span-2">
+                <Card className="col-span-2">
                     <CardHeader>
                         <CardTitle>Events Over Time (Last 12 Months)</CardTitle>
                     </CardHeader>
@@ -164,7 +164,7 @@ export default function EventsAnalytics() {
                                     }) => {
                                         const item =
                                             analyticsData?.statusDistribution[
-                                            index
+                                                index
                                             ];
                                         return `${item.status} (${(
                                             percent * 100
@@ -181,11 +181,10 @@ export default function EventsAnalytics() {
                                                 key={`cell-${index}`}
                                                 fill={
                                                     STATUS_COLORS[
-                                                    entry.status
+                                                        entry.status
                                                     ] ||
                                                     COLORS[
-                                                    index %
-                                                    COLORS.length
+                                                        index % COLORS.length
                                                     ]
                                                 }
                                             />
@@ -199,7 +198,7 @@ export default function EventsAnalytics() {
                 </Card>
 
                 {/* Participant Trends */}
-                <Card>
+                <Card className="col-span-2">
                     <CardHeader>
                         <CardTitle>
                             Participant Trends (Last 6 Months)
@@ -208,9 +207,7 @@ export default function EventsAnalytics() {
                     <CardContent className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart
-                                data={
-                                    analyticsData?.participantTrends || []
-                                }
+                                data={analyticsData?.participantTrends || []}
                                 margin={{
                                     top: 5,
                                     right: 30,
@@ -261,9 +258,8 @@ export default function EventsAnalytics() {
                                         index,
                                     }) => {
                                         const item =
-                                            analyticsData?.bloodTypeDistribution[
-                                            index
-                                            ];
+                                            analyticsData
+                                                ?.bloodTypeDistribution[index];
                                         return `${item.bloodType} (${(
                                             percent * 100
                                         ).toFixed(0)}%)`;
@@ -279,8 +275,7 @@ export default function EventsAnalytics() {
                                                 key={`cell-${index}`}
                                                 fill={
                                                     COLORS[
-                                                    index %
-                                                    COLORS.length
+                                                        index % COLORS.length
                                                     ]
                                                 }
                                             />
@@ -303,9 +298,7 @@ export default function EventsAnalytics() {
                                         (item, index) => {
                                             const percent =
                                                 total > 0
-                                                    ? (item.count /
-                                                        total) *
-                                                    100
+                                                    ? (item.count / total) * 100
                                                     : 0;
                                             return (
                                                 <div
@@ -318,23 +311,19 @@ export default function EventsAnalytics() {
                                                             style={{
                                                                 backgroundColor:
                                                                     COLORS[
-                                                                    index %
-                                                                    COLORS.length
+                                                                        index %
+                                                                            COLORS.length
                                                                     ],
                                                             }}
                                                         />
                                                         <span className="font-bold text-lg tracking-wide">
-                                                            {
-                                                                item.bloodType
-                                                            }
+                                                            {item.bloodType}
                                                         </span>
                                                     </div>
                                                     <div className="flex-1 flex flex-col gap-1">
                                                         <div className="flex items-center gap-2">
                                                             <span className="font-semibold text-base">
-                                                                {
-                                                                    item.count
-                                                                }
+                                                                {item.count}
                                                             </span>
                                                             <span className="text-xs text-muted-foreground">
                                                                 (
@@ -351,8 +340,8 @@ export default function EventsAnalytics() {
                                                                     width: `${percent}%`,
                                                                     backgroundColor:
                                                                         COLORS[
-                                                                        index %
-                                                                        COLORS.length
+                                                                            index %
+                                                                                COLORS.length
                                                                         ],
                                                                 }}
                                                             ></div>

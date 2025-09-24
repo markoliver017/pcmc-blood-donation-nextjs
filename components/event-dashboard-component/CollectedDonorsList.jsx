@@ -95,7 +95,7 @@ export default function CollectedDonorsList({
             {/* Summary Card */}
             <Card className="bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
                 <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col md:flex-row items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
                                 <Droplets className="h-6 w-6 text-green-600 dark:text-green-400" />
@@ -111,7 +111,7 @@ export default function CollectedDonorsList({
                                 </p>
                             </div>
                         </div>
-                        <div className="text-right">
+                        <div className="text-center md:text-right">
                             <div className="text-2xl font-bold text-green-800 dark:text-green-200">
                                 {totalVolume.toLocaleString()} ml
                             </div>
@@ -159,7 +159,7 @@ export default function CollectedDonorsList({
                                             {getStatusBadge(appointment.status)}
                                         </div>
 
-                                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                                             <div className="flex items-center gap-1">
                                                 <Droplets className="h-3 w-3" />
                                                 <span>

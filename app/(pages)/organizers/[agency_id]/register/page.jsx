@@ -72,6 +72,10 @@ export default async function page({ params }) {
                                         "/default_company_avatar.png"
                                     }
                                     alt="Agency Avatar"
+                                    unoptimized={
+                                        process.env.NEXT_PUBLIC_NODE_ENV ===
+                                        "production"
+                                    }
                                 />
                             </div>
                             <div className="flex flex-col justify-center flex-1">

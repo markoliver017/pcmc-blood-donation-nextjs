@@ -19,7 +19,10 @@ export default async function EventDashboardPage({ params }) {
     }
 
     // Check if user is admin
-    if (session.user.role_name !== "Agency Administrator" && session.user.role_name !== "Organizer") {
+    if (
+        session.user.role_name !== "Agency Administrator" &&
+        session.user.role_name !== "Organizer"
+    ) {
         redirect("/portal");
     }
 
@@ -89,8 +92,9 @@ export async function generateMetadata({ params }) {
 
         return {
             title: `${event.title} - Event Dashboard | Blood Bank Portal`,
-            description: `Dashboard for blood donation event: ${event.title
-                } on ${new Date(event.event_date).toLocaleDateString()}`,
+            description: `Dashboard for blood donation event: ${
+                event.title
+            } on ${new Date(event.event_date).toLocaleDateString()}`,
             keywords: [
                 "blood donation",
                 "event dashboard",

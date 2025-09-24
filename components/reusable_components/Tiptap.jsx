@@ -136,7 +136,7 @@ const Tiptap = forwardRef(
 
         return (
             <div className="border dark:border-gray-700 rounded p-4">
-                <div className="mb-4 flex items-center gap-2">
+                <div className="mb-4 flex flex-wrap items-center gap-2">
                     {/* Bold */}
                     <button
                         onClick={toggleBold}

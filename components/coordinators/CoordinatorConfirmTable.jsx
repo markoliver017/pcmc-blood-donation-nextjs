@@ -59,11 +59,12 @@ export default function CoordinatorConfirmTable({ watch }) {
                 </tr>
                 <tr className="hover:bg-base-300">
                     <th width="20%">Password:</th>
-                    <td className="flex-items-center ">
+                    <td className="flex-items-center">
                         <input
                             type={showPassword ? "text" : "password"}
                             value={watch("password")}
                             disabled
+                            className="w-24 md:w-auto"
                         />
                         <button
                             type="button"

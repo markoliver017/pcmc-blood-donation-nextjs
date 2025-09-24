@@ -8,6 +8,7 @@ import {
     CheckCircle,
     Clock,
     ArrowLeft,
+    UserX,
 } from "lucide-react";
 import { Button } from "@components/ui/button";
 import { Card, CardContent } from "@components/ui/card";
@@ -35,6 +36,8 @@ import {
 } from "@/action/adminEventAction";
 import CancelledDonorsList from "./CancelledDonorsList";
 import { Toaster } from "sonner";
+import { GiHeartPlus } from "react-icons/gi";
+import { MdBloodtype } from "react-icons/md";
 
 export default function EventDashboardClient({ eventId, roleName }) {
     const router = useRouter();
@@ -255,7 +258,8 @@ export default function EventDashboardClient({ eventId, roleName }) {
             icon: CheckCircle,
             count: all_appointments?.length || 0,
             component: (
-                <div className="space-y-6">
+                <div className="space-y-3 md:space-y-6">
+                    <h4 className="block sm:hidden">Event Overview</h4>
                     <EventStatisticsCards statistics={statistics} />
                     <EventDashboardDataTable
                         appointments={all_appointments || []}
@@ -270,56 +274,68 @@ export default function EventDashboardClient({ eventId, roleName }) {
             icon: Clock,
             count: getAppointmentsByStatus("registered").length,
             component: (
-                <PendingDonorsList
-                    eventId={eventId}
-                    appointments={getAppointmentsByStatus("registered")}
-                    onManageAppointment={handleManageAppointment}
-                    roleName={roleName}
-                />
+                <div>
+                    <h4 className="block sm:hidden mb-2">Pending List</h4>
+                    <PendingDonorsList
+                        eventId={eventId}
+                        appointments={getAppointmentsByStatus("registered")}
+                        onManageAppointment={handleManageAppointment}
+                        roleName={roleName}
+                    />
+                </div>
             ),
         },
         examined: {
             label: "Examined",
-            icon: CheckCircle,
+            icon: GiHeartPlus,
             count: getAppointmentsByStatus("examined").length,
             component: (
-                <ExaminedDonorsList
-                    eventId={eventId}
-                    appointments={getAppointmentsByStatus("examined")}
-                    onManageAppointment={handleManageAppointment}
-                    roleName={roleName}
-                />
+                <div>
+                    <h4 className="block sm:hidden mb-2">Examined List</h4>
+                    <ExaminedDonorsList
+                        eventId={eventId}
+                        appointments={getAppointmentsByStatus("examined")}
+                        onManageAppointment={handleManageAppointment}
+                        roleName={roleName}
+                    />
+                </div>
             ),
         },
         collected: {
             label: "Collected",
-            icon: CheckCircle,
+            icon: MdBloodtype,
             count: getAppointmentsByStatus("collected").length,
             component: (
-                <CollectedDonorsList
-                    eventId={eventId}
-                    appointments={getAppointmentsByStatus("collected")}
-                    onManageAppointment={handleManageAppointment}
-                    roleName={roleName}
-                />
+                <div>
+                    <h4 className="block sm:hidden mb-2">Collected List</h4>
+                    <CollectedDonorsList
+                        eventId={eventId}
+                        appointments={getAppointmentsByStatus("collected")}
+                        onManageAppointment={handleManageAppointment}
+                        roleName={roleName}
+                    />
+                </div>
             ),
         },
         deferred: {
             label: "Deferred/No Show",
-            icon: AlertCircle,
+            icon: UserX,
             count:
                 (deferred_donors?.length || 0) +
                 getAppointmentsByStatus("no show").length,
             component: (
-                <DeferredDonorsList
-                    eventId={eventId}
-                    appointments={[
-                        ...(deferred_donors || []),
-                        ...getAppointmentsByStatus("no show"),
-                    ]}
-                    onManageAppointment={handleManageAppointment}
-                    roleName={roleName}
-                />
+                <div>
+                    <h4 className="block sm:hidden mb-2">Deferred List</h4>
+                    <DeferredDonorsList
+                        eventId={eventId}
+                        appointments={[
+                            ...(deferred_donors || []),
+                            ...getAppointmentsByStatus("no show"),
+                        ]}
+                        onManageAppointment={handleManageAppointment}
+                        roleName={roleName}
+                    />
+                </div>
             ),
         },
         cancelled: {
@@ -327,11 +343,14 @@ export default function EventDashboardClient({ eventId, roleName }) {
             icon: AlertCircle,
             count: getAppointmentsByStatus("cancelled").length,
             component: (
-                <CancelledDonorsList
-                    appointments={getAppointmentsByStatus("cancelled")}
-                    onManageAppointment={handleManageAppointment}
-                    roleName={roleName}
-                />
+                <div>
+                    <h4 className="block sm:hidden mb-2">Cancelled List</h4>
+                    <CancelledDonorsList
+                        appointments={getAppointmentsByStatus("cancelled")}
+                        onManageAppointment={handleManageAppointment}
+                        roleName={roleName}
+                    />
+                </div>
             ),
         },
     };
@@ -364,7 +383,9 @@ export default function EventDashboardClient({ eventId, roleName }) {
                 }
             >
                 {/* Tab Content */}
-                <div className="p-6">{tabData[activeTab]?.component}</div>
+                <div className="p-2 md:p-6">
+                    {tabData[activeTab]?.component}
+                </div>
             </EventDashboardLayout>
 
             {/* Loading Overlay */}

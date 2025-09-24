@@ -62,13 +62,13 @@ export default function NewUserBasicInfoForm({
                     error: true,
                     message: "Please provide the required information..",
                 },
-                "warning",
+                "warning"
             );
         }
     };
 
     const uploaded_avatar = watch("profile_picture");
-    
+
     const avatar =
         !errors?.profile_picture && uploaded_avatar
             ? URL.createObjectURL(uploaded_avatar)
@@ -112,7 +112,9 @@ export default function NewUserBasicInfoForm({
                                 />
                                 {uploaded_avatar ? (
                                     <div className="flex-items-center justify-center">
-                                        <ImagePreviewComponent imgSrc={avatar} />
+                                        <ImagePreviewComponent
+                                            imgSrc={avatar}
+                                        />
                                         <button
                                             onClick={() =>
                                                 resetField("profile_picture")
@@ -122,7 +124,6 @@ export default function NewUserBasicInfoForm({
                                             Clear
                                         </button>
                                     </div>
-
                                 ) : (
                                     <label className="text-center font-semibold italic text-slate-500">
                                         Profile Picture
@@ -195,7 +196,9 @@ export default function NewUserBasicInfoForm({
                         name="middle_name"
                         render={({ field }) => (
                             <FormItem>
-                                <InlineLabel required={false}>Middle Name: </InlineLabel>
+                                <InlineLabel required={false}>
+                                    Middle Name:{" "}
+                                </InlineLabel>
 
                                 <label
                                     className={clsx(

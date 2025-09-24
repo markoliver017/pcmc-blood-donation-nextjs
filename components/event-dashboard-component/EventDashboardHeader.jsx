@@ -67,7 +67,7 @@ export default function EventDashboardHeader({ event, onProgress }) {
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <Button
+                        {/* <Button
                             variant="outline"
                             size="sm"
                             onClick={() => router.back()}
@@ -75,7 +75,7 @@ export default function EventDashboardHeader({ event, onProgress }) {
                         >
                             <ArrowLeft className="h-4 w-4" />
                             Back
-                        </Button>
+                        </Button> */}
                         <div>
                             <CardTitle className="text-2xl font-bold">
                                 {event.title}

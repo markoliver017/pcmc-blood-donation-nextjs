@@ -215,7 +215,7 @@ export default function HostAnnouncementsList({ handleUpdate, handleView }) {
     }
 
     return (
-        <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-1 md:p-6">
             <DataTable columns={columns} data={announcements} />
         </div>
     );

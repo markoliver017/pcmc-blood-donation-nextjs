@@ -10,19 +10,22 @@ import { useState } from "react";
 export default function CoordinatorRegisterPage({ agency, agency_id }) {
     const [registerState, setRegisterState] = useState(false);
     return (
-        <Card className="p-3 shadow-lg/60 bg-slate-100">
+        <Card className="py-2 md:p-3 shadow-lg/60 bg-slate-100">
             <CardContent className="flex flex-col gap-4">
-                <div className="flex flex-wrap sm:flex-nowrap sm:px-5 gap-3 rounded-2xl w-full">
+                <div className="flex flex-wrap sm:flex-nowrap justify-center sm:px-5 gap-3 rounded-2xl w-full">
                     {/* Avatar + Agency Name */}
-                    <div>
+                    <div className="relative cursor-pointer w-16 h-16 md:w-60 md:h-60">
                         <Image
-                            width={150}
-                            height={150}
-                            className="w-full rounded-md object-cover border"
+                            className="rounded-md object-cover border"
                             src={
                                 agency.file_url || "/default_company_avatar.png"
                             }
                             alt="Agency Avatar"
+                            fill
+                            unoptimized={
+                                process.env.NEXT_PUBLIC_NODE_ENV ===
+                                "production"
+                            }
                         />
                     </div>
                     <div className="flex flex-col justify-center flex-1">
@@ -66,7 +69,7 @@ export default function CoordinatorRegisterPage({ agency, agency_id }) {
                     <div className="flex items-center justify-center px-10">
                         <button
                             onClick={() => setRegisterState(true)}
-                            className="btn btn-accent rounded-3xl btn-block text-2xl py-6"
+                            className="btn btn-accent rounded-3xl btn-block md:text-2xl py-6"
                         >
                             <PenLineIcon /> Register as Coordinator
                         </button>

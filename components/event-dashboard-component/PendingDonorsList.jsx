@@ -120,7 +120,7 @@ export default function PendingDonorsList({
 
                                         {/* Donor Info */}
                                         <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2 mb-1">
+                                            <div className="flex flex-wrap items-center gap-2 mb-1">
                                                 <h4 className="font-medium truncate">
                                                     {appointment.donor?.user
                                                         ?.name ||
@@ -131,7 +131,7 @@ export default function PendingDonorsList({
                                                 )}
                                             </div>
 
-                                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                                                 <div className="flex items-center gap-1">
                                                     <Droplets className="h-3 w-3" />
                                                     <span>

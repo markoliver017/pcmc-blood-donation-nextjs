@@ -21,7 +21,7 @@ export default function EventDashboardLayout({
             {/* Header with navigation and refresh */}
             <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                 <div className="px-6 py-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center flex-wrap justify-between">
                         <div className="flex items-center gap-4">
                             <button
                                 onClick={() => router.back()}
@@ -85,13 +85,13 @@ export default function EventDashboardLayout({
                 </div>
             </div>
 
-            <div className="p-2">
+            <div className="p-1 md:p-2">
                 {/* Event Dashboard Header */}
                 <EventDashboardHeader event={event} onProgress={onProgress} />
 
                 {/* Tab Navigation */}
                 <div className="mt-2 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                    <div className="px-6">
+                    <div className="px-2 md:px-6">
                         <div className="flex space-x-1 overflow-x-auto">
                             {Object.entries(tabData).map(([key, tab]) => {
                                 const Icon = tab.icon;

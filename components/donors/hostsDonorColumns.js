@@ -14,6 +14,7 @@ import { Command, Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import moment from "moment";
 import { formatFormalName } from "@lib/utils/string.utils";
+import { Checkbox } from "@components/ui/checkbox";
 
 function calculateAge(dateOfBirth) {
     const today = new Date();
@@ -27,6 +28,31 @@ function calculateAge(dateOfBirth) {
 }
 
 export const hostsDonorColumns = [
+    {
+        id: "select",
+        header: ({ table }) => (
+            <Checkbox
+                checked={
+                    table.getIsAllPageRowsSelected() ||
+                    (table.getIsSomePageRowsSelected() && "indeterminate")
+                }
+                onCheckedChange={(value) =>
+                    table.toggleAllPageRowsSelected(!!value)
+                }
+                aria-label="Select all"
+                className="h-4 w-4 my-5 mr-2"
+            />
+        ),
+        cell: ({ row }) => (
+            <Checkbox
+                checked={row.getIsSelected()}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
+                aria-label="Select row"
+            />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+    },
     {
         accessorKey: "id",
         header: ({ column }) => (

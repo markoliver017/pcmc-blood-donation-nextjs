@@ -53,7 +53,7 @@ const SidebarMobile = ({ currentUser }) => {
                     <span>Account Menu</span>
                 </div>
             </PopoverTrigger>
-            <PopoverContent className="max-h-[calc(100vh-56px)] overflow-y-auto ">
+            <PopoverContent className="max-h-[calc(100vh-56px)] overflow-y-auto bg-gradient-to-b from-gray-400 to-gray-300 ">
                 <div className="flex flex-col gap-5 mb-10">
                     {/* User Profile */}
                     <div className="flex items-center mt-4 hover:bg-gray-500 truncate rounded cursor-pointer group transition ">
