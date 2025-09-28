@@ -131,7 +131,7 @@ export function AppointmentDatatable({
                 <Skeleton className="w-full h-80 rounded-xl" />
             ) : (
                 <>
-                    <div className="flex flex-wrap items-center gap-2 py-2 space-x-2">
+                    <div className="flex flex-wrap items-center gap-2 py-2">
                         <button
                             className="btn flex-none w-full md:w-auto rounded-full"
                             onClick={handleSelectedEmail}
@@ -148,8 +148,8 @@ export function AppointmentDatatable({
                             className="flex-1 p-2 input-sm bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
                         />
 
-                        <div className="flex justify-end pr-2 min-w-[300px]">
-                            <div className="flex flex-wrap space-x-2">
+                        <div className="justify-end pr-2 min-w-[300px] overflow-x-auto">
+                            <div className="flex space-x-2">
                                 <label className="dark:text-slate-400 flex items-center space-x-1">
                                     <Filter className="h-4 w-4" />
                                 </label>

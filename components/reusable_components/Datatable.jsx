@@ -110,7 +110,7 @@ export function DataTable({ columns, data, isLoading }) {
     // );
 
     return (
-        <div className="p-2">
+        <div className="md:p-2">
             {isLoading ? (
                 <Skeleton className="w-full h-80 rounded-xl" />
             ) : (
@@ -136,7 +136,7 @@ export function DataTable({ columns, data, isLoading }) {
                         </div>
                     </div>
 
-                    <div className="rounded-md max-w-screen overflow-x-scroll">
+                    <div className="rounded-md max-w-screen overflow-x-scroll mb-2">
                         <Table className="dark:bg-slate-700 dark:text-slate-200">
                             <TableHeader>
                                 {table.getHeaderGroups().map((headerGroup) => (

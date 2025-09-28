@@ -1,8 +1,6 @@
 "use client";
 import React from "react";
-import {
-    Calendar,
-} from "lucide-react";
+import { Calendar, List } from "lucide-react";
 
 import { useQuery } from "@tanstack/react-query";
 
@@ -15,7 +13,10 @@ import { MdBloodtype } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { getDonorBloodCollections } from "@/action/bloodCollectionAction";
 import TabContent from "./TabContent";
-import { getAllAgencyOptions, getAllEventOptions } from "@/action/adminEventAction";
+import {
+    getAllAgencyOptions,
+    getAllEventOptions,
+} from "@/action/adminEventAction";
 
 export default function TabsComponent({ donorId }) {
     const router = useRouter();
@@ -33,7 +34,6 @@ export default function TabsComponent({ donorId }) {
     if (isLoading)
         return (
             <div className="p-5">
-
                 <Skeleton_user />
             </div>
         );
@@ -47,7 +47,7 @@ export default function TabsComponent({ donorId }) {
                 breadcrumbs={[
                     {
                         path: `/portal/admin/blood-collections`,
-                        icon: <MdBloodtype className="w-4" />,
+                        icon: <List className="w-4" />,
                         title: "Blood Donations",
                     },
                     {
@@ -57,7 +57,7 @@ export default function TabsComponent({ donorId }) {
                     },
                 ]}
             />
-            <div className="w-full h-full md:w-95/100 mx-auto p-2 grid grid-cols-1 md:grid-cols-4 gap-2">
+            <div className="w-full md:w-95/100 mx-auto p-1 md:p-2 grid grid-cols-1 md:grid-cols-4 gap-2">
                 {/* Side panel: Event Details */}
                 <SideComponent donor={donor} />
                 {/* Right Panel: Main Content Area */}

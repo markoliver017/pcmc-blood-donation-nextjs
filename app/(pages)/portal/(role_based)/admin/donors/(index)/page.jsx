@@ -50,7 +50,7 @@ export default function DonorPage() {
             <Tabs
                 defaultValue={currentTab}
                 onValueChange={handleTabChange}
-                className="p-5"
+                className="md:p-5 p-2"
             >
                 <TabsList>
                     <TabsTrigger value="all">
@@ -68,7 +68,7 @@ export default function DonorPage() {
                     </div>
                 </TabsContent>
                 <TabsContent value="for-approval">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 p-3 w-full">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 md:p-3 w-full">
                         <ForApprovalDonorList />
                     </div>
                 </TabsContent>

@@ -130,7 +130,7 @@ export function DonorCollectionsDatatable({
     }
 
     return (
-        <div className="p-2">
+        <div className="md:p-2">
             {isLoading ? (
                 <Skeleton className="w-full h-80 rounded-xl" />
             ) : (
@@ -319,8 +319,8 @@ export function DonorCollectionsDatatable({
                                 )}
                             </TableBody>
                         </Table>
-                        <DataTablePagination table={table} />
                     </div>
+                    <DataTablePagination table={table} />
                 </>
             )}
         </div>

@@ -86,7 +86,7 @@ export default function EventFilterBar({
     if (isLoadingAgencies) return <Skeleton />;
 
     return (
-        <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-6 mb-6 shadow-sm">
+        <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-2 md:p-6 mb-2 md:mb-6 shadow-sm">
             <div className="flex flex-wrap sm:items-center sm:justify-between gap-3 mb-5">
                 <div className="flex items-center gap-2">
                     <Filter className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />

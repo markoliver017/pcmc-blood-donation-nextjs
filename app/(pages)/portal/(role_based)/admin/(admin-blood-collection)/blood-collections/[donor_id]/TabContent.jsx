@@ -17,11 +17,11 @@ export default function TabContent({ donor }) {
 
     const blood_collections = donor?.blood_collections;
     return (
-        <Card className="col-span-1 md:col-span-3 bg-gray-100 p-2 relative">
+        <Card className="col-span-1 md:col-span-3 bg-gray-100 relative">
             <CardHeader className="text-2xl font-bold hidden">
                 <CardTitle>Blood Donation Details</CardTitle>
             </CardHeader>
-            <CardContent id="form-modal" className="p-0">
+            <CardContent id="form-modal" className=" p-0">
                 <button
                     onClick={() => router.back()}
                     type="button"
@@ -31,14 +31,14 @@ export default function TabContent({ donor }) {
                     <span className="hidden md:inline-block">Back</span>
                 </button>
 
-                <Tabs defaultValue="blood-collections" className="p-2">
-                    <TabsList className="flex flex-wrap">
+                <Tabs defaultValue="blood-collections" className="px-1">
+                    <TabsList className="flex flex-wrap p-2">
                         <TabsTrigger
                             value="blood-collections"
                             title="Blood Collections"
                         >
                             <div className="flex items-center gap-1 px-3 ring-offset-1  hover:text-blue-500">
-                                <BiCollection className="h-6 w-6" />
+                                <BiCollection className="md:h-6 md:w-6" />
                                 <span className="hidden md:inline-block">
                                     Blood Collection Summary
                                 </span>
@@ -50,21 +50,21 @@ export default function TabContent({ donor }) {
                             title="Previous Donations"
                         >
                             <div className="flex items-center gap-1 px-3 ring-offset-1  hover:text-blue-500">
-                                <HistoryIcon className="h-6 w-6" />
+                                <HistoryIcon className="h-4 w-4 md:h-6 md:w-6" />
                                 <span className="hidden md:inline-block">
                                     Donor's Previous Donations
                                 </span>
                             </div>
                         </TabsTrigger>
                     </TabsList>
-                    <TabsContent className="p-2" value="blood-collections">
+                    <TabsContent value="blood-collections">
                         <DataTable
                             columns={bloodCollectionColumns}
                             data={blood_collections}
                         />
                     </TabsContent>
                     <TabsContent
-                        className="p-2"
+                        className="md:p-2"
                         value="donor-previous-donations"
                     >
                         <DonorPreviousDonationTabForm donor={donor} />

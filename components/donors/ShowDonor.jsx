@@ -55,9 +55,9 @@ export default function ShowDonor({ donorId }) {
     const appointments = donor?.appointments || [];
     // return "";
     return (
-        <Card id="form-modal" className="mt-2 p-5 h-full">
+        <Card id="form-modal" className="mt-2 md:p-5 h-full">
             <CardHeader>
-                <CardTitle className="flex justify-between">
+                <CardTitle className="flex flex-wrap justify-between">
                     <div className="text-4xl">{donor.user.full_name}</div>
 
                     {session &&
@@ -169,67 +169,74 @@ export default function ShowDonor({ donorId }) {
                             </TableRow>
                         </TableBody>
                     </Table>
-                    <h2 className="text-2xl mt-5">Appointments</h2>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>ID#</TableHead>
-                                <TableHead>Date</TableHead>
-                                <TableHead>Event Title</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Donor Type</TableHead>
-                                <TableHead>comments</TableHead>
-                                <TableHead>Feedback</TableHead>
-                                <TableHead>...</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {appointments && appointments.length > 0 ? (
-                                appointments.map((appt) => (
-                                    <TableRow key={appt.id}>
-                                        <TableCell className="text-slate-500">
-                                            {appt?.id}
-                                        </TableCell>
-                                        <TableCell>
-                                            {format(appt?.event.date, "PP")}
-                                        </TableCell>
-                                        <TableCell>
-                                            {appt?.event?.title}
-                                        </TableCell>
-                                        <TableCell>{appt?.status}</TableCell>
-                                        <TableCell>
-                                            {appt?.donor_type}
-                                        </TableCell>
-                                        <TableCell>{appt?.comments}</TableCell>
-                                        <TableCell>
-                                            <StarRating
-                                                rating={
-                                                    appt?.feedback_average || 0
-                                                }
-                                            />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Link
-                                                href={`/portal/admin/appointments/${appt?.id}`}
-                                                className="btn btn-xs"
-                                            >
-                                                View
-                                            </Link>
+                    <div className="max-w-[calc(100vw-50px)] overflow-x-auto">
+                        <h2 className="text-2xl mt-5">Appointments</h2>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>ID#</TableHead>
+                                    <TableHead>Date</TableHead>
+                                    <TableHead>Event Title</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead>Donor Type</TableHead>
+                                    <TableHead>comments</TableHead>
+                                    <TableHead>Feedback</TableHead>
+                                    <TableHead>...</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {appointments && appointments.length > 0 ? (
+                                    appointments.map((appt) => (
+                                        <TableRow key={appt.id}>
+                                            <TableCell className="text-slate-500">
+                                                {appt?.id}
+                                            </TableCell>
+                                            <TableCell>
+                                                {format(appt?.event.date, "PP")}
+                                            </TableCell>
+                                            <TableCell>
+                                                {appt?.event?.title}
+                                            </TableCell>
+                                            <TableCell>
+                                                {appt?.status}
+                                            </TableCell>
+                                            <TableCell>
+                                                {appt?.donor_type}
+                                            </TableCell>
+                                            <TableCell>
+                                                {appt?.comments}
+                                            </TableCell>
+                                            <TableCell>
+                                                <StarRating
+                                                    rating={
+                                                        appt?.feedback_average ||
+                                                        0
+                                                    }
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <Link
+                                                    href={`/portal/admin/appointments/${appt?.id}`}
+                                                    className="btn btn-xs"
+                                                >
+                                                    View
+                                                </Link>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell
+                                            colSpan={8}
+                                            className="font-semibold text-center"
+                                        >
+                                            No appointments found
                                         </TableCell>
                                     </TableRow>
-                                ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell
-                                        colSpan={8}
-                                        className="font-semibold text-center"
-                                    >
-                                        No appointments found
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
                     <div className="flex gap-3 items-center py-2 mt-5">
                         <h2 className="text-2xl">Blood Donations</h2>
                         <Link

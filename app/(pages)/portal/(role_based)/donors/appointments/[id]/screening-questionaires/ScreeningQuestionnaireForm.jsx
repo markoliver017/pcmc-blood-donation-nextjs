@@ -107,13 +107,13 @@ const ScreeningQuestionnaireForm = ({
     };
 
     return (
-        <Card className="px-4 py-5 space-y-5 bg-gray-100">
+        <Card className="md:px-4 md:py-5 bg-gray-100">
             <CardHeader>
-                <CardTitle className="text-xl font-bold flex-items-center">
+                <CardTitle className="md:text-xl font-bold flex-items-center">
                     <QuestionMarkCircledIcon /> Screening Questionnaires
                 </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="">
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
@@ -205,7 +205,7 @@ const ScreeningQuestionnaireForm = ({
                                 );
                             })}
                         </div>
-                        <div className="flex justify-start items-center md:justify-end gap-2">
+                        <div className="flex items-center justify-end gap-2">
                             {session?.data?.user?.role_name === "Donor" && (
                                 <Button
                                     variant="outline"
@@ -239,8 +239,8 @@ const ScreeningQuestionnaireForm = ({
                                     >
                                         <Save className="h-4 w-4" />
                                         {existingAnswers.length > 0
-                                            ? "Update Questionnaire"
-                                            : "Submit Questionnaire"}
+                                            ? "Update "
+                                            : "Submit "}
                                     </Button>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>

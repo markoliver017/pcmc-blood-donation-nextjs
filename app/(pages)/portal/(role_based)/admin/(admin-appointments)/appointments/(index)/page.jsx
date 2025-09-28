@@ -18,7 +18,7 @@ export default function Page() {
                 ]}
             />
             <Toaster />
-            <div className="w-full h-full 2xl:px-5 mx-auto shadow-lg mt-5  space-y-3">
+            <div className="w-full h-full 2xl:px-5 px-1 mx-auto shadow-lg">
                 <AppointmentList />
             </div>
         </>

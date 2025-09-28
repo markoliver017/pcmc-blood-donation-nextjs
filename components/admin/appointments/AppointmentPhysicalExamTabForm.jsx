@@ -159,13 +159,13 @@ export default function AppointmentPhysicalExamTabForm({ appointment }) {
                 onSubmit={handleSubmit(onSubmit)}
                 className="space-y-2 flex flex-col gap-2 justify-center"
             >
-                <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
+                <Card className="md:px-4 px-2 md:py-5 py-2 md:space-y-5 space-y-2 bg-gray-100 flex-1 md:min-w-[400px]">
                     <div className="flex items-center gap-5">
-                        <h1 className="text-xl font-bold flex-items-center">
+                        <h1 className="md:text-xl text-lg font-bold flex-items-center">
                             <IoInformationCircle /> Physical Exam Details:
                         </h1>
                     </div>
-                    <div className="pl-4 space-y-5">
+                    <div className="md:pl-4 md:space-y-5 space-y-2">
                         <FormField
                             control={control}
                             name="blood_pressure"

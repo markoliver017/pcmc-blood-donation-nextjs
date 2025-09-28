@@ -2,8 +2,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
-
-
 import { Card } from "@components/ui/card";
 import { Gauge, Text } from "lucide-react";
 
@@ -15,11 +13,7 @@ import InlineLabel from "@components/form/InlineLabel";
 
 import FieldError from "@components/form/FieldError";
 import clsx from "clsx";
-import {
-    Form,
-    FormField,
-    FormItem,
-} from "@components/ui/form";
+import { Form, FormField, FormItem } from "@components/ui/form";
 
 import { GrUpdate } from "react-icons/gr";
 import FormLogger from "@lib/utils/FormLogger";
@@ -31,15 +25,11 @@ import { storeUpdatePrevDonation } from "@/action/bloodDonationHistoryAction";
 import { bloodHistorySchema } from "@lib/zod/bloodHistorySchema";
 
 export default function DonorPreviousDonationTabForm({ donor }) {
-
     const queryClient = useQueryClient();
 
     const { data, mutate, isPending } = useMutation({
         mutationFn: async (formData) => {
-            const res = await storeUpdatePrevDonation(
-                donor?.id,
-                formData
-            );
+            const res = await storeUpdatePrevDonation(donor?.id, formData);
             if (!res.success) {
                 throw res;
             }
@@ -47,7 +37,9 @@ export default function DonorPreviousDonationTabForm({ donor }) {
         },
         onSuccess: (res) => {
             // Invalidate the posts query to refetch the updated list
-            queryClient.invalidateQueries({ queryKey: ["donor-blood-collections"] });
+            queryClient.invalidateQueries({
+                queryKey: ["donor-blood-collections"],
+            });
             SweetAlert({
                 title: "Donor's Previous Donations",
                 text: res?.message || "Submission successful!",
@@ -75,9 +67,10 @@ export default function DonorPreviousDonationTabForm({ donor }) {
         mode: "onChange",
         resolver: zodResolver(bloodHistorySchema),
         defaultValues: {
-            previous_donation_count: prevDonations?.previous_donation_count || "",
-            previous_donation_volume: prevDonations?.previous_donation_volume || "",
-
+            previous_donation_count:
+                prevDonations?.previous_donation_count || "",
+            previous_donation_volume:
+                prevDonations?.previous_donation_volume || "",
         },
     });
 
@@ -107,11 +100,10 @@ export default function DonorPreviousDonationTabForm({ donor }) {
     if (!donor)
         return (
             <div className="alert alert-error">
-                No donor's information found! Please refresh your browser and try again!
+                No donor's information found! Please refresh your browser and
+                try again!
             </div>
         );
-
-
 
     return (
         <Form {...form}>
@@ -119,7 +111,7 @@ export default function DonorPreviousDonationTabForm({ donor }) {
                 onSubmit={handleSubmit(onSubmit)}
                 className="space-y-2 flex flex-col gap-2 justify-center"
             >
-                <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
+                <Card className="px-2 md:px-4 py-3 md:py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
                     <div className="flex items-center gap-5">
                         <h1 className="text-xl font-bold flex-items-center">
                             <IoInformationCircle /> Previous Donations:
@@ -131,7 +123,10 @@ export default function DonorPreviousDonationTabForm({ donor }) {
                             name="previous_donation_count"
                             render={({ field }) => (
                                 <FormItem>
-                                    <InlineLabel>Number of Donations Before System Records: </InlineLabel>
+                                    <InlineLabel>
+                                        Number of Donations Before System
+                                        Records:{" "}
+                                    </InlineLabel>
 
                                     <label
                                         className={clsx(
@@ -160,7 +155,12 @@ export default function DonorPreviousDonationTabForm({ donor }) {
                             name="previous_donation_volume"
                             render={({ field }) => (
                                 <FormItem>
-                                    <InlineLabel required={false} optional={true}>Total Volume Donated Before System (ml): </InlineLabel>
+                                    <InlineLabel
+                                        required={false}
+                                        optional={true}
+                                    >
+                                        Total Volume Donated Before System (ml):{" "}
+                                    </InlineLabel>
 
                                     <label
                                         className={clsx(
@@ -185,7 +185,6 @@ export default function DonorPreviousDonationTabForm({ donor }) {
                                 </FormItem>
                             )}
                         />
-
                     </div>
 
                     <div className="flex justify-end">

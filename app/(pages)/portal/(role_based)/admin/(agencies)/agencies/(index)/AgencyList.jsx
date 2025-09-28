@@ -86,28 +86,28 @@ export default function AgencyList() {
                 onValueChange={handleTabChange}
                 className="mt-2 px-1 md:px-5"
             >
-                <TabsList className="mt-4 bg-muted p-1 rounded-md flex flex-col md:flex-row">
+                <TabsList className="mt-4 bg-slate-900 p-1 rounded-md flex overflow-x-auto">
                     <TabsTrigger
                         value="approved"
-                        className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border flex-1"
+                        className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 data-[state=active]:font-bold px-4 py-2 rounded-l-md dark:text-slate-600 border"
                     >
-                        <span className="text-green-600 text-lg font-semibold px-5">
+                        <span className="text-green-600 text-sm md:text-lg font-semibold md:px-5">
                             Approved ({approvedAgencies.length})
                         </span>
                     </TabsTrigger>
                     <TabsTrigger
                         value="for-approval"
-                        className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border flex-1"
+                        className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 data-[state=active]:font-bold px-4 py-2 dark:text-slate-600 border"
                     >
-                        <span className="text-warning text-lg font-semibold px-5">
+                        <span className="text-warning text-sm md:text-lg font-semibold md:px-5">
                             For Approval ({forApprovalAgencies?.length || 0})
                         </span>
                     </TabsTrigger>
                     <TabsTrigger
                         value="rejected"
-                        className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-600 border flex-1"
+                        className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 data-[state=active]:font-bold px-4 py-2 rounded-r-md dark:text-slate-600 border"
                     >
-                        <span className="text-error text-lg font-semibold px-5">
+                        <span className="text-error text-sm md:text-lg font-semibold md:px-5">
                             Rejected ({rejectedAgencies.length})
                         </span>
                     </TabsTrigger>

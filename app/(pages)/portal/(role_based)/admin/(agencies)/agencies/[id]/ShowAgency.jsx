@@ -57,7 +57,9 @@ export default function ShowAgency({ agencyId }) {
                 <div className="flex flex-wrap justify-between">
                     <div>
                         <CardTitle className="flex items-center justify-between gap-5">
-                            <div className="text-4xl">{agency.name}</div>
+                            <div className="text-2xl md:text-4xl">
+                                {agency.name}
+                            </div>
                             <Button
                                 onClick={() =>
                                     router.push(`./${agency.id}/edit`)
@@ -93,7 +95,7 @@ export default function ShowAgency({ agencyId }) {
                     </div>
                 </div>
             </CardHeader>
-            <CardContent className="flex justify-center flex-wrap xl:flex-nowrap gap-2">
+            <CardContent className="flex justify-center flex-wrap xl:flex-nowrap gap-2 max-w-screen overflow-x-auto">
                 <div>
                     <CustomAvatar
                         avatar={
@@ -110,7 +112,7 @@ export default function ShowAgency({ agencyId }) {
                     </div>
                 </div>
 
-                <Table className="w-full sm:min-w-sm">
+                <Table className="w-full">
                     <TableBody>
                         <TableRow>
                             <TableCell className="font-semibold">ID</TableCell>

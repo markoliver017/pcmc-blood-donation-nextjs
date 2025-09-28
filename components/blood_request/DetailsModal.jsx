@@ -204,7 +204,7 @@ export default function DetailsModal({
                             </div>
                         </div>
                         {selectedRequest?.status === "pending" && (
-                            <div className="flex items-center md:justify-end gap-2">
+                            <div className="flex items-center justify-end gap-2">
                                 <button
                                     type="button"
                                     disabled={isApproving}
@@ -225,12 +225,10 @@ export default function DetailsModal({
                                             },
                                         });
                                     }}
-                                    className="btn btn-success"
+                                    className="btn btn-success btn-xs md:btn-md"
                                 >
                                     <CheckCircle className="w-4 h-4" />
-                                    <span className="hidden md:inline">
-                                        Approve
-                                    </span>
+                                    <span>Approve</span>
                                 </button>
                                 <button
                                     type="button"
@@ -269,12 +267,10 @@ export default function DetailsModal({
                                             }
                                         });
                                     }}
-                                    className="btn btn-error"
+                                    className="btn btn-error btn-xs md:btn-md"
                                 >
                                     <XCircle className="w-4 h-4" />
-                                    <span className="hidden md:inline">
-                                        Reject
-                                    </span>
+                                    <span>Reject</span>
                                 </button>
                             </div>
                         )}

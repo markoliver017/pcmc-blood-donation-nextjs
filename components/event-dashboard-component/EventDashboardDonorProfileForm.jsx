@@ -231,7 +231,7 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
 
     return (
         <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-1">
                 {/* Profile Picture Section */}
                 <DisplayValidationErrors
                     errors={errors}
@@ -270,9 +270,9 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                 </div>
 
                 {/* Basic Information Card */}
-                <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
-                    <div className="flex items-center gap-5">
-                        <h1 className="text-xl font-bold flex-items-center">
+                <Card className="md:px-4 px-2 md:py-5 py-2 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
+                    <div className="flex flex-wrap items-center md:gap-5 gap-1">
+                        <h1 className="md:text-xl text-lg font-bold flex-items-center">
                             <IoInformationCircle /> Basic Information:
                         </h1>
                         {donor?.is_data_verified ? (
@@ -287,7 +287,7 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                             </div>
                         )}
                     </div>
-                    <div className="pl-4 space-y-5">
+                    <div className="md:pl-4 md:space-y-5 space-y-2">
                         {/* Hidden fields */}
                         <FormField
                             control={control}
@@ -606,11 +606,11 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                 </Card>
 
                 {/* Government ID Section */}
-                <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
+                <Card className="md:px-4 px-2 md:py-5 py-2 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
                     <h1 className="text-xl font-bold flex-items-center">
                         Government Issued ID:
                     </h1>
-                    <div className="pl-4">
+                    <div className="md:pl-4">
                         <div className="h-50 border relative rounded-lg overflow-hidden">
                             <Image
                                 src={avatar}
@@ -635,11 +635,11 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
 
                 {/* Location Section */}
                 {city_provinces_status === "success" ? (
-                    <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
+                    <Card className="md:px-4 px-2 md:py-5 py-2 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
                         <h1 className="text-xl font-bold flex-items-center">
                             Location:
                         </h1>
-                        <div className="pl-4">
+                        <div className="md:pl-4">
                             <LocationFields
                                 form={form}
                                 city_provinces={city_provinces}
@@ -657,11 +657,11 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
 
                 {/* Blood Donation History (for regular donors) */}
                 {donor?.is_regular_donor && (
-                    <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
+                    <Card className="md:px-4 px-2 md:py-5 py-2 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
                         <h1 className="text-xl font-bold flex-items-center">
                             Blood Donation History before registration:
                         </h1>
-                        <div className="pl-4 space-y-5">
+                        <div className="md:pl-4 space-y-5">
                             <FormField
                                 control={control}
                                 name="donation_history_donation_date"

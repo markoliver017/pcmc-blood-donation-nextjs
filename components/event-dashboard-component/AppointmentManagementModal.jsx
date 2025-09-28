@@ -78,7 +78,7 @@ export default function AppointmentManagementModal({
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContentNoX
                 onInteractOutside={(event) => event.preventDefault()}
-                className="max-w-7xl h-[90vh] overflow-hidden flex flex-col"
+                className="max-w-7xl h-[90vh] overflow-hidden flex flex-col md:px-5 px-2"
             >
                 <DialogHeader className="pb-4">
                     <div className="flex items-center justify-between">
@@ -106,7 +106,7 @@ export default function AppointmentManagementModal({
                 <div className="flex flex-col flex-1 min-h-0">
                     {/* Appointment Overview Card */}
                     <Card className="mb-4 flex-shrink-0">
-                        <CardContent className="p-4">
+                        <CardContent className="md:p-4 p-2">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">

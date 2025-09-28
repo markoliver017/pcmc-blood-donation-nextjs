@@ -81,7 +81,7 @@ export default function ShowEvents({ eventId }) {
         <Card className="mt-2 p-2 md:p-5 h-full">
             <CardHeader>
                 <CardTitle className="flex flex-wrap justify-between items-center">
-                    <div className="text-2xl md:text-4xl">{event?.title}</div>
+                    <div className="text-4xl">{event?.title}</div>
                     {event?.status !== "for approval" && (
                         <div>
                             <StarRating

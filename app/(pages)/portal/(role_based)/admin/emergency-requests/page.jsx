@@ -12,7 +12,7 @@ import {
     updateBloodRequestStatus,
 } from "@action/bloodRequestAction";
 
-import { Search } from "lucide-react";
+import { List, Search } from "lucide-react";
 import DateRangePickerComponent from "@components/reusable_components/DateRangePickerComponent";
 import moment from "moment";
 import { useQuery as useQueryTanstack } from "@tanstack/react-query";
@@ -20,6 +20,8 @@ import { fetchBloodTypes } from "@action/bloodRequestAction";
 import { toast, Toaster } from "sonner";
 import { getColumns } from "./columns";
 import DetailsModal from "@components/blood_request/DetailsModal";
+import WrapperHeadMain from "@components/layout/WrapperHeadMain";
+import { GrEmergency } from "react-icons/gr";
 
 export default function AdminEmergencyRequestsPage() {
     const queryClient = useQueryClient();
@@ -122,127 +124,147 @@ export default function AdminEmergencyRequestsPage() {
         handleShowDetails
     );
     return (
-        <div className="container mx-auto px-1 md:px-6 space-y-6">
-            <Toaster />
-            <div className="flex justify-between items-center">
-                <h1 className="text-lg md:text-2xl font-bold">
-                    All Emergency Blood Requests
-                </h1>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
-                <Card>
-                    <CardHeader>
-                        <h3 className="md:text-lg font-semibold">Pending</h3>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-orange-500 ">
-                            {stats.pending}
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <h3 className="md:text-lg font-semibold">Approved</h3>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-green-500">
-                            {stats.fulfilled}
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <h3 className="md:text-lg font-semibold">Rejected</h3>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-red-500">
-                            {stats.rejected}
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <h3 className="md:text-lg font-semibold">Cancelled</h3>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-gray-500">
-                            {stats.cancelled}
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-            {/* Filters */}
-            <div className="flex flex-wrap gap-4 items-center bg-slate-50 dark:bg-neutral-900 p-4 rounded-lg shadow mb-4">
-                <div className="flex flex-col">
-                    <label className="text-xs font-semibold mb-1">Status</label>
-                    <select
-                        className="border rounded-md dark:bg-neutral-800 dark:text-neutral-50"
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                    >
-                        <option value="">All</option>
-                        <option value="pending">Pending</option>
-                        <option value="fulfilled">Approved</option>
-                        <option value="rejected">Rejected</option>
-                        <option value="cancelled">Cancelled</option>
-                    </select>
+        <>
+            <WrapperHeadMain
+                icon={<GrEmergency />}
+                pageTitle="Emergency Blood Requests"
+                breadcrumbs={[
+                    {
+                        path: "/portal/admin/emergency-requests",
+                        icon: <List className="w-4" />,
+                        title: "List of Blood Requests",
+                    },
+                ]}
+            />
+            <div className="container mx-auto px-1 md:px-6 space-y-2 md:space-y-6">
+                <Toaster />
+                <div className="grid grid-cols-2 lg:grid-cols-4 md:gap-6 gap-2 text-center">
+                    <Card>
+                        <CardHeader>
+                            <h3 className="md:text-lg font-semibold">
+                                Pending
+                            </h3>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-3xl font-bold text-orange-500 ">
+                                {stats.pending}
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader>
+                            <h3 className="md:text-lg font-semibold">
+                                Approved
+                            </h3>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-3xl font-bold text-green-500">
+                                {stats.fulfilled}
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader>
+                            <h3 className="md:text-lg font-semibold">
+                                Rejected
+                            </h3>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-3xl font-bold text-red-500">
+                                {stats.rejected}
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader>
+                            <h3 className="md:text-lg font-semibold">
+                                Cancelled
+                            </h3>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-3xl font-bold text-gray-500">
+                                {stats.cancelled}
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
-                <div className="flex flex-col">
-                    <label className="text-xs font-semibold mb-1">
-                        Blood Type
-                    </label>
-                    <select
-                        className="border rounded-md px-2 py-1 dark:bg-neutral-800 dark:text-neutral-50"
-                        value={bloodTypeFilter}
-                        onChange={(e) => setBloodTypeFilter(e.target.value)}
-                    >
-                        <option value="">All</option>
-                        {bloodTypes.map((type) => (
-                            <option key={type.id} value={type.id}>
-                                {type.blood_type}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="flex flex-col">
-                    <label className="text-xs font-semibold mb-1">
-                        Date Range
-                    </label>
-                    <DateRangePickerComponent
-                        state={dateRange}
-                        handleSelect={(ranges) =>
-                            setDateRange([ranges.selection])
-                        }
-                    />
-                </div>
-                <div className="flex flex-col flex-1 min-w-[200px]">
-                    <label className="text-xs font-semibold mb-1">Search</label>
-                    <div className="relative input">
-                        <input
-                            type="text"
-                            className="rounded-md px-2 py-1 w-full pl-8 dark:bg-neutral-800 dark:text-neutral-50"
-                            placeholder="Patient, Hospital, Agency..."
-                            value={searchText}
-                            onChange={(e) => setSearchText(e.target.value)}
+                {/* Filters */}
+                <div className="flex flex-wrap gap-4 items-center bg-slate-50 dark:bg-neutral-900 p-4 rounded-lg shadow mb-4">
+                    <div className="flex flex-col">
+                        <label className="text-xs font-semibold mb-1">
+                            Status
+                        </label>
+                        <select
+                            className="border rounded-md p-1 dark:bg-neutral-800 dark:text-neutral-50"
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                        >
+                            <option value="">All</option>
+                            <option value="pending">Pending</option>
+                            <option value="fulfilled">Approved</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div className="flex flex-col">
+                        <label className="text-xs font-semibold mb-1">
+                            Blood Type
+                        </label>
+                        <select
+                            className="border rounded-md px-2 py-1 min-w-[120px] dark:bg-neutral-800 dark:text-neutral-50"
+                            value={bloodTypeFilter}
+                            onChange={(e) => setBloodTypeFilter(e.target.value)}
+                        >
+                            <option value="">All</option>
+                            {bloodTypes.map((type) => (
+                                <option key={type.id} value={type.id}>
+                                    {type.blood_type}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="flex flex-col">
+                        <label className="text-xs font-semibold mb-1">
+                            Date Range
+                        </label>
+                        <DateRangePickerComponent
+                            state={dateRange}
+                            handleSelect={(ranges) =>
+                                setDateRange([ranges.selection])
+                            }
                         />
-                        <Search className="absolute left-2 top-2 w-4 h-4 text-gray-400" />
+                    </div>
+                    <div className="flex flex-col flex-1 min-w-[200px]">
+                        <label className="text-xs font-semibold mb-1">
+                            Search
+                        </label>
+                        <div className="relative input w-full">
+                            <input
+                                type="text"
+                                className="rounded-md px-2 py-1 w-full pl-8 dark:bg-neutral-800 dark:text-neutral-50"
+                                placeholder="Patient, Hospital, Agency..."
+                                value={searchText}
+                                onChange={(e) => setSearchText(e.target.value)}
+                            />
+                            <Search className="absolute left-2 top-2 w-4 h-4 text-gray-400" />
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="bg-white dark:bg-neutral-900 rounded-lg shadow p-1 md:p-6">
-                <DataTable
-                    columns={columns}
-                    data={filteredRequests}
-                    isLoading={isLoading}
+                <div className="bg-white dark:bg-neutral-900 rounded-lg shadow p-1 md:p-6">
+                    <DataTable
+                        columns={columns}
+                        data={filteredRequests}
+                        isLoading={isLoading}
+                    />
+                </div>
+                <DetailsModal
+                    detailsOpen={detailsOpen}
+                    setDetailsOpen={setDetailsOpen}
+                    selectedRequest={selectedRequest}
+                    isApproving={isApproving}
+                    updateRequestStatus={updateRequestStatus}
                 />
             </div>
-            <DetailsModal
-                detailsOpen={detailsOpen}
-                setDetailsOpen={setDetailsOpen}
-                selectedRequest={selectedRequest}
-                isApproving={isApproving}
-                updateRequestStatus={updateRequestStatus}
-            />
-        </div>
+        </>
     );
 }

@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {  Users2Icon } from "lucide-react";
+import { Users2Icon } from "lucide-react";
 
 import { Card } from "@components/ui/card";
 import {
@@ -18,7 +18,6 @@ import DataTableSkeleton from "@components/ui/DataTableSkeleton";
 import AppointmentTabs from "@components/admin/appointments/AppointmentTabs";
 
 export default function AppointmentList() {
-    
     const [selectedStatus, setSelectedStatus] = useState("All");
     const [date, setDate] = useState({
         from: null,
@@ -70,7 +69,6 @@ export default function AppointmentList() {
             return res.data;
         },
     });
-    
 
     const isLoadingAny = isLoading || isLoadingEvents || isLoadingAgency;
 
@@ -101,7 +99,7 @@ export default function AppointmentList() {
         );
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-3">
             {/* Dashboard Stats */}
             {/* <DashboardStats appointments={filteredAppointments} /> */}
 
@@ -117,17 +115,17 @@ export default function AppointmentList() {
                     </p>
                 </Card>
             ) : ( */}
-                <AppointmentTabs
-                    appointments={filteredAppointments}
-                    allAppointments={appointments}
-                    eventOptions={eventOptions || []}
-                    agencyOptions={agencyOptions || []}
-                    isLoading={isLoadingAny}
-                    selectedStatus={selectedStatus}
-                    onStatusChange={setSelectedStatus}
-                    date={date}
-                    setDate={setDate}
-                />
+            <AppointmentTabs
+                appointments={filteredAppointments}
+                allAppointments={appointments}
+                eventOptions={eventOptions || []}
+                agencyOptions={agencyOptions || []}
+                isLoading={isLoadingAny}
+                selectedStatus={selectedStatus}
+                onStatusChange={setSelectedStatus}
+                date={date}
+                setDate={setDate}
+            />
             {/* )} */}
         </div>
     );

@@ -15,7 +15,7 @@ export default function DonorList({ donors, isLoading, error }) {
     if (error) return <div>Error: {error.message}</div>;
 
     return (
-        <div>
+        <div className="relative">
             {donors.length === 0 ? (
                 <Card className="col-span-full flex flex-col justify-center items-center text-center py-16 ">
                     <Users2Icon className="w-12 h-12 mb-4 text-primary" />
@@ -28,7 +28,7 @@ export default function DonorList({ donors, isLoading, error }) {
                 </Card>
             ) : (
                 <>
-                    <div className="flex justify-end">
+                    <div className="absolute top-[-50px] right-2">
                         <button
                             className="btn btn-circle btn-warning"
                             onClick={() =>

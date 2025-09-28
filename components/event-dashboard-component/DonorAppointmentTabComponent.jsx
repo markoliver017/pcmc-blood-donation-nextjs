@@ -2,7 +2,7 @@
 import React, { useRef } from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
-import { UserCircle, Text, UserSearch } from "lucide-react";
+import { UserCircle, Text, UserSearch, UserCogIcon } from "lucide-react";
 
 import { MdOutlineBloodtype } from "react-icons/md";
 import { GiBlood } from "react-icons/gi";
@@ -33,23 +33,29 @@ export default function DonorAppointmentTabComponent({ appointment }) {
             defaultValue="donor-profile"
             className="flex-1 min-h-0 flex flex-col"
         >
-            <TabsList className="mb-4">
+            <TabsList className="md:mb-4 mb-2">
                 <TabsTrigger
                     value="donor-profile"
                     className="data-[state=active]:bg-green-100 data-[state=active]:text-green-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-300"
+                    title="Donor Profile"
                 >
                     <div className="flex-items-center">
                         <UserCircle className="h-4 w-4" />
-                        <span>Donor Profile</span>
+                        <span className="hidden md:inline-block">
+                            Donor Profile
+                        </span>
                     </div>
                 </TabsTrigger>
                 <TabsTrigger
                     value="blood-donation-details"
                     className="data-[state=active]:bg-green-100 data-[state=active]:text-green-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-300"
+                    title="Blood Donation Details"
                 >
                     <div className="flex-items-center">
                         <Text className="h-4 w-4" />
-                        <span>Blood Donation Details</span>
+                        <span className="hidden md:inline-block">
+                            Blood Donation Details
+                        </span>
                     </div>
                 </TabsTrigger>
             </TabsList>
@@ -62,14 +68,15 @@ export default function DonorAppointmentTabComponent({ appointment }) {
                 {/* Vertical Sub Tabs */}
                 <Tabs
                     defaultValue="basic-info"
-                    className="flex gap-4 flex-1 min-h-0"
+                    className="flex md:gap-4 gap-1 flex-1 min-h-0"
                 >
                     <TabsList className="flex flex-col max-w-max max-h-60 rounded-lg border p-2">
                         <TabsTrigger
                             value="basic-info"
                             className="flex items-center justify-center gap-2 p-2 w-full border-b data-[state=active]:bg-gray-100 data-[state=active]:text-gray-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-300"
+                            title="User Profile"
                         >
-                            <IoInformationCircle className="h-4 w-4" />
+                            <UserCogIcon className="h-4 w-4" />
                             <span className="hidden lg:inline-block">
                                 User Profile
                             </span>
@@ -77,6 +84,7 @@ export default function DonorAppointmentTabComponent({ appointment }) {
                         <TabsTrigger
                             value="blood-type"
                             className="flex items-center justify-center gap-2 p-2 w-full border-b data-[state=active]:bg-gray-100 data-[state=active]:text-gray-700 data-[state=active]:font-bold px-4 py-2 rounded-md dark:text-slate-300"
+                            title="Blood Type"
                         >
                             <MdOutlineBloodtype className="h-4 w-4" />
                             <span className="hidden lg:inline-block">
@@ -88,7 +96,7 @@ export default function DonorAppointmentTabComponent({ appointment }) {
                     {/* Sub Tab Content */}
                     <TabsContent
                         value="basic-info"
-                        className="flex-1 border rounded-lg p-4 shadow-sm overflow-y-auto relative"
+                        className="flex-1 border rounded-lg shadow-sm overflow-y-auto relative"
                         ref={basicInfoRef}
                     >
                         <EventDashboardDonorProfileForm
@@ -105,7 +113,7 @@ export default function DonorAppointmentTabComponent({ appointment }) {
                     </TabsContent>
                     <TabsContent
                         value="blood-type"
-                        className="flex-1 border rounded-lg p-4 shadow-sm overflow-y-auto relative"
+                        className="flex-1 border rounded-lg shadow-sm overflow-y-auto relative"
                         ref={bloodTypeRef}
                     >
                         <EventDashboardBloodTypeForm
@@ -190,7 +198,7 @@ export default function DonorAppointmentTabComponent({ appointment }) {
                     {/* Sub Tab Content */}
                     <TabsContent
                         value="appointment-info"
-                        className="flex-1 border rounded-lg p-4 bg-white dark:bg-inherit shadow-sm overflow-y-auto relative"
+                        className="flex-1 border rounded-lg bg-white dark:bg-inherit shadow-sm overflow-y-auto relative"
                         ref={appointmentInfoRef}
                     >
                         {appointment && (
@@ -209,7 +217,7 @@ export default function DonorAppointmentTabComponent({ appointment }) {
                     </TabsContent>
                     <TabsContent
                         value="screening-questionaires"
-                        className="flex-1 border rounded-lg p-4 bg-white dark:bg-inherit shadow-sm overflow-y-auto relative"
+                        className="flex-1 border rounded-lg bg-white dark:bg-inherit shadow-sm overflow-y-auto relative"
                         ref={screeningQuestionairesRef}
                     >
                         <EventScreeningQuestionaire
@@ -225,7 +233,7 @@ export default function DonorAppointmentTabComponent({ appointment }) {
                     </TabsContent>
                     <TabsContent
                         value="physical-exam"
-                        className="flex-1 border rounded-lg p-4 bg-white dark:bg-inherit shadow-sm overflow-y-auto relative"
+                        className="flex-1 border rounded-lg bg-white dark:bg-inherit shadow-sm overflow-y-auto relative"
                         ref={physicalExamRef}
                     >
                         <AppointmentPhysicalExamTabForm
@@ -241,7 +249,7 @@ export default function DonorAppointmentTabComponent({ appointment }) {
                     </TabsContent>
                     <TabsContent
                         value="blood-collection"
-                        className="flex-1 border rounded-lg p-4 bg-white dark:bg-inherit shadow-sm overflow-y-auto relative"
+                        className="flex-1 border rounded-lg bg-white dark:bg-inherit shadow-sm overflow-y-auto relative"
                         ref={bloodCollectionRef}
                     >
                         <BloodCollectionTabForm appointment={appointment} />

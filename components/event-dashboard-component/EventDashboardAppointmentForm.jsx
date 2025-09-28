@@ -95,8 +95,8 @@ export default function EventDashboardAppointmentForm({
                 onSubmit={handleSubmit(onSubmit)}
                 className="space-y-2 flex flex-col gap-2 justify-center"
             >
-                <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
-                    <div className="flex items-center gap-5">
+                <Card className="md:px-4 px-2 md:py-5 py-2 md:space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
+                    <div className="flex flex-wrap items-center gap-5">
                         <h1 className="text-xl font-bold flex-items-center">
                             <IoInformationCircle /> Appointment Details
                         </h1>
@@ -115,7 +115,7 @@ export default function EventDashboardAppointmentForm({
                             is <b>REGISTERED</b>.
                         </div>
                     )}
-                    <div className="pl-4 space-y-5">
+                    <div className="md:pl-4 md:space-y-5 space-y-2">
                         {/* Collection Method */}
                         <Controller
                             control={control}
@@ -358,7 +358,7 @@ export default function EventDashboardAppointmentForm({
                             )}
                         />
                     </div>
-                    <div className="flex justify-end">
+                    <div className="flex justify-end mt-2">
                         <button
                             disabled={!isEditable || !isDirty || isPending}
                             className="btn btn-primary flex items-center gap-2"

@@ -116,7 +116,7 @@ export default function AppointmentTabs({
             onValueChange={onStatusChange}
             className="w-full"
         >
-            <TabsList className="grid w-full grid-cols-7 mb-8 h-auto p-1 bg-gray-200 dark:bg-gray-800 rounded-lg">
+            <TabsList className="w-full flex justify-evenly overflow-x-auto mb-2 h-auto p-1 bg-gray-200 dark:bg-gray-800 rounded-lg">
                 {tabConfigs.map((tab) => {
                     const IconComponent = tab.icon;
                     const count = tabCounts[tab.value] || 0;
@@ -125,7 +125,7 @@ export default function AppointmentTabs({
                         <TabsTrigger
                             key={tab.value}
                             value={tab.value}
-                            className="flex flex-col items-center gap-2 p-4 h-auto data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 data-[state=active]:shadow-sm rounded-md transition-all duration-200 hover:bg-white/50"
+                            className="flex flex-col items-center min-w-[150px] gap-2 p-4 h-auto data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 data-[state=active]:shadow-sm rounded-md transition-all duration-200 hover:bg-white/50"
                         >
                             <div
                                 className={`p-2 rounded-lg ${tab.bgColor} transition-colors`}
@@ -185,7 +185,7 @@ export default function AppointmentTabs({
                             </div>
                         </div>
                         {/* Controls: Date Picker and Refresh Button */}
-                        <div className="flex flex-wrap justify-between gap-2 items-center ">
+                        <div className="flex justify-between gap-2 items-center ">
                             <div className="flex flex-wrap items-center gap-2">
                                 <DatePicker
                                     date={date.from}

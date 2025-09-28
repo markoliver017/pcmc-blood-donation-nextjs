@@ -16,10 +16,11 @@ import Skeleton_form from "@components/ui/Skeleton_form";
 
 import { getBloodTypes } from "@/action/bloodTypeAction";
 import { updateDonorBloodType } from "@/action/donorAction";
-import { MdBloodtype } from "react-icons/md";
+import { MdBloodtype, MdOutlineBloodtype } from "react-icons/md";
 import { bloodtypeSchema } from "@lib/zod/donorSchema";
 import FormLogger from "@lib/utils/FormLogger";
 import { toast } from "sonner";
+import { IoInformationCircle } from "react-icons/io5";
 
 export default function EventDashboardBloodTypeForm({ donor, eventId }) {
     const queryClient = useQueryClient();
@@ -119,11 +120,12 @@ export default function EventDashboardBloodTypeForm({ donor, eventId }) {
     return (
         <Form {...form}>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
-                    <h1 className="text-xl font-bold flex-items-center">
-                        Blood Type Management:
+                <Card className="md:px-4 px-2 md:py-5 py-2 md:space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
+                    <h1 className="md:text-xl text-lg font-bold flex-items-center">
+                        <MdOutlineBloodtype className="h-4 w-4" /> Blood Type
+                        Management:
                     </h1>
-                    <div className="pl-4 space-y-5">
+                    <div className="md:pl-4 pl-2 md:space-y-5">
                         {/* Hidden donor ID field */}
                         <FormField
                             control={control}
@@ -139,9 +141,9 @@ export default function EventDashboardBloodTypeForm({ donor, eventId }) {
                             name="blood_type_id"
                             render={({ field }) => (
                                 <FormItem className="mt-2">
-                                    <div className="flex flex-wrap items-center gap-5">
+                                    <div className="flex flex-wrap items-center md:gap-5 gap-2">
                                         <h2 className="text-lg font-semibold">
-                                            Blood Type:
+                                            Type:
                                         </h2>
 
                                         <label
@@ -189,34 +191,43 @@ export default function EventDashboardBloodTypeForm({ donor, eventId }) {
                                 </FormItem>
                             )}
                         />
+                        {donor?.is_bloodtype_verified && (
+                            <span className="badge badge-error badge-outline badge-xs px-2 py-5">
+                                <IoInformationCircle /> Edits are not allowed
+                                after verification.
+                            </span>
+                        )}
 
                         {/* Blood Type Verification Checkbox */}
-                        <FormField
-                            control={control}
-                            name="is_bloodtype_verified"
-                            render={({ field }) => (
-                                <FormItem className="pt-10 pl-5 md:pl-15">
-                                    <label className="flex items-center gap-4">
-                                        <input
-                                            type="checkbox"
-                                            className="checkbox bg-red-500 checkbox-success border"
-                                            {...field}
-                                            disabled={isBloodTypeVerified}
-                                            checked={field.value}
-                                        />
-                                        <span className="flex items-center gap-2 text-xl font-semibold text-gray-800 dark:text-gray-300">
-                                            Verify Donor's Blood Type
-                                            <ShieldCheck className="w-5 h-5 text-success" />
-                                        </span>
-                                    </label>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                                        Mark this checkbox if you've confirmed
-                                        the blood type of the donor.
-                                    </p>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        {!donor?.is_bloodtype_verified && (
+                            <FormField
+                                control={control}
+                                name="is_bloodtype_verified"
+                                render={({ field }) => (
+                                    <FormItem className="md:pt-10 pl-5 md:pl-15">
+                                        <label className="flex items-center gap-4">
+                                            <input
+                                                type="checkbox"
+                                                className="checkbox bg-red-500 checkbox-success border"
+                                                {...field}
+                                                disabled={isBloodTypeVerified}
+                                                checked={field.value}
+                                            />
+                                            <span className="flex items-center gap-2 text-xl font-semibold text-gray-800 dark:text-gray-300">
+                                                Verify Donor's Blood Type
+                                                <ShieldCheck className="w-5 h-5 text-success" />
+                                            </span>
+                                        </label>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                                            Mark this checkbox if you've
+                                            confirmed the blood type of the
+                                            donor.
+                                        </p>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        )}
                     </div>
 
                     {/* Submit Button - Only show if not verified */}

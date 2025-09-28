@@ -152,7 +152,7 @@ export const getColumns = (updateRequestStatus, isApproving, onShowDetails) => {
                             </Button>
                         </DropdownMenuTrigger>
 
-                        <DropdownMenuContent>
+                        <DropdownMenuContent className="space-y-1">
                             <DropdownMenuItem
                                 size="sm"
                                 variant="outline"
@@ -160,9 +160,7 @@ export const getColumns = (updateRequestStatus, isApproving, onShowDetails) => {
                                 onClick={() => onShowDetails(row.original)}
                             >
                                 <Eye className="w-4 h-4" />
-                                <span className="hidden md:inline">
-                                    Details
-                                </span>
+                                <span>Details</span>
                             </DropdownMenuItem>
                             {status === "pending" && (
                                 <>
@@ -188,9 +186,7 @@ export const getColumns = (updateRequestStatus, isApproving, onShowDetails) => {
                                         className="flex items-center gap-1 bg-green-500 text-white"
                                     >
                                         <CheckCircle className="w-4 h-4" />
-                                        <span className="hidden md:inline">
-                                            Approve
-                                        </span>
+                                        <span>Approve</span>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
                                         size="sm"
@@ -229,9 +225,7 @@ export const getColumns = (updateRequestStatus, isApproving, onShowDetails) => {
                                         className="flex items-center gap-1 bg-red-500 text-white"
                                     >
                                         <XCircle className="w-4 h-4" />
-                                        <span className="hidden md:inline">
-                                            Reject
-                                        </span>
+                                        <span>Reject</span>
                                     </DropdownMenuItem>
                                 </>
                             )}
