@@ -71,7 +71,7 @@ export default function AgencyList() {
                 </Link>
             </div>
             <button
-                className="btn btn-circle btn-warning absolute top-[1] right-5"
+                className="btn btn-circle btn-warning absolute hidden md:block top-[10px] right-5"
                 onClick={() =>
                     queryClient.invalidateQueries({
                         queryKey: ["verified-agencies"],
@@ -86,7 +86,7 @@ export default function AgencyList() {
                 onValueChange={handleTabChange}
                 className="mt-2 px-1 md:px-5"
             >
-                <TabsList className="mt-4 bg-slate-900 p-1 rounded-md flex overflow-x-auto">
+                <TabsList className="mt-4 dark:bg-slate-900 p-1 rounded-md flex overflow-x-auto">
                     <TabsTrigger
                         value="approved"
                         className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 data-[state=active]:font-bold px-4 py-2 rounded-l-md dark:text-slate-600 border"

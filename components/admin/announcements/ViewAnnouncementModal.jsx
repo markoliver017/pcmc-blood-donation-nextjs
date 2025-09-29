@@ -27,6 +27,7 @@ import Skeleton_line from "@components/ui/skeleton_line";
 import Image from "next/image";
 import ImagePreviewComponent from "@components/reusable_components/ImagePreviewComponent";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
+import { BiMicrophone } from "react-icons/bi";
 
 export default function ViewAnnouncementModal({
     announcementId,
@@ -49,7 +50,7 @@ export default function ViewAnnouncementModal({
     if (isLoadingAnnouncement) {
         return (
             <Dialog open={isOpen} onOpenChange={onClose}>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto dark:text-white">
+                <DialogContent className="max-w-4xl max-h-[90vh] p-1 md:p-5 overflow-y-auto dark:text-white">
                     <DialogHeader>
                         <DialogTitle>View Announcement</DialogTitle>
                     </DialogHeader>
@@ -67,7 +68,7 @@ export default function ViewAnnouncementModal({
     if (!announcement) {
         return (
             <Dialog open={isOpen} onOpenChange={onClose}>
-                <DialogContent className="max-w-4xl dark:text-white">
+                <DialogContent className="p-1 md:p-5 max-w-4xl dark:text-white">
                     <DialogHeader>
                         <DialogTitle>View Announcement</DialogTitle>
                     </DialogHeader>
@@ -81,10 +82,10 @@ export default function ViewAnnouncementModal({
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto dark:text-white">
+            <DialogContent className="px-1 md:px-5 max-w-4xl max-h-[90vh] overflow-y-auto dark:text-white">
                 <DialogHeader>
                     <DialogTitle className="text-2xl flex items-center gap-2">
-                        <Eye className="h-6 w-6" />
+                        <BiMicrophone className="h-6 w-6" />
                         View Announcement
                     </DialogTitle>
                 </DialogHeader>

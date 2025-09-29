@@ -43,6 +43,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@components/ui/select";
+import Image from "next/image";
 
 export default function EventDashboardDataTable({
     appointments,
@@ -444,8 +445,32 @@ export default function EventDashboardDataTable({
                                     <TableRow key={appointment.id}>
                                         <TableCell>
                                             <div className="flex items-center gap-2">
-                                                <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-                                                    <User className="h-4 w-4 text-blue-600" />
+                                                <div className="w-8 h-8 relative bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+                                                    {appointment.donor?.user
+                                                        ?.image ? (
+                                                        <Image
+                                                            src={
+                                                                appointment
+                                                                    .donor?.user
+                                                                    ?.image ||
+                                                                "/default_avatar.png"
+                                                            }
+                                                            alt={
+                                                                appointment
+                                                                    .donor?.user
+                                                                    ?.name
+                                                            }
+                                                            className="rounded-full"
+                                                            fill
+                                                            unoptimized={
+                                                                process.env
+                                                                    .NEXT_PUBLIC_NODE_ENV ===
+                                                                "production"
+                                                            }
+                                                        />
+                                                    ) : (
+                                                        <User className="h-4 w-4 text-blue-600" />
+                                                    )}
                                                 </div>
                                                 <div>
                                                     <div className="font-medium">

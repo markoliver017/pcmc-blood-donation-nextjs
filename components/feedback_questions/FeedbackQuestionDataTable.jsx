@@ -20,7 +20,8 @@ import CreateFeedbackQuestionForm from "./CreateFeedbackQuestionForm";
 import EditFeedbackQuestionForm from "./EditFeedbackQuestionForm";
 import { toast, Toaster } from "sonner";
 import { DataTable } from "@components/reusable_components/Datatable";
-import { Plus, Trash, X } from "lucide-react";
+import { Pencil, Plus, Trash, X } from "lucide-react";
+import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 
 export default function FeedbackQuestionDataTable() {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -153,12 +154,15 @@ export default function FeedbackQuestionDataTable() {
             <div className="flex justify-end mb-4">
                 <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                     <DialogTrigger asChild>
-                        <Button variant="secondary"><Plus /> Add New Question</Button>
+                        <Button variant="outline" className="text-green-500">
+                            <Plus /> Add New Question
+                        </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px] dark:text-slate-200">
                         <DialogHeader>
-                            <DialogTitle>
-                                Create New Feedback Question
+                            <DialogTitle className="flex gap-1">
+                                <QuestionMarkCircledIcon /> Create New Feedback
+                                Question
                             </DialogTitle>
                         </DialogHeader>
                         <CreateFeedbackQuestionForm
@@ -179,7 +183,10 @@ export default function FeedbackQuestionDataTable() {
             <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
                 <DialogContent className="sm:max-w-[425px] dark:text-slate-200">
                     <DialogHeader>
-                        <DialogTitle>Edit Feedback Question</DialogTitle>
+                        <DialogTitle className="flex gap-1">
+                            <Pencil className="w-4 h-4" /> Edit Feedback
+                            Question
+                        </DialogTitle>
                     </DialogHeader>
                     {selectedQuestion && (
                         <EditFeedbackQuestionForm

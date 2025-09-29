@@ -143,9 +143,11 @@ export default function ScreeningQuestionsPage() {
                 ]}
             />
             <Toaster />
-            <div className="container mx-auto p-6">
+            <div className="container mx-auto p-1 md:p-6">
                 <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold">Screening Questions</h1>
+                    <h1 className="text-xlmd:text-2xl font-extrabold">
+                        Screening Questions
+                    </h1>
                     <Dialog
                         open={isAddModalOpen}
                         onOpenChange={setIsAddModalOpen}
@@ -180,7 +182,7 @@ export default function ScreeningQuestionsPage() {
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                     </div>
                 ) : (
-                    <div className="rounded-md border">
+                    <div className="rounded-md border overflow-auto">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -239,7 +241,9 @@ export default function ScreeningQuestionsPage() {
                                                         variant="ghost"
                                                         size="icon"
                                                         onClick={() =>
-                                                            handleEditClick(question)
+                                                            handleEditClick(
+                                                                question
+                                                            )
                                                         }
                                                     >
                                                         <Edit className="w-4 h-4" />
@@ -249,7 +253,9 @@ export default function ScreeningQuestionsPage() {
                                                         size="icon"
                                                         className="text-red-500 hover:text-red-600"
                                                         onClick={() =>
-                                                            handleDeleteClick(question)
+                                                            handleDeleteClick(
+                                                                question
+                                                            )
                                                         }
                                                     >
                                                         <Trash2 className="w-4 h-4" />

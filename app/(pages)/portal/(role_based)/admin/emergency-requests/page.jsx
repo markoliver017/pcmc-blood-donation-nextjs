@@ -189,41 +189,47 @@ export default function AdminEmergencyRequestsPage() {
                     </Card>
                 </div>
                 {/* Filters */}
-                <div className="flex flex-wrap gap-4 items-center bg-slate-50 dark:bg-neutral-900 p-4 rounded-lg shadow mb-4">
-                    <div className="flex flex-col">
-                        <label className="text-xs font-semibold mb-1">
-                            Status
-                        </label>
-                        <select
-                            className="border rounded-md p-1 dark:bg-neutral-800 dark:text-neutral-50"
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                        >
-                            <option value="">All</option>
-                            <option value="pending">Pending</option>
-                            <option value="fulfilled">Approved</option>
-                            <option value="rejected">Rejected</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
+                <div className="flex flex-wrap gap-1 md:gap-4 items-center bg-slate-50 dark:bg-neutral-900 p-4 rounded-lg shadow mb-4">
+                    <div className="flex flex-1 gap-1">
+                        <div className="flex-1 flex flex-col">
+                            <label className="text-xs font-semibold mb-1">
+                                Status
+                            </label>
+                            <select
+                                className="border rounded-md p-1 dark:bg-neutral-800 dark:text-neutral-50"
+                                value={statusFilter}
+                                onChange={(e) =>
+                                    setStatusFilter(e.target.value)
+                                }
+                            >
+                                <option value="">All</option>
+                                <option value="pending">Pending</option>
+                                <option value="fulfilled">Approved</option>
+                                <option value="rejected">Rejected</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div className="flex-1 flex flex-col">
+                            <label className="text-xs font-semibold mb-1">
+                                Blood Type
+                            </label>
+                            <select
+                                className="border rounded-md px-2 py-1 min-w-[120px] dark:bg-neutral-800 dark:text-neutral-50"
+                                value={bloodTypeFilter}
+                                onChange={(e) =>
+                                    setBloodTypeFilter(e.target.value)
+                                }
+                            >
+                                <option value="">All</option>
+                                {bloodTypes.map((type) => (
+                                    <option key={type.id} value={type.id}>
+                                        {type.blood_type}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
-                    <div className="flex flex-col">
-                        <label className="text-xs font-semibold mb-1">
-                            Blood Type
-                        </label>
-                        <select
-                            className="border rounded-md px-2 py-1 min-w-[120px] dark:bg-neutral-800 dark:text-neutral-50"
-                            value={bloodTypeFilter}
-                            onChange={(e) => setBloodTypeFilter(e.target.value)}
-                        >
-                            <option value="">All</option>
-                            {bloodTypes.map((type) => (
-                                <option key={type.id} value={type.id}>
-                                    {type.blood_type}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="flex flex-col">
+                    <div className="flex-1 min-w-20 flex flex-col">
                         <label className="text-xs font-semibold mb-1">
                             Date Range
                         </label>

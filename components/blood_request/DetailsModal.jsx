@@ -53,7 +53,10 @@ export default function DetailsModal({
 }) {
     return (
         <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-            <DialogContent className="max-w-xl" id="detailsModal">
+            <DialogContent
+                className="max-w-xl max-h-[95vh] overflow-y-auto"
+                id="detailsModal"
+            >
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                         <ClipboardList className="w-5 h-5 text-blue-500" />{" "}

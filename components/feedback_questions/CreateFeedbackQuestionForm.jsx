@@ -5,11 +5,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFeedbackQuestionSchema } from "@lib/zod/feedbackQuestionSchema";
 import { createFeedbackQuestion } from "@action/feedbackQuestionAction";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@components/ui/form";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@components/ui/form";
 import { Textarea } from "@components/ui/textarea";
 import { Button } from "@components/ui/button";
 import { toast } from "sonner";
-
+import { Plus } from "lucide-react";
 
 export default function CreateFeedbackQuestionForm({ onOpenChange }) {
     const queryClient = useQueryClient();
@@ -24,7 +31,9 @@ export default function CreateFeedbackQuestionForm({ onOpenChange }) {
         mutationFn: createFeedbackQuestion,
         onSuccess: (response) => {
             if (response.success) {
-                queryClient.invalidateQueries({ queryKey: ["feedback_questions"] });
+                queryClient.invalidateQueries({
+                    queryKey: ["feedback_questions"],
+                });
                 toast.success(response.message);
                 form.reset();
                 if (onOpenChange) onOpenChange(false);
@@ -51,14 +60,22 @@ export default function CreateFeedbackQuestionForm({ onOpenChange }) {
                         <FormItem>
                             <FormLabel>Question</FormLabel>
                             <FormControl>
-                                <Textarea placeholder="Enter the feedback question..." {...field} />
+                                <Textarea
+                                    placeholder="Enter the feedback question..."
+                                    {...field}
+                                />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
                 <div className="flex justify-end">
-                    <Button type="submit" disabled={isPending}>
+                    <Button
+                        variant="outline"
+                        type="submit"
+                        disabled={isPending}
+                    >
+                        <Plus />
                         {isPending ? "Creating..." : "Create Question"}
                     </Button>
                 </div>

@@ -1430,7 +1430,7 @@ export async function getAllAppointments(date) {
     }
 
     try {
-        const whereClause = {};
+        let whereClause = {};
         // if (date && date.from && date.to) {
         //     whereClause.date = {
         //         [Op.between]: [new Date(date.from), new Date(date.to)],
@@ -1446,6 +1446,23 @@ export async function getAllAppointments(date) {
                 [Op.lte]: new Date(date.to),
             };
         }
+        if (date && date.from && date.to) {
+            whereClause = {
+                [Op.and]: [
+                    { date: { [Op.gte]: new Date(date.from) } },
+                    { date: { [Op.lte]: new Date(date.to) } },
+                ],
+            };
+        } else if (date && date.from) {
+            whereClause.date = {
+                [Op.gte]: new Date(date.from),
+            };
+        } else if (date && date.to) {
+            whereClause.date = {
+                [Op.lte]: new Date(date.to),
+            };
+        }
+        console.log("whereClause", whereClause);
 
         const appointments = await DonorAppointmentInfo.findAll({
             include: [

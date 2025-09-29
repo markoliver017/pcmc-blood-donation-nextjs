@@ -162,14 +162,14 @@ export function DataTable({ columns, data, isLoading }) {
                 <Skeleton className="w-full h-80 rounded-xl" />
             ) : (
                 <>
-                    <div className="flex items-center py-2 space-x-2">
+                    <div className="flex flex-wrap gap-1 items-center py-2 space-x-2">
                         <input
                             placeholder="Search all .."
                             // value={{globalFilter}}
                             onChange={(e) =>
                                 table.setGlobalFilter(e.target.value)
                             }
-                            className="p-2 input-sm flex-none bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
+                            className="flex-1 p-2 input-sm bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
                         />
 
                         <div className="flex-1 flex justify-end pr-2">
@@ -271,10 +271,10 @@ export function DataTable({ columns, data, isLoading }) {
                                                 {header.isPlaceholder
                                                     ? null
                                                     : flexRender(
-                                                        header.column
-                                                            .columnDef.header,
-                                                        header.getContext()
-                                                    )}
+                                                          header.column
+                                                              .columnDef.header,
+                                                          header.getContext()
+                                                      )}
                                             </TableHead>
                                         ))}
                                     </TableRow>

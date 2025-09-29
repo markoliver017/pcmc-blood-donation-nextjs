@@ -71,7 +71,7 @@ export default function AdminAnnouncementsPage() {
                 ]}
             />
             <div className="container mx-auto px-1 pb-2 md:px-6 space-y-2">
-                <div className="flex md:justify-end items-center">
+                <div className="flex md:justify-end items-center py-2">
                     <Button onClick={() => setIsCreateModalOpen(true)}>
                         <Plus className="w-4 h-4 mr-2" />
                         New Announcement
@@ -127,7 +127,7 @@ export default function AdminAnnouncementsPage() {
                     onOpenChange={setIsCreateModalOpen}
                 >
                     <DialogContent
-                        className="max-w-4xl max-h-[90vh] overflow-y-auto dark:text-white"
+                        className="max-w-4xl max-h-[90vh] p-1 md:p-5 overflow-y-auto dark:text-white"
                         onInteractOutside={(event) => event.preventDefault()}
                     >
                         <DialogTitle className="hidden"></DialogTitle>
@@ -143,7 +143,7 @@ export default function AdminAnnouncementsPage() {
                     onOpenChange={setIsUpdateModalOpen}
                 >
                     <DialogContent
-                        className="max-w-4xl max-h-[90vh] overflow-y-auto dark:text-white"
+                        className="max-w-4xl max-h-[90vh] p-1 md:p-5 overflow-y-auto dark:text-white"
                         onInteractOutside={(event) => event.preventDefault()}
                     >
                         <DialogTitle className="hidden"></DialogTitle>

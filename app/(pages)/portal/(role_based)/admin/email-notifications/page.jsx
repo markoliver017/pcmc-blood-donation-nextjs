@@ -222,12 +222,12 @@ export default function EmailNotificationsDashboard() {
     };
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <div className="container mx-auto p-1 md:p-6 space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold flex items-center gap-2">
-                        <Mail className="h-8 w-8 text-primary" />
+                    <h1 className="text-xl md:text-3xl font-bold flex items-center gap-2">
+                        <Mail className="h-8 w-8" />
                         Email Notification Templates
                     </h1>
                     <p className="text-muted-foreground mt-2">
@@ -236,8 +236,9 @@ export default function EmailNotificationsDashboard() {
                     </p>
                 </div>
                 <Button
+                    variant="outline"
                     onClick={handleCreateNew}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 text-green-500"
                 >
                     <Plus className="h-4 w-4" />
                     Create Template
@@ -324,7 +325,7 @@ export default function EmailNotificationsDashboard() {
                 onValueChange={setActiveTab}
                 className="space-y-4"
             >
-                <TabsList className="flex w-full gap-2 bg-muted/50 rounded-lg p-1 mb-2">
+                <TabsList className="flex w-full overflow-auto gap-2 bg-muted/50 rounded-lg p-1 mb-2">
                     <TabsTrigger
                         value="templates"
                         className="flex items-center gap-2 px-4 py-2 rounded-md data-[state=active]:bg-primary data-[state=active]:text-white transition-colors"
@@ -417,10 +418,10 @@ export default function EmailNotificationsDashboard() {
                                     {filteredTemplates.map((template) => (
                                         <div
                                             key={template.id}
-                                            className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                                            className="flex flex-wrap gap-2 items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                                         >
                                             <div className="flex-1">
-                                                <div className="flex items-center gap-3 mb-2">
+                                                <div className="flex flex-wrap items-center gap-3 mb-2">
                                                     <h3 className="font-semibold">
                                                         {template.name}
                                                     </h3>

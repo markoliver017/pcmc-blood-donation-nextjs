@@ -14,25 +14,25 @@ import { Badge } from "@components/ui/badge";
 import { Separator } from "@components/ui/separator";
 import { ScrollArea } from "@components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { 
-    Calendar, 
-    User, 
-    Activity, 
-    AlertTriangle, 
-    CheckCircle, 
-    Globe, 
+import {
+    Calendar,
+    User,
+    Activity,
+    AlertTriangle,
+    CheckCircle,
+    Globe,
     Monitor,
     X,
     Copy,
-    ExternalLink
+    ExternalLink,
 } from "lucide-react";
 import notify from "@components/ui/notify";
 import LoadingModal from "@components/layout/LoadingModal";
 
-export default function AuditTrailDetailModal({ 
-    isOpen, 
-    onClose, 
-    auditTrailId 
+export default function AuditTrailDetailModal({
+    isOpen,
+    onClose,
+    auditTrailId,
 }) {
     const [copiedField, setCopiedField] = useState(null);
 
@@ -49,7 +49,10 @@ export default function AuditTrailDetailModal({
         try {
             await navigator.clipboard.writeText(text);
             setCopiedField(fieldName);
-            notify({ success: true, message: `${fieldName} copied to clipboard` });
+            notify({
+                success: true,
+                message: `${fieldName} copied to clipboard`,
+            });
             setTimeout(() => setCopiedField(null), 2000);
         } catch (err) {
             notify({ error: true, message: "Failed to copy to clipboard" });
@@ -66,14 +69,14 @@ export default function AuditTrailDetailModal({
     };
 
     const formatTimestamp = (timestamp) => {
-        return new Date(timestamp).toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            timeZoneName: 'short'
+        return new Date(timestamp).toLocaleString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            timeZoneName: "short",
         });
     };
 
@@ -83,7 +86,7 @@ export default function AuditTrailDetailModal({
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden px-1 md:px-5">
                 <DialogHeader>
                     <div className="flex items-center justify-between">
                         <DialogTitle className="text-xl font-bold">
@@ -106,9 +109,15 @@ export default function AuditTrailDetailModal({
                         <div className="space-y-6 p-1">
                             {/* Status Badge */}
                             <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium">Status:</span>
-                                <Badge 
-                                    variant={auditTrail.is_error ? "destructive" : "default"}
+                                <span className="text-sm font-medium dark:text-white">
+                                    Status:
+                                </span>
+                                <Badge
+                                    variant={
+                                        auditTrail.is_error
+                                            ? "destructive"
+                                            : "default"
+                                    }
                                     className="flex items-center gap-1"
                                 >
                                     {auditTrail.is_error ? (
@@ -141,7 +150,9 @@ export default function AuditTrailDetailModal({
                                                 Timestamp
                                             </div>
                                             <div className="text-sm text-muted-foreground">
-                                                {formatTimestamp(auditTrail.createdAt)}
+                                                {formatTimestamp(
+                                                    auditTrail.createdAt
+                                                )}
                                             </div>
                                         </div>
 
@@ -154,14 +165,35 @@ export default function AuditTrailDetailModal({
                                                 {auditTrail.user ? (
                                                     <div className="flex items-center gap-2">
                                                         <span>
-                                                            {auditTrail.user.first_name} {auditTrail.user.last_name}
+                                                            {
+                                                                auditTrail.user
+                                                                    .first_name
+                                                            }{" "}
+                                                            {
+                                                                auditTrail.user
+                                                                    .last_name
+                                                            }
                                                         </span>
                                                         <Button
                                                             variant="ghost"
                                                             size="sm"
-                                                            onClick={() => copyToClipboard(auditTrail.user.email, "Email")}
+                                                            onClick={() =>
+                                                                copyToClipboard(
+                                                                    auditTrail
+                                                                        .user
+                                                                        .email,
+                                                                    "Email"
+                                                                )
+                                                            }
                                                         >
-                                                            <Copy className={`h-3 w-3 ${copiedField === "Email" ? "text-green-500" : ""}`} />
+                                                            <Copy
+                                                                className={`h-3 w-3 ${
+                                                                    copiedField ===
+                                                                    "Email"
+                                                                        ? "text-green-500"
+                                                                        : ""
+                                                                }`}
+                                                            />
                                                         </Button>
                                                     </div>
                                                 ) : (
@@ -171,14 +203,18 @@ export default function AuditTrailDetailModal({
                                         </div>
 
                                         <div className="space-y-2">
-                                            <div className="text-sm font-medium">Controller</div>
+                                            <div className="text-sm font-medium">
+                                                Controller
+                                            </div>
                                             <div className="text-sm text-muted-foreground">
                                                 {auditTrail.controller || "N/A"}
                                             </div>
                                         </div>
 
                                         <div className="space-y-2">
-                                            <div className="text-sm font-medium">Action</div>
+                                            <div className="text-sm font-medium">
+                                                Action
+                                            </div>
                                             <div className="text-sm text-muted-foreground">
                                                 {auditTrail.action || "N/A"}
                                             </div>
@@ -198,25 +234,42 @@ export default function AuditTrailDetailModal({
                                 <CardContent className="space-y-4">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <div className="text-sm font-medium">IP Address</div>
+                                            <div className="text-sm font-medium">
+                                                IP Address
+                                            </div>
                                             <div className="flex items-center gap-2">
                                                 <span className="text-sm text-muted-foreground">
-                                                    {auditTrail.ip_address || "N/A"}
+                                                    {auditTrail.ip_address ||
+                                                        "N/A"}
                                                 </span>
                                                 {auditTrail.ip_address && (
                                                     <Button
                                                         variant="ghost"
                                                         size="sm"
-                                                        onClick={() => copyToClipboard(auditTrail.ip_address, "IP Address")}
+                                                        onClick={() =>
+                                                            copyToClipboard(
+                                                                auditTrail.ip_address,
+                                                                "IP Address"
+                                                            )
+                                                        }
                                                     >
-                                                        <Copy className={`h-3 w-3 ${copiedField === "IP Address" ? "text-green-500" : ""}`} />
+                                                        <Copy
+                                                            className={`h-3 w-3 ${
+                                                                copiedField ===
+                                                                "IP Address"
+                                                                    ? "text-green-500"
+                                                                    : ""
+                                                            }`}
+                                                        />
                                                     </Button>
                                                 )}
                                             </div>
                                         </div>
 
                                         <div className="space-y-2">
-                                            <div className="text-sm font-medium">User Agent</div>
+                                            <div className="text-sm font-medium">
+                                                User Agent
+                                            </div>
                                             <div className="text-sm text-muted-foreground break-all">
                                                 {auditTrail.user_agent || "N/A"}
                                             </div>
@@ -229,10 +282,12 @@ export default function AuditTrailDetailModal({
                             {auditTrail.details && (
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle className="text-lg">Details</CardTitle>
+                                        <CardTitle className="text-lg">
+                                            Details
+                                        </CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="bg-muted p-4 rounded-md">
+                                        <div className="bg-muted dark:bg-muted-foreground p-4 rounded-md">
                                             <pre className="text-sm whitespace-pre-wrap break-words">
                                                 {auditTrail.details}
                                             </pre>
@@ -263,21 +318,39 @@ export default function AuditTrailDetailModal({
                             {/* Metadata */}
                             <Card>
                                 <CardHeader>
-                                    <CardTitle className="text-lg">Metadata</CardTitle>
+                                    <CardTitle className="text-lg">
+                                        Metadata
+                                    </CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                                         <div>
-                                            <span className="font-medium">ID:</span> {auditTrail.id}
+                                            <span className="font-medium">
+                                                ID:
+                                            </span>{" "}
+                                            {auditTrail.id}
                                         </div>
                                         <div>
-                                            <span className="font-medium">User ID:</span> {auditTrail.user_id || "N/A"}
+                                            <span className="font-medium">
+                                                User ID:
+                                            </span>{" "}
+                                            {auditTrail.user_id || "N/A"}
                                         </div>
                                         <div>
-                                            <span className="font-medium">Created:</span> {formatTimestamp(auditTrail.createdAt)}
+                                            <span className="font-medium">
+                                                Created:
+                                            </span>{" "}
+                                            {formatTimestamp(
+                                                auditTrail.createdAt
+                                            )}
                                         </div>
                                         <div>
-                                            <span className="font-medium">Updated:</span> {formatTimestamp(auditTrail.updatedAt)}
+                                            <span className="font-medium">
+                                                Updated:
+                                            </span>{" "}
+                                            {formatTimestamp(
+                                                auditTrail.updatedAt
+                                            )}
                                         </div>
                                     </div>
                                 </CardContent>
@@ -294,4 +367,4 @@ export default function AuditTrailDetailModal({
             </DialogContent>
         </Dialog>
     );
-} 
+}

@@ -30,6 +30,7 @@ import notify from "@components/ui/notify";
 import { FaExclamationCircle } from "react-icons/fa";
 import { ToastContainer } from "react-toastify";
 import { toast, Toaster } from "sonner";
+import Image from "next/image";
 
 export default function UpdateStatusModal({
     isOpen,
@@ -159,7 +160,7 @@ export default function UpdateStatusModal({
         <Dialog open={isOpen} onOpenChange={handleClose} modal={true}>
             <Toaster />
             <DialogContent
-                className="sm:max-w-[500px]"
+                className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto flex flex-col md:px-5 px-2 dark:text-slate-200"
                 onInteractOutside={(e) => e.preventDefault()}
             >
                 <DialogHeader>
@@ -174,8 +175,24 @@ export default function UpdateStatusModal({
                     {/* Donor Information */}
                     <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                         <div className="flex items-center gap-3 mb-3">
-                            <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-                                <User className="h-5 w-5 text-blue-600" />
+                            <div className="w-10 h-10 relative bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+                                {appointment.donor?.user?.image ? (
+                                    <Image
+                                        src={
+                                            appointment.donor?.user?.image ||
+                                            "/default_avatar.png"
+                                        }
+                                        alt={appointment.donor?.user?.name}
+                                        className="rounded-full"
+                                        fill
+                                        unoptimized={
+                                            process.env.NEXT_PUBLIC_NODE_ENV ===
+                                            "production"
+                                        }
+                                    />
+                                ) : (
+                                    <User className="h-5 w-5 text-blue-600" />
+                                )}
                             </div>
                             <div>
                                 <h4 className="font-medium">
@@ -314,7 +331,7 @@ export default function UpdateStatusModal({
                         </div>
                     )}
 
-                    <DialogFooter>
+                    <DialogFooter className="gap-1">
                         <Button
                             type="button"
                             variant="outline"
@@ -325,10 +342,12 @@ export default function UpdateStatusModal({
                         </Button>
                         <Button
                             type="submit"
+                            variant="default"
                             disabled={
                                 !selectedStatus ||
                                 updateStatusMutation.isPending
                             }
+                            className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-800 cursor-pointer"
                         >
                             {updateStatusMutation.isPending
                                 ? "Updating..."

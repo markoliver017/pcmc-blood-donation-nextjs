@@ -80,7 +80,7 @@ export default function TabsComponent({ appointmentId }) {
                         <CardTitle>Account Information</CardTitle>
                     </CardHeader>
                     <CardContent id="form-modal" className="p-0">
-                        <Tabs defaultValue="donor-profile" className="p-2">
+                        <Tabs defaultValue="donor-profile">
                             <TabsContent
                                 className="py-2"
                                 value="blood-donation-details"

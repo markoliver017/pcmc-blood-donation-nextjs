@@ -20,6 +20,7 @@ import moment from "moment";
 import UpdateStatusModal from "./UpdateStatusModal";
 import { useRouter } from "next/navigation";
 import { Settings } from "lucide-react";
+import Image from "next/image";
 
 export default function PendingDonorsList({
     eventId,
@@ -114,8 +115,29 @@ export default function PendingDonorsList({
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4 flex-1">
                                         {/* Donor Avatar */}
-                                        <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-                                            <User className="h-6 w-6 text-blue-600" />
+                                        <div className="w-12 h-12 relative bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+                                            {appointment.donor?.user?.image ? (
+                                                <Image
+                                                    src={
+                                                        appointment.donor?.user
+                                                            ?.image ||
+                                                        "/default_avatar.png"
+                                                    }
+                                                    alt={
+                                                        appointment.donor?.user
+                                                            ?.name
+                                                    }
+                                                    className="rounded-full"
+                                                    fill
+                                                    unoptimized={
+                                                        process.env
+                                                            .NEXT_PUBLIC_NODE_ENV ===
+                                                        "production"
+                                                    }
+                                                />
+                                            ) : (
+                                                <User className="h-6 w-6 text-blue-600" />
+                                            )}
                                         </div>
 
                                         {/* Donor Info */}
@@ -163,9 +185,20 @@ export default function PendingDonorsList({
                                     </div>
 
                                     {/* Action Buttons */}
-                                    {roleName === "Admin" && (
-                                        <div className="flex items-center gap-2">
-                                            {/* <Button
+                                </div>
+
+                                {/* Additional Info */}
+                                {appointment.comments && (
+                                    <div className="mt-3 p-2 bg-gray-50 dark:bg-gray-800 rounded text-sm mb-2">
+                                        <span className="font-medium">
+                                            Comments:
+                                        </span>{" "}
+                                        {appointment?.comments || "No comments"}
+                                    </div>
+                                )}
+                                {roleName === "Admin" && (
+                                    <div className="flex justify-end items-center gap-2">
+                                        {/* <Button
                                             variant="outline"
                                             size="sm"
                                             onClick={() =>
@@ -181,38 +214,36 @@ export default function PendingDonorsList({
                                                 Cancel
                                             </span>
                                         </Button> */}
-                                            <Button
-                                                variant="destructive"
-                                                size="sm"
-                                                onClick={() =>
-                                                    handleStatusUpdate(
-                                                        appointment,
-                                                        "no show"
-                                                    )
-                                                }
-                                                className="flex items-center gap-1 bg-warning"
-                                            >
-                                                <XCircle className="h-3 w-3" />
-                                                <span className="hidden sm:inline">
-                                                    Mark as No Show
-                                                </span>
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() =>
-                                                    onManageAppointment(
-                                                        appointment
-                                                    )
-                                                }
-                                                className="flex items-center gap-1 bg-blue-500"
-                                            >
-                                                <Settings className="h-3 w-3" />
-                                                <span className="hidden sm:inline">
-                                                    Manage
-                                                </span>
-                                            </Button>
-                                            {/* <Button
+                                        <Button
+                                            variant="destructive"
+                                            size="sm"
+                                            onClick={() =>
+                                                handleStatusUpdate(
+                                                    appointment,
+                                                    "no show"
+                                                )
+                                            }
+                                            className="flex items-center gap-1 bg-warning"
+                                        >
+                                            <XCircle className="h-3 w-3" />
+                                            <span className="hidden sm:inline">
+                                                Mark as No Show
+                                            </span>
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() =>
+                                                onManageAppointment(appointment)
+                                            }
+                                            className="flex items-center gap-1 bg-blue-500"
+                                        >
+                                            <Settings className="h-3 w-3" />
+                                            <span className="hidden sm:inline">
+                                                Manage
+                                            </span>
+                                        </Button>
+                                        {/* <Button
                                             variant="ghost"
                                             size="sm"
                                             onClick={() => {
@@ -228,17 +259,6 @@ export default function PendingDonorsList({
                                         >
                                             <Expand className="h-4 w-4" />
                                         </Button> */}
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Additional Info */}
-                                {appointment.comments && (
-                                    <div className="mt-3 p-2 bg-gray-50 dark:bg-gray-800 rounded text-sm">
-                                        <span className="font-medium">
-                                            Comments:
-                                        </span>{" "}
-                                        {appointment.comments}
                                     </div>
                                 )}
                             </CardContent>

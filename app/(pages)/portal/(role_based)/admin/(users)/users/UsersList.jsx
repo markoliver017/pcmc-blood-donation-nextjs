@@ -31,12 +31,12 @@ export default function UsersList() {
             <div className="flex justify-between">
                 <Link
                     href="./users/create"
-                    className="btn btn-lg btn-neutral dark:btn-accent"
+                    className="btn btn-sm md:btn-lg btn-neutral dark:btn-accent"
                 >
                     <Plus /> Create
                 </Link>
                 <button
-                    className="btn btn-circle btn-warning"
+                    className="btn btn-circle btn-warning hidden md:block"
                     onClick={() =>
                         queryClient.invalidateQueries({ queryKey: ["users"] })
                     }

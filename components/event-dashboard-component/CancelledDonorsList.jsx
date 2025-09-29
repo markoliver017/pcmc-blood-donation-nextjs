@@ -16,6 +16,7 @@ import {
     FileText,
 } from "lucide-react";
 import moment from "moment";
+import Image from "next/image";
 
 export default function CancelledDonorsList({ appointments, roleName }) {
     const [searchTerm, setSearchTerm] = useState("");
@@ -115,24 +116,45 @@ export default function CancelledDonorsList({ appointments, roleName }) {
                                     <div className="flex items-center gap-4 flex-1">
                                         {/* Donor Avatar */}
                                         <div
-                                            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                                            className={`w-12 h-12 relative rounded-full flex items-center justify-center ${
                                                 isDeferred
                                                     ? "bg-red-100 dark:bg-red-900"
                                                     : "bg-gray-100 dark:bg-gray-800"
                                             }`}
                                         >
-                                            <User
-                                                className={`h-6 w-6 ${
-                                                    isDeferred
-                                                        ? "text-red-600"
-                                                        : "text-gray-600"
-                                                }`}
-                                            />
+                                            {!appointment.donor?.user?.image ? (
+                                                <Image
+                                                    src={
+                                                        appointment.donor?.user
+                                                            ?.image ||
+                                                        "/default_avatar.png"
+                                                    }
+                                                    alt={
+                                                        appointment.donor?.user
+                                                            ?.name
+                                                    }
+                                                    className="rounded-full"
+                                                    fill
+                                                    unoptimized={
+                                                        process.env
+                                                            .NEXT_PUBLIC_NODE_ENV ===
+                                                        "production"
+                                                    }
+                                                />
+                                            ) : (
+                                                <User
+                                                    className={`h-6 w-6 ${
+                                                        isDeferred
+                                                            ? "text-red-600"
+                                                            : "text-gray-600"
+                                                    }`}
+                                                />
+                                            )}
                                         </div>
 
                                         {/* Donor Info */}
                                         <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2 mb-1">
+                                            <div className="flex flex-wrap items-center gap-2 mb-1">
                                                 <h4 className="font-medium truncate">
                                                     {appointment.donor?.user
                                                         ?.name ||
@@ -173,43 +195,40 @@ export default function CancelledDonorsList({ appointments, roleName }) {
                                             </div>
                                         </div>
                                     </div>
-
-                                    {/* Action Buttons */}
-                                    {roleName === "admin" && (
-                                        <div className="flex items-center gap-2">
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() =>
-                                                    handleViewDetails(
-                                                        appointment
-                                                    )
-                                                }
-                                                disabled
-                                                className="flex items-center gap-1"
-                                            >
-                                                <FileText className="h-3 w-3" />
-                                                <span className="hidden sm:inline">
-                                                    Details
-                                                </span>
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                disabled
-                                                onClick={() => {
-                                                    // TODO: Navigate to donor details
-                                                    console.log(
-                                                        "View donor details:",
-                                                        appointment.id
-                                                    );
-                                                }}
-                                            >
-                                                <Eye className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                    )}
                                 </div>
+                                {/* Action Buttons */}
+                                {roleName === "Admin" && (
+                                    <div className="flex justify-end items-center gap-2">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() =>
+                                                handleViewDetails(appointment)
+                                            }
+                                            disabled
+                                            className="flex items-center gap-1"
+                                        >
+                                            <FileText className="h-3 w-3" />
+                                            <span className="hidden sm:inline">
+                                                Details
+                                            </span>
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            disabled
+                                            onClick={() => {
+                                                // TODO: Navigate to donor details
+                                                console.log(
+                                                    "View donor details:",
+                                                    appointment.id
+                                                );
+                                            }}
+                                        >
+                                            <Eye className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                )}
 
                                 {/* Deferral Details */}
                                 {isDeferred && appointment.physical_exam && (

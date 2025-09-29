@@ -47,7 +47,7 @@ export default function ShowUser({ userId }) {
     if (isLoading || isFetching) return <Skeleton_user />;
 
     return (
-        <Card className="p-5 h-full">
+        <Card>
             <CardHeader>
                 <CardTitle className="flex justify-between">
                     <span className="text-4xl">
@@ -69,7 +69,7 @@ export default function ShowUser({ userId }) {
                 </CardTitle>
                 <CardDescription>User Information</CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-wrap xl:flex-nowrap gap-2">
+            <CardContent className="flex flex-wrap xl:flex-nowrap gap-2 overflow-auto">
                 <CustomAvatar
                     avatar={user.image || "/default_avatar.png"}
                     className="w-[150px] h-[150px] sm:w-[200px] sm:h-[200px] md:w-[250px] md:h-[250px] xl:w-[350px] xl:h-[350px] flex-none"
@@ -147,7 +147,8 @@ export default function ShowUser({ userId }) {
                             <TableCell>
                                 {user?.roles?.map((role) => (
                                     <div key={role.id}>
-                                        {formatFormalName(role.role_name)} {" - "}
+                                        {formatFormalName(role.role_name)}{" "}
+                                        {" - "}
                                         {role.UserRole?.is_active ? (
                                             <div className="badge p-2 font-semibold text-xs badge-success">
                                                 Activated

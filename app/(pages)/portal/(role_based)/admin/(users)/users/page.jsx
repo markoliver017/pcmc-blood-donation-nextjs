@@ -18,7 +18,7 @@ export default async function Page() {
                     },
                 ]}
             />
-            <div className="w-full h-full 2xl:px-5 mx-auto shadow-lg space-y-3 p-2 md:p-5">
+            <div className="w-full h-full 2xl:px-5 mx-auto shadow-lg space-y-3 p-1 md:p-5">
                 <UsersList />
             </div>
         </>

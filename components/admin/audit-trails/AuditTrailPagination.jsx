@@ -8,7 +8,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@components/ui/select";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import {
+    ChevronLeft,
+    ChevronRight,
+    ChevronsLeft,
+    ChevronsRight,
+} from "lucide-react";
 
 export default function AuditTrailPagination({
     currentPage,
@@ -38,7 +43,7 @@ export default function AuditTrailPagination({
     const getPageNumbers = () => {
         const pages = [];
         const maxVisiblePages = 5;
-        
+
         if (totalPages <= maxVisiblePages) {
             // Show all pages if total is small
             for (let i = 1; i <= totalPages; i++) {
@@ -46,19 +51,22 @@ export default function AuditTrailPagination({
             }
         } else {
             // Show pages around current page
-            let start = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let start = Math.max(
+                1,
+                currentPage - Math.floor(maxVisiblePages / 2)
+            );
             let end = Math.min(totalPages, start + maxVisiblePages - 1);
-            
+
             // Adjust start if we're near the end
             if (end === totalPages) {
                 start = Math.max(1, end - maxVisiblePages + 1);
             }
-            
+
             for (let i = start; i <= end; i++) {
                 pages.push(i);
             }
         }
-        
+
         return pages;
     };
 
@@ -67,14 +75,14 @@ export default function AuditTrailPagination({
     }
 
     return (
-        <div className="flex items-center justify-between px-2 py-4">
+        <div className="flex flex-wrap items-center justify-between px-2 py-4">
             {/* Items info */}
             <div className="flex-1 text-sm text-muted-foreground">
                 Showing {startItem} to {endItem} of {totalItems} audit trails
             </div>
 
             {/* Pagination controls */}
-            <div className="flex items-center space-x-6 lg:space-x-8">
+            <div className="flex flex-wrap justify-center items-center space-x-6 lg:space-x-8">
                 {/* Page size selector */}
                 <div className="flex items-center space-x-2">
                     <p className="text-sm font-medium">Rows per page</p>
@@ -130,7 +138,11 @@ export default function AuditTrailPagination({
                         {getPageNumbers().map((pageNum) => (
                             <Button
                                 key={pageNum}
-                                variant={pageNum === currentPage ? "default" : "outline"}
+                                variant={
+                                    pageNum === currentPage
+                                        ? "default"
+                                        : "outline"
+                                }
                                 className="h-8 w-8 p-0"
                                 onClick={() => handlePageChange(pageNum)}
                                 disabled={isLoading}
@@ -165,4 +177,4 @@ export default function AuditTrailPagination({
             </div>
         </div>
     );
-} 
+}

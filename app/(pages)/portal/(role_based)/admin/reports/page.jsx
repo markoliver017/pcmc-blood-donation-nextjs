@@ -575,7 +575,7 @@ const InventoryTab = () => {
                                     Current Inventory by Blood Type
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent>
+                            <CardContent className="overflow-auto">
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
@@ -672,7 +672,7 @@ const EventsTab = () => {
                     Export PDF
                 </Button>
             </CardHeader>
-            <CardContent>
+            <CardContent className="overflow-auto">
                 {isLoading ? (
                     <div className="flex justify-center items-center py-8">
                         <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
@@ -777,7 +777,7 @@ const DonorsTab = () => {
                     Export PDF
                 </Button>
             </CardHeader>
-            <CardContent>
+            <CardContent className="overflow-auto">
                 {isLoading ? (
                     <div className="flex justify-center items-center py-8">
                         <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
@@ -877,7 +877,7 @@ const AgenciesTab = () => {
                     Export PDF
                 </Button>
             </CardHeader>
-            <CardContent>
+            <CardContent className="overflow-auto">
                 {isLoading ? (
                     <div className="flex justify-center items-center py-8">
                         <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
@@ -1000,7 +1000,7 @@ const ContactTab = () => {
 export default function ReportsPage() {
     return (
         <ReportProvider>
-            <div className="container mx-auto p-6">
+            <div className="container mx-auto p-1 not-last:md:p-6">
                 <div className="mb-6">
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                         Admin Reports
@@ -1014,7 +1014,7 @@ export default function ReportsPage() {
                 <FilterBar />
 
                 <Tabs defaultValue="donation" className="w-full">
-                    <TabsList className="grid w-full grid-cols-5 h-auto p-1 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <TabsList className="flex w-full overflow-auto h-auto p-1 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                         <TabsTrigger
                             value="donation"
                             className="flex items-center gap-2 px-4 py-3 rounded-md transition-all duration-200 data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-blue-200 data-[state=inactive]:text-gray-600 data-[state=inactive]:hover:text-gray-900 data-[state=inactive]:hover:bg-gray-50 dark:data-[state=active]:bg-gray-900 dark:data-[state=active]:text-blue-400 dark:data-[state=inactive]:text-gray-400 dark:data-[state=inactive]:hover:text-gray-200 dark:data-[state=inactive]:hover:bg-gray-700"

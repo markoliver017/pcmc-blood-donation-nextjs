@@ -16,6 +16,7 @@ import {
     FileText,
 } from "lucide-react";
 import moment from "moment";
+import Image from "next/image";
 
 export default function DeferredDonorsList({
     appointments,
@@ -231,19 +232,40 @@ export default function DeferredDonorsList({
                                     <div className="flex items-center gap-4 flex-1">
                                         {/* Donor Avatar */}
                                         <div
-                                            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                                            className={`w-12 h-12 relative rounded-full flex items-center justify-center ${
                                                 isDeferred
                                                     ? "bg-red-100 dark:bg-red-900"
                                                     : "bg-gray-100 dark:bg-gray-800"
                                             }`}
                                         >
-                                            <User
-                                                className={`h-6 w-6 ${
-                                                    isDeferred
-                                                        ? "text-red-600"
-                                                        : "text-gray-600"
-                                                }`}
-                                            />
+                                            {appointment.donor?.user?.image ? (
+                                                <Image
+                                                    src={
+                                                        appointment.donor?.user
+                                                            ?.image ||
+                                                        "/default_avatar.png"
+                                                    }
+                                                    alt={
+                                                        appointment.donor?.user
+                                                            ?.name
+                                                    }
+                                                    className="rounded-full"
+                                                    fill
+                                                    unoptimized={
+                                                        process.env
+                                                            .NEXT_PUBLIC_NODE_ENV ===
+                                                        "production"
+                                                    }
+                                                />
+                                            ) : (
+                                                <User
+                                                    className={`h-6 w-6 ${
+                                                        isDeferred
+                                                            ? "text-red-600"
+                                                            : "text-gray-600"
+                                                    }`}
+                                                />
+                                            )}
                                         </div>
 
                                         {/* Donor Info */}

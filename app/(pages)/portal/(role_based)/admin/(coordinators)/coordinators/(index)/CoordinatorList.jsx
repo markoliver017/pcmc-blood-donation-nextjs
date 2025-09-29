@@ -56,7 +56,7 @@ export default function CoordinatorList() {
                 </Card>
             ) : (
                 <>
-                    <div className="flex justify-end">
+                    <div className="justify-end hidden md:flex">
                         <button
                             className="btn btn-circle btn-warning"
                             onClick={() =>

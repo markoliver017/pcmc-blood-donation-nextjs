@@ -112,7 +112,7 @@ export default function DonorBloodDonationInfoForm({ details, onNext }) {
                                         <input
                                             type="radio"
                                             className={clsx(
-                                                "radio",
+                                                "radio border",
                                                 errors?.is_regular_donor
                                                     ? "radio-error"
                                                     : "radio-info"
@@ -138,7 +138,7 @@ export default function DonorBloodDonationInfoForm({ details, onNext }) {
                                         <input
                                             type="radio"
                                             className={clsx(
-                                                "radio",
+                                                "radio border",
                                                 errors?.is_regular_donor
                                                     ? "radio-error"
                                                     : "radio-info"

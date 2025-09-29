@@ -61,10 +61,7 @@ export default function DonorAppointmentTabComponent({ appointment }) {
             </TabsList>
 
             {/* Donor Profile Tab */}
-            <TabsContent
-                value="donor-profile"
-                className="flex-1 min-h-0 flex flex-col"
-            >
+            <TabsContent value="donor-profile" className="flex-1 min-h-0 flex ">
                 {/* Vertical Sub Tabs */}
                 <Tabs
                     defaultValue="basic-info"
@@ -138,7 +135,7 @@ export default function DonorAppointmentTabComponent({ appointment }) {
             >
                 <Tabs
                     defaultValue="appointment-info"
-                    className="flex gap-4 flex-1 min-h-0"
+                    className="flex md:gap-4 gap-1 flex-1 min-h-0"
                 >
                     {/* Vertical Sub Tabs */}
                     <TabsList className="flex flex-col max-w-max max-h-60 rounded-lg border p-2">

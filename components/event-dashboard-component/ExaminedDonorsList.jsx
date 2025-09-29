@@ -16,6 +16,7 @@ import {
     AlertTriangle,
 } from "lucide-react";
 import UpdateStatusModal from "./UpdateStatusModal";
+import Image from "next/image";
 
 export default function ExaminedDonorsList({
     eventId,
@@ -139,19 +140,40 @@ export default function ExaminedDonorsList({
                                     <div className="flex items-center gap-4 flex-1">
                                         {/* Donor Avatar */}
                                         <div
-                                            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                                            className={`w-12 h-12 relative rounded-full flex items-center justify-center ${
                                                 isEligible
                                                     ? "bg-green-100 dark:bg-green-900"
                                                     : "bg-red-100 dark:bg-red-900"
                                             }`}
                                         >
-                                            <User
-                                                className={`h-6 w-6 ${
-                                                    isEligible
-                                                        ? "text-green-600"
-                                                        : "text-red-600"
-                                                }`}
-                                            />
+                                            {appointment.donor?.user?.image ? (
+                                                <Image
+                                                    src={
+                                                        appointment.donor?.user
+                                                            ?.image ||
+                                                        "/default_avatar.png"
+                                                    }
+                                                    alt={
+                                                        appointment.donor?.user
+                                                            ?.name
+                                                    }
+                                                    className="rounded-full"
+                                                    fill
+                                                    unoptimized={
+                                                        process.env
+                                                            .NEXT_PUBLIC_NODE_ENV ===
+                                                        "production"
+                                                    }
+                                                />
+                                            ) : (
+                                                <User
+                                                    className={`h-6 w-6 ${
+                                                        isEligible
+                                                            ? "text-green-600"
+                                                            : "text-red-600"
+                                                    }`}
+                                                />
+                                            )}
                                         </div>
 
                                         {/* Donor Info */}

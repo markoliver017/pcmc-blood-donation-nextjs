@@ -18,6 +18,7 @@ import { Badge } from "@components/ui/badge";
 import DonorAppointmentTabComponent from "./DonorAppointmentTabComponent";
 import { Card, CardContent } from "@components/ui/card";
 import { useModalToastContainer } from "@lib/hooks/useModalToastContainer";
+import Image from "next/image";
 
 export default function AppointmentManagementModal({
     isOpen,
@@ -68,9 +69,9 @@ export default function AppointmentManagementModal({
         };
 
         return (
-            <Badge className={`text-xs badge px-2 ${config.color}`}>
+            <div className={`text-xs badge p-4 ${config.color}`}>
                 {config.text}
-            </Badge>
+            </div>
         );
     };
 
@@ -106,11 +107,28 @@ export default function AppointmentManagementModal({
                 <div className="flex flex-col flex-1 min-h-0">
                     {/* Appointment Overview Card */}
                     <Card className="mb-4 flex-shrink-0">
-                        <CardContent className="md:p-4 p-2">
+                        <CardContent className="md:p-4 p-1">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-                                        <User className="h-6 w-6 text-blue-600" />
+                                    <div className="w-12 h-12 relative bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+                                        {user?.image ? (
+                                            <Image
+                                                src={
+                                                    user?.image ||
+                                                    "/avatar 2.png"
+                                                }
+                                                alt={user?.name}
+                                                className="rounded-full"
+                                                fill
+                                                unoptimized={
+                                                    process.env
+                                                        .NEXT_PUBLIC_NODE_ENV ===
+                                                    "production"
+                                                }
+                                            />
+                                        ) : (
+                                            <User className="h-6 w-6 text-blue-600" />
+                                        )}
                                     </div>
                                     <div>
                                         <h3 className="font-medium text-lg">
@@ -156,7 +174,7 @@ export default function AppointmentManagementModal({
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1">
                                     {getStatusBadge(appointment.status)}
                                 </div>
                             </div>

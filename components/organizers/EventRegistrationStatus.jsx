@@ -134,9 +134,7 @@ export default function EventRegistrationStatus({
                     ) : (
                         <>
                             {icon}
-                            <span className="hidden sm:inline-block">
-                                {label}
-                            </span>
+                            <span className="sm:inline-block">{label}</span>
                         </>
                     )}
                 </button>

@@ -15,6 +15,7 @@ import {
     FileText,
 } from "lucide-react";
 import moment from "moment";
+import Image from "next/image";
 
 export default function CollectedDonorsList({
     eventId,
@@ -145,8 +146,29 @@ export default function CollectedDonorsList({
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4 flex-1">
                                     {/* Donor Avatar */}
-                                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
-                                        <User className="h-6 w-6 text-green-600" />
+                                    <div className="w-12 h-12 relative bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                                        {appointment.donor?.user?.image ? (
+                                            <Image
+                                                src={
+                                                    appointment.donor?.user
+                                                        ?.image ||
+                                                    "/default_avatar.png"
+                                                }
+                                                alt={
+                                                    appointment.donor?.user
+                                                        ?.name
+                                                }
+                                                className="rounded-full"
+                                                fill
+                                                unoptimized={
+                                                    process.env
+                                                        .NEXT_PUBLIC_NODE_ENV ===
+                                                    "production"
+                                                }
+                                            />
+                                        ) : (
+                                            <User className="h-6 w-6 text-green-600" />
+                                        )}
                                     </div>
 
                                     {/* Donor Info */}
