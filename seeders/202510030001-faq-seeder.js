@@ -4,7 +4,7 @@
 export async function up(queryInterface, Sequelize) {
     // Get an admin user for created_by field
     const [adminUser] = await queryInterface.sequelize.query(
-        `SELECT id FROM users WHERE email = 'admin@email.com' LIMIT 1`,
+        `SELECT id FROM users WHERE email = 'mark.roman@pcmc.gov.ph' LIMIT 1`,
         { type: Sequelize.QueryTypes.SELECT }
     );
 
