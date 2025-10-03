@@ -43,7 +43,7 @@ export default function SideComponent({ donor }) {
             : 0) + prevVolume;
 
     return (
-        <Card className="p-2 md:p-4 flex flex-col gap-4 h-max">
+        <Card className="p-2 md:p-4 flex flex-col gap-2 h-max">
             <CardHeader className="border-b p-2">
                 <div className="flex flex-wrap items-center gap-4">
                     <div className="relative w-8 h-8 md:w-16 md:h-16 rounded border mx-auto flex-none">
@@ -59,6 +59,9 @@ export default function SideComponent({ donor }) {
                             {user?.full_name || "Username"}
                         </CardTitle>
                         <CardDescription className="flex flex-col mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            <span className="font-semibold">
+                                ID#: {donor?.donor_reference_id}
+                            </span>
                             <span className="flex-items-center text-blue-600 dark:text-blue-400">
                                 <Mail className="w-3" /> {user?.email}
                             </span>

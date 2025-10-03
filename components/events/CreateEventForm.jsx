@@ -263,7 +263,7 @@ export default function CreateEventForm({ agency }) {
                         </CardDescription>
                     </CardHeader>
 
-                    <CardContent className="flex flex-wrap md:flex-nowrap gap-5">
+                    <CardContent className="space-y-5">
                         <FormField
                             control={control}
                             name="file"
@@ -413,7 +413,8 @@ export default function CreateEventForm({ agency }) {
                                                     onMonthChange={
                                                         setCalendarMonth
                                                     }
-                                                    className="bg-transparent p-5 [--cell-size:--spacing(10.5)] dark:text-white dark:bg-black"
+                                                    // className="bg-transparent p-5 [--cell-size:--spacing(10.5)] dark:text-white dark:bg-black"
+                                                    className="p-5 [--cell-size:--spacing(10.5)]"
                                                     // classNames={{
                                                     //     caption_dropdowns:
                                                     //         "bg-slate-900 text-white dark:!bg-slate-900 dark:text-white border border-slate-700 rounded",
@@ -462,7 +463,7 @@ export default function CreateEventForm({ agency }) {
                                                             : [],
                                                     }}
                                                     modifiersClassNames={{
-                                                        booked: "[&>button]:line-through font-bold bg-red-500 dark:bg-red-900 text-white  bg-opacity-50  rounded",
+                                                        booked: "[&>button]:line-through font-bold bg-red-100 dark:bg-red-200 bg-opacity-50  rounded",
                                                     }}
                                                     captionLayout="dropdown"
                                                     fromYear={new Date().getFullYear()} // Earliest year selectable
@@ -747,7 +748,7 @@ export default function CreateEventForm({ agency }) {
                                 </CardContent>
                             </Card>
 
-                            <div className="space-y-2 mt-4 relative flex flex-wrap md:justify-end gap-2">
+                            <div className="space-y-2 mt-4 relative flex justify-end gap-2">
                                 <button
                                     disabled={!isDirty || isPending}
                                     className="md:py-5 flex rounded-2xl md:text-2xl btn btn-primary ring-offset-2 ring-offset-blue-500 hover:ring-2 "

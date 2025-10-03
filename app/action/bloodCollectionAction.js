@@ -329,6 +329,7 @@ export async function getDonorBloodCollections(donorId) {
                                 "donor_type",
                                 "collection_method",
                                 "status",
+                                "appointment_reference_id",
                             ],
                         },
                         {

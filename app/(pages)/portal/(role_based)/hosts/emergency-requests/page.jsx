@@ -63,7 +63,11 @@ export default function EmergencyRequestPage() {
             />
             <div className="container mx-auto p-2 md:p-6 space-y-6">
                 <div className="flex md:justify-end">
-                    <Button onClick={() => setIsCreateModalOpen(true)}>
+                    <Button
+                        variant="outline"
+                        onClick={() => setIsCreateModalOpen(true)}
+                        className="text-green-400"
+                    >
                         <Plus className="w-4 h-4" />
                         New Request
                     </Button>

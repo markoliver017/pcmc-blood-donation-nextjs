@@ -20,10 +20,11 @@ import {
 } from "@components/ui/table";
 import { DataTablePagination } from "@components/reusable_components/DataTablePagination";
 import { DataTableViewOptions } from "@components/reusable_components/DataTableViewOptions";
-import { Filter } from "lucide-react";
+import { Filter, Send } from "lucide-react";
 import MultiSelect from "@components/reusable_components/MultiSelect";
 
 import Skeleton from "@components/ui/skeleton";
+import notify from "@components/ui/notify";
 
 export function DataTable({ columns, data, isLoading }) {
     const [sorting, setSorting] = useState([]);
@@ -81,33 +82,32 @@ export function DataTable({ columns, data, isLoading }) {
             .map((col) => col.accessorKey);
     }
 
-    function getVisibleData(data) {
-        // Flatten columns with accessorKey only
-        const visibleKeys = getVisibleKeys();
+    const handleSelectedEmail = () => {
+        const selectedRows = getSelectedRows();
+        const emails = selectedRows
+            .map((row) => row.creator.email)
+            .filter(Boolean);
 
-        return data.map((row) => {
-            const filteredRow = {};
-            visibleKeys.forEach((key) => {
-                const keys = key.split(".");
-                let value = row;
-                for (const k of keys) {
-                    if (value && k in value) {
-                        value = value[k];
-                    } else {
-                        value = null;
-                        break;
-                    }
-                }
-                filteredRow[key] = value;
+        if (emails.length > 0) {
+            const subject = "Emergency Blood Request";
+            const body = `Hello,
+                \n\nWe would like to inform you about the emergency blood request.
+                `;
+
+            const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(
+                emails.join(",")
+            )}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+                body
+            )}`;
+
+            window.open(gmailUrl, "_blank"); // open Gmail compose in new tab
+        } else {
+            notify({
+                error: true,
+                message: "No participants selected",
             });
-            return filteredRow;
-        });
-    }
-
-    // const visibleData = useMemo(
-    //     () => getVisibleData(data, columns, columnVisibility),
-    //     [data, columns, columnVisibility]
-    // );
+        }
+    };
 
     return (
         <div className="md:p-2">
@@ -115,24 +115,30 @@ export function DataTable({ columns, data, isLoading }) {
                 <Skeleton className="w-full h-80 rounded-xl" />
             ) : (
                 <>
-                    <div className="flex items-center py-2 space-x-2">
+                    <div className="flex flex-wrap gap-2 items-center py-2 space-x-2">
+                        <button
+                            className="btn flex-none w-full md:w-auto rounded-full"
+                            onClick={handleSelectedEmail}
+                        >
+                            <Send className="w-4" /> Send Mail
+                        </button>
                         <input
                             placeholder="Search all .."
                             // value={{globalFilter}}
                             onChange={(e) =>
                                 table.setGlobalFilter(e.target.value)
                             }
-                            className="p-2 input-sm flex-none bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
+                            className="flex-1 p-2 input-sm bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
                         />
 
-                        <div className="flex-1 flex justify-end pr-2">
-                            <div className="flex space-x-2">
+                        <div className="flex justify-end">
+                            {/* <div className="flex space-x-2">
                                 <label className="dark:text-slate-400 flex items-center space-x-1">
                                     <Filter className="h-4 w-4" />
                                 </label>
 
-                                <DataTableViewOptions table={table} />
-                            </div>
+                            </div> */}
+                            <DataTableViewOptions table={table} />
                         </div>
                     </div>
 

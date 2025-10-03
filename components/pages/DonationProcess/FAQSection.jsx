@@ -2,52 +2,20 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { ChevronDown, ChevronUp, HelpCircle } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchFaqs } from "@action/faqAction";
 
 export default function FAQSection() {
     const [openFAQ, setOpenFAQ] = useState(null);
 
-    const faqs = [
-        {
-            question: "Who can donate blood?",
-            answer: "Anyone who is at least 18 years old (16 with parental consent), weighs 110 lbs (50 kg) or more, and is in good general health may be eligible to donate.",
-        },
-        {
-            question: "How long does the donation process take?",
-            answer: "The entire process from arrival to recovery takes about 30–45 minutes, but the actual blood donation typically takes only 8–10 minutes.",
-        },
-        {
-            question: "Why is donating blood important for children?",
-            answer: "Children with cancer, premature babies, and those undergoing surgeries often need frequent and component-specific blood transfusions. Since they can't donate blood themselves, they rely entirely on adult donors.",
-        },
-        {
-            question: "How do I schedule a donation?",
-            answer: "You can book an appointment directly through the Mobile Blood Donation Portal, where you can choose your location, view available mobile blood drives, and reschedule or cancel with ease.",
-        },
-        {
-            question: "What if I recently got sick or traveled?",
-            answer: "Temporary deferral may apply if you've had a recent illness (fever, cold, infection) or travel to areas with malaria, Zika, or dengue risk. Always complete the pre-screening questionnaire in the app to check your eligibility.",
-        },
-        {
-            question: "Is donating blood safe?",
-            answer: "Yes. All equipment is sterile and used only once. Donation is supervised by trained medical professionals, and your health is carefully monitored.",
-        },
-        {
-            question: "How often can I donate?",
-            answer: "Whole blood: Every 90 days (12 weeks). Apheresed Platelets: Every 14 days.",
-        },
-        {
-            question: "What should I do before and after donating?",
-            answer: "Before: Eat a healthy meal, drink plenty of fluids, avoid heavy exercise, get a full sleep of 7-8 hours a day before, avoid drinking alcoholic beverages 24 hours before donating, avoid smoking on the day of your appointment. After: Rest and hydrate, eat a snack provided by the staff, avoid smoking for at least three (3) hours after donation, avoid strenuous activity for the rest of the day.",
-        },
-        {
-            question: "Who can I contact if I have questions?",
-            answer: "You can reach us at: (0928) 479 5154 (Mobile) or (02) 8921 9781 (Direct Line). Kindly do not hesitate to contact us if you have any concerns or questions.",
-        },
-        {
-            question: "Can I track my donations and get reminders?",
-            answer: "Absolutely! The mobile portal allows you to track donation history, get alerts for your next eligible date, and receive notifications when your blood type is urgently needed.",
-        },
-    ];
+    // Fetch active FAQs from database
+    const { data: response, isLoading } = useQuery({
+        queryKey: ["public-faqs"],
+        queryFn: () => fetchFaqs({ is_active: true }),
+        staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    });
+
+    const faqs = response?.success ? response.data : [];
 
     const toggleFAQ = (index) => {
         setOpenFAQ(openFAQ === index ? null : index);
@@ -77,44 +45,73 @@ export default function FAQSection() {
                 </motion.div>
 
                 <div className="space-y-4">
-                    {faqs.map((faq, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: index * 0.1 }}
-                            viewport={{ once: true }}
-                            className="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
-                        >
-                            <button
-                                onClick={() => toggleFAQ(index)}
-                                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                            >
-                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white pr-4">
-                                    {faq.question}
-                                </h3>
-                                {openFAQ === index ? (
-                                    <ChevronUp className="w-5 h-5 text-blue-500 flex-shrink-0" />
-                                ) : (
-                                    <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
-                                )}
-                            </button>
-
-                            {openFAQ === index && (
-                                <motion.div
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: "auto" }}
-                                    exit={{ opacity: 0, height: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="px-6 pb-4"
+                    {isLoading ? (
+                        // Loading skeleton
+                        <div className="space-y-4">
+                            {[1, 2, 3, 4, 5].map((i) => (
+                                <div
+                                    key={i}
+                                    className="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 animate-pulse"
                                 >
-                                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                                        {faq.answer}
-                                    </p>
-                                </motion.div>
-                            )}
-                        </motion.div>
-                    ))}
+                                    <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : faqs.length === 0 ? (
+                        // Empty state
+                        <div className="text-center py-12">
+                            <p className="text-gray-500 dark:text-gray-400">
+                                No FAQs available at the moment. Please check
+                                back later.
+                            </p>
+                        </div>
+                    ) : (
+                        // FAQ list
+                        faqs.map((faq, index) => (
+                            <motion.div
+                                key={faq.id || index}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{
+                                    duration: 0.6,
+                                    delay: index * 0.1,
+                                }}
+                                viewport={{ once: true }}
+                                className="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
+                            >
+                                <button
+                                    onClick={() => toggleFAQ(index)}
+                                    className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                >
+                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white pr-4">
+                                        {faq.question}
+                                    </h3>
+                                    {openFAQ === index ? (
+                                        <ChevronUp className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                                    ) : (
+                                        <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                                    )}
+                                </button>
+
+                                {openFAQ === index && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: "auto" }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="px-6 pb-4"
+                                    >
+                                        <div
+                                            className="text-gray-600 dark:text-gray-300 leading-relaxed prose dark:prose-invert max-w-none"
+                                            dangerouslySetInnerHTML={{
+                                                __html: faq.answer,
+                                            }}
+                                        />
+                                    </motion.div>
+                                )}
+                            </motion.div>
+                        ))
+                    )}
                 </div>
 
                 <motion.div

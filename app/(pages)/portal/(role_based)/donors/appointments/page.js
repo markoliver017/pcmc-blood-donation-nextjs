@@ -47,7 +47,9 @@ export default function Page() {
             a.status !== "cancelled"
     );
     const past = sortedAppointments.filter(
-        (a) => new Date(a.time_schedule?.event?.date) < today
+        (a) =>
+            new Date(a.time_schedule?.event?.date) < today ||
+            a.status === "cancelled"
     );
     const nextAppointment = upcoming[0] || null;
 

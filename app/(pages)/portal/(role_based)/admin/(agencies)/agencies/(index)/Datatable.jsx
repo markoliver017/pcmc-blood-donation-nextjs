@@ -20,11 +20,12 @@ import {
 } from "@components/ui/table";
 import { DataTablePagination } from "@components/reusable_components/DataTablePagination";
 import { DataTableViewOptions } from "@components/reusable_components/DataTableViewOptions";
-import { Filter, User, UserCog2 } from "lucide-react";
+import { Filter, Send, User, UserCog2 } from "lucide-react";
 import MultiSelect from "@components/reusable_components/MultiSelect";
 
 import Skeleton from "@components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
+import notify from "@components/ui/notify";
 
 export function DataTable({ columns, data, isLoading }) {
     // const { data: roles } = useQuery({
@@ -104,6 +105,33 @@ export function DataTable({ columns, data, isLoading }) {
         return selectedRows.map((row) => row.original);
     };
 
+    const handleSelectedEmail = () => {
+        const selectedRows = getSelectedRows();
+        const emails = selectedRows
+            .map((row) => row?.head?.email)
+            .filter(Boolean);
+
+        if (emails.length > 0) {
+            const subject = "Partner Agencies";
+            const body = `Hello,
+                \n\n.
+                `;
+
+            const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(
+                emails.join(",")
+            )}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+                body
+            )}`;
+
+            window.open(gmailUrl, "_blank"); // open Gmail compose in new tab
+        } else {
+            notify({
+                error: true,
+                message: "No participants selected",
+            });
+        }
+    };
+
     function getVisibleKeys() {
         return columns
             .filter((col) => {
@@ -147,21 +175,28 @@ export function DataTable({ columns, data, isLoading }) {
                 <Skeleton className="w-full h-80 rounded-xl" />
             ) : (
                 <>
-                    <div className="flex items-center py-2 space-x-2">
+                    <div className="flex flex-wrap items-center py-2 space-x-2">
+                        <button
+                            className="btn flex-none w-full md:w-auto rounded-full"
+                            onClick={handleSelectedEmail}
+                        >
+                            <Send className="w-4" /> Send Mail
+                        </button>
+
                         <input
                             placeholder="Search all .."
                             // value={{globalFilter}}
                             onChange={(e) =>
                                 table.setGlobalFilter(e.target.value)
                             }
-                            className="p-2 input-sm flex-none bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
+                            className="p-2 input-sm flex-1 bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
                         />
 
-                        <div className="flex-1 flex justify-end pr-2">
+                        <div className="flex justify-end">
                             <div className="flex space-x-2">
-                                <label className="dark:text-slate-400 flex items-center space-x-1">
+                                {/* <label className="dark:text-slate-400 flex items-center space-x-1">
                                     <Filter className="h-4 w-4" />
-                                </label>
+                                </label> */}
                                 {/* <MultiSelect
                                     options={roleOptions || []}
                                     onValueChange={(selectedOptions) => {

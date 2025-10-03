@@ -15,6 +15,7 @@ import moment from "moment";
 import { FileClock } from "lucide-react";
 import { getCoordinatorsByStatus } from "@/action/coordinatorAction";
 import ApprovalRejectComponent from "@components/coordinators/ApprovalRejectComponent";
+import { useMemo, useState } from "react";
 
 export default function ForApprovalCoordinatorList() {
     const { data: coordinators, isLoading: coordinatorIsFetching } = useQuery({
@@ -23,6 +24,25 @@ export default function ForApprovalCoordinatorList() {
         staleTime: 0,
         cacheTime: 0,
     });
+
+    const [search, setSearch] = useState("");
+    const filteredCoordinator = useMemo(() => {
+        const q = search.trim().toLowerCase();
+        if (!q) return coordinators;
+        return coordinators.filter((coor) => {
+            const fields = [
+                coor.agency.name,
+                coor.agency.agency_address,
+                coor.user.full_name,
+                coor.user.email,
+                coor.contact_number ? `+63${coor.contact_number}` : "",
+            ]
+                .filter(Boolean)
+                .join(" ")
+                .toLowerCase();
+            return fields.includes(q);
+        });
+    }, [coordinators, search]);
 
     if (coordinatorIsFetching)
         return (
@@ -44,46 +64,70 @@ export default function ForApprovalCoordinatorList() {
 
     return (
         <>
-            {coordinators.map((coor) => (
-                <Card
-                    key={coor.id}
-                    className="hover:ring-2 hover:ring-blue-400 group transition shadow-lg/40 "
-                >
-                    <CardHeader>
-                        <CardTitle className="flex flex-wrap justify-between">
-                            <span className="text-xl">{coor.agency.name}</span>
-                            <span className="text-sm text-slate-600 dark:text-slate-300">
-                                {moment(coor.createdAt).format("MMM DD, YYYY")}
-                            </span>
-                        </CardTitle>
-                        <CardDescription className="flex flex-wrap flex-col gap-1">
-                            <span>{coor.agency.agency_address}</span>
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex flex-wrap items-center justify-center gap-4 px-2 md:px-15 transform transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-110">
-                        <div>
-                            <CustomAvatar
-                                avatar={
-                                    coor.user?.image || "/default_avatar.png"
-                                }
-                                className="flex-none w-[150px] h-[150px] "
-                            />
-                        </div>
-                        <div className="md:flex-1 flex flex-col gap-2">
-                            <span className="text-lg text-slate-800 dark:text-slate-200 font-semibold">
-                                {coor.user.full_name}
-                            </span>
-                            <span className="text-blue-700 italic">
-                                {coor.user.email.toLowerCase()}
-                            </span>
-                            <span className=" text-slate-700 dark:text-slate-200 italic">
-                                +63{coor.contact_number}
-                            </span>
-                        </div>
-                    </CardContent>
-                    <ApprovalRejectComponent coordinator={coor} />
+            <div className="col-span-full mb-4">
+                <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search coordinators, agency, email, contact, address..."
+                    className="w-full px-3 py-2 border rounded-md bg-background text-foreground"
+                />
+            </div>
+            {filteredCoordinator.length === 0 ? (
+                <Card className="col-span-full flex flex-col justify-center items-center text-center py-12">
+                    <FileClock className="w-10 h-10 mb-3" />
+                    <h2 className="text-lg font-semibold">No results</h2>
+                    <p className="text-gray-500 mt-1">
+                        Try a different search term.
+                    </p>
                 </Card>
-            ))}
+            ) : (
+                filteredCoordinator.map((coor) => (
+                    <Card
+                        key={coor.id}
+                        className="flex flex-col justify-between hover:ring-2 hover:ring-blue-400 group transition shadow-lg/40 "
+                    >
+                        <CardHeader>
+                            <CardTitle className="flex flex-wrap justify-between">
+                                <span className="text-xl">
+                                    {coor.agency.name}
+                                </span>
+                                <span className="text-sm text-slate-600 dark:text-slate-300">
+                                    {moment(coor.createdAt).format(
+                                        "MMM DD, YYYY"
+                                    )}
+                                </span>
+                            </CardTitle>
+                            <CardDescription className="flex flex-wrap flex-col gap-1">
+                                <span>{coor.agency.agency_address}</span>
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex flex-wrap items-center justify-center gap-4 px-2 md:px-15 transform transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-110">
+                            <div>
+                                <CustomAvatar
+                                    avatar={
+                                        coor.user?.image ||
+                                        "/default_avatar.png"
+                                    }
+                                    className="flex-none w-[150px] h-[150px] "
+                                />
+                            </div>
+                            <div className="md:flex-1 flex flex-col gap-2">
+                                <span className="text-lg text-slate-800 dark:text-slate-200 font-semibold">
+                                    {coor.user.full_name}
+                                </span>
+                                <span className="text-blue-700 italic">
+                                    {coor.user.email.toLowerCase()}
+                                </span>
+                                <span className=" text-slate-700 dark:text-slate-200 italic">
+                                    +63{coor.contact_number}
+                                </span>
+                            </div>
+                        </CardContent>
+                        <ApprovalRejectComponent coordinator={coor} />
+                    </Card>
+                ))
+            )}
         </>
     );
 }

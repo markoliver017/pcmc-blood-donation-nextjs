@@ -111,6 +111,11 @@ export async function fetchVerifiedAgencies() {
                     as: "creator",
                     attributes: { exclude: ["password", "email_verified"] },
                 },
+                {
+                    model: User,
+                    as: "approver",
+                    attributes: ["id", "name", "email"],
+                },
             ],
         });
 

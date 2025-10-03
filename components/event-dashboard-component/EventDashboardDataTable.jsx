@@ -49,6 +49,7 @@ export default function EventDashboardDataTable({
     appointments,
     eventId,
     roleName,
+    onManageAppointment,
 }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
@@ -171,9 +172,9 @@ export default function EventDashboardDataTable({
         };
 
         return (
-            <Badge className={`badge px-2 text-xs ${config.color}`}>
+            <span className={`badge px-2 text-xs ${config.color}`}>
                 {config.text}
-            </Badge>
+            </span>
         );
     };
 
@@ -430,6 +431,7 @@ export default function EventDashboardDataTable({
                                         <ArrowUpDown className="h-3 w-3" />
                                     </Button>
                                 </TableHead>
+                                <TableHead>Screening</TableHead>
                                 <TableHead>Eligibility</TableHead>
                                 <TableHead>Collection</TableHead>
                                 {roleName === "Admin" && (
@@ -478,7 +480,17 @@ export default function EventDashboardDataTable({
                                                             ?.name || "Unknown"}
                                                     </div>
                                                     <div className="text-xs text-muted-foreground">
-                                                        ID: {appointment.id}
+                                                        ID:{" "}
+                                                        {
+                                                            appointment.donor
+                                                                ?.donor_reference_id
+                                                        }
+                                                    </div>
+                                                    <div className="text-xs text-muted-foreground">
+                                                        Ref:{" "}
+                                                        {
+                                                            appointment.appointment_reference_id
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>
@@ -510,11 +522,17 @@ export default function EventDashboardDataTable({
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            {appointment.physical_exam &&
-                                                getEligibilityBadge(
-                                                    appointment.physical_exam
-                                                        .eligibility_status
-                                                )}
+                                            {appointment.screening_details &&
+                                            appointment.screening_details
+                                                .length ? (
+                                                <Badge variant="outline">
+                                                    Answered
+                                                </Badge>
+                                            ) : (
+                                                <Badge variant="outline">
+                                                    Not Answered
+                                                </Badge>
+                                            )}
                                         </TableCell>
                                         <TableCell>
                                             {appointment.blood_collection ? (
@@ -544,7 +562,6 @@ export default function EventDashboardDataTable({
                                                         <Button
                                                             variant="ghost"
                                                             className="h-8 w-8 p-0"
-                                                            disabled
                                                         >
                                                             <MoreHorizontal className="h-4 w-4" />
                                                         </Button>
@@ -556,15 +573,15 @@ export default function EventDashboardDataTable({
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem
                                                             onClick={() =>
-                                                                handleViewDetails(
+                                                                onManageAppointment(
                                                                     appointment
                                                                 )
                                                             }
                                                         >
                                                             <Eye className="mr-2 h-4 w-4" />
-                                                            View Details
+                                                            View
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem>
+                                                        {/* <DropdownMenuItem>
                                                             <Calendar className="mr-2 h-4 w-4" />
                                                             View Schedule
                                                         </DropdownMenuItem>
@@ -572,7 +589,7 @@ export default function EventDashboardDataTable({
                                                         <DropdownMenuItem>
                                                             <Download className="mr-2 h-4 w-4" />
                                                             Export Details
-                                                        </DropdownMenuItem>
+                                                        </DropdownMenuItem> */}
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             </TableCell>

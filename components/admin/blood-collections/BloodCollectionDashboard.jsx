@@ -11,11 +11,7 @@ import {
     TrendingUp,
     Activity,
 } from "lucide-react";
-import {
-    getAllBloodCollections,
-    getAllDonorsBloodCollections,
-} from "@/action/bloodCollectionAction";
-import { getAllBloodDonationHistoryCount } from "@/action/bloodDonationHistoryAction";
+import { getAllBloodCollections } from "@/action/bloodCollectionAction";
 
 const BloodCollectionDashboard = () => {
     const { data: bloodCollections, isLoading: collectionsLoading } = useQuery({
@@ -26,27 +22,10 @@ const BloodCollectionDashboard = () => {
             return res.data;
         },
     });
-    const { data: bloodCollectionsHistory } = useQuery({
-        queryKey: ["blood_donations_history"],
-        queryFn: async () => {
-            const res = await getAllBloodDonationHistoryCount();
-            if (!res.success) throw res;
-            return res.data;
-        },
-    });
-
-    const { data: donorCollections, isLoading: donorsLoading } = useQuery({
-        queryKey: ["donor_blood_collections"],
-        queryFn: async () => {
-            const res = await getAllDonorsBloodCollections();
-            if (!res.success) throw res;
-            return res.data;
-        },
-    });
 
     // Calculate metrics
     const calculateMetrics = () => {
-        if (!bloodCollections || !donorCollections) {
+        if (!bloodCollections) {
             return {
                 totalCollections: 0,
                 totalVolume: 0,
@@ -109,7 +88,7 @@ const BloodCollectionDashboard = () => {
     };
 
     const metrics = calculateMetrics();
-    const isLoading = collectionsLoading || donorsLoading;
+    const isLoading = collectionsLoading;
 
     const MetricCard = ({
         title,

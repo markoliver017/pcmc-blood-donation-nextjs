@@ -20,7 +20,7 @@ export default function SideComponent({ appointment }) {
     const user = donor?.user;
 
     return (
-        <Card className="p-4 flex flex-col gap-4 h-max">
+        <Card className="px-1 py-4 flex flex-col gap-4 h-max">
             <CardHeader className="border-b p-2">
                 <div className="flex items-center gap-4">
                     <div className="relative w-16 h-16 rounded overflow-hidden border">
@@ -113,7 +113,15 @@ export default function SideComponent({ appointment }) {
                             />
                         </div>
                         <div className="text-sm">
-                            <div className="font-medium">{user?.name}</div>
+                            <div className="font-medium">
+                                {user?.name} -{" "}
+                                <span className="text-xs">
+                                    {donor?.donor_reference_id}
+                                </span>
+                            </div>
+                            <div className="font-medium">
+                                {appointment?.appointment_reference_id}
+                            </div>
                             <div className="text-gray-500 dark:text-gray-400">
                                 {donor?.full_address}
                             </div>

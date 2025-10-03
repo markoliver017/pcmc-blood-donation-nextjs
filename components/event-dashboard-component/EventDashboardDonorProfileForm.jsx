@@ -50,6 +50,7 @@ import { Input } from "@components/ui/input";
 import FormLogger from "@lib/utils/FormLogger";
 import DisplayValidationErrors from "@components/form/DisplayValidationErrors";
 import { toast } from "sonner";
+import { Badge } from "@components/ui/badge";
 
 const fetchCountries = async () => {
     const res = await fetch(process.env.NEXT_PUBLIC_NATIONALITY_API_URL);
@@ -287,6 +288,7 @@ export default function EventDashboardDonorProfileForm({ donor, eventId }) {
                             </div>
                         )}
                     </div>
+                    <Badge>ID#: {donor.donor_reference_id}</Badge>
                     <div className="md:pl-4 md:space-y-5 space-y-2">
                         {/* Hidden fields */}
                         <FormField

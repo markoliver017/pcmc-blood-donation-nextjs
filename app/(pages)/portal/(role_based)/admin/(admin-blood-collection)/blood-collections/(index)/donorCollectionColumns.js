@@ -16,6 +16,7 @@ import { formatFormalName } from "@lib/utils/string.utils";
 import { MdBloodtype, MdCheckCircleOutline } from "react-icons/md";
 import { Mail, Command, Eye, MoreHorizontal } from "lucide-react";
 import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+import { Checkbox } from "@components/ui/checkbox";
 
 // import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 
@@ -32,9 +33,41 @@ import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 
 export const donorCollectionColumns = [
     {
+        id: "select",
+        header: ({ table }) => (
+            <Checkbox
+                checked={
+                    table.getIsAllPageRowsSelected() ||
+                    (table.getIsSomePageRowsSelected() && "indeterminate")
+                }
+                onCheckedChange={(value) =>
+                    table.toggleAllPageRowsSelected(!!value)
+                }
+                aria-label="Select all"
+                className="h-4 w-4 my-5 mr-2"
+            />
+        ),
+        cell: ({ row }) => (
+            <Checkbox
+                checked={row.getIsSelected()}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
+                aria-label="Select row"
+            />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+    },
+    {
         accessorKey: "id",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="ID#" />
+        ),
+        filterFn: "columnFilter",
+    },
+    {
+        accessorKey: "donor_reference_id",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Donor ID#" />
         ),
         filterFn: "columnFilter",
     },

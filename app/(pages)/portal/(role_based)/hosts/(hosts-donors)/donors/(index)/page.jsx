@@ -1,9 +1,22 @@
-import DonorList from "./DonorList";
+import WrapperHeadMain from "@components/layout/WrapperHeadMain";
+import { Building, Users } from "lucide-react";
+import Container from "./Container";
 
 export default function Page() {
     return (
-        <div className="w-full h-full 2xl:px-5 mx-auto shadow-lg space-y-3">
-            <DonorList />
-        </div>
+        <>
+            <WrapperHeadMain
+                icon={<Building />}
+                pageTitle="List of Donors"
+                breadcrumbs={[
+                    {
+                        path: "/portal/admin/donors",
+                        icon: <Users className="w-4" />,
+                        title: "Manage Donors",
+                    },
+                ]}
+            />
+            <Container />
+        </>
     );
 }

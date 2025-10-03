@@ -16,7 +16,33 @@ import Link from "next/link";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import VerifyAgency from "../../../../../../../../components/organizers/VerifyAgency";
 import RejectDialog from "../../../../../../../../components/organizers/RejectDialog";
+import { Checkbox } from "@components/ui/checkbox";
 export const columns = [
+    {
+        id: "select",
+        header: ({ table }) => (
+            <Checkbox
+                checked={
+                    table.getIsAllPageRowsSelected() ||
+                    (table.getIsSomePageRowsSelected() && "indeterminate")
+                }
+                onCheckedChange={(value) =>
+                    table.toggleAllPageRowsSelected(!!value)
+                }
+                aria-label="Select all"
+                className="h-4 w-4 my-5 mr-2"
+            />
+        ),
+        cell: ({ row }) => (
+            <Checkbox
+                checked={row.getIsSelected()}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
+                aria-label="Select row"
+            />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+    },
     {
         accessorKey: "id",
         header: ({ column }) => (
@@ -182,6 +208,13 @@ export const columns = [
                 </span>
             );
         },
+        filterFn: "columnFilter",
+    },
+    {
+        accessorKey: "approver.name",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Verified By" />
+        ),
         filterFn: "columnFilter",
     },
     {

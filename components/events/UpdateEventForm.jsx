@@ -477,7 +477,7 @@ export default function UpdateEventForm({ eventId }) {
                                                     onMonthChange={
                                                         setCalendarMonth
                                                     }
-                                                    className="bg-transparent p-5 [--cell-size:--spacing(10.5)]"
+                                                    className="p-5 [--cell-size:--spacing(10.5)]"
                                                     onSelect={(date) => {
                                                         if (date) {
                                                             // Format as "yyyy-MM-dd"
@@ -514,6 +514,11 @@ export default function UpdateEventForm({ eventId }) {
                                                         booked: "[&>button]:line-through font-bold bg-red-500 dark:bg-red-900 text-white  bg-opacity-50  rounded",
                                                     }}
                                                     captionLayout="dropdown"
+                                                    fromYear={new Date().getFullYear()} // Earliest year selectable
+                                                    toYear={
+                                                        new Date().getFullYear() +
+                                                        5
+                                                    }
                                                 />
                                             </PopoverContent>
                                         </Popover>
@@ -594,7 +599,7 @@ export default function UpdateEventForm({ eventId }) {
                                     type="button"
                                     className="p-5 flex rounded-2xl text-2xl btn btn-outline btn-block btn-warning ring-offset-2 ring-offset-red-500 hover:ring-2"
                                 >
-                                    <FaArrowLeft /> Go Back and Save
+                                    <FaArrowLeft /> Exit
                                 </button>
                             </div>
                         </div>

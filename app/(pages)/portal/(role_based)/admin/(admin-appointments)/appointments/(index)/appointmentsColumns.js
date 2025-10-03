@@ -63,6 +63,13 @@ export const appointmentsColumns = [
         filterFn: "columnFilter",
     },
     {
+        accessorKey: "appointment_reference_id",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="ID#" />
+        ),
+        filterFn: "columnFilter",
+    },
+    {
         accessorKey: "donor.user.image",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Avatar" />
@@ -80,6 +87,7 @@ export const appointmentsColumns = [
             );
         },
     },
+
     {
         accessorKey: "donor.user.name",
         header: ({ column }) => (
@@ -89,23 +97,27 @@ export const appointmentsColumns = [
             const data = row.original;
             const isVerified = data.donor.is_data_verified;
             return (
-                <>
+                <div className="flex flex-col">
                     {isVerified ? (
-                        <div className="flex-items-center p-2 font-bold rounded-full">
+                        <div className="flex-items-center min-w-[180px] p-2 font-bold rounded-full">
                             {getValue()}{" "}
                             <MdCheckCircleOutline className="h-4 w-4 text-green-500" />
                         </div>
                     ) : (
-                        <div className="flex-items-center p-2 font-bold rounded-full">
+                        <div className="flex-items-center min-w-[180px] p-2 font-bold rounded-full">
                             {getValue()}{" "}
                             <QuestionMarkCircledIcon className="h-4 w-4 text-red-500" />
                         </div>
                     )}
-                </>
+                    <span className="text-xs italic px-2">
+                        {data.donor.donor_reference_id}
+                    </span>
+                </div>
             );
         },
         filterFn: "columnFilter",
     },
+
     {
         accessorKey: "donor.user.email",
         header: ({ column }) => (

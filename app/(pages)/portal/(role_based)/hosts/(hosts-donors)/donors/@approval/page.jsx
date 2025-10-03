@@ -1,6 +1,6 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import ForApprovalDonorList from "./ForApprovalDonorList";
+import ForApprovalDonorList from "../(index)/ForApprovalDonorList";
 import { getHostDonorsByStatus } from "@/action/hostDonorAction";
 
 export default function Page() {

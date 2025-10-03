@@ -61,6 +61,13 @@ export const adminDonorColumns = [
         filterFn: "columnFilter",
     },
     {
+        accessorKey: "donor_reference_id",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="ID#" />
+        ),
+        filterFn: "columnFilter",
+    },
+    {
         accessorKey: "user.image",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Avatar" />

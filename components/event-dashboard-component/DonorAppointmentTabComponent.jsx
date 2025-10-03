@@ -65,7 +65,7 @@ export default function DonorAppointmentTabComponent({ appointment }) {
                 {/* Vertical Sub Tabs */}
                 <Tabs
                     defaultValue="basic-info"
-                    className="flex md:gap-4 gap-1 flex-1 min-h-0"
+                    className="flex md:gap-2 gap-1 flex-1 min-h-0"
                 >
                     <TabsList className="flex flex-col max-w-max max-h-60 rounded-lg border p-2">
                         <TabsTrigger
@@ -135,7 +135,7 @@ export default function DonorAppointmentTabComponent({ appointment }) {
             >
                 <Tabs
                     defaultValue="appointment-info"
-                    className="flex md:gap-4 gap-1 flex-1 min-h-0"
+                    className="flex md:gap-2 gap-1 flex-1 min-h-0"
                 >
                     {/* Vertical Sub Tabs */}
                     <TabsList className="flex flex-col max-w-max max-h-60 rounded-lg border p-2">
@@ -176,7 +176,7 @@ export default function DonorAppointmentTabComponent({ appointment }) {
                             className="flex items-center justify-center gap-2 p-2 w-full border-b data-[state=active]:bg-gray-100 data-[state=active]:text-gray-700 data-[state=active]:font-bold px-4 py-2 rounded-md disabled:opacity-50 dark:text-slate-300"
                         >
                             <GiBlood className="h-4 w-4" />
-                            <span className="hidden lg:inline-block">
+                            <span className="hidden lg:flex flex-col">
                                 Blood Collection
                                 {appointment?.physical_exam
                                     ?.eligibility_status !== "ACCEPTED" && (

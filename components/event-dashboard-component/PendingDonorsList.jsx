@@ -15,6 +15,7 @@ import {
     XCircle,
     Expand,
     EyeClosed,
+    Check,
 } from "lucide-react";
 import moment from "moment";
 import UpdateStatusModal from "./UpdateStatusModal";
@@ -180,6 +181,21 @@ export default function PendingDonorsList({
                                                             "No time scheduled"}
                                                     </span>
                                                 </div>
+                                                <div>
+                                                    {appointment
+                                                        ?.screening_details
+                                                        ?.length > 0 ? (
+                                                        <Badge variant="outline">
+                                                            <Check className="h-3 w-3 mr-1" />
+                                                            Screening
+                                                        </Badge>
+                                                    ) : (
+                                                        <Badge variant="outline">
+                                                            <XCircle className="h-3 w-3 mr-1" />
+                                                            Screening
+                                                        </Badge>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -214,6 +230,7 @@ export default function PendingDonorsList({
                                                 Cancel
                                             </span>
                                         </Button> */}
+
                                         <Button
                                             variant="destructive"
                                             size="sm"

@@ -96,7 +96,9 @@ export default function ShowDonor({ donorId }) {
                                 <TableCell className="font-semibold">
                                     ID
                                 </TableCell>
-                                <TableCell>{donor.id}</TableCell>
+                                <TableCell>
+                                    {donor?.donor_reference_id || "N/A"}
+                                </TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell className="font-semibold">
@@ -189,7 +191,7 @@ export default function ShowDonor({ donorId }) {
                                     appointments.map((appt) => (
                                         <TableRow key={appt.id}>
                                             <TableCell className="text-slate-500">
-                                                {appt?.id}
+                                                {appt?.appointment_reference_id}
                                             </TableCell>
                                             <TableCell>
                                                 {format(appt?.event.date, "PP")}

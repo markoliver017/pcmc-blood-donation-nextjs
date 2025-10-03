@@ -36,24 +36,14 @@ export const bloodCollectionColumns = [
         ),
         filterFn: "columnFilter",
     },
-    // {
-    //     accessorKey: "donor.user.image",
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="Avatar" />
-    //     ),
-    //     cell: ({ getValue }) => {
-    //         const imageSrc = getValue();
-    //         return (
-    //             <Image
-    //                 src={imageSrc || "/default_avatar.png"}
-    //                 className="flex-none rounded-4xl"
-    //                 width={50}
-    //                 height={50}
-    //                 alt="Logo"
-    //             />
-    //         );
-    //     },
-    // },
+    {
+        accessorKey: "appointment.appointment_reference_id",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Appointment ID#" />
+        ),
+        filterFn: "columnFilter",
+    },
+
     {
         accessorKey: "event.date",
         header: ({ column }) => (

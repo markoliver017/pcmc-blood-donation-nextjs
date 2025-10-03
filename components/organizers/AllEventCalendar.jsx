@@ -31,7 +31,7 @@ export default function AllEventCalendar() {
     const currentRole = session?.data?.user?.role_name;
 
     return (
-        <Card>
+        <Card className="">
             <CardHeader>
                 <CardTitle></CardTitle>
             </CardHeader>

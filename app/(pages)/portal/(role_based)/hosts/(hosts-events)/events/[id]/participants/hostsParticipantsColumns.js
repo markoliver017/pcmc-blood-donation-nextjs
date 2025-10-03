@@ -91,7 +91,17 @@ export const hostsParticipantsColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Name" />
         ),
-        cell: ({ getValue }) => <span>{getValue()}</span>,
+        cell: ({ getValue, row }) => {
+            const donor = row.original.donor;
+            return (
+                <div className="min-w-[180px] flex flex-col">
+                    {getValue()}{" "}
+                    <span className="text-xs italic">
+                        {donor?.donor_reference_id}
+                    </span>
+                </div>
+            );
+        },
         filterFn: "columnFilter",
     },
     {

@@ -860,6 +860,8 @@ export async function updateEvent(id, formData) {
 
     console.log("parsed data", data);
 
+    if (!data.file_url) delete data.file_url;
+
     const agency = await Agency.findByPk(data?.agency_id, {
         where: { status: "activated" },
     });

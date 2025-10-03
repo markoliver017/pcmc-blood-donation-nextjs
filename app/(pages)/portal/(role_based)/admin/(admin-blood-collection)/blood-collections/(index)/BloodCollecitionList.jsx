@@ -20,24 +20,9 @@ export default function BloodCollecitionList() {
     const queryClient = useQueryClient();
 
     const {
-        data: blood_donations,
+        data: donor_blood_collections,
         error,
         isLoading,
-    } = useQuery({
-        queryKey: ["blood_donations"],
-        queryFn: async () => {
-            const res = await getAllBloodCollections();
-            if (!res.success) {
-                throw res;
-            }
-            return res.data;
-        },
-    });
-
-    const {
-        data: donor_blood_collections,
-        error: donorCollectionsError,
-        isLoading: donorCollectionsLoading,
     } = useQuery({
         queryKey: ["donor_blood_collections"],
         queryFn: async () => {
@@ -79,22 +64,11 @@ export default function BloodCollecitionList() {
         },
     });
 
-    if (
-        isLoading ||
-        isLoadingEvents ||
-        isLoadingAgency ||
-        donorCollectionsLoading
-    )
-        return <Skeleton />;
+    if (isLoading || isLoadingEvents || isLoadingAgency) return <Skeleton />;
 
     if (error)
         return <div className="alert alert-error">{JSON.stringify(error)}</div>;
-    if (donorCollectionsError)
-        return (
-            <div className="alert alert-error">
-                {JSON.stringify(donorCollectionsError)}
-            </div>
-        );
+
     if (errorEvents)
         return (
             <div className="alert alert-error">
@@ -110,7 +84,7 @@ export default function BloodCollecitionList() {
 
     return (
         <div>
-            {blood_donations.length === 0 ? (
+            {donor_blood_collections.length === 0 ? (
                 <Card className="col-span-full flex flex-col justify-center items-center text-center py-16 ">
                     <Users2Icon className="w-12 h-12 mb-4 text-primary" />
                     <h2 className="text-xl font-semibold">

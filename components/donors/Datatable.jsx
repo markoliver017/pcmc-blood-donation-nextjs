@@ -158,6 +158,21 @@ export function DataTable({ columns, data, isLoading }) {
             ) : (
                 <>
                     <div className="flex items-center gap-2 flex-wrap md:flex-nowrap py-2 space-x-2">
+                        <button
+                            className="btn flex-none w-full md:w-auto rounded-full"
+                            onClick={handleSelectedEmail}
+                        >
+                            <Send className="w-4" /> Compose Email
+                        </button>
+
+                        <input
+                            placeholder="Search all .."
+                            // value={{globalFilter}}
+                            onChange={(e) =>
+                                table.setGlobalFilter(e.target.value)
+                            }
+                            className="p-2 input-sm flex-1 bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
+                        />
                         <div className="flex-1 flex justify-end pr-2">
                             <div className="flex gap-1 overflow-x-auto max-w-[calc(100vw-50px)]">
                                 <label className="hidden sm:flex dark:text-slate-400 items-center space-x-1">
@@ -284,20 +299,6 @@ export function DataTable({ columns, data, isLoading }) {
                                 <DataTableViewOptions table={table} />
                             </div>
                         </div>
-                        <button
-                            className="btn flex-none w-full md:w-auto rounded-full"
-                            onClick={handleSelectedEmail}
-                        >
-                            <Send className="w-4" /> Compose Email
-                        </button>
-                        <input
-                            placeholder="Search all .."
-                            // value={{globalFilter}}
-                            onChange={(e) =>
-                                table.setGlobalFilter(e.target.value)
-                            }
-                            className="p-2 input-sm flex-1 bg-slate-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-gray-400 dark:border-gray-600 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
-                        />
                     </div>
 
                     <div className="rounded-md max-w-screen overflow-x-scroll">

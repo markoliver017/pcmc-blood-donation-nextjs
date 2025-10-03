@@ -15,9 +15,35 @@ import {
 import { Button } from "@components/ui/button";
 import { format } from "date-fns";
 import { Badge } from "@components/ui/badge";
+import { Checkbox } from "@components/ui/checkbox";
 
 export const getColumns = (updateRequestStatus, isApproving, onShowDetails) => {
     return [
+        {
+            id: "select",
+            header: ({ table }) => (
+                <Checkbox
+                    checked={
+                        table.getIsAllPageRowsSelected() ||
+                        (table.getIsSomePageRowsSelected() && "indeterminate")
+                    }
+                    onCheckedChange={(value) =>
+                        table.toggleAllPageRowsSelected(!!value)
+                    }
+                    aria-label="Select all"
+                    className="h-4 w-4 my-5 mr-2"
+                />
+            ),
+            cell: ({ row }) => (
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    onCheckedChange={(value) => row.toggleSelected(!!value)}
+                    aria-label="Select row"
+                />
+            ),
+            enableSorting: false,
+            enableHiding: false,
+        },
         {
             accessorKey: "blood_request_reference_id",
             header: ({ column }) => (
@@ -102,6 +128,17 @@ export const getColumns = (updateRequestStatus, isApproving, onShowDetails) => {
             cell: ({ row }) => {
                 // Try to get agency name from donor->agency
                 return row.original.creator?.full_name;
+            },
+            filterFn: "columnFilter",
+        },
+        {
+            accessorKey: "creator.email",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Creator Email" />
+            ),
+            cell: ({ row }) => {
+                // Try to get agency name from donor->agency
+                return row.original.creator?.email;
             },
             filterFn: "columnFilter",
         },

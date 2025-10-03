@@ -80,6 +80,13 @@ export const appointmentsColumns = [
         },
     },
     {
+        accessorKey: "appointment_reference_id",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Appointment ID#" />
+        ),
+        filterFn: "columnFilter",
+    },
+    {
         accessorKey: "donor.user.full_name",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Name" />
@@ -100,12 +107,12 @@ export const appointmentsColumns = [
                         </div>
                     )} */}
                     {isVerified ? (
-                        <div className="btn btn-ghost p-2 font-bold rounded-full">
+                        <div className="btn min-w-[180px] btn-ghost p-2 font-bold rounded-full">
                             {getValue()}{" "}
                             <MdCheckCircleOutline className="h-4 w-4 text-green-500" />
                         </div>
                     ) : (
-                        <div className="btn btn-ghost p-2 font-bold rounded-full">
+                        <div className="btn min-w-[180px] btn-ghost p-2 font-bold rounded-full">
                             {getValue()}{" "}
                             <QuestionMarkCircledIcon className="h-4 w-4 text-red-500" />
                         </div>
@@ -113,6 +120,14 @@ export const appointmentsColumns = [
                 </>
             );
         },
+        filterFn: "columnFilter",
+    },
+    {
+        accessorKey: "donor.donor_reference_id",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Donor ID" />
+        ),
+        cell: ({ getValue }) => <span>{getValue()}</span>,
         filterFn: "columnFilter",
     },
     {

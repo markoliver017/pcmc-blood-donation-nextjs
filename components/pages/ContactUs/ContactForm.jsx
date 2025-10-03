@@ -62,7 +62,7 @@ export default function ContactForm() {
             return response;
         },
         onSuccess: (response) => {
-            console.log("response", response);
+            // console.log("response", response);
             SweetAlert({
                 title: "Message Sent Successfully! 🎉",
                 text:

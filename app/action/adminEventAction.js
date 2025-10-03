@@ -12,6 +12,7 @@ import {
     DonorAppointmentInfo,
     EventTimeSchedule,
     PhysicalExamination,
+    ScreeningDetail,
     sequelize,
     User,
 } from "@lib/models";
@@ -1772,6 +1773,13 @@ export async function getEventDashboardData(eventId) {
                             attributes: ["id", "name"],
                         },
                     ],
+                },
+                {
+                    model: ScreeningDetail,
+                    as: "screening_details",
+                    attributes: {
+                        exclude: ["createdAt", "updatedAt"],
+                    },
                 },
             ],
             order: [

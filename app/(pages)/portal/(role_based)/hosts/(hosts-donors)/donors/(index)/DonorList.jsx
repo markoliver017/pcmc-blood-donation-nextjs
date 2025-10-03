@@ -7,19 +7,10 @@ import { DataTable } from "@components/donors/Datatable";
 import { getVerifiedDonorsByAgency } from "@/action/hostDonorAction";
 import { hostsDonorColumns } from "@components/donors/hostsDonorColumns";
 
-export default function DonorList() {
+export default function DonorList({ donors_query }) {
     const queryClient = useQueryClient();
-    const {
-        data: donors,
-        error,
-        isFetching,
-        isLoading,
-    } = useQuery({
-        queryKey: ["verified-donors"],
-        queryFn: getVerifiedDonorsByAgency,
-        staleTime: 1 * 60 * 1000, // Data is fresh for 1 minute
-        cacheTime: 2 * 60 * 1000, // Cache persists for 2 minute
-    });
+
+    const { data: donors, error, isFetching, isLoading } = donors_query;
 
     if (isLoading || isFetching) return <Skeleton />;
 

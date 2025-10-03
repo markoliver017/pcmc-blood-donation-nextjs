@@ -26,6 +26,7 @@ import {
     Droplet,
     FileText,
     Hospital,
+    IdCard,
     Text,
     User,
     XCircle,
@@ -68,6 +69,15 @@ export default function DetailsModal({
                 </DialogHeader>
                 {selectedRequest && (
                     <div className="space-y-5 space-x-5 mt-2 dark:text-gray-200">
+                        <div className="flex items-center justify-between gap-2">
+                            <b className="flex-items-center">
+                                <IdCard className="w-4 h-4" />
+                                ID:
+                            </b>{" "}
+                            <div className="flex-none w-48">
+                                {selectedRequest?.blood_request_reference_id}
+                            </div>
+                        </div>
                         <div className="flex items-center justify-between gap-2">
                             <b className="flex-items-center">
                                 <Droplet className="w-4 h-4 text-red-500" />

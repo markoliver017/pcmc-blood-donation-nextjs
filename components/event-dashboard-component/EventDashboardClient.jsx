@@ -265,6 +265,7 @@ export default function EventDashboardClient({ eventId, roleName }) {
                         appointments={all_appointments || []}
                         eventId={eventId}
                         roleName={roleName}
+                        onManageAppointment={handleManageAppointment}
                     />
                 </div>
             ),

@@ -23,7 +23,7 @@ export default function DrawerComponent({
     return (
         <Drawer direction={direction}>
             {trigger}
-            <DrawerContent className="p-5 dark:bg-black dark:text-white min-w-full md:min-w-[900px] overflow-y-scroll">
+            <DrawerContent className="p-5 dark:bg-black min-w-screen md:min-w-[60%] overflow-x-hidden dark:text-white overflow-y-scroll">
                 <DrawerHeader>
                     <DrawerTitle className="dark:text-white text-2xl">
                         {title}

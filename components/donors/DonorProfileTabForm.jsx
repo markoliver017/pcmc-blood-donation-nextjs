@@ -41,6 +41,7 @@ import ImagePreviewComponent from "@components/reusable_components/ImagePreviewC
 import { toastCatchError, toastError } from "@lib/utils/toastError.utils";
 import LoadingModal from "@components/layout/LoadingModal";
 import DisplayValidationErrors from "@components/form/DisplayValidationErrors";
+import { Badge } from "@components/ui/badge";
 
 const fetchCountries = async () => {
     const res = await fetch(process.env.NEXT_PUBLIC_NATIONALITY_API_URL);
@@ -301,7 +302,12 @@ export default function DonorProfileTabForm({ donor }) {
                 </div>
 
                 <Card className="px-4 py-5 space-y-5 bg-gray-100 flex-1 md:min-w-[400px]">
-                    <h1 className="text-xl font-bold">Basic Information:</h1>
+                    <div className="flex flex-wrap items-center justify-between">
+                        <h1 className="text-xl font-bold">
+                            Basic Information:
+                        </h1>
+                        <Badge>ID#: {donor?.donor_reference_id}</Badge>
+                    </div>
                     <div className="pl-4 space-y-5">
                         <FormField
                             control={control}

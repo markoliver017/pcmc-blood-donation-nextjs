@@ -285,7 +285,7 @@ export default function AgencyLocationForm({ details, onNext }) {
                                                     resolvedTheme
                                                 )}
                                                 className="sm:text-lg"
-                                                tabIndex={2}
+                                                tabIndex={3}
                                                 isClearable
                                             />
                                         );
@@ -343,7 +343,7 @@ export default function AgencyLocationForm({ details, onNext }) {
                                                     resolvedTheme
                                                 )}
                                                 className="sm:text-lg"
-                                                tabIndex={3}
+                                                tabIndex={4}
                                                 isClearable
                                             />
                                         );
@@ -366,7 +366,7 @@ export default function AgencyLocationForm({ details, onNext }) {
                             type="button"
                             className="btn btn-primary"
                             onClick={onSubmitNext}
-                            tabIndex="6"
+                            tabIndex="5"
                         >
                             <MdNextPlan />{" "}
                             <span className="hidden sm:inline-block">Next</span>

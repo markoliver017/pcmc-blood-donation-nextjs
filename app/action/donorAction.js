@@ -559,6 +559,7 @@ export async function getDonorById(id) {
                     as: "appointments",
                     attributes: [
                         "id",
+                        "appointment_reference_id",
                         "donor_type",
                         "collection_method",
                         "status",

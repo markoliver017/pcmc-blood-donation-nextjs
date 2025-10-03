@@ -75,11 +75,11 @@ export default function TabsComponent({ appointmentId }) {
                 {/* Side panel: Event Details */}
                 <SideComponent appointment={appointment} />
                 {/* Right Panel: Main Content Area */}
-                <Card className="col-span-1 sm:col-span-3 bg-gray-100 p-2 relative">
+                <Card className="col-span-1 sm:col-span-3 bg-gray-100 p-1 relative">
                     <CardHeader className="text-2xl font-bold hidden">
                         <CardTitle>Account Information</CardTitle>
                     </CardHeader>
-                    <CardContent id="form-modal" className="p-0">
+                    <CardContent id="form-modal" className="md:p-1 md:py-3">
                         <Tabs defaultValue="donor-profile">
                             <TabsContent
                                 className="py-2"

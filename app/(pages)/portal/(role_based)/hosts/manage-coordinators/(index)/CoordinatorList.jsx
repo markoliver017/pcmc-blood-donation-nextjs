@@ -5,22 +5,10 @@ import Skeleton from "@components/ui/skeleton";
 import { Card } from "@components/ui/card";
 import { DataTable } from "@components/coordinators/Datatable";
 import { hostCoordinatorColumns } from "@components/coordinators/hostCoordinatorColumns";
-import { getVerifiedCoordinatorsByAgency } from "@/action/hostCoordinatorAction";
 import { getAllAgencyOptions } from "@/action/adminEventAction";
 
-export default function CoordinatorList() {
+export default function CoordinatorList({ coordinators_query }) {
     const queryClient = useQueryClient();
-    const {
-        data: coordinators,
-        error,
-        isFetching,
-        isLoading,
-    } = useQuery({
-        queryKey: ["verified-coordinators"],
-        queryFn: getVerifiedCoordinatorsByAgency,
-        staleTime: 1 * 60 * 1000, // Data is fresh for 1 minute
-        cacheTime: 2 * 60 * 1000, // Cache persists for 2 minute
-    });
 
     const {
         data: agencyOptions,
@@ -37,14 +25,24 @@ export default function CoordinatorList() {
         },
     });
 
-    if (isLoading || isFetching || isLoadingAgency) return <Skeleton />;
+    if (
+        coordinators_query.isLoading ||
+        coordinators_query.isFetching ||
+        isLoadingAgency
+    )
+        return <Skeleton />;
 
-    if (error || errorAgency) return <div>Error: {error.message}</div>;
+    if (coordinators_query.error || errorAgency)
+        return (
+            <div>
+                Error: {coordinators_query.error.message || errorAgency.message}
+            </div>
+        );
 
     // return <pre>{JSON.stringify(coordinators, null, 2)}</pre>;
     return (
         <div>
-            {coordinators.length === 0 ? (
+            {coordinators_query.data.length === 0 ? (
                 <Card className="col-span-full flex flex-col justify-center items-center text-center py-16 ">
                     <Users2Icon className="w-12 h-12 mb-4 text-primary" />
                     <h2 className="text-xl font-semibold">
@@ -70,8 +68,8 @@ export default function CoordinatorList() {
                     </div>
                     <DataTable
                         columns={hostCoordinatorColumns}
-                        data={coordinators}
-                        isLoading={isLoading}
+                        data={coordinators_query.data}
+                        isLoading={coordinators_query.isLoading}
                         agencyOptions={agencyOptions}
                     />
                 </>

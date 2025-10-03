@@ -10,7 +10,7 @@ import {
 import { CalendarCheck2, Users } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import ForApprovalDonorList from "./(hosts-donors)/donors/@approval/ForApprovalDonorList";
+import ForApprovalDonorList from "./(hosts-donors)/donors/(index)/ForApprovalDonorList";
 import { FaArrowRight } from "react-icons/fa";
 import ForApprovalEventList from "./(hosts-events)/events/(index)/ForApprovalEventList";
 import { useQuery } from "@tanstack/react-query";

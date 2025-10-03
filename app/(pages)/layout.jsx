@@ -14,6 +14,7 @@ import TansactProviders from "@components/layout/TansactProvider";
 import MainWrapper from "@components/layout/MainWrapper";
 import BackToTop from "@components/pages/shared/BackToTop";
 import { SocketProvider } from "@components/layout/SocketProvider";
+import FloatingFAQButton from "@components/faq/FloatingFAQButton";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
