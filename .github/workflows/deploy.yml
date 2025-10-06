@@ -21,8 +21,8 @@ jobs:
             DB_USER: mroman
             DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
             DB_NAME: PedDbase07152025
-            NODE_ENV: development
-            NEXT_PUBLIC_NODE_ENV: development
+            # NODE_ENV: production
+            # NEXT_PUBLIC_NODE_ENV: production
             SESSION_PASSWORD: ${{ secrets.SESSION_PASSWORD }}
             NEXTAUTH_URL: https://pedbc.pcmc.gov.ph
             AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
@@ -61,8 +61,8 @@ jobs:
                   DB_USER=${DB_USER}
                   DB_PASSWORD=${DB_PASSWORD}
                   DB_NAME=${DB_NAME}
-                  NODE_ENV=${NODE_ENV}
-                  NEXT_PUBLIC_NODE_ENV=${NEXT_PUBLIC_NODE_ENV}
+                  NODE_ENV=production
+                  NEXT_PUBLIC_NODE_ENV=production
                   SESSION_PASSWORD=${SESSION_PASSWORD}
                   NEXTAUTH_URL=${NEXTAUTH_URL}
                   AUTH_SECRET=${AUTH_SECRET}
@@ -90,6 +90,8 @@ jobs:
             # 4️⃣ Build project
             - name: Build project
               run: npm run build
+              env:
+                  NODE_ENV: production
 
             # 5️⃣ Deploy (sync files to your actual directory)
             - name: Sync to live project
