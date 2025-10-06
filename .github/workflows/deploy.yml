@@ -6,11 +6,12 @@ on:
 jobs:
     deploy:
         runs-on: self-hosted
+
         steps:
-            # 1️⃣ Fetch the latest code from GitHub
+            # 1️⃣ Fetch the latest code from GitHub into the runner's _work directory
             - uses: actions/checkout@v4
 
-            # 2️⃣ Install dependencies
+            # 2️⃣ Install dependencies (clean install)
             - name: Install dependencies
               run: npm ci
 
@@ -18,11 +19,19 @@ jobs:
             - name: Build project
               run: npm run build
 
-            # 4️⃣ Restart your PM2 app (same as your manual command)
-            - name: Restart PM2 app
-              run: pm2 restart BLOOD-BANK-PORTAL --update-env || pm2 start npm --name BLOOD-BANK-PORTAL -- run start
+            # 4️⃣ Deploy built project to your production directory
+            - name: Deploy to production directory
+              run: |
+                  rsync -av --delete . /home/mroman/projects/blood-donation-app/
 
-            # 5️⃣ Purge Cloudflare cache automatically
+            # 5️⃣ Restart PM2 app from the production directory
+            - name: Restart PM2 app
+              working-directory: /home/mroman/projects/blood-donation-app
+              run: |
+                  pm2 restart BLOOD-BANK-PORTAL --update-env || \
+                  pm2 start npm --name BLOOD-BANK-PORTAL -- run start
+
+            # 6️⃣ Purge Cloudflare cache automatically
             - name: Purge Cloudflare cache
               env:
                   CLOUDFLARE_ZONE_ID: b28c36e1ee2b5d9e1bac62acfcdd25d7
