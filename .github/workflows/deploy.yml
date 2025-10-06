@@ -27,7 +27,7 @@ jobs:
             NEXTAUTH_URL: https://pedbc.pcmc.gov.ph
             AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
             AUTH_TRUST_HOST: true
-            NEXT_PUBLIC_SOCKET_URL: http://10.0.1.114:4000
+            NEXT_PUBLIC_SOCKET_URL: https://pedbc.pcmc.gov.ph/socket.io
             SMTP_USER: noreply@pcmc.gov.ph
             SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
             AUTH_GITHUB_ID: ${{ secrets.AUTH_GITHUB_ID }}
