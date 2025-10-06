@@ -31,7 +31,7 @@ const QUICK_QUESTIONS = [
     },
     {
         id: 6,
-        question: "Is donating blood safe?",
+        question: "Is donating blood safe? ",
         icon: "✅",
     },
 ];
