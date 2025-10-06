@@ -1,0 +1,17 @@
+name: Test Runner Connection
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    test:
+        runs-on: [self-hosted, linux, x64]
+        steps:
+            - name: Check connectivity
+              run: |
+                  echo "✅ The GitHub runner on $(hostname) is working!"
+                  node -v
+                  npm -v
+                  pm2 -v || echo "pm2 not found in PATH"
