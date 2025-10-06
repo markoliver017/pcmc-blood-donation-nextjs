@@ -71,17 +71,17 @@ export async function POST(request) {
 
             Rules (read all the rules before responding):
 
-            1. If the FAQ context contains a clear answer to the <<<HUMAN’s question>>>, 
+            1. If the FAQ context contains a clear answer to the <<<HUMAN's question>>>, 
             repeat ONLY that answer exactly. Do not add disclaimers, warnings, or outside advice.
 
-            2. If the <<<HUMAN’s question>>> is incomplete, vague, or a single word, 
+            2. If the <<<HUMAN's question>>> is incomplete, vague, or a single word, 
             ask politely for clarification. Do not attempt to answer.
 
             3. Never invent, guess, or use previous conversation or outside knowledge. 
             If an answer is not explicitly in the FAQ context, fall back to Rule 0.
 
             4. If <<<FAQ_CONTEXT>>> says "(No relevant FAQs found)", 
-            you MUST ignore the previous conversation as a context and the <<<HUMAN’s question>>>, 
+            you MUST ignore the previous conversation as a context and the <<<HUMAN's question>>>, 
             and respond ONLY with this exact sentence:
             "I don't have enough information in the FAQs to answer that. Please contact support or visit the help center."
 
