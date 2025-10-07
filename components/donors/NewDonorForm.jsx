@@ -82,7 +82,7 @@ const form_sections = [
 export default function NewDonorForm({ role_name, agency_id }) {
     const router = useRouter();
     const [isUploading, setIsUploading] = useState(false);
-    const [sectionNo, setSectionNo] = useState(4);
+    const [sectionNo, setSectionNo] = useState(0);
 
     const { data: user_role, isLoading: user_role_loading } = useQuery({
         queryKey: ["role", role_name],
