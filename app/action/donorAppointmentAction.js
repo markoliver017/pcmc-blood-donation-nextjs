@@ -363,11 +363,18 @@ export async function cancelDonorAppointment(appointmentId, formData) {
     const { user } = session;
 
     const appointment = await DonorAppointmentInfo.findByPk(appointmentId, {
-        include: {
-            model: BloodDonationEvent,
-            as: "event",
-            attribute: ["id", "requester_id", "title", "date"],
-        },
+        include: [
+            {
+                model: BloodDonationEvent,
+                as: "event",
+                attribute: ["id", "requester_id", "title", "date"],
+            },
+            {
+                model: BloodDonationCollection,
+                as: "blood_collection",
+                attributes: ["id"],
+            },
+        ],
     });
 
     if (!appointment) {
@@ -383,6 +390,14 @@ export async function cancelDonorAppointment(appointmentId, formData) {
             success: false,
             message:
                 "You cannot cancel an appointment on or after the scheduled event date.",
+        };
+    }
+
+    if (appointment?.blood_collection) {
+        return {
+            success: false,
+            message:
+                "You cannot cancel this appointment as the blood donation has already been collected.",
         };
     }
 
@@ -425,6 +440,7 @@ export async function cancelDonorAppointment(appointmentId, formData) {
     const transaction = await sequelize.transaction();
 
     try {
+        formData.updated_by = user.id;
         const updatedData = await appointment.update(formData, {
             transaction,
         });
@@ -558,8 +574,27 @@ export async function getAllAppointmentsByDonor() {
     const donor = await Donor.findOne({
         where: {
             user_id: user.id,
-            status: "activated",
         },
+        include: [
+            {
+                model: Agency,
+                as: "agency",
+                attributes: ["id", "name"],
+            },
+            {
+                model: BloodType,
+                as: "blood_type",
+                attributes: ["id", "blood_type"],
+            },
+            {
+                model: BloodDonationHistory,
+                as: "blood_history",
+                attributes: [
+                    "previous_donation_count",
+                    "previous_donation_volume",
+                ],
+            },
+        ],
     });
 
     if (!donor) {
@@ -589,28 +624,28 @@ export async function getAllAppointmentsByDonor() {
                         },
                     },
                 },
-                {
-                    model: Donor,
-                    as: "donor",
-                    include: [
-                        {
-                            model: Agency,
-                            as: "agency",
-                        },
-                        {
-                            model: BloodType,
-                            as: "blood_type",
-                        },
-                        {
-                            model: BloodDonationHistory,
-                            as: "blood_history",
-                            attributes: [
-                                "previous_donation_count",
-                                "previous_donation_volume",
-                            ],
-                        },
-                    ],
-                },
+                // {
+                //     model: Donor,
+                //     as: "donor",
+                //     include: [
+                //         {
+                //             model: Agency,
+                //             as: "agency",
+                //         },
+                //         {
+                //             model: BloodType,
+                //             as: "blood_type",
+                //         },
+                //         {
+                //             model: BloodDonationHistory,
+                //             as: "blood_history",
+                //             attributes: [
+                //                 "previous_donation_count",
+                //                 "previous_donation_volume",
+                //             ],
+                //         },
+                //     ],
+                // },
                 {
                     model: PhysicalExamination,
                     as: "physical_exam",
@@ -639,8 +674,16 @@ export async function getAllAppointmentsByDonor() {
         });
 
         const formattedappointments = formatSeqObj(appointments);
+        const { last_donation_date } = await getLastDonationDateDonated(
+            user.id
+        );
 
-        return { success: true, data: formattedappointments };
+        return {
+            success: true,
+            data: formattedappointments,
+            donor: donor.get({ plain: true }),
+            last_donation_date,
+        };
     } catch (err) {
         console.log("err>>>", err);
         logErrorToFile(err, "getAllAppointmentsByDonor ERROR");

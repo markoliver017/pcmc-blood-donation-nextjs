@@ -22,7 +22,7 @@ export const NotifyEventRegistration = ({ donorsData, eventData }) => {
         donors.forEach((donor, index) => {
             (async () => {
                 const res = await notifyRegistrationOpen(donor, eventData);
-                console.log("Notification response:", res);
+                // console.log("Notification response:", res);
                 if (!res.success) {
                     failedDonors.current.push(donor);
                     toast.update(toastId.current, {

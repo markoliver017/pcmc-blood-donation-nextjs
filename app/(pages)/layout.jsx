@@ -70,7 +70,7 @@ export default async function RootLayout({ children, rootLayoutModal }) {
                                     <Sidebar currentUser={currentUser} />
 
                                     <MainWrapper>
-                                        {/* <Preloader /> */}
+                                        <Preloader />
                                         <HeaderNav currentUser={currentUser} />
                                         {/* <Header /> */}
                                         {/* <WrapperHead /> */}

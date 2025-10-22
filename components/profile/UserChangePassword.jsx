@@ -17,14 +17,11 @@ import { Form, FormField, FormItem } from "@components/ui/form";
 
 import { uploadPicture } from "@/action/uploads";
 import { GrUpdate } from "react-icons/gr";
-import { useRouter } from "next/navigation";
 import FormLogger from "@lib/utils/FormLogger";
 import { MdPassword } from "react-icons/md";
 import { signOut } from "next-auth/react";
 
 export default function UserChangePassword({ userQuery }) {
-    const router = useRouter();
-
     const queryClient = useQueryClient();
 
     const { data: userData } = userQuery;

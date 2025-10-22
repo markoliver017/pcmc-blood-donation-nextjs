@@ -171,8 +171,7 @@ export default async function PortalLayout({ children }) {
 
     return (
         <>
-            <ClientPortal />
-            {children}
+            <ClientPortal>{children}</ClientPortal>
         </>
     );
 }

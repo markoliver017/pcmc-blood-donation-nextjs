@@ -8,6 +8,7 @@ import { formatSeqObj } from "@lib/utils/object.utils";
 import { agencyStatusSchema } from "@lib/zod/agencySchema";
 import { Op } from "sequelize";
 import { sendNotificationAndEmail } from "@lib/notificationEmail.utils";
+import { getAgencyIdBySession } from "./hostEventAction";
 
 export async function getVerifiedCoordinators() {
     try {
@@ -41,7 +42,24 @@ export async function getVerifiedCoordinators() {
 }
 
 export async function getCoordinatorById(id) {
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // await new Promise((resolve) => setTimeout(resolve, 500));
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+    const { user } = session;
+    const { agency_id } = await getAgencyIdBySession();
+
+    let whereCondition = {
+        id,
+    };
+
+    if (user.role_name !== "Admin") {
+        whereCondition.agency_id = agency_id;
+    }
 
     if (!id) {
         return {
@@ -51,7 +69,8 @@ export async function getCoordinatorById(id) {
     }
 
     try {
-        const coordinator = await AgencyCoordinator.findByPk(id, {
+        const coordinator = await AgencyCoordinator.findOne({
+            where: whereCondition,
             include: [
                 {
                     model: User,
@@ -112,7 +131,6 @@ export async function updateCoordinatorStatus(formData) {
             message: "You are not authorized to access this request.",
         };
     }
-    console.log("updateCoordinatorStatus", formData);
     const { user } = session;
     formData.verified_by = user.id;
 
@@ -190,7 +208,13 @@ export async function updateCoordinatorStatus(formData) {
             userId: user.id,
             controller: "coordinatorAction",
             action: "updateCoordinatorStatus",
-            details: `Coordinator ${coordinator?.full_name || coordinator?.name} has been successfully updated. ID#: ${updatedCoordinator.id} from ${currentCoordinatorStatus} to ${data.status}. Updated by: ${user?.name} (${user?.email})`,
+            details: `Coordinator ${
+                coordinator?.full_name || coordinator?.name
+            } has been successfully updated. ID#: ${
+                updatedCoordinator.id
+            } from ${currentCoordinatorStatus} to ${data.status}. Updated by: ${
+                user?.name
+            } (${user?.email})`,
         });
 
         // Send email notification to coordinator if approved
@@ -210,17 +234,18 @@ export async function updateCoordinatorStatus(formData) {
                     ],
                 }
             );
-            if (currentCoordinatorStatus === "for approval" && coordinatorWithDetails) {
-
+            if (
+                currentCoordinatorStatus === "for approval" &&
+                coordinatorWithDetails
+            ) {
                 // 1. Handle approved application. Send system notification and email to the registering coordinator (template only) and notify all admins
                 if (data.status === "activated") {
-
                     try {
-
                         await sendNotificationAndEmail({
                             userIds: coordinatorWithDetails?.user_id,
                             notificationData: {
-                                subject: "You have been approved as a coordinator",
+                                subject:
+                                    "You have been approved as a coordinator",
                                 message: `Your account has been approved. You can now login to the system and start using it.`,
                                 type: "GENERAL",
                                 created_by: user.id,
@@ -229,29 +254,41 @@ export async function updateCoordinatorStatus(formData) {
                                 to: coordinatorWithDetails.user.email,
                                 templateCategory: "AGENCY_COORDINATOR_APPROVAL",
                                 templateData: {
-                                    agency_name: coordinatorWithDetails.agency.name,
+                                    agency_name:
+                                        coordinatorWithDetails.agency.name,
                                     user_name:
                                         coordinatorWithDetails.user.full_name,
-                                    user_email: coordinatorWithDetails.user.email,
+                                    user_email:
+                                        coordinatorWithDetails.user.email,
                                     user_first_name:
                                         coordinatorWithDetails.user.first_name,
                                     user_last_name:
                                         coordinatorWithDetails.user.last_name,
                                     contact_number:
                                         coordinatorWithDetails.contact_number,
-                                    approval_date: new Date().toLocaleDateString(),
-                                    system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
-                                    support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
-                                    support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
-                                    domain_url:
-                                        process.env.NEXT_PUBLIC_APP_URL ||
+                                    approval_date:
+                                        new Date().toLocaleDateString(),
+                                    system_name:
+                                        process.env.NEXT_PUBLIC_SYSTEM_NAME ||
                                         "",
+                                    support_email:
+                                        process.env
+                                            .NEXT_PUBLIC_SMTP_SUPPORT_EMAIL ||
+                                        "",
+                                    support_contact:
+                                        process.env
+                                            .NEXT_PUBLIC_SMTP_SUPPORT_CONTACT ||
+                                        "",
+                                    domain_url:
+                                        process.env.NEXT_PUBLIC_APP_URL || "",
                                 },
                             },
                         });
-
                     } catch (err) {
-                        console.error("Coordinator approval email failed:", err);
+                        console.error(
+                            "Coordinator approval email failed:",
+                            err
+                        );
                         // Don't fail the main operation if email fails
                     }
 
@@ -275,8 +312,16 @@ export async function updateCoordinatorStatus(formData) {
                                 await sendNotificationAndEmail({
                                     userIds: adminUsers.map((a) => a.id),
                                     notificationData: {
-                                        subject: "A coordinator application was approved",
-                                        message: `A coordinator - ${coordinator?.full_name || coordinator?.name} (${coordinator?.email}) was approved by ${user?.name} (${user?.email}).`,
+                                        subject:
+                                            "A coordinator application was approved",
+                                        message: `A coordinator - ${
+                                            coordinator?.full_name ||
+                                            coordinator?.name
+                                        } (${
+                                            coordinator?.email
+                                        }) was approved by ${user?.name} (${
+                                            user?.email
+                                        }).`,
                                         type: "COORDINATOR_STATUS_UPDATE",
                                         reference_id: updatedCoordinator?.id,
                                         created_by: user?.id,
@@ -285,23 +330,23 @@ export async function updateCoordinatorStatus(formData) {
                             }
                         }
                     } catch (err) {
-                        console.error("Admin notification (approval) failed:", err);
+                        console.error(
+                            "Admin notification (approval) failed:",
+                            err
+                        );
                     }
-
                 }
 
                 // 2. Handle rejection: send email to coordinator, system notification to all admins
                 if (data.status === "rejected") {
                     try {
-                        const coordinatorWithDetails = await AgencyCoordinator.findByPk(
-                            data.id,
-                            {
+                        const coordinatorWithDetails =
+                            await AgencyCoordinator.findByPk(data.id, {
                                 include: [
                                     { model: User, as: "user" },
                                     { model: Agency, as: "agency" },
                                 ],
-                            }
-                        );
+                            });
                         if (coordinatorWithDetails) {
                             await sendNotificationAndEmail({
                                 // No system notification to coordinator (rejected)
@@ -309,17 +354,36 @@ export async function updateCoordinatorStatus(formData) {
                                     to: coordinatorWithDetails.user.email,
                                     templateCategory: "COORDINATOR_REJECTION",
                                     templateData: {
-                                        agency_name: coordinatorWithDetails.agency.name,
-                                        user_name: coordinatorWithDetails.user.full_name,
-                                        user_email: coordinatorWithDetails.user.email,
-                                        user_first_name: coordinatorWithDetails.user.first_name,
-                                        user_last_name: coordinatorWithDetails.user.last_name,
+                                        agency_name:
+                                            coordinatorWithDetails.agency.name,
+                                        user_name:
+                                            coordinatorWithDetails.user
+                                                .full_name,
+                                        user_email:
+                                            coordinatorWithDetails.user.email,
+                                        user_first_name:
+                                            coordinatorWithDetails.user
+                                                .first_name,
+                                        user_last_name:
+                                            coordinatorWithDetails.user
+                                                .last_name,
                                         approval_status: "Rejected",
-                                        approval_date: new Date().toLocaleDateString(),
-                                        approval_reason: data.remarks || "Application requirements not met.",
-                                        system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
-                                        support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
-                                        support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
+                                        approval_date:
+                                            new Date().toLocaleDateString(),
+                                        approval_reason:
+                                            data.remarks ||
+                                            "Application requirements not met.",
+                                        system_name:
+                                            process.env
+                                                .NEXT_PUBLIC_SYSTEM_NAME || "",
+                                        support_email:
+                                            process.env
+                                                .NEXT_PUBLIC_SMTP_SUPPORT_EMAIL ||
+                                            "",
+                                        support_contact:
+                                            process.env
+                                                .NEXT_PUBLIC_SMTP_SUPPORT_CONTACT ||
+                                            "",
                                         domain_url:
                                             process.env.NEXT_PUBLIC_APP_URL ||
                                             "",
@@ -328,7 +392,10 @@ export async function updateCoordinatorStatus(formData) {
                             });
                         }
                     } catch (err) {
-                        console.error("Coordinator rejection email failed:", err);
+                        console.error(
+                            "Coordinator rejection email failed:",
+                            err
+                        );
                     }
                     // Notify all admins (MBDT team)
                     try {
@@ -350,8 +417,16 @@ export async function updateCoordinatorStatus(formData) {
                                 await sendNotificationAndEmail({
                                     userIds: adminUsers.map((a) => a.id),
                                     notificationData: {
-                                        subject: "A coordinator application was rejected",
-                                        message: `A coordinator - ${coordinator?.full_name || coordinator?.name} (${coordinator?.email}) was rejected by ${user?.name} (${user?.email}).`,
+                                        subject:
+                                            "A coordinator application was rejected",
+                                        message: `A coordinator - ${
+                                            coordinator?.full_name ||
+                                            coordinator?.name
+                                        } (${
+                                            coordinator?.email
+                                        }) was rejected by ${user?.name} (${
+                                            user?.email
+                                        }).`,
                                         type: "COORDINATOR_STATUS_UPDATE",
                                         reference_id: updatedCoordinator?.id,
                                         created_by: user?.id,
@@ -360,12 +435,16 @@ export async function updateCoordinatorStatus(formData) {
                             }
                         }
                     } catch (err) {
-                        console.error("Admin notification (rejection) failed:", err);
+                        console.error(
+                            "Admin notification (rejection) failed:",
+                            err
+                        );
                     }
                 }
-
-
-            } else if (currentCoordinatorStatus === "activated" && data.status === "deactivated") {
+            } else if (
+                currentCoordinatorStatus === "activated" &&
+                data.status === "deactivated"
+            ) {
                 // 3. Handle deactivation: send email to coordinator, system notification to all admins
                 if (data.status === "deactivated") {
                     try {
@@ -374,24 +453,42 @@ export async function updateCoordinatorStatus(formData) {
                                 to: coordinatorWithDetails.user.email,
                                 templateCategory: "COORDINATOR_DEACTIVATION",
                                 templateData: {
-                                    agency_name: coordinatorWithDetails.agency.name,
-                                    user_name: coordinatorWithDetails.user.full_name,
-                                    user_email: coordinatorWithDetails.user.email,
-                                    user_first_name: coordinatorWithDetails.user.first_name,
-                                    user_last_name: coordinatorWithDetails.user.last_name,
-                                    deactivation_date: new Date().toLocaleDateString(),
-                                    deactivation_reason: data.remarks || "Account deactivated by agency/admin.",
-                                    system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
-                                    support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
-                                    support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
-                                    domain_url:
-                                        process.env.NEXT_PUBLIC_APP_URL ||
+                                    agency_name:
+                                        coordinatorWithDetails.agency.name,
+                                    user_name:
+                                        coordinatorWithDetails.user.full_name,
+                                    user_email:
+                                        coordinatorWithDetails.user.email,
+                                    user_first_name:
+                                        coordinatorWithDetails.user.first_name,
+                                    user_last_name:
+                                        coordinatorWithDetails.user.last_name,
+                                    deactivation_date:
+                                        new Date().toLocaleDateString(),
+                                    deactivation_reason:
+                                        data.remarks ||
+                                        "Account deactivated by agency/admin.",
+                                    system_name:
+                                        process.env.NEXT_PUBLIC_SYSTEM_NAME ||
                                         "",
+                                    support_email:
+                                        process.env
+                                            .NEXT_PUBLIC_SMTP_SUPPORT_EMAIL ||
+                                        "",
+                                    support_contact:
+                                        process.env
+                                            .NEXT_PUBLIC_SMTP_SUPPORT_CONTACT ||
+                                        "",
+                                    domain_url:
+                                        process.env.NEXT_PUBLIC_APP_URL || "",
                                 },
                             },
                         });
                     } catch (err) {
-                        console.error("Coordinator deactivation email failed:", err);
+                        console.error(
+                            "Coordinator deactivation email failed:",
+                            err
+                        );
                     }
                     // Notify all admins (MBDT team)
                     try {
@@ -413,8 +510,16 @@ export async function updateCoordinatorStatus(formData) {
                                 await sendNotificationAndEmail({
                                     userIds: adminUsers.map((a) => a.id),
                                     notificationData: {
-                                        subject: "A coordinator account was deactivated",
-                                        message: `A coordinator - ${coordinator?.full_name || coordinator?.name} (${coordinator?.email}) was deactivated by ${user?.name} (${user?.email}).`,
+                                        subject:
+                                            "A coordinator account was deactivated",
+                                        message: `A coordinator - ${
+                                            coordinator?.full_name ||
+                                            coordinator?.name
+                                        } (${
+                                            coordinator?.email
+                                        }) was deactivated by ${user?.name} (${
+                                            user?.email
+                                        }).`,
                                         type: "COORDINATOR_STATUS_UPDATE",
                                         reference_id: updatedCoordinator?.id,
                                         created_by: user?.id,
@@ -423,36 +528,60 @@ export async function updateCoordinatorStatus(formData) {
                             }
                         }
                     } catch (err) {
-                        console.error("Admin notification (deactivation) failed:", err);
+                        console.error(
+                            "Admin notification (deactivation) failed:",
+                            err
+                        );
                     }
                 }
-
-            } else if (currentCoordinatorStatus === "deactivated" && data.status === "activated") {
+            } else if (
+                currentCoordinatorStatus === "deactivated" &&
+                data.status === "activated"
+            ) {
                 // 4. Handle reactivation: send email to coordinator, system notification to all admins
-                if (currentCoordinatorStatus === "deactivated" && data.status === "activated") {
+                if (
+                    currentCoordinatorStatus === "deactivated" &&
+                    data.status === "activated"
+                ) {
                     try {
                         await sendNotificationAndEmail({
                             emailData: {
                                 to: coordinatorWithDetails.user.email,
                                 templateCategory: "COORDINATOR_REACTIVATION",
                                 templateData: {
-                                    agency_name: coordinatorWithDetails.agency.name,
-                                    user_name: coordinatorWithDetails.user.full_name,
-                                    user_email: coordinatorWithDetails.user.email,
-                                    user_first_name: coordinatorWithDetails.user.first_name,
-                                    user_last_name: coordinatorWithDetails.user.last_name,
-                                    reactivation_date: new Date().toLocaleDateString(),
-                                    system_name: process.env.NEXT_PUBLIC_SYSTEM_NAME || "",
-                                    support_email: process.env.NEXT_PUBLIC_SMTP_SUPPORT_EMAIL || "",
-                                    support_contact: process.env.NEXT_PUBLIC_SMTP_SUPPORT_CONTACT || "",
-                                    domain_url:
-                                        process.env.NEXT_PUBLIC_APP_URL ||
+                                    agency_name:
+                                        coordinatorWithDetails.agency.name,
+                                    user_name:
+                                        coordinatorWithDetails.user.full_name,
+                                    user_email:
+                                        coordinatorWithDetails.user.email,
+                                    user_first_name:
+                                        coordinatorWithDetails.user.first_name,
+                                    user_last_name:
+                                        coordinatorWithDetails.user.last_name,
+                                    reactivation_date:
+                                        new Date().toLocaleDateString(),
+                                    system_name:
+                                        process.env.NEXT_PUBLIC_SYSTEM_NAME ||
                                         "",
+                                    support_email:
+                                        process.env
+                                            .NEXT_PUBLIC_SMTP_SUPPORT_EMAIL ||
+                                        "",
+                                    support_contact:
+                                        process.env
+                                            .NEXT_PUBLIC_SMTP_SUPPORT_CONTACT ||
+                                        "",
+                                    domain_url:
+                                        process.env.NEXT_PUBLIC_APP_URL || "",
                                 },
                             },
                         });
                     } catch (err) {
-                        console.error("Coordinator reactivation email failed:", err);
+                        console.error(
+                            "Coordinator reactivation email failed:",
+                            err
+                        );
                     }
                     // Notify all admins (MBDT team)
                     try {
@@ -474,8 +603,16 @@ export async function updateCoordinatorStatus(formData) {
                                 await sendNotificationAndEmail({
                                     userIds: adminUsers.map((a) => a.id),
                                     notificationData: {
-                                        subject: "A coordinator account was reactivated",
-                                        message: `A coordinator - ${coordinator?.full_name || coordinator?.name} (${coordinator?.email}) was reactivated by ${user?.name} (${user?.email}).`,
+                                        subject:
+                                            "A coordinator account was reactivated",
+                                        message: `A coordinator - ${
+                                            coordinator?.full_name ||
+                                            coordinator?.name
+                                        } (${
+                                            coordinator?.email
+                                        }) was reactivated by ${user?.name} (${
+                                            user?.email
+                                        }).`,
                                         type: "COORDINATOR_STATUS_UPDATE",
                                         reference_id: updatedCoordinator?.id,
                                         created_by: user?.id,
@@ -484,7 +621,10 @@ export async function updateCoordinatorStatus(formData) {
                             }
                         }
                     } catch (err) {
-                        console.error("Admin notification (reactivation) failed:", err);
+                        console.error(
+                            "Admin notification (reactivation) failed:",
+                            err
+                        );
                     }
                 }
             }
@@ -497,9 +637,12 @@ export async function updateCoordinatorStatus(formData) {
         };
 
         const text = {
-            rejected: "The coordinator's application has been reviewed and rejected. The applicant will be notified of this decision.",
-            activated: "The coordinator's account has been approved and activated. They can now log in and access the system. A notification and email have been sent to inform them of their new status.",
-            deactivated: "The coordinator's account has been deactivated. They will no longer be able to access the system until reactivated. A notification has been sent to inform them of this change.",
+            rejected:
+                "The coordinator's application has been reviewed and rejected. The applicant will be notified of this decision.",
+            activated:
+                "The coordinator's account has been approved and activated. They can now log in and access the system. A notification and email have been sent to inform them of their new status.",
+            deactivated:
+                "The coordinator's account has been deactivated. They will no longer be able to access the system until reactivated. A notification has been sent to inform them of this change.",
         };
 
         return {

@@ -40,7 +40,9 @@ jobs:
             NEXT_PUBLIC_SMTP_SUPPORT_CONTACT: "(02)89219781"
             NEXT_PUBLIC_MBDT_EMAIL: pcmcpedbcmbd@gmail.com
             OLLAMA_API_URL: http://10.0.1.119:11434/api/generate
-            OLLAMA_API_MODEL: llama2
+            OLLAMA_API_MODEL: llama2,
+            GEMINI_API_KEY: AIzaSyDwQK94Eb2g_3-GeRC3Fq1fszkbv9m2HEU
+            GEMINI_MODEL: gemini-2.5-flash
 
         steps:
             # 1️⃣ Fetch latest code
@@ -93,6 +95,8 @@ jobs:
                   NEXT_PUBLIC_MBDT_EMAIL=${NEXT_PUBLIC_MBDT_EMAIL}
                   OLLAMA_API_URL=${OLLAMA_API_URL}
                   OLLAMA_API_MODEL=${OLLAMA_API_MODEL}
+                  GEMINI_API_KEY=${GEMINI_API_KEY}
+                  GEMINI_MODEL=${GEMINI_MODEL}
                   EOF
 
             # 3️⃣ Install dependencies

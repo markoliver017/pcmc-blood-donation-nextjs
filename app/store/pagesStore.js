@@ -1,4 +1,8 @@
-import { CardStackIcon, DashboardIcon } from "@radix-ui/react-icons";
+import {
+    CardStackIcon,
+    DashboardIcon,
+    QuestionMarkCircledIcon,
+} from "@radix-ui/react-icons";
 import {
     Calendar,
     CalendarCheck,
@@ -287,6 +291,14 @@ export const usePagesStore = create((set) => ({
                     title: "Feedback Questions",
                     path: "/portal/admin/feedbacks",
                     icon: <FileQuestion />,
+                    roles: ["Admin"],
+                    has_child: false,
+                    is_role_based: true,
+                },
+                {
+                    title: "FAQ's",
+                    path: "/portal/admin/faq",
+                    icon: <QuestionMarkCircledIcon />,
                     roles: ["Admin"],
                     has_child: false,
                     is_role_based: true,

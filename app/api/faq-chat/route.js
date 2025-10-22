@@ -1,5 +1,6 @@
 import { fetchFaqs } from "@/action/faqAction";
 import { searchFAQs, formatFAQsForContext } from "@lib/utils/faq.utils";
+import { GoogleGenAI } from "@google/genai";
 
 export async function POST(request) {
     try {
@@ -67,6 +68,7 @@ export async function POST(request) {
         console.log("FAQ Context>>>>", faqContext);
 
         const systemInstruction = `
+            You are a cat. Your name is Neko.
             You are a helpful assistant that must answer ONLY using the FAQ context provided.
 
             Rules (read all the rules before responding):
@@ -89,10 +91,6 @@ export async function POST(request) {
             - Be short, clear, and direct.
             - Use plain, friendly language.
             - No extra commentary or filler.
-            `;
-
-        const composedPrompt = `
-            ${systemInstruction}
 
             <<<FAQ_CONTEXT>>>
             ${faqContext}
@@ -101,7 +99,9 @@ export async function POST(request) {
             <<<PREVIOUS_CONVERSATION>>>
             ${prompt.trim()}
             <<<END_PREVIOUS_CONVERSATION>>>
+            `;
 
+        const composedPrompt = `
             <<<HUMAN_QUESTION>>>
             ${message.trim()}
             <<<END_HUMAN_QUESTION>>>
@@ -110,64 +110,93 @@ export async function POST(request) {
 
         console.log("Composed Prompt>>>>", composedPrompt);
 
-        // Call Ollama API with streaming enabled
-        const apiUrl =
-            process.env.OLLAMA_API_URL ?? "http://localhost:11434/api/generate";
-
-        const ollamaResponse = await fetch(apiUrl, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                model: process.env.OLLAMA_API_MODEL ?? "llama2",
-                prompt: composedPrompt,
-                stream: true,
-                options: {
-                    temperature: 0.1,
-                    top_p: 0.9,
-                    top_k: 40,
-                },
-            }),
+        const ai = new GoogleGenAI({
+            apiKey: process.env.GEMINI_API_KEY || "",
         });
 
-        if (!ollamaResponse.ok || !ollamaResponse.body) {
-            throw new Error(`Ollama API error: ${ollamaResponse.status}`);
-        }
+        const response = await ai.models.generateContentStream({
+            model: process.env.API_MODEL || "gemini-2.5-flash",
+            contents: composedPrompt,
+            config: {
+                systemInstruction,
+                temperature: 0.1,
+                topP: 0.9,
+                topK: 40,
+            },
+        });
 
-        // Stream JSONL -> plaintext tokens
         const readable = new ReadableStream({
             async start(controller) {
-                const reader = ollamaResponse.body.getReader();
-                const encoder = new TextEncoder();
-                const decoder = new TextDecoder();
-                let buffer = "";
+                const textEncoder = new TextEncoder();
                 try {
-                    while (true) {
-                        const { value, done } = await reader.read();
-                        if (done) break;
-                        buffer += decoder.decode(value, { stream: true });
-                        let idx;
-                        while ((idx = buffer.indexOf("\n")) !== -1) {
-                            const line = buffer.slice(0, idx).trim();
-                            buffer = buffer.slice(idx + 1);
-                            if (!line) continue;
-                            try {
-                                const json = JSON.parse(line);
-                                if (json.response)
-                                    controller.enqueue(
-                                        encoder.encode(json.response)
-                                    );
-                            } catch {
-                                // ignore malformed lines
-                            }
-                        }
+                    for await (const chunk of response) {
+                        const chunkText = chunk.text;
+                        controller.enqueue(textEncoder.encode(chunkText));
                     }
                 } finally {
                     controller.close();
                 }
             },
         });
+
+        // Call Ollama API with streaming enabled
+        // const apiUrl =
+        //     process.env.OLLAMA_API_URL ?? "http://localhost:11434/api/generate";
+
+        // const ollamaResponse = await fetch(apiUrl, {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify({
+        //         model: process.env.OLLAMA_API_MODEL ?? "llama2",
+        //         prompt: composedPrompt,
+        //         stream: true,
+        //         options: {
+        //             temperature: 0.1,
+        //             top_p: 0.9,
+        //             top_k: 40,
+        //         },
+        //     }),
+        // });
+
+        // if (!ollamaResponse.ok || !ollamaResponse.body) {
+        //     throw new Error(`Ollama API error: ${ollamaResponse.status}`);
+        // }
+
+        // // Stream JSONL -> plaintext tokens
+        // const readable = new ReadableStream({
+        //     async start(controller) {
+        //         const reader = ollamaResponse.body.getReader();
+        //         const encoder = new TextEncoder();
+        //         const decoder = new TextDecoder();
+        //         let buffer = "";
+        //         try {
+        //             while (true) {
+        //                 const { value, done } = await reader.read();
+        //                 if (done) break;
+        //                 buffer += decoder.decode(value, { stream: true });
+        //                 let idx;
+        //                 while ((idx = buffer.indexOf("\n")) !== -1) {
+        //                     const line = buffer.slice(0, idx).trim();
+        //                     buffer = buffer.slice(idx + 1);
+        //                     if (!line) continue;
+        //                     try {
+        //                         const json = JSON.parse(line);
+        //                         if (json.response)
+        //                             controller.enqueue(
+        //                                 encoder.encode(json.response)
+        //                             );
+        //                     } catch {
+        //                         // ignore malformed lines
+        //                     }
+        //                 }
+        //             }
+        //         } finally {
+        //             controller.close();
+        //         }
+        //     },
+        // });
 
         return new Response(readable, {
             status: 200,

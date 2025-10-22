@@ -187,38 +187,43 @@ const UpcomingAppointmentsList = ({ appointments = [], onViewDetails }) => {
                                 <Eye className="w-4 h-4" />
                                 Details
                             </button>
-                            <Link
-                                href={`/portal/donors/appointments/${appt.id}/screening-questionaires`}
-                                className={
-                                    hasAnsweredScreeningQuestions
-                                        ? "inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-sm transition-all duration-200 hover:shadow-md"
-                                        : "inline-flex items-center gap-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg shadow-sm transition-all duration-200 hover:shadow-md"
-                                }
-                                aria-label="Answer screening questionaires"
-                            >
-                                {hasAnsweredScreeningQuestions ? (
-                                    <FaCheckCircle className="w-4 h-4" />
-                                ) : (
-                                    <FaQuestionCircle className="w-4 h-4" />
-                                )}
-                                Screening{" "}
-                                {hasAnsweredScreeningQuestions ? (
-                                    <span className="text-xs text-green-900">
-                                        (Answered)
-                                    </span>
-                                ) : (
-                                    <span className="text-xs text-red-900">
-                                        (Pending)
-                                    </span>
-                                )}
-                            </Link>
 
-                            <CancelEventButton
-                                event={event}
-                                schedule={appt?.time_schedule}
-                                appointmentId={appt.id}
-                                className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg shadow-sm transition-all duration-200 hover:shadow-md"
-                            />
+                            {appt.status === "registered" && (
+                                <>
+                                    <Link
+                                        href={`/portal/donors/appointments/${appt.id}/screening-questionaires`}
+                                        className={
+                                            hasAnsweredScreeningQuestions
+                                                ? "inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-sm transition-all duration-200 hover:shadow-md"
+                                                : "inline-flex items-center gap-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg shadow-sm transition-all duration-200 hover:shadow-md"
+                                        }
+                                        aria-label="Answer screening questionaires"
+                                    >
+                                        {hasAnsweredScreeningQuestions ? (
+                                            <FaCheckCircle className="w-4 h-4" />
+                                        ) : (
+                                            <FaQuestionCircle className="w-4 h-4" />
+                                        )}
+                                        Screening{" "}
+                                        {hasAnsweredScreeningQuestions ? (
+                                            <span className="text-xs text-green-900">
+                                                (Answered)
+                                            </span>
+                                        ) : (
+                                            <span className="text-xs text-red-900">
+                                                (Pending)
+                                            </span>
+                                        )}
+                                    </Link>
+
+                                    <CancelEventButton
+                                        event={event}
+                                        schedule={appt?.time_schedule}
+                                        appointmentId={appt.id}
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg shadow-sm transition-all duration-200 hover:shadow-md"
+                                    />
+                                </>
+                            )}
                         </div>
                     </div>
                 );

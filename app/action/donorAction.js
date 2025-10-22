@@ -30,6 +30,7 @@ import {
     donorStatusSchema,
     donorWithVerifiedSchema,
     existingUserAsDonorSchema,
+    updateDonorAgencySchema,
 } from "@lib/zod/donorSchema";
 import { donorBasicInformationSchema } from "@lib/zod/userSchema";
 import moment from "moment";
@@ -533,13 +534,15 @@ export async function getDonorById(id) {
         };
     }
 
-    let whereCondition = {};
+    let whereCondition = {
+        id,
+    };
     if (user?.role_name !== "Admin") {
         whereCondition.agency_id = agency_id;
     }
 
     try {
-        const donor = await Donor.findByPk(id, {
+        const donor = await Donor.findOne({
             where: whereCondition,
             include: [
                 {
@@ -841,6 +844,238 @@ export async function updateDonorBloodType(formData) {
     }
 }
 
+export async function updateDonorAgency(user_id, formData) {
+    const session = await auth();
+    if (!session) {
+        return {
+            success: false,
+            message: "You are not authorized to access this request.",
+        };
+    }
+
+    const { user } = session;
+
+    const parsed = updateDonorAgencySchema.safeParse(formData);
+
+    if (!parsed.success) {
+        const fieldErrors = parsed.error.flatten().fieldErrors;
+        return {
+            success: false,
+            type: "validation",
+            message:
+                "Validation Error: Please try again. If the issue persists, contact your administrator for assistance.",
+            errorObj: parsed.error.flatten().fieldErrors,
+            errorArr: Object.values(fieldErrors).flat(),
+        };
+    }
+
+    const { data } = parsed;
+
+    data.updated_by = user.id;
+
+    const donor = await Donor.findOne({
+        where: { user_id },
+        include: [
+            {
+                model: DonorAppointmentInfo,
+                as: "appointments",
+                attributes: ["id", "status"],
+                where: {
+                    status: "registered",
+                },
+                required: false,
+            },
+            {
+                model: User,
+                as: "user",
+                attributes: ["id", "email", "name", "first_name", "last_name"],
+                include: {
+                    model: Role,
+                    as: "roles",
+                    attributes: ["id", "role_name"],
+                    where: {
+                        role_name: {
+                            [Op.in]: ["Agency Administrator"],
+                        },
+                    },
+                    through: {
+                        attributes: [],
+                        where: {
+                            is_active: true,
+                        },
+                    },
+                    required: false,
+                },
+            },
+            {
+                model: BloodType,
+                as: "blood_type",
+                attributes: ["id", "blood_type"],
+                required: false,
+            },
+        ],
+    });
+
+    if (!donor) {
+        return {
+            success: false,
+            message: "Database Error: Donor ID was not found",
+        };
+    }
+    if (donor.user.roles.length > 0) {
+        return {
+            success: false,
+            message:
+                "Donor's user account has active agency roles. Please deactivate the roles before updating the donor's agency.",
+        };
+    }
+    if (donor.appointments.length > 0) {
+        return {
+            success: false,
+            message:
+                "Donor has an active appointment. Please complete the appointment before updating the donor's agency.",
+        };
+    }
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        const updatedDonor = await donor.update(data, {
+            transaction,
+        });
+
+        const userRole = await UserRole.findOne({
+            where: {
+                user_id,
+                role_id: 2,
+            },
+            transaction,
+        });
+
+        if (userRole) {
+            await userRole.update(
+                {
+                    is_active: false,
+                },
+                {
+                    transaction,
+                }
+            );
+        }
+
+        await transaction.commit();
+
+        await logAuditTrail({
+            userId: user.id,
+            controller: "donors",
+            action: "UPDATE DONOR AGENCY",
+            details: `The Donor's agency has been successfully updated. ID#: ${updatedDonor.id}`,
+        });
+
+        const agency = await Agency.findByPk(data.agency_id);
+        // Send system notification and email to agency head and active coordinators
+        try {
+            if (agency) {
+                // Get agency head
+                const agencyHead = await User.findByPk(agency.head_id);
+
+                // Get active coordinators
+                const activeCoordinators = await AgencyCoordinator.findAll({
+                    where: {
+                        agency_id: agency.id,
+                        status: "activated",
+                    },
+                    include: {
+                        model: User,
+                        as: "user",
+                        attributes: ["id", "email", "first_name", "last_name"],
+                    },
+                });
+
+                // Collect all recipients (agency head + active coordinators)
+                const recipients = [];
+                if (agencyHead) {
+                    recipients.push(agencyHead);
+                }
+                activeCoordinators.forEach((coordinator) => {
+                    if (coordinator.user) {
+                        recipients.push(coordinator.user);
+                    }
+                });
+
+                if (recipients.length > 0) {
+                    // Send system notification to all recipients
+                    await sendNotificationAndEmail({
+                        userIds: recipients.map((r) => r.id),
+                        notificationData: {
+                            subject: "New Donor Registration",
+                            message: `A new donor (${donor?.user?.first_name} ${
+                                donor?.user?.last_name
+                            }) has registered and is awaiting approval for agency (${
+                                agency?.name || donor?.agency_id
+                            }).`,
+                            type: "AGENCY_DONOR_APPROVAL",
+                            reference_id: donor.id,
+                            created_by: user.id,
+                        },
+                    });
+
+                    // Send email to each recipient
+                    for (const recipient of recipients) {
+                        await sendNotificationAndEmail({
+                            emailData: {
+                                to: recipient.email,
+                                templateCategory:
+                                    "AGENCY_DONOR_REGISTRATION_NOTIFICATION_TO_AGENCY",
+                                templateData: {
+                                    agency_name:
+                                        agency?.name || donor.agency_id,
+                                    donor_name: `${donor?.user?.first_name} ${donor?.user?.last_name}`,
+                                    donor_email: donor?.user?.email,
+                                    contact_number: donor?.contact_number,
+                                    blood_type:
+                                        donor?.blood_type?.blood_type ||
+                                        "Not specified",
+                                    registration_date:
+                                        new Date().toLocaleDateString(),
+                                    system_name:
+                                        process.env.NEXT_PUBLIC_SYSTEM_NAME ||
+                                        "",
+                                    support_email:
+                                        process.env
+                                            .NEXT_PUBLIC_SMTP_SUPPORT_EMAIL ||
+                                        "",
+                                    support_contact:
+                                        process.env
+                                            .NEXT_PUBLIC_SMTP_SUPPORT_CONTACT ||
+                                        "",
+                                    domain_url:
+                                        process.env.NEXT_PUBLIC_APP_URL || "",
+                                },
+                            },
+                        });
+                    }
+                }
+            }
+        } catch (err) {
+            console.error("Agency notification email failed:", err);
+        }
+
+        return {
+            success: true,
+            data: updatedDonor.get({ plain: true }),
+        };
+    } catch (err) {
+        logErrorToFile(err, "UPDATE DONOR AGENCY");
+        await transaction.rollback();
+
+        return {
+            success: false,
+            message: extractErrorMessage(err),
+        };
+    }
+}
+
 export async function updateDonorStatus(formData) {
     const session = await auth();
     if (!session) {
@@ -849,7 +1084,6 @@ export async function updateDonorStatus(formData) {
             message: "You are not authorized to access this request.",
         };
     }
-    console.log("updateDonorStatus", formData);
     const { user } = session;
     formData.verified_by = user.id;
 
@@ -1705,44 +1939,6 @@ export async function getLastDonationDateDonated(user_id) {
             };
         }
 
-        // Fetch latest donation date
-        // const latestDonation = await DonorAppointmentInfo.findOne({
-        //     where: {
-        //         donor_id: donor.id,
-        //     },
-        //     attributes: ["id"],
-        //     include: [
-        //         {
-        //             model: PhysicalExamination,
-        //             as: "physical_exam",
-        //             where: { eligibility_status: "ACCEPTED" },
-        //             attributes: ["id", "eligibility_status"],
-        //             required: true,
-        //             include: [
-        //                 {
-        //                     model: BloodDonationEvent,
-        //                     as: "event",
-        //                     attributes: ["date"],
-        //                 },
-        //                 {
-        //                     model: BloodDonationCollection,
-        //                     as: "blood_collection",
-        //                     required: true,
-        //                 },
-        //             ],
-        //         },
-        //     ],
-        //     order: [
-        //         [
-        //             { model: PhysicalExamination, as: "physical_exam" },
-        //             { model: BloodDonationEvent, as: "event" },
-        //             "date",
-        //             "DESC",
-        //         ],
-        //     ],
-        //     raw: true, // Optimize by returning plain object
-        // });
-
         let last_donation_date = null;
 
         //default the last donation date to the donation history date (registration data)
@@ -1767,6 +1963,7 @@ export async function getLastDonationDateDonated(user_id) {
             success: false,
             type: "server",
             message: extractErrorMessage(err),
+            last_donation_date: null,
         };
     }
 }

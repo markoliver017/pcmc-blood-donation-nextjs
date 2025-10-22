@@ -302,7 +302,7 @@ export default function ChatDrawer({
                                     }`}
                                 >
                                     <div className="prose prose-sm max-w-none dark:prose-invert">
-                                        <pre className="whitespace-pre-wrap font-sans text-sm">
+                                        <pre className="whitespace-pre-wrap font-sans text-sm text-wrap">
                                             {message.content}
                                         </pre>
                                     </div>

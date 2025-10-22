@@ -53,7 +53,9 @@ export default function QuickQuestions({ onQuestionClick, disabled = false }) {
                         disabled={disabled}
                     >
                         <span className="mr-2 text-lg">{item.icon}</span>
-                        <span className="text-sm">{item.question}</span>
+                        <span className="text-sm whitespace-normal">
+                            {item.question}
+                        </span>
                     </Button>
                 ))}
             </div>

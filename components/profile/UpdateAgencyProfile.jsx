@@ -133,7 +133,7 @@ export default function UpdateAgencyProfile({ agency, isReadOnly = false }) {
     const avatar =
         !errors?.file && uploaded_avatar
             ? URL.createObjectURL(uploaded_avatar)
-            : agency?.file_url || "/default-agency-logo.png";
+            : agency?.file_url || "/default_company_avatar.png";
 
     useEffect(() => {
         if (watch("file_url")) setValue("file_url", null);
@@ -207,9 +207,19 @@ export default function UpdateAgencyProfile({ agency, isReadOnly = false }) {
 
     if (!agency) {
         return (
-            <div className="text-center alert alert-error">
+            <p className="text-center alert alert-error">
                 Agency not found.
-            </div>
+                <button
+                    className="btn btn-sm"
+                    onClick={() =>
+                        queryClient.invalidateQueries({
+                            queryKey: ["user"],
+                        })
+                    }
+                >
+                    Refresh
+                </button>
+            </p>
         );
     }
 

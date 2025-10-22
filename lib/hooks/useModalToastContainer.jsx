@@ -1,11 +1,11 @@
 import { useToastStore } from "@/store/toastStore";
 import { useEffect } from "react";
 
-export function useModalToastContainer() {
+export function useModalToastContainer(containerId = "modal-toast") {
     const setContainerId = useToastStore((state) => state.setContainerId);
 
     useEffect(() => {
-        setContainerId("modal-toast");
+        setContainerId(containerId);
         return () => setContainerId("main");
-    }, [setContainerId]);
+    }, [containerId, setContainerId]);
 }

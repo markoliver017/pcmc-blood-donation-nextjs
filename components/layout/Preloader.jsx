@@ -39,7 +39,7 @@ export default function Preloader() {
                         className="absolute inset-0 w-full h-full z-20"
                         style={{
                             background: "rgba(0,0,0,0.7)", // adjust opacity/color as needed
-                            pointerEvents: "none"
+                            pointerEvents: "none",
                         }}
                     />
                     {/* Website Logo at top-left */}

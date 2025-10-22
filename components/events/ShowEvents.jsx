@@ -55,6 +55,17 @@ export default function ShowEvents({ eventId }) {
 
     if (isFetching) return <Skeleton_line />;
 
+    if (!event) {
+        return (
+            <div className="min-h-[60vh] flex flex-col items-center justify-center">
+                <p className="text-center">
+                    The Blood Drive event was not found, or you do not have
+                    access to this event.
+                </p>
+            </div>
+        );
+    }
+
     const { status, registration_status } = event;
     let statusClass = "badge-error";
     if (status == "approved") {

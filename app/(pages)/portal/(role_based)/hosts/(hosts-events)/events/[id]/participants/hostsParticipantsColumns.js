@@ -150,7 +150,8 @@ export const hostsParticipantsColumns = [
         ),
         cell: ({ getValue }) => {
             const blood_type = getValue();
-            if (blood_type) return <span>{formatFormalName(blood_type)}</span>;
+            if (blood_type)
+                return <span className="uppercase">{blood_type}</span>;
             return "Not Specified";
         },
         filterFn: "columnFilter",

@@ -78,7 +78,7 @@ export default function UpdateEventForm({ eventId }) {
     });
 
     const [calendarMonth, setCalendarMonth] = useState(
-        event?.date ? new Date(event.date) : new Date()
+        event?.date ? new Date(event?.date) : new Date()
     );
     const [isUploading, setIsUploading] = useState(false);
 
@@ -222,9 +222,21 @@ export default function UpdateEventForm({ eventId }) {
 
     const bookedEventsExceptEventDate = Array.isArray(bookedEvents)
         ? bookedEvents
-              ?.filter((ev) => ev.date !== event.date)
+              ?.filter((ev) => ev.date !== event?.date)
               .map((ev) => new Date(ev.date))
         : [];
+
+    if (!event) {
+        return (
+            <div className="alert alert-warning">
+                Unable to load event data for updating. Event not found or
+                access denied.
+                <button className="link" onClick={() => router.back()}>
+                    Back
+                </button>
+            </div>
+        );
+    }
 
     return (
         <Form {...form}>

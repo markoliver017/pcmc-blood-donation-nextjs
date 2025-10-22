@@ -20,16 +20,20 @@ export default function Page() {
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
 
-    const { data: appointments, isLoading } = useQuery({
+    const { data: donor_data, isLoading } = useQuery({
         queryKey: ["donor-appointments"],
         queryFn: async () => {
             const res = await getAllAppointmentsByDonor();
             if (!res.success) {
                 throw res;
             }
-            return res.data;
+            return res;
         },
     });
+
+    const appointments = donor_data?.data || [];
+    const last_donation_date = donor_data?.last_donation_date || null;
+    const donor = donor_data?.donor || null;
 
     if (isLoading) return <Skeleton_line />;
 
@@ -58,11 +62,16 @@ export default function Page() {
             .reverse()
             .find((a) => a.status === "collected" || a.status === "deferred") ||
         null;
-    const totalDonations = appointments.filter(
+    let totalDonations = appointments.filter(
         (a) => a.status === "collected"
     ).length;
+
+    if (donor?.blood_history) {
+        totalDonations += donor.blood_history.previous_donation_count;
+    }
+
     // Eligibility: 90 days after last donation
-    let eligibilityCountdown = null;
+    let eligibilityCountdown = last_donation_date;
     if (lastDonation && lastDonation.status === "collected") {
         const lastDate = moment(
             lastDonation.time_schedule?.event?.date
@@ -73,6 +82,9 @@ export default function Page() {
             moment().startOf("day"),
             "days"
         );
+        if (eligibilityCountdown < 0) {
+            eligibilityCountdown = 0;
+        }
     }
 
     // Handler for opening appointment details modal

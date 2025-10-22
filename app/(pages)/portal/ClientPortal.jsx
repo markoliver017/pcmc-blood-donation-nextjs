@@ -1,14 +1,10 @@
 "use client";
 import { usePagesStore } from "@/store/pagesStore";
-import notify from "@components/ui/notify";
-import SweetAlert from "@components/ui/SweetAlert";
-import { format } from "date-fns";
 
 import { signOut, useSession } from "next-auth/react";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 
 import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
 
 const formatTimeLeft = (seconds) => {
     if (seconds === null) return "";
@@ -22,10 +18,9 @@ const formatTimeLeft = (seconds) => {
     return `${hrs}h ${mins} ${secs}`;
 };
 
-export default function ClientPortal() {
+export default function ClientPortal({ children }) {
     const { status, data: session, update } = useSession();
     const currentRoute = usePathname();
-    const router = useRouter();
 
     const [timeLeft, setTimeLeft] = useState(null);
     const [warningShown, setWarningShown] = useState(false);
@@ -64,9 +59,6 @@ export default function ClientPortal() {
         }
     }, [session, status, currentRoute, warningShown]);
 
-    // console.log("Client portal status", status);
-    // console.log("Client portal session data", session);
-
     const menus = usePagesStore((state) => state.menus);
 
     // const currentMenu = menus.find((menu, i) => {
@@ -84,11 +76,7 @@ export default function ClientPortal() {
     }
 
     if (status == "authenticated") {
-        if (
-            !session ||
-            !session?.user?.roles?.length
-        ) {
-            alert("You are not allowed to access this page.");
+        if (!session || !session?.user?.roles?.length) {
             redirect("/");
         }
 
@@ -103,44 +91,7 @@ export default function ClientPortal() {
         if (!currentLoggedInRole && currentRoute !== "/portal") {
             redirect("/portal");
         }
-
-        // console.log("Client portal currentUser", currentUser);
-
-        // const currentRole = roles.find(
-        //     (role) => role.role_name == currentUser.role_name
-        // );
-
-        // console.log("Client portal currentRole", currentRole);
-
-        // const isUserAllowed = roles.find((role) => {
-        //     if (!role?.url) return false;
-        //     let roleUrl = role.url.startsWith(".")
-        //         ? role.url.slice(1)
-        //         : role.url;
-        //     return currentRoute.startsWith(roleUrl);
-        // });
-
-        // if (!isUserAllowed) {
-        //     // alert("You are not allowed to access this page.");
-        //     redirect("/portal");
-        // }
-
-        // return (
-        //     <pre>
-        //         CurrentRoute: {currentRoute} <br />
-        //         IsUserAllowed: {JSON.stringify(currentRole, null, 3)}
-        //     </pre>
-        // );
     }
 
-    // return (
-    //     <>
-    //         <span>Status: {status} </span>
-    //         <span>Current Route: {currentRoute} </span>
-
-    //         <p>
-    //             Time Left: <strong>{formatTimeLeft(timeLeft)}</strong>
-    //         </p>
-    //     </>
-    // );
+    return <>{children}</>;
 }

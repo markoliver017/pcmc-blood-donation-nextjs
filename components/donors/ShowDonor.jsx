@@ -40,6 +40,16 @@ export default function ShowDonor({ donorId }) {
         enabled: !!donorId,
     });
 
+    if (!donor.user && !donor.success) {
+        return (
+            <div className="flex items-center justify-center min-h-[300px] md:min-h-[500px]">
+                <h1 className="alert alert-warning md:text-2xl font-bold">
+                    {donor.message}
+                </h1>
+            </div>
+        );
+    }
+
     const { status } = donor;
     let statusClass = "badge-primary";
     if (status == "activated") {
@@ -248,19 +258,7 @@ export default function ShowDonor({ donorId }) {
                             More details <Info />
                         </Link>
                     </div>
-                    <h3>
-                        Manual Blood donation count/volume:{" "}
-                        {donor?.blood_history ? (
-                            <>
-                                {donor?.blood_history?.previous_donation_count}{" "}
-                                (
-                                {donor?.blood_history?.previous_donation_volume}
-                                ml )
-                            </>
-                        ) : (
-                            "0"
-                        )}
-                    </h3>
+
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -300,6 +298,19 @@ export default function ShowDonor({ donorId }) {
                             )}
                         </TableBody>
                     </Table>
+                    <h3 className="italic text-slate-500 dark:text-slate-400">
+                        With previous blood donation:{" "}
+                        {donor?.blood_history ? (
+                            <>
+                                {donor?.blood_history?.previous_donation_count}{" "}
+                                (
+                                {donor?.blood_history?.previous_donation_volume}
+                                ml )
+                            </>
+                        ) : (
+                            "0"
+                        )}
+                    </h3>
                 </div>
             </CardContent>
         </Card>

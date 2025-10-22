@@ -409,14 +409,26 @@ export async function getEventsById(id) {
         };
     }
     const session = await auth();
-    if (!session)
+    if (!session) {
         return {
             success: false,
             message: "You are not authorized to access this request.",
         };
+    }
+    const { user } = session;
+    const { agency_id } = await getAgencyIdBySession();
+
+    let whereCondition = {
+        id,
+    };
+
+    if (user.role_name !== "Admin") {
+        whereCondition.agency_id = agency_id;
+    }
 
     try {
-        const events = await BloodDonationEvent.findByPk(id, {
+        const events = await BloodDonationEvent.findOne({
+            where: whereCondition,
             include: [
                 {
                     model: User,
@@ -523,11 +535,25 @@ export async function getEventParticipants(eventId) {
             message: "You are not authorized to access this request.",
         };
     }
-    const event = await BloodDonationEvent.findByPk(eventId);
+    const { user } = session;
+    const { agency_id } = await getAgencyIdBySession();
+
+    let whereCondition = {
+        id: eventId,
+    };
+
+    if (user.role_name !== "Admin") {
+        whereCondition.agency_id = agency_id;
+    }
+
+    const event = await BloodDonationEvent.findOne({
+        where: whereCondition,
+    });
     if (!event) {
         return {
             success: false,
-            message: "Event ID was not found or inactive.",
+            message:
+                "The Event ID is either incorrect or you lack the necessary access permissions.",
         };
     }
 

@@ -7,8 +7,7 @@ import { hostsParticipantsColumns } from "./hostsParticipantsColumns";
 import Skeleton_form from "@components/ui/Skeleton_form";
 import { ArrowLeftCircle, CalendarCheck, Users2 } from "lucide-react";
 import WrapperHeadMain from "@components/layout/WrapperHeadMain";
-import Link from "next/link";
-import { BiLeftArrow, BiSolidLeftArrow } from "react-icons/bi";
+
 import { useRouter } from "next/navigation";
 import { ParticipantsDatatable } from "@components/donors/ParticipantsDatatable";
 
@@ -26,13 +25,9 @@ export default function ListParticipants({ eventId }) {
     });
 
     if (isLoading) {
-        return <Skeleton_form />;
-    }
-
-    if (isError) {
         return (
-            <div className="alert alert-error">
-                <pre>{JSON.stringify(error)}</pre>
+            <div className="p-1 md:p-2">
+                <Skeleton_form />
             </div>
         );
     }
@@ -44,15 +39,17 @@ export default function ListParticipants({ eventId }) {
         <div>
             <WrapperHeadMain
                 icon={<Users2 />}
-                pageTitle={`${event?.title} - Participants`}
+                pageTitle={`${event?.title || "Unknown"} - Participants`}
                 breadcrumbs={[
                     {
-                        path: `/portal/hosts/events/${event?.id}`,
+                        path: `/portal/hosts/events/${event?.id || ""}`,
                         icon: <CalendarCheck className="w-4" />,
-                        title: `${event?.title} - Participants`,
+                        title: `${event?.title || "Unknown"} - Participants`,
                     },
                     {
-                        path: `/portal/hosts/events/${event?.id}/participants`,
+                        path: `/portal/hosts/events/${
+                            event?.id || ""
+                        }/participants`,
                         icon: <Users2 className="w-4" />,
                         title: "Participants",
                     },
@@ -63,17 +60,27 @@ export default function ListParticipants({ eventId }) {
                     type="button"
                     className="btn btn-neutral ring-offset-2 hover:ring hover:ring-blue-500"
                     // href={`/portal/hosts/events/${event?.id}`}
-                    onClick={() => router.back()}
+                    onClick={() => router.back() || router.push(`/portal`)}
                 >
                     <ArrowLeftCircle className="h-4" />
                     Back
                 </button>
-                <ParticipantsDatatable
-                    columns={hostsParticipantsColumns}
-                    data={participants}
-                    event={event}
-                    isLoading={isLoading}
-                />
+                {isError ? (
+                    <div className="flex flex-items-center justify-center min-h-[500px]">
+                        <div className="alert alert-error p-5 md:p-15 md:text-2xl ">
+                            {error.message
+                                ? error.message
+                                : "An error occurred."}
+                        </div>
+                    </div>
+                ) : (
+                    <ParticipantsDatatable
+                        columns={hostsParticipantsColumns}
+                        data={participants}
+                        event={event}
+                        isLoading={isLoading}
+                    />
+                )}
             </div>
             {/* <pre>{JSON.stringify(data, null, 3)}</pre> */}
         </div>

@@ -19,11 +19,23 @@ import { useSession } from "next-auth/react";
 
 export default function ShowCoordinator({ coorId }) {
     const { data: session } = useSession();
+
     const { data: coordinator } = useQuery({
         queryKey: ["coordinator", coorId],
         queryFn: async () => await getCoordinatorById(coorId),
         enabled: !!coorId,
     });
+
+    if (!coordinator) {
+        return (
+            <div className="min-h-[60vh] flex flex-col items-center justify-center">
+                <p className="text-center">
+                    Coordinator not found or you do not have access to this
+                    coordinator.
+                </p>
+            </div>
+        );
+    }
 
     const { status } = coordinator;
     let statusClass = "badge-primary";

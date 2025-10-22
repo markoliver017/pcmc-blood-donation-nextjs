@@ -1,20 +1,19 @@
-
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const MySwal = withReactContent(Swal);
 
 export default function SweetAlert({
-    title = 'Notification',
+    title = "Notification",
     text = "",
     html = "",
-    icon = 'warning',
+    icon = "warning",
     showCancelButton = false,
-    confirmButtonText = 'Yes',
-    cancelButtonText = 'Cancel',
-    onConfirm = () => { },
-    onCancel = () => { },
-    element_id = 'form-modal',
+    confirmButtonText = "Yes",
+    cancelButtonText = "Cancel",
+    onConfirm = () => {},
+    onCancel = () => {},
+    element_id = "form-modal",
 }) {
     MySwal.fire({
         target: document.getElementById(element_id),
@@ -26,11 +25,11 @@ export default function SweetAlert({
         confirmButtonText,
         cancelButtonText,
     }).then((result) => {
-        if (result.isConfirmed && typeof onConfirm === 'function') {
+        if (result.isConfirmed && typeof onConfirm === "function") {
             onConfirm();
         } else if (
             result.dismiss === Swal.DismissReason.cancel &&
-            typeof onCancel === 'function'
+            typeof onCancel === "function"
         ) {
             onCancel();
         }

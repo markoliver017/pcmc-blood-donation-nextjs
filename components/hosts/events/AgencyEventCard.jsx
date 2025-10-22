@@ -221,35 +221,36 @@ export default function AgencyEventCard({
                     )}
                 </div>
 
-                {event.status === "approved" &&
-                    event.registration_status === "ongoing" && (
-                        <DropdownMenu className="flex-none">
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="outline" size="sm">
-                                    <Settings className="h-4 w-4" />
-                                    <span className="hidden sm:inline-block">
-                                        Others
-                                    </span>
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="flex-none">
-                                <Link
-                                    href={`/portal/hosts/events/${event.id}/participants`}
-                                >
-                                    <DropdownMenuItem className="btn btn-ghost btn-block">
-                                        <Users className="mr-2 h-4 w-4" /> View
-                                        Participants
-                                    </DropdownMenuItem>
-                                </Link>
+                {event.status === "approved" && (
+                    <DropdownMenu className="flex-none">
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="sm">
+                                <Settings className="h-4 w-4" />
+                                <span className="hidden sm:inline-block">
+                                    Others
+                                </span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="flex-none">
+                            <Link
+                                href={`/portal/hosts/events/${event.id}/participants`}
+                            >
+                                <DropdownMenuItem className="btn btn-ghost btn-block">
+                                    <Users className="mr-2 h-4 w-4" /> View
+                                    Participants
+                                </DropdownMenuItem>
+                            </Link>
+                            {event.registration_status === "ongoing" && (
                                 <DropdownMenuItem>
                                     <NotifyEventRegistration
                                         donorsData={event?.agency?.donors || []}
                                         eventData={event}
                                     />
                                 </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    )}
+                            )}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                )}
             </CardFooter>
         </Card>
     );

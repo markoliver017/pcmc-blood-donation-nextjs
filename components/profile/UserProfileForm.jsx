@@ -27,7 +27,6 @@ import { Input } from "@components/ui/input";
 
 import { uploadPicture } from "@/action/uploads";
 import { GrUpdate } from "react-icons/gr";
-import { useRouter } from "next/navigation";
 import CustomAvatar from "@components/reusable_components/CustomAvatar";
 import FormLogger from "@lib/utils/FormLogger";
 import { useSession } from "next-auth/react";
@@ -37,7 +36,6 @@ import DisplayValidationErrors from "@components/form/DisplayValidationErrors";
 import { toastCatchError, toastError } from "@lib/utils/toastError.utils";
 
 export default function UserProfileForm({ userQuery }) {
-    const router = useRouter();
     const [isUploading, setIsUploading] = useState(false);
     const session = useSession();
 

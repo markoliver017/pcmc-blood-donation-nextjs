@@ -33,6 +33,7 @@ import UpdateAgencyProfile from "@components/profile/UpdateAgencyProfile";
 import { getDonorProfile } from "@/action/donorAction";
 import DonorProfileTabForm from "./DonorProfileTabForm";
 import BloodTypeTabForm from "./BloodTypeTabForm";
+import AgencySettings from "@/(pages)/portal/(role_based)/donors/profile/AgencySettings";
 
 export default function DonorProfilePage({ user }) {
     const userQuery = useQuery({
@@ -40,9 +41,9 @@ export default function DonorProfilePage({ user }) {
         queryFn: async () => await getDonorProfile(user?.id),
     });
 
-    const { data: userData, isLoading } = userQuery;
+    const { data: userData, isLoading, isFetching } = userQuery;
 
-    if (isLoading === "loading") return <Skeleton_user />;
+    if (isFetching || isLoading) return <Skeleton_user />;
 
     const agency = userData?.donor?.agency;
 
@@ -50,13 +51,18 @@ export default function DonorProfilePage({ user }) {
     return (
         <Card className="md:p-5 bg-gray-100">
             <CardHeader className="text-2xl font-bold">
-                <CardTitle>Account Information</CardTitle>
+                <div className="flex items-center gap-2 md:justify-between">
+                    <CardTitle>Account Information</CardTitle>
+                    {userData?.donor?.donor_type === "agency" && (
+                        <AgencySettings userData={userData} />
+                    )}
+                </div>
                 <CardDescription>
                     <div>Update your account.</div>
                 </CardDescription>
             </CardHeader>
             <CardContent id="form-modal" className="p-1 md:p-5">
-                <Tabs defaultValue="user-profile" className="p-1 md:p-5">
+                <Tabs defaultValue="user-profile" className="px-1 md:px-5">
                     <TabsList className="flex flex-row">
                         <TabsTrigger value="user-profile" title="User Profile">
                             <User2Icon className="w-4 h-4 mr-1" />

@@ -4,9 +4,10 @@ import {
     QueryClient,
 } from "@tanstack/react-query";
 import { getDonorById } from "@/action/donorAction";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, User } from "lucide-react";
 import Link from "next/link";
 import ShowDonor from "@components/donors/ShowDonor";
+import WrapperHeadMain from "@components/layout/WrapperHeadMain";
 
 export default async function Page({ params }) {
     const { id } = await params;
@@ -19,6 +20,17 @@ export default async function Page({ params }) {
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
+            <WrapperHeadMain
+                icon={<User />}
+                pageTitle="Donor"
+                breadcrumbs={[
+                    {
+                        path: "/portal/hosts/donors",
+                        icon: <User className="w-4" />,
+                        title: "Donor Details",
+                    },
+                ]}
+            />
             <div className="w-full h-full md:w-8/10 2xl:w-3/4 mx-auto relative">
                 <Link
                     href="/portal/hosts/donors"

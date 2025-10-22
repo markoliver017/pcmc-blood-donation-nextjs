@@ -1,20 +1,35 @@
-import { auth } from "@lib/auth";
+"use client";
 
-import { redirect } from "next/navigation";
-import React from "react";
+import { redirect, useSearchParams } from "next/navigation";
+import React, { useEffect } from "react";
 import AuthSelectRole from "./AuthSelectRole";
+import { useSession } from "next-auth/react";
+import Skeleton_form from "@components/ui/Skeleton_form";
 
-export default async function PortalPage({ searchParams }) {
-    const session = await auth();
+export default function PortalPage() {
+    const session = useSession();
+    const searchParams = useSearchParams();
 
-    if (!session?.user) return null;
+    console.log("Session", session);
+    console.log("SearchParams", searchParams);
 
-    const { roles, role_name: session_role } = session.user;
-    const callbackUrl = (await searchParams)?.callbackUrl;
+    const { roles, role_name: session_role } = session?.data?.user;
+    const callbackUrl = searchParams?.get("callbackUrl");
 
     const currentLoggedInRole = roles.find(
         (role) => role.role_name == session_role
     );
+
+    const redirectUrl =
+        callbackUrl ||
+        currentLoggedInRole?.url ||
+        "/portal?error=RoleUrlNotFound";
+
+    useEffect(() => {
+        setTimeout(() => {
+            redirect(redirectUrl);
+        }, 1000);
+    }, [redirectUrl]);
 
     if (!currentLoggedInRole) {
         return (
@@ -25,12 +40,5 @@ export default async function PortalPage({ searchParams }) {
         );
     }
 
-    // If there's a callbackUrl, redirect to it instead of the default role URL
-    const redirectUrl =
-        callbackUrl ||
-        currentLoggedInRole?.url ||
-        "/portal?error=RoleUrlNotFound";
-    redirect(redirectUrl);
-
-    return <pre>{JSON.stringify(session, null, 2)}</pre>;
+    return <Skeleton_form />;
 }
