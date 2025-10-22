@@ -12,7 +12,6 @@ import Image from "next/image";
 // import { Button } from "@components/ui/button";
 // import { Command, Eye, MoreHorizontal } from "lucide-react";
 // import Link from "next/link";
-import { formatFormalName } from "@lib/utils/string.utils";
 import moment from "moment";
 import { Checkbox } from "@components/ui/checkbox";
 
