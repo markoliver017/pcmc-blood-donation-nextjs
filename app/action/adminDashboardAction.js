@@ -116,19 +116,38 @@ export async function getDashboardData() {
                 [
                     sequelize.fn(
                         "date_format",
-                        sequelize.col("createdAt"),
+                        sequelize.col("event.date"),
                         "%Y-%m"
                     ),
                     "month",
                 ],
-                [sequelize.fn("count", sequelize.col("id")), "count"],
+                [
+                    sequelize.fn(
+                        "count",
+                        sequelize.col("BloodDonationCollection.id")
+                    ),
+                    "count",
+                ],
             ],
-            where: {
-                createdAt: {
-                    [Op.gte]: sixMonthsAgo,
+            include: [
+                {
+                    model: BloodDonationEvent,
+                    as: "event",
+                    attributes: [],
+                    where: {
+                        date: {
+                            [Op.gte]: sixMonthsAgo,
+                        },
+                    },
                 },
-            },
-            group: ["month"],
+            ],
+            group: [
+                sequelize.fn(
+                    "date_format",
+                    sequelize.col("event.date"),
+                    "%Y-%m"
+                ),
+            ],
             order: [[sequelize.literal("month"), "ASC"]],
             raw: true,
         });

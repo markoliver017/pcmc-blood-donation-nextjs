@@ -535,6 +535,25 @@ export default function EventDashboardDataTable({
                                             )}
                                         </TableCell>
                                         <TableCell>
+                                            {appointment?.physical_exam &&
+                                            appointment?.physical_exam
+                                                ?.eligibility_status ===
+                                                "ACCEPTED" ? (
+                                                <div className="flex items-center gap-1 text-green-600">
+                                                    <CheckCircle className="h-3 w-3" />
+                                                    <span className="text-xs">
+                                                        ELIGIBLE
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                <span className="text-xs text-muted-foreground">
+                                                    {appointment?.physical_exam
+                                                        ?.eligibility_status ||
+                                                        "-"}
+                                                </span>
+                                            )}
+                                        </TableCell>
+                                        <TableCell>
                                             {appointment.blood_collection ? (
                                                 <div className="flex items-center gap-1 text-green-600">
                                                     <CheckCircle className="h-3 w-3" />
@@ -553,6 +572,7 @@ export default function EventDashboardDataTable({
                                                 </span>
                                             )}
                                         </TableCell>
+
                                         {roleName === "Admin" && (
                                             <TableCell className="text-right">
                                                 <DropdownMenu>

@@ -25,7 +25,7 @@ export default function Preloader() {
                     transition={{ duration: 0.5, ease: "easeOut" }}
                 >
                     {/* Linear Gradient Background */}
-                    <div
+                    {/* <div
                         className="absolute inset-0 w-full h-full z-10"
                         style={{
                             backgroundImage: "url('/bg-image-new-1.png')",
@@ -33,7 +33,7 @@ export default function Preloader() {
                             backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",
                         }}
-                    />
+                    /> */}
                     {/* Overlay */}
                     <div
                         className="absolute inset-0 w-full h-full z-20"

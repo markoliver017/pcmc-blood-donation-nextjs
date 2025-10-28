@@ -131,42 +131,7 @@ export default function Page() {
                         makes blood donation simple, accessible and meaningful –
                         bridging compassion with action.
                     </p>
-                    {/* <p className="text-lg text-slate-700 dark:text-slate-200 mb-4 text-justify">
-                        We are dedicated to saving and improving the lives of
-                        children by empowering volunteer blood donors. Our
-                        platform makes blood donation information accessible,
-                        meaningful, and easy to engage with — turning compassion
-                        into action.
-                    </p>
-                    <ul className="space-y-3 mb-4">
-                        <li className="flex items-start gap-3">
-                            <span className="inline-flex items-center justify-center h-8 w-12 rounded-full bg-red-100 dark:bg-red-900">
-                                <Syringe className="w-4 h-4" />
-                            </span>
-                            <span>
-                                Blood donation saves lives every day, providing
-                                hope and healing to those in need.
-                            </span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                            <span className="inline-flex items-center justify-center h-8 w-12 rounded-full bg-blue-100 dark:bg-blue-900">
-                                <FaHandHolding />
-                            </span>
-                            <span>
-                                Our center ensures every donation is safe,
-                                secure, and reaches those who need it most.
-                            </span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                            <span className="inline-flex items-center justify-center h-8 w-12 rounded-full bg-green-100 dark:bg-green-900">
-                                <Globe />
-                            </span>
-                            <span>
-                                Join a community of heroes—donate blood and help
-                                us build a healthier future for all.
-                            </span>
-                        </li>
-                    </ul> */}
+
                     <div className="text-right">
                         <Link href="/about-us">
                             <button className="btn btn-primary btn-lg shadow-lg px-8 py-3 text-base md:text-lg hover:scale-105 transition-transform">

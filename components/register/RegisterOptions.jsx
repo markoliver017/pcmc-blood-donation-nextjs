@@ -49,7 +49,7 @@ export default function RegisterOptions() {
             {/* Logo & Title */}
             <div className="text-center mb-6 md:mb-10">
                 <div className="flex flex-col items-center justify-center gap-3">
-                    <div className="flex items-center gap-2 p-2 md:p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                    <div className="flex items-center justify-center w-full gap-2 p-2 md:p-4 rounded-lg bg-white/10 backdrop-blur-sm">
                         <Image
                             src="/pcmc_logo.png"
                             width={70}
@@ -57,7 +57,7 @@ export default function RegisterOptions() {
                             alt="PCMC Logo"
                             className="rounded-full w-12 h-12 md:w-16 md:h-16 border-2 border-blue-300 dark:border-blue-700 shadow bg-white"
                         />
-                        <h1 className="text-3xl md:text-4xl font-extrabold text-red-700 text-shadow-sm/100 dark:text-shadow-sm/50 text-shadow-yellow-300 dark:text-shadow-yellow-300">
+                        <h1 className="text-3xl md:text-4xl font-extrabold text-red-700 text-shadow-sm/100 dark:text-red-200 dark:text-shadow-sm/50 text-shadow-yellow-300 dark:text-shadow-yellow-300">
                             Register an Account
                         </h1>
                     </div>
@@ -94,7 +94,7 @@ export default function RegisterOptions() {
             </div>
 
             {/* Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-6 mb-10 justify-items-center">
+            <div className="flex flex-wrap justify-center gap-2 md:gap-6 mb-10 justify-items-center">
                 {filteredOptions.length === 0 ? (
                     <div className="col-span-full text-center text-slate-500 dark:text-slate-400 py-16 font-semibold">
                         No registration options found.

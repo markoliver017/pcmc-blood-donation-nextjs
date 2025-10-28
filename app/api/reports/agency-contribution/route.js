@@ -3,7 +3,6 @@ import {
     Agency,
     BloodDonationEvent,
     BloodDonationCollection,
-    DonorAppointmentInfo,
 } from "@lib/models";
 import { Op, fn, col, literal } from "sequelize";
 import { auth } from "@lib/auth";
@@ -42,19 +41,29 @@ export async function GET(request) {
             attributes: [
                 "id",
                 "name",
-                [fn("COUNT", col("events.id")), "totalEvents"],
-                [fn("COUNT", col("events.collections.id")), "totalCollections"],
+                [fn("COUNT", fn("DISTINCT", col("events.id"))), "totalEvents"],
+                [
+                    fn("COUNT", fn("DISTINCT", col("events.collections.id"))),
+                    "totalCollections",
+                ],
                 [
                     fn("SUM", col("events.collections.volume")),
                     "totalVolumeCollected",
                 ],
                 [
-                    fn(
-                        "AVG",
-                        literal(
-                            `(SELECT COUNT(*) FROM donor_appointment_infos WHERE donor_appointment_infos.event_id = events.id)`
-                        )
-                    ),
+                    literal(`(
+    SELECT AVG(donor_count)
+    FROM (
+      SELECT COUNT(*) as donor_count
+      FROM donor_appointment_infos
+      WHERE event_id IN (
+        SELECT id FROM blood_donation_events 
+        WHERE agency_id = Agency.id
+      )
+      AND status NOT IN ('cancelled', 'no show')
+      GROUP BY event_id
+    ) as subquery
+  )`),
                     "avgDonorsPerEvent",
                 ],
             ],
@@ -64,7 +73,7 @@ export async function GET(request) {
                     as: "events",
                     attributes: [],
                     where: eventWhereConditions,
-                    required: false, // Use left join to include agencies with no events in the period
+                    required: false,
                     include: [
                         {
                             model: BloodDonationCollection,
@@ -72,24 +81,24 @@ export async function GET(request) {
                             attributes: [],
                             required: false,
                         },
-                        {
-                            model: DonorAppointmentInfo,
-                            as: "donors",
-                            attributes: [],
-                            where: {
-                                status: {
-                                    [Op.notIn]: ["cancelled", "no show"],
-                                },
-                            },
-                            required: false,
-                        },
+                        // {
+                        //     model: DonorAppointmentInfo,
+                        //     as: "donors",
+                        //     attributes: [],
+                        //     where: {
+                        //         status: {
+                        //             [Op.notIn]: ["cancelled", "no show"],
+                        //         },
+                        //     },
+                        //     required: false,
+                        // },
                     ],
                 },
             ],
             group: ["Agency.id"],
             order: [[fn("SUM", col("events.collections.volume")), "DESC"]],
             raw: true,
-            nest: true,
+            // nest: true,
         });
 
         return NextResponse.json({ success: true, data: agencyContributions });

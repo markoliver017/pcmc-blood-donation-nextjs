@@ -928,7 +928,7 @@ const AgenciesTab = () => {
                                     </TableCell>
                                     <TableCell className="text-center">
                                         {parseFloat(
-                                            agency.avgDonorsPerEvent
+                                            agency.avgDonorsPerEvent || 0
                                         ).toFixed(1) || 0}
                                     </TableCell>
                                 </TableRow>

@@ -51,7 +51,11 @@ export default function ClientPortal({ children }) {
                 // Redirect to login when expired
                 if (secondsLeft <= 0) {
                     clearInterval(interval);
-                    redirect(`/login?callbackUrl=${currentRoute}`);
+
+                    // redirect(`/login?callbackUrl=${currentRoute}`);
+                    window.location.replace(
+                        `/login?callbackUrl=${currentRoute}`
+                    );
                 }
             }, 30000);
 

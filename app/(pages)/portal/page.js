@@ -16,25 +16,28 @@ export default function PortalPage() {
     const { roles, role_name: session_role } = session?.data?.user;
     const callbackUrl = searchParams?.get("callbackUrl");
 
+    console.log("CallbackUrl", callbackUrl);
+
     const currentLoggedInRole = roles.find(
         (role) => role.role_name == session_role
     );
 
-    const redirectUrl =
-        callbackUrl ||
-        currentLoggedInRole?.url ||
-        "/portal?error=RoleUrlNotFound";
+    const redirectUrl = callbackUrl
+        ? callbackUrl
+        : currentLoggedInRole?.url || "/portal?error=RoleUrlNotFound";
 
     useEffect(() => {
-        setTimeout(() => {
-            redirect(redirectUrl);
-        }, 1000);
-    }, [redirectUrl]);
+        if (currentLoggedInRole) {
+            setTimeout(() => {
+                redirect(redirectUrl);
+            }, 1000);
+        }
+    }, [redirectUrl, currentLoggedInRole]);
 
     if (!currentLoggedInRole) {
         return (
             <AuthSelectRole
-                roles={session?.user?.roles || []}
+                roles={roles || []}
                 callbackUrl={callbackUrl || "/portal"}
             />
         );
